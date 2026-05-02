@@ -9,5 +9,6 @@ package com.una.ac.cr.gym.domain;
  * @author alira
  */
 public class Product {
+
     
 }
