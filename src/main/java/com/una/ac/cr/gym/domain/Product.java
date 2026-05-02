@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * @author alira
  */
 @Entity
-@Table(name = "products")
+@Table(name = "tb_products")
 public class Product {
 
     @Id
