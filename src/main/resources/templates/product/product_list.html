@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Lista de productos</title>
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<body>
+
+<div class="page-container">
+    <h1 class="page-title" th:text="${title}">Lista de productos</h1>
+
+    <div class="card">
+        <div class="top-bar">
+            <a th:href="@{/products/create}" class="btn btn-primary">Agregar producto</a>
+        </div>
+
+        <div th:if="${error != null and !#strings.isEmpty(error)}" class="alert alert-error" th:text="${error}">
+            Error
+        </div>
+
+        <div class="table-container">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${products == null or #lists.isEmpty(products)}">
+                        <td colspan="8">No hay productos registrados.</td>
+                    </tr>
+
+                    <tr th:each="product : ${products}">
+                        <td>
+                            <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
+                                 th:src="@{/{img}(img=${product.imagePath})}"
+                                 alt="Imagen del producto"
+                                 class="product-image-thumb">
+
+                            <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
+                                 class="no-image">
+                                Sin imagen
+                            </div>
+                        </td>
+                        
+                        <td th:text="${product.nameProduct}">Producto</td>
+                        <td th:text="${product.category}">Categoría</td>
+                        <td th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</td>
+                        <td th:text="${product.quantityStock}">0</td>
+                        <td>
+                            <span th:if="${product.state}" class="badge badge-active">Activo</span>
+                            <span th:unless="${product.state}" class="badge badge-inactive">Inactivo</span>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a th:href="@{/products/details/{id}(id=${product.idProduct})}" class="btn btn-info">Ver</a>
+                                <a th:href="@{/products/edit/{id}(id=${product.idProduct})}" class="btn btn-warning">Editar</a>
+                                <a th:href="@{/products/delete/{id}(id=${product.idProduct})}" class="btn btn-danger"
+                                   onclick="return confirm('¿Está seguro de eliminar este producto?');">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

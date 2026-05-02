@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Detalle del producto</title>
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<body>
+
+<div class="page-container">
+    <h1 class="page-title" th:text="${title}">Detalle del producto</h1>
+
+    <div class="card">
+        <div class="details-container">
+            <div>
+                <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
+                     th:src="@{/{img}(img=${product.imagePath})}"
+                     alt="Imagen del producto"
+                     class="details-image">
+
+                <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
+                     class="no-image"
+                     style="width: 320px; height: 320px; font-size: 16px;">
+                    Sin imagen
+                </div>
+            </div>
+
+            <div class="details-info">
+
+                <div class="detail-item">
+                    <div class="detail-label">Nombre del producto</div>
+                    <div class="detail-value" th:text="${product.nameProduct}">Producto</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Categoría</div>
+                    <div class="detail-value" th:text="${product.category}">Categoría</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Precio</div>
+                    <div class="detail-value" th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Cantidad en stock</div>
+                    <div class="detail-value" th:text="${product.quantityStock}">0</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Fecha de registro</div>
+                    <div class="detail-value" th:text="${product.registerDate}">2026-04-08</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Estado</div>
+                    <div class="detail-value">
+                        <span th:if="${product.state}" class="badge badge-active">Activo</span>
+                        <span th:unless="${product.state}" class="badge badge-inactive">Inactivo</span>
+                    </div>
+                </div>
+
+                <div class="detail-item form-group-full">
+                    <div class="detail-label">Descripción</div>
+                    <div class="detail-value" th:text="${product.description}">Descripción del producto</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/products/edit/{id}(id=${product.idProduct})}" class="btn btn-warning">Editar</a>
+            <a th:href="@{/products/}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
