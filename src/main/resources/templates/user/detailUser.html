@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Detalle de Usuario</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <div class="container detail-panel">
+            <h1>Detalle de Usuario</h1>
+
+            <div class="detail-grid">
+                <div class="detail-item"><strong>Nombre:</strong> <span th:text="${userView.fullName}"></span></div>
+                <div class="detail-item"><strong>Cédula:</strong> <span th:text="${userView.idCard}"></span></div>
+                <div class="detail-item"><strong>Correo:</strong> <span th:text="${userView.email}"></span></div>
+                <div class="detail-item"><strong>Teléfono:</strong> <span th:text="${userView.phone}"></span></div>
+                <div class="detail-item"><strong>Nombre de usuario:</strong> <span th:text="${userView.username}"></span></div>
+                <div class="detail-item"><strong>Rol:</strong> <span th:text="${userView.role}"></span></div>
+                <div class="detail-item"><strong>Estado:</strong> <span th:text="${userView.status}"></span></div>
+                <div class="detail-item"><strong>Fecha de registro:</strong> <span th:text="${userView.formattedRecordDate}"></span></div>
+            </div>
+
+            <div class="menu">
+                <a th:href="@{/users}">Volver</a>
+                <a th:href="@{/users/edit(id=${userView.userId})}" class="btn-edit">Editar</a>
+            </div>
+        </div>
+    </body>
+</html>

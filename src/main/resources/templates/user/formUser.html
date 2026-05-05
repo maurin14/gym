@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Formulario de Usuario</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Formulario de Usuario</h1>
+            
+            <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
+
+            <form th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off">
+                <input type="hidden" th:field="*{userId}"/>
+
+                <label>Nombre</label>
+                <input type="text" th:field="*{fullName}" required
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+"
+                       title="El nombre solo debe contener letras"/>
+
+                <label>Cédula</label>
+                <input type="text" th:field="*{idCard}" required pattern="[0-9]+" inputmode="numeric"
+                       title="Solo se permiten números" maxlength="9"
+                       onblur="checkField('idCard', this.value, 'idCardMessage')"/>
+                <span id="idCardMessage" class="field-message"></span>
+
+                <label>Correo</label>
+                <input type="email" th:field="*{email}" required
+                       onblur="checkField('email', this.value, 'emailMessage')"/>
+                <span id="emailMessage" class="field-message"></span>
+                
+                <label>Teléfono</label>
+                <input type="text" th:field="*{phone}" required pattern="[0-9]{4}-[0-9]{4}"
+                       title="Debe tener el formato 8888-8888" maxlength="9"/>
+
+                <label>Nombre de usuario</label>
+                <input type="text" th:field="*{username}" required autocomplete="new-username"
+                       onblur="checkField('username', this.value, 'usernameMessage')"/>
+                <span id="usernameMessage" class="field-message"></span>
+                
+                <label>Contraseña</label>
+                <input type="password" th:field="*{password}" required autocomplete="new-password"/>
+
+                <label>Rol</label>
+                <select th:field="*{role}" required>
+                    <option value="">Seleccione</option>
+                    <option value="client">Cliente</option>
+                    <option value="trainer">Entrenador</option>
+                    <option value="administrator">Administrador</option>
+                </select>
+
+                <label>Estado</label>
+                <select th:field="*{status}" required>
+                    <option value="">Seleccione</option>
+                    <option value="active">Activo</option>
+                    <option value="inactive">Inactivo</option>
+                </select>
+
+                <label>Fecha de registro</label>
+                <input type="date" th:field="*{recordDate}" required/>
+
+                <button type="submit">Guardar</button>
+            </form>
+
+            <div class="menu">
+                <a th:href="@{/users}">Volver</a>
+            </div>
+        </div>
+        
+        <script>
+            function checkField(field, value, messageId){
+                let message = document.getElementById(messageId);
+
+                if(value.trim() === ""){
+                    message.innerHTML = "";
+                    return;
+                }
+
+                if(field === "email"){
+                    let emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+
+                    if(!emailRegex.test(value)){
+                        message.innerHTML = "Formato de correo inválido";
+                        message.style.color = "red";
+                        return;
+                    }
+                }
+
+                let userId = document.getElementById("userId").value;
+
+                fetch('/users/check?field=' + field + '&value=' + encodeURIComponent(value) + '&userId=' + userId)
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data === "exists"){
+                            message.innerHTML = "Ya está registrado";
+                            message.style.color = "red";
+                        }else{
+                            message.innerHTML = "Disponible";
+                            message.style.color = "green";
+                        }
+                    });
+            }
+        </script>
+        
+    </body>
+</html>
