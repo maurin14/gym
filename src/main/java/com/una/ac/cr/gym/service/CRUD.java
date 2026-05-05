@@ -9,6 +9,7 @@ import java.util.List;
 /**
  *
  * @author alira
+ * @param <T>
  */
 public interface CRUD<T> {
 
