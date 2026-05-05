@@ -10,14 +10,14 @@
     <div class="header-left">
         <a th:href="@{/user/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>  
+        </a>
         <span class="system-name">SAM GYM FITNESS</span>
     </div>
 
     <nav class="header-nav">
         <a th:href="@{/user/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
-        <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
+        <a th:href="@{/payments/my-payments(userId=1)}">Mis pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
         <a th:href="@{/classes}">Clases</a>
         <a th:href="@{/products}">Productos</a>
@@ -34,10 +34,8 @@
             <h1>Bienvenido a SAM GYM FITNESS</h1>
             <p class="hero-slogan">Entrena mejor, vive mejor</p>
             <p class="hero-text">
-                Desde este portal puedes consultar sucursales, revisar tus pagos, acceder a tus
-                rutinas, clases, horarios y otros servicios disponibles dentro de la plataforma.
+                Consulta sucursales, revisa tus pagos y accede a los servicios disponibles.
             </p>
-
         </div>
     </section>
 
@@ -48,49 +46,49 @@
 
             <article class="module-card">
                 <h3>Sucursales</h3>
-                <p>Consulta sucursales activas, ubicación, capacidad, contacto y detalle general.</p>
+                <p>Consulta sucursales activas.</p>
                 <div class="buttons">
-                    <a th:href="@{/branches}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/branches}" class="btn-primary">Ver sucursales</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Pagos</h3>
-                <p>Consulta el historial de pagos, estados, métodos y detalle de cada registro.</p>
+                <h3>Mis pagos</h3>
+                <p>Consulta tu historial de pagos.</p>
                 <div class="buttons">
-                    <a th:href="@{/payments/listPayment(userId=1)}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/payments/my-payments(userId=1)}" class="btn-primary">Ver pagos</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Rutinas</h3>
-                <p>Revisa tus rutinas asignadas y da seguimiento a tu entrenamiento personal.</p>
+                <p>Consulta tus rutinas.</p>
                 <div class="buttons">
-                    <a th:href="@{/routines}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/routines}" class="btn-primary">ver rutinas</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Clases</h3>
-                <p>Consulta horarios, disponibilidad e inscríbete en clases del gimnasio.</p>
+                <p>Consulta e inscríbete en clases.</p>
                 <div class="buttons">
-                    <a th:href="@{/classes}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/classes}" class="btn-primary">ver clases</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Horarios</h3>
-                <p>Consulta los horarios disponibles de clases y actividades del gimnasio.</p>
+                <p>Consulta horarios disponibles.</p>
                 <div class="buttons">
-                    <a th:href="@{/schedules}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/schedules}" class="btn-primary">ver horarios</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Productos</h3>
-                <p>Consulta productos disponibles y servicios complementarios del gimnasio.</p>
+                <p>Consulta productos disponibles.</p>
                 <div class="buttons">
-                    <a th:href="@{/products}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/products}" class="btn-primary">ver productos</a>
                 </div>
             </article>
 
