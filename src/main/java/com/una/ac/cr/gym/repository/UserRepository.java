@@ -1,6 +1,6 @@
-package com.proyecto01.gym.repository;
+package com.una.ac.cr.gym.repository;
 
-import com.proyecto01.gym.domain.User;
+import com.una.ac.cr.gym.domain.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

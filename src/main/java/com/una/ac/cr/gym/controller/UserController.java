@@ -1,8 +1,8 @@
-package com.proyecto01.gym.controller;
+package com.una.ac.cr.gym.controller;
 
 import org.springframework.ui.Model;
-import com.proyecto01.gym.domain.User;
-import com.proyecto01.gym.services.UserService;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
-package com.proyecto01.gym.services;
+package com.una.ac.cr.gym.service;
 
-import com.proyecto01.gym.domain.User;
-import com.proyecto01.gym.repository.UserRepository;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

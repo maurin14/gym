@@ -1,4 +1,4 @@
-package com.proyecto01.gym.domain;
+package com.una.ac.cr.gym.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "tb_users")
 public class User {
     
     @Id
