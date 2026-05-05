@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="landing-header">
+    <div class="landing-brand">
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="landing-logo">
+        </a>
+        <div class="brand-text">
+            <span class="brand-title">SAM GYM FITNESS</span>
+            <span class="brand-subtitle">Entrena mejor, vive mejor</span>
+        </div>
+    </div>
+
+    <nav class="landing-nav">
+        <a href="#inicio">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#beneficios">Beneficios</a>
+        <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="landing-hero" id="inicio">
+        <div class="landing-hero-content">
+            <span class="hero-badge">Plataforma web para gimnasio</span>
+            <h1>Tu gimnasio más organizado, moderno y conectado</h1>
+            <p>
+                SAM GYM FITNESS es una plataforma diseñada para centralizar la gestión de
+                sucursales, usuarios, pagos, clases, rutinas, productos y más, ofreciendo
+                una experiencia clara tanto para la administración como para los clientes.
+            </p>
+
+            <div class="landing-buttons">
+                <a th:href="@{/login}" class="btn-primary">Ingresar al sistema</a>
+            </div>
+        </div>
+
+        <div class="landing-hero-card">
+            <div class="preview-card">
+                <h3>Todo en un solo lugar</h3>
+                <ul class="preview-list">
+                    <li>Sucursales y ubicación</li>
+                    <li>Pagos e historial</li>
+                    <li>Clases y horarios</li>
+                    <li>Rutinas de entrenamiento</li>
+                    <li>Productos y servicios</li>
+                    <li>Gestión administrativa integral</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-section" id="servicios">
+        <div class="section-head">
+            <span class="section-tag">Servicios</span>
+            <h2>Una plataforma integral para la gestión del gimnasio</h2>
+            <p>
+                Diseñada para mejorar la organización de la información, facilitar procesos
+                administrativos y brindar una experiencia más cómoda a clientes y entrenadores.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <article class="feature-card">
+                <h3>Sucursales</h3>
+                <p>Consulta sedes, ubicación, capacidad, estado y datos generales del gimnasio.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Usuarios</h3>
+                <p>Administra clientes y entrenadores con mejor orden y control de información.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Pagos</h3>
+                <p>Registra, consulta y da seguimiento a pagos realizados por los clientes.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Clases</h3>
+                <p>Gestiona horarios, cupos, entrenadores, descripciones e inscripciones.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Rutinas</h3>
+                <p>Asigna rutinas de entrenamiento adaptadas a los objetivos de cada usuario.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Inventario y equipamiento</h3>
+                <p>Controla productos, stock y equipos disponibles en las distintas sucursales.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="landing-section soft-section" id="beneficios">
+        <div class="section-head">
+            <span class="section-tag">Beneficios</span>
+            <h2>Más control, mejor experiencia</h2>
+            <p>
+                Una solución pensada para reducir el desorden, centralizar procesos y mejorar
+                la administración del gimnasio.
+            </p>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-box">
+                <h3>Centralización</h3>
+                <p>Toda la información del gimnasio organizada dentro de una sola plataforma.</p>
+            </div>
+
+            <div class="benefit-box">
+                <h3>Organización</h3>
+                <p>Control más claro de clientes, pagos, clases, rutinas y recursos.</p>
+            </div>
+
+            <div class="benefit-box">
+                <h3>Eficiencia</h3>
+                <p>Menos procesos manuales y mejor seguimiento administrativo.</p>
+            </div>
+
+            <div class="benefit-box">
+                <h3>Crecimiento</h3>
+                <p>Base preparada para futuras mejoras como reservas, reportes y notificaciones.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-section">
+        <div class="section-head">
+            <span class="section-tag">¿Por qué SAM GYM FITNESS?</span>
+            <h2>Entrena mejor, vive mejor</h2>
+            <p>
+                Más que un sistema, SAM GYM FITNESS busca apoyar la modernización del gimnasio,
+                mejorar la experiencia de los clientes y facilitar el control de las operaciones diarias.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <article class="feature-card">
+                <h3>Para clientes</h3>
+                <p>
+                    Permite consultar pagos, clases, rutinas, sucursales y otros servicios disponibles.
+                    El usuario y la contraseña son asignados directamente por la administración del gimnasio.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Para entrenadores</h3>
+                <p>Facilita el acceso a clases, rutinas y seguimiento de usuarios dentro del sistema.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Para administración</h3>
+                <p>Ayuda a tomar decisiones con mejor organización, control y claridad de la información.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="landing-section cta-section">
+        <div class="cta-box">
+            <h2>Accede a SAM GYM FITNESS</h2>
+            <p>
+                Inicia sesión para acceder a la plataforma. Si aún no tienes usuario,
+                solicítalo directamente en la recepción del gimnasio.
+            </p>
+            <div class="landing-buttons centered">
+                <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
+            </div>
+        </div>
+    </section>
+
+
+
+</main>
+
+<footer class="landing-footer">
+    <div class="footer-brand">
+        <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="footer-logo">
+        <div>
+            <strong>SAM GYM FITNESS</strong>
+            <p>Entrena mejor, vive mejor</p>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <a href="#inicio">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#beneficios">Beneficios</a>
+        <a th:href="@{/login}">Iniciar sesión</a>
+    </div>
+</footer>
+
+</body>
+</html>
