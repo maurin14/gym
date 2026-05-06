@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
+    loadTrainers();
 });
 
 function loadClasses() {
@@ -22,11 +23,28 @@ function loadClasses() {
                         <td>${gymClass.enrolledCount}</td>
                         <td>${gymClass.difficultyLevel}</td>
                         <td>${gymClass.description}</td>
-                        <td>
-                            <button onclick="editClass(${gymClass.idClass})">Editar</button>
-                            <button onclick="deleteClass(${gymClass.idClass})">Eliminar</button>
+                        <td class="actions">
+                            <button type="button" class="btn-primary" onclick="editClass(${gymClass.idClass})">Editar</button>
+                            <button type="button" class="btn-danger" onclick="deleteClass(${gymClass.idClass})">Eliminar</button>
                         </td>
                     </tr>
+                `;
+            });
+        });
+}
+
+function loadTrainers() {
+    fetch("/classes/trainers")
+        .then(response => response.json())
+        .then(data => {
+            const trainerSelect = document.getElementById("trainerId");
+            trainerSelect.innerHTML = '<option value="">Seleccione un entrenador</option>';
+
+            data.forEach(trainer => {
+                trainerSelect.innerHTML += `
+                    <option value="${trainer.userId}">
+                        ${trainer.fullName}
+                    </option>
                 `;
             });
         });
@@ -44,9 +62,9 @@ function saveClass() {
         trainer: {
             userId: document.getElementById("trainerId").value
         },
-        description: document.getElementById("description").value,
         enrolledCount: document.getElementById("enrolledCount").value,
-        difficultyLevel: document.getElementById("difficultyLevel").value
+        difficultyLevel: document.getElementById("difficultyLevel").value,
+        description: document.getElementById("description").value
     };
 
     let url = "/classes";
@@ -83,14 +101,14 @@ function editClass(idClass) {
             document.getElementById("endTime").value = gymClass.endTime;
             document.getElementById("maxCapacity").value = gymClass.maxCapacity;
             document.getElementById("trainerId").value = gymClass.trainer.userId;
-            document.getElementById("description").value = gymClass.description;
             document.getElementById("enrolledCount").value = gymClass.enrolledCount;
             document.getElementById("difficultyLevel").value = gymClass.difficultyLevel;
+            document.getElementById("description").value = gymClass.description;
         });
 }
 
 function deleteClass(idClass) {
-    if (confirm("¿Está seguro de eliminar esta clase?")) {
+    if (confirm("¿Desea eliminar esta clase?")) {
         fetch("/classes/" + idClass, {
             method: "DELETE"
         })
@@ -109,7 +127,7 @@ function clearForm() {
     document.getElementById("endTime").value = "";
     document.getElementById("maxCapacity").value = "";
     document.getElementById("trainerId").value = "";
-    document.getElementById("description").value = "";
     document.getElementById("enrolledCount").value = "";
-    document.getElementById("difficultyLevel").value = "";
+    document.getElementById("difficultyLevel").value = "Bajo";
+    document.getElementById("description").value = "";
 }
