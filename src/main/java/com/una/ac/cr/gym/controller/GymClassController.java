@@ -24,6 +24,11 @@ public class GymClassController {
         this.gymClassService = gymClassService;
     }
 
+    @GetMapping("/view")
+    public String classesView() {
+        return "trainer/classes";
+    }
+    
     @GetMapping
     public List<GymClass> getAllClasses() {
         return gymClassService.getAllClasses();
