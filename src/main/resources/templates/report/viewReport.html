@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Vista de Reporte</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <div class="container report-preview">
+            <h1>Reporte del Sistema</h1>
+
+            <div class="detail-grid">
+                <div class="detail-item"><strong>Tipo:</strong> <span th:text="${reportView.reportType}"></span></div>
+                <div class="detail-item"><strong>Generado por:</strong> <span th:text="${reportView.userName}"></span></div>
+                <div class="detail-item"><strong>Fecha de generación:</strong> <span th:text="${reportView.formattedGenerationDate}"></span></div>
+                <div class="detail-item"><strong>Rango:</strong> <span th:text="${reportView.formattedStartDate + ' - ' + reportView.formattedEndDate}"></span></div>
+                <div class="detail-item full"><strong>Descripción:</strong> <span th:text="${reportView.description}"></span></div>
+            </div>
+
+            <table border="1" class="compact-table report-table">
+                <tr>
+                    <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>
+                </tr>
+                <tr th:each="fila : ${reportData}">
+                    <td th:each="entry : ${fila}" th:text="${entry.value}"></td>
+                </tr>
+            </table>
+
+            <div class="menu">
+                <a th:href="@{/reports}">Volver</a>
+                <a th:href="@{/reports/edit(id=${reportView.reportId})}" class="btn-edit">Editar</a>
+            </div>
+        </div>
+    </body>
+</html>
