@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis pagos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/}">
+           <img th:src="@{/images/logo.jpeg}" alt="SAM Gym Fitness" class="logo">
+        </a>
+        <span class="system-name">SAM Gym Fitness</span>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/payments/my-payments(userId=1)}">Mis pagos</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2 class="page-title">Mis pagos</h2>
+
+    <div class="filters">
+        <select id="filterStatus">
+            <option value="">Todos los estados</option>
+            <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
+            <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
+            <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
+        </select>
+
+        <select id="filterPaymentMethod">
+            <option value="">Todos los métodos</option>
+            <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
+            <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
+            <option value="Sinpe" th:selected="${paymentMethod == 'Sinpe'}">Sinpe</option>
+            <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
+        </select>
+
+        <button type="button" class="btn-primary"
+                th:onclick="'window.location.href=\'/payments/my-payments?userId=' + ${userId} + '&status=\' + encodeURIComponent(document.getElementById(\'filterStatus\').value) + \'&paymentMethod=\' + encodeURIComponent(document.getElementById(\'filterPaymentMethod\').value)'">
+            Filtrar
+        </button>
+
+        <a th:href="@{/payments/my-payments(userId=${userId})}" class="btn-secondary">Limpiar</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Detalle</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${payments.content.size() == 0}">
+            <td colspan="6">No se encontraron pagos.</td>
+        </tr>
+
+        <tr th:each="p : ${payments.content}">
+            <td th:text="${#temporals.format(p.paymentDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${'₡' + p.amount}"></td>
+            <td th:text="${p.paymentMethod}"></td>
+            <td>
+                <span th:text="${p.status}"
+                      th:class="${p.status == 'Pagado' ? 'badge badge-paid' : (p.status == 'Pendiente' ? 'badge badge-pending' : 'badge badge-cancelled')}"></span>
+            </td>
+            <td th:text="${p.description}"></td>
+            <td>
+                <a class="btn-primary" th:href="@{/payments/{id}(id=${p.id}, userId=${userId})}">Ver detalle</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${payments.totalPages > 1}">
+        <a class="btn-secondary"
+           th:if="${payments.hasPrevious()}"
+           th:href="@{/payments/my-payments(userId=${userId}, page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}">
+            Anterior
+        </a>
+
+        <span th:each="i : ${#numbers.sequence(0, payments.totalPages - 1)}">
+            <a th:text="${i + 1}"
+               th:href="@{/payments/my-payments(userId=${userId}, page=${i}, status=${status}, paymentMethod=${paymentMethod})}"
+               th:class="${i == payments.number ? 'btn-primary' : 'btn-secondary'}">
+            </a>
+        </span>
+
+        <a class="btn-secondary"
+           th:if="${payments.hasNext()}"
+           th:href="@{/payments/my-payments(userId=${userId}, page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}">
+            Siguiente
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
