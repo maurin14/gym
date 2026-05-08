@@ -5,6 +5,7 @@ import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.domain.Payment;
 import com.una.ac.cr.gym.repository.ReportRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
+import com.una.ac.cr.gym.service.PaymentService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -31,7 +32,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Service
-public class ReportService {
+public class ReportService implements CRUD<Report>{
     
     @Autowired
     private ReportRepository rData;
@@ -41,6 +42,43 @@ public class ReportService {
     
     @Autowired
     private PaymentService paymentService;
+    
+    public void save(Report r){
+        String validation = validate(r);
+        if(validation != null){
+        }
+
+        if(r.getReportId() == null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            r.setGenerationDate(LocalDateTime.now().format(formatter));
+        }else{
+            Report currentReport = getReportById(r.getReportId());
+            if(currentReport != null){
+                r.setGenerationDate(currentReport.getGenerationDate());
+            }
+        }
+
+        rData.save(r);
+    }
+
+    public void delete(int id){
+        Report report = getReportById(id);
+
+        if(report == null){
+        }
+
+        rData.deleteById(id);
+    }
+    
+    @Override
+    public List<Report> getAll() {
+        return getReports();
+    }
+
+    @Override
+    public Report getById(int id) {
+        return getReportById(id);
+    }
 
     public List<Report> getReports(){
         List<Report> reports = rData.findAll();
@@ -135,37 +173,6 @@ public class ReportService {
         return null;
     }
 
-    public boolean save(Report r){
-        String validation = validate(r);
-        if(validation != null){
-            return false;
-        }
-
-        if(r.getReportId() == null){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            r.setGenerationDate(LocalDateTime.now().format(formatter));
-        }else{
-            Report currentReport = getReportById(r.getReportId());
-            if(currentReport != null){
-                r.setGenerationDate(currentReport.getGenerationDate());
-            }
-        }
-
-        rData.save(r);
-        return true;
-    }
-
-    public boolean delete(int id){
-        Report report = getReportById(id);
-
-        if(report == null){
-            return false;
-        }
-
-        rData.deleteById(id);
-        return true;
-    }
-    
     public List<Map<String, String>> getPreviewData(String reportType){
         List<Map<String, String>> list = new ArrayList<>();
 
@@ -185,7 +192,7 @@ public class ReportService {
                 list.add(map);
             }
 
-       }else if("payments".equalsIgnoreCase(reportType)){
+        }else if("payments".equalsIgnoreCase(reportType)){
             List<Payment> payments = paymentService.getAll();
 
             for(Payment p : payments){
@@ -200,15 +207,15 @@ public class ReportService {
                 map.put("Descripción", p.getDescription());
 
                 if(p.getBranch() != null){
-                    map.put("Sucursal", String.valueOf(p.getBranch().getId()));
+                    //map.put("Sucursal", String.valueOf(p.getBranch().getId()));
                 }else{
                     map.put("Sucursal", "Sin sucursal");
                 }
 
                 list.add(map);
-            }
-            
-       }else if("attendances".equalsIgnoreCase(reportType)){
+            }   list.add(row("Cliente", "María Solano", "Monto", "₡15 000", "Estado", "Pagado"));
+
+        }else if("attendances".equalsIgnoreCase(reportType)){
             list.add(row("Cliente", "Ana Pérez", "Fecha", "14/04/26", "Asistencia", "Sí"));
             list.add(row("Cliente", "Luis Mora", "Fecha", "15/04/26", "Asistencia", "Sí"));
             list.add(row("Cliente", "María Solano", "Fecha", "16/04/26", "Asistencia", "No"));
@@ -493,5 +500,4 @@ public class ReportService {
         }
     }
 
-    
 }

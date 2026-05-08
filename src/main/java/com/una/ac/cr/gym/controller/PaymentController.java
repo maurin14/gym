@@ -2,8 +2,8 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Payment;
-import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
+import com.una.ac.cr.gym.service.BranchService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

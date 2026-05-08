@@ -20,6 +20,8 @@ public class ReportController {
 
     @Autowired
     private ReportService rService;
+    
+    private Report report;
 
     @GetMapping({"", "/"})
     public String index(@RequestParam(defaultValue = "1") int page,
@@ -96,7 +98,8 @@ public class ReportController {
         }
 
         boolean isNew = reportNew.getReportId() == null;
-        boolean saved = rService.save(reportNew);
+        rService.save(report);
+        boolean saved = true;
 
         if (saved) {
             if (isNew) {
@@ -161,7 +164,8 @@ public class ReportController {
             return "redirect:/";
         }
         
-        boolean deleted = rService.delete(id);
+        rService.delete(id);
+        boolean deleted = true;
 
         if (deleted) {
             redirect.addFlashAttribute("messageSuccess", "Reporte eliminado correctamente");

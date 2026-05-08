@@ -10,10 +10,38 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements CRUD<User> {
     
     @Autowired
     private UserRepository uData;
+    
+    @Override
+    public void save(User u) {
+        String validation = validate(u);
+
+        if(validation == null){
+            uData.save(u);
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        User user = getUserById(id);
+
+        if(user != null){
+            uData.deleteById(id);
+        }
+    }
+
+    @Override
+    public List<User> getAll() {
+        return getUsers();
+    }
+
+    @Override
+    public User getById(int id) {
+        return getUserById(id);
+    }
 
     public List<User> getUsers(){
         return uData.findAll();
@@ -99,26 +127,6 @@ public class UserService {
         }
         return null;
     }
-
-    public boolean save(User u){
-        String validation = validate(u);
-        if(validation != null){
-            return false;
-        }
-        uData.save(u);
-        return true;
-    }
-
-    public boolean delete(int id){
-        User user = getUserById(id);
-        
-        if(user == null){
-            return false;
-        }
-        
-        uData.deleteById(id);
-        return true;
-    }
     
     public User login(String username, String password){
         if(isEmpty(username) || isEmpty(password)){
@@ -181,7 +189,7 @@ public class UserService {
         if(!userSession.getPassword().equals(currentPassword)){
             return "La contraseña actual es incorrecta";
         }
-
+        
         if(newPassword.length() < 4){
             return "La nueva contraseña debe tener al menos 4 caracteres";
         }
@@ -203,4 +211,5 @@ public class UserService {
 
         return null;
     }
+
 }

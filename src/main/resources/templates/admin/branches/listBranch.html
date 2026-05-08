@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Administración de Sucursales</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM Gym Fitness" class="logo">
+        </a>
+        <span class="system-name">SAM Gym Fitness</span>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/admin/payments}">Pagos</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2 class="page-title">Administración de Sucursales</h2>
+
+    <div class="filters">
+        <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
+
+        <select id="filterActive">
+            <option value="">Todos los estados</option>
+            <option value="true" th:selected="${active == 'true'}">Activo</option>
+            <option value="false" th:selected="${active == 'false'}">Inactivo</option>
+        </select>
+
+        <select id="filterProvince">
+            <option value="">Todas las provincias</option>
+            <option value="San José" th:selected="${province == 'San José'}">San José</option>
+            <option value="Alajuela" th:selected="${province == 'Alajuela'}">Alajuela</option>
+            <option value="Cartago" th:selected="${province == 'Cartago'}">Cartago</option>
+            <option value="Heredia" th:selected="${province == 'Heredia'}">Heredia</option>
+            <option value="Guanacaste" th:selected="${province == 'Guanacaste'}">Guanacaste</option>
+            <option value="Puntarenas" th:selected="${province == 'Puntarenas'}">Puntarenas</option>
+            <option value="Limón" th:selected="${province == 'Limón'}">Limón</option>
+        </select>
+
+        <button type="button" class="btn-primary" onclick="filterBranches()">Filtrar</button>
+        <a th:href="@{/admin/branches}" class="btn-secondary">Limpiar</a>
+    </div>
+
+    <div id="branch-table-container">
+        <div th:replace="admin/branches/tableBranch :: tableBranch"></div>
+    </div>
+
+    <div class="buttons">
+        <a th:href="@{/admin/branches/new}" class="btn-primary">Agregar sucursal</a>
+        <button type="button" class="btn-secondary" onclick="goBack()">Atrás</button>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let success = [[${param.success}]];
+    if (success != null) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Acción realizada correctamente',
+            confirmButtonText: 'OK'
+        });
+    }
+</script>
+
+</body>
+</html>

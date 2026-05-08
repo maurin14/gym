@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalle de Sucursal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/}">
+           <img th:src="@{/images/logo.jpeg}" alt="SAM Gym Fitness" class="logo">
+        </a>
+        <span class="system-name">SAM Gym Fitness</span>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/payments/my-payments(userId=1)}">Mis pagos</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2 class="page-title" th:text="${branch.name}"></h2>
+
+    <div class="detail-layout">
+        <div>
+            <img th:src="@{'/images/branches/' + ${branch.imageUrl}}" alt="Sucursal" style="width:100%; border-radius:16px;">
+        </div>
+
+        <div>
+            <div class="info-card">
+                <h3>Dirección</h3>
+                <p th:text="${branch.address}"></p>
+                <p><strong>Provincia:</strong> <span th:text="${branch.province}"></span></p>
+            </div>
+
+            <div class="info-card">
+                <h3>Contacto</h3>
+                <p><strong>Teléfono:</strong> <span th:text="${branch.phone}"></span></p>
+                <p><strong>Correo:</strong> <span th:text="${branch.email}"></span></p>
+            </div>
+
+            <div class="info-card">
+                <h3>Datos generales</h3>
+                <p><strong>Capacidad:</strong> <span th:text="${branch.capacity}"></span></p>
+                <p><strong>Fecha de apertura:</strong> <span th:text="${#temporals.format(branch.openingDate, 'dd/MM/yyyy')}"></span></p>
+                <p><strong>Estado:</strong> Activa</p>
+                <p><strong>Horario:</strong> Próximamente</p>
+            </div>
+
+            <div class="buttons">
+               <button type="button" class="btn-secondary" onclick="goBack()">Atrás</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
