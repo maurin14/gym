@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Sucursal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/}">
+            <<img th:src="@{/images/logo.jpeg}" alt="SAM Gym Fitness" class="logo">
+        </a>
+        <span class="system-name">SAM Gym Fitness</span>
+    </div>
+
+    <nav class="header-nav">
+        
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<div class="container form-container">
+
+    <h2 class="page-title">Formulario de Sucursal</h2>
+
+    <form id="branchForm"
+          th:action="@{/admin/branches/save}"
+          th:object="${branch}"
+          method="post"
+          novalidate>
+
+        <input type="hidden" th:field="*{id}">
+
+        <label>Fecha de apertura</label>
+        <input type="date" th:field="*{openingDate}" required>
+        <small class="error-message" th:if="${#fields.hasErrors('openingDate')}" th:errors="*{openingDate}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('openingDate')}"></small>
+
+        <label>Nombre</label>
+        <input type="text" th:field="*{name}" required minlength="3" maxlength="80" placeholder="Ejemplo: SAM Gym Santa Ana">
+        <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('name')}"></small>
+
+        <label>Provincia</label>
+        <select th:field="*{province}" required>
+            <option value="">Seleccione</option>
+            <option value="San José">San José</option>
+            <option value="Alajuela">Alajuela</option>
+            <option value="Cartago">Cartago</option>
+            <option value="Heredia">Heredia</option>
+            <option value="Guanacaste">Guanacaste</option>
+            <option value="Puntarenas">Puntarenas</option>
+            <option value="Limón">Limón</option>
+        </select>
+        <small class="error-message" th:if="${#fields.hasErrors('province')}" th:errors="*{province}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('province')}"></small>
+
+        <label>Dirección</label>
+        <input type="text" th:field="*{address}" required minlength="5" maxlength="150" placeholder="Ejemplo: Santa Ana, San José">
+        <small class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('address')}"></small>
+
+        <label>Teléfono</label>
+        <input type="text"
+               th:field="*{phone}"
+               required
+               pattern="[0-9]{8}"
+               maxlength="8"
+               placeholder="Ejemplo: 88887777"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <small class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('phone')}"></small>
+
+        <label>Correo electrónico</label>
+        <input type="email" th:field="*{email}" required maxlength="100" placeholder="Ejemplo: santaana@samgym.com">
+        <small class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('email')}"></small>
+
+        <label>Capacidad</label>
+        <input type="number" th:field="*{capacity}" required min="1" max="1000" placeholder="Ejemplo: 150">
+        <small class="error-message" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('capacity')}"></small>
+
+        <label>Imagen</label>
+        <input type="text" th:field="*{imageUrl}" required minlength="5" maxlength="255" placeholder="Ejemplo: logo.jpeg">
+        <small class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
+        <small class="error-message" th:unless="${#fields.hasErrors('imageUrl')}"></small>
+
+        <label>Estado</label>
+        <select th:field="*{active}" required>
+            <option th:value="true">Activo</option>
+            <option th:value="false">Inactivo</option>
+        </select>
+        <small class="error-message"></small>
+
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="confirmSave()">Guardar</button>
+            <button type="button" class="btn-secondary" onclick="confirmCancelBranch()">Cancelar</button>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>
