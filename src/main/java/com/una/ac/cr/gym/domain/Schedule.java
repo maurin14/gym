@@ -21,11 +21,77 @@ import java.time.LocalTime;
  * @author PC
  */  
 @Entity
-@Table(name = "Schedule")
-
+@Table(name = "tb_schedule")
 public class Schedule {
- 
-  
-   
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  int id;
+  @Enumerated(EnumType.STRING)
+  private DayOfWeek dayOfWeek;
+    private LocalTime   startTime;
+
+    private LocalTime   endTime;
+    private String scheduleType;
+    private boolean active;
+ @ManyToOne
+@JoinColumn(name = "branch_id")
+ private Product branch;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getScheduleType() {
+        return scheduleType;
+    }
+
+    public void setScheduleType(String scheduleType) {
+        this.scheduleType = scheduleType;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+    
 
 }

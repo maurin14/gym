@@ -10,6 +10,57 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+       <div th:fragment="tablaContainer">
+
+<div class="busqueda">
+
+    <select id="searchTipe" onchange="changeSearch()">
+        <option value="">Buscar por...</option>
+        <option value="branch">Sucursal</option>
+        <option value="hour">Horario</option>
+    </select>
+
+    <div id="searchBranch" style="display:none;">
+        <input type="number" id="branchFilter" placeholder="ID sucursal">
+        <button onclick="searchForBranch()">Buscar</button>
+    </div>
+
+    <div id="searchHour" style="display:none;">
+        <input type="time" id="startFilter">
+        <input type="time" id="endFilter">
+        <button onclick="searchForHour()">Buscar</button>
+    </div>
+
+</div>
+
+
+
+    <div id="tableContent" th:fragment="tableContent">
+        <table border="1">
+            <tr>
+                <th>Día</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Tipo</th>
+                <th>Activo</th>
+                <th>Sucursal</th>
+                <th>Acciones</th>
+            </tr>
+
+            <tr th:each="s : ${schedules}">
+                <td th:text="${s.dayOfWeek}"></td>
+                <td th:text="${#temporals.format(s.startTime,'HH:mm')}"></td>
+                <td th:text="${#temporals.format(s.endTime,'HH:mm')}"></td>
+             
+                <td th:text="${s.scheduleType}"></td>
+                <td th:text="${s.active ? 'Sí' : 'No'}"></td>
+                <td th:text="${s.branch?.name} ?: '—'"></td>
+
+                <td>
+                    <a href="#" th:attr="data-id=${s.id}" onclick="loadEditSchedule(this); return false;">Editar</a>
+                    <a href="#" th:attr="data-id=${s.id}" onclick="confirmDeleteSchedule(this); return false;">Eliminar</a>
+                </td>
+            </tr>
+        </table>
     </body>
 </html>

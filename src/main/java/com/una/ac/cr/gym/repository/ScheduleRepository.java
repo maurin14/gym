@@ -4,10 +4,17 @@
  */
 package com.una.ac.cr.gym.repository;
 
+import com.una.ac.cr.gym.domain.Schedule;
+import java.time.LocalTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 /**
  *
  * @author PC
  */
-public class ScheduleRepository {
-    
+public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
+    Page<Schedule> findByBranchId(Integer branchId, Pageable pageable);
+    Page<Schedule> findByStartTimeBetween(LocalTime start, LocalTime end, Pageable pageable);
 }

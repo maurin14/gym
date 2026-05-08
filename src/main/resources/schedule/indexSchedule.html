@@ -10,6 +10,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <h1>📅 Schedule Management</h1>
+
+        <div style="margin: 20px 0;">
+            <button onclick="loadFormSchedule()" class="add-btn">
+                + Add New Schedule
+            </button>
+        </div>
+
+
+        <div id="tableContainer"></div>
+
+        <div id="formContainer" style="display:none;"></div>
+        
+        <script th:src="@{/js/appShedule.js}"></script>
     </body>
 </html>
