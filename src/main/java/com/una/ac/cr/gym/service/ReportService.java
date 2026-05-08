@@ -2,6 +2,7 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.domain.Payment;
 import com.una.ac.cr.gym.repository.ReportRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
 import com.itextpdf.text.Document;
@@ -37,6 +38,9 @@ public class ReportService {
     
     @Autowired
     private UserRepository uData;
+    
+    @Autowired
+    private PaymentService paymentService;
 
     public List<Report> getReports(){
         List<Report> reports = rData.findAll();
@@ -181,12 +185,30 @@ public class ReportService {
                 list.add(map);
             }
 
-        }else if("payments".equalsIgnoreCase(reportType)){
-            list.add(row("Cliente", "Ana Pérez", "Monto", "₡18 000", "Estado", "Pagado"));
-            list.add(row("Cliente", "Luis Mora", "Monto", "₡22 500", "Estado", "Pendiente"));
-            list.add(row("Cliente", "María Solano", "Monto", "₡15 000", "Estado", "Pagado"));
+       }else if("payments".equalsIgnoreCase(reportType)){
+            List<Payment> payments = paymentService.getAll();
 
-        }else if("attendances".equalsIgnoreCase(reportType)){
+            for(Payment p : payments){
+                Map<String, String> map = new LinkedHashMap<>();
+
+                map.put("ID Pago", String.valueOf(p.getId()));
+                map.put("Usuario ID", String.valueOf(p.getUserId()));
+                map.put("Monto", "₡" + p.getAmount());
+                map.put("Fecha de pago", String.valueOf(p.getPaymentDate()));
+                map.put("Método de pago", p.getPaymentMethod());
+                map.put("Estado", p.getStatus());
+                map.put("Descripción", p.getDescription());
+
+                if(p.getBranch() != null){
+                    map.put("Sucursal", String.valueOf(p.getBranch().getId()));
+                }else{
+                    map.put("Sucursal", "Sin sucursal");
+                }
+
+                list.add(map);
+            }
+            
+       }else if("attendances".equalsIgnoreCase(reportType)){
             list.add(row("Cliente", "Ana Pérez", "Fecha", "14/04/26", "Asistencia", "Sí"));
             list.add(row("Cliente", "Luis Mora", "Fecha", "15/04/26", "Asistencia", "Sí"));
             list.add(row("Cliente", "María Solano", "Fecha", "16/04/26", "Asistencia", "No"));
