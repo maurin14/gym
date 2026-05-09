@@ -4,7 +4,9 @@
  */
 package com.una.ac.cr.gym.service;
 
+import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Schedule;
+import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.ScheduleRepository;
 import java.time.LocalTime;
 import java.util.List;
@@ -39,12 +41,8 @@ scheduleData.save(t);
 return scheduleData.findAll();
     }
 
-    @Override
-    public Schedule getByid(int id) {
-return (Schedule)scheduleData.findById(id).orElse(null);
-    }
 
-    @Override
+
     public void update(int id, Schedule t) {
     Schedule existing = scheduleData.findById(id).orElse(null);
 
@@ -82,6 +80,10 @@ return (Schedule)scheduleData.findById(id).orElse(null);
  public Page<Schedule> getAll(Pageable pageable) {
     return scheduleData.findAll(pageable);
 }
+
+        @Override
+        public Schedule getById(int id) {
+            return (Schedule)scheduleData.findById(id).orElse(null);        }
     }
 }
 

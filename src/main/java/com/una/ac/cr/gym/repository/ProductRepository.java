@@ -4,10 +4,13 @@
  */
 package com.una.ac.cr.gym.repository;
 
+import com.una.ac.cr.gym.domain.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 /**
  *
  * @author alira
  */
-public class ProductRepository {
-    
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+
 }

@@ -35,7 +35,7 @@ public class Schedule {
     private boolean active;
  @ManyToOne
 @JoinColumn(name = "branch_id")
- private Product branch;
+ private Branch branch;
 
     public int getId() {
         return id;

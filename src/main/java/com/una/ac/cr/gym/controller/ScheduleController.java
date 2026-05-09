@@ -4,7 +4,9 @@
  */
 package com.una.ac.cr.gym.controller;
 
+import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Schedule;
+import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.ScheduleService.ScheduleServices;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -27,13 +29,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author PC
  */
 @Controller
+@RequestMapping("schedule")
 public class ScheduleController {
     
  @Autowired
     private ScheduleServices scheduleServices;
 
     @Autowired
-    private BranchServices branchServices;
+    private BranchService branchServices;
 
    
     @GetMapping
@@ -67,10 +70,10 @@ public class ScheduleController {
     model.addAttribute("totalPages", data.getTotalPages());
 
     if ("XMLHttpRequest".equals(ajax)) {
-      return "schedule/schedule :: tablaContainer";
+      return "schedule/indexSchedule :: tableContainer";
     }
 
-    return "schedule/schedule";
+    return "schedule/indexSchedule";
 }
 
 
@@ -114,7 +117,7 @@ public class ScheduleController {
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable("id") int id, Model model) {
 
-        Schedule schedule = scheduleServices.getByid(id);
+        Schedule schedule = scheduleServices.getById(id);
 
         if (schedule == null) {
             return "redirect:/schedule";
