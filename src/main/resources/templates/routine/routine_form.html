@@ -17,7 +17,7 @@
             <span th:text="${error}"></span>
         </div>
 
-        <form th:action="@{/routine/save}" th:object="${routine}" method="post">
+        <form th:action="@{/routines/save}" th:object="${routine}" method="post">
 
             <input type="hidden" th:field="*{idRoutine}" />
 
@@ -91,7 +91,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-success">Guardar</button>
-                <a th:href="@{/routine/list}" class="btn btn-secondary">Cancelar</a>
+                <a th:href="@{/routines}" class="btn btn-secondary">Cancelar</a>
             </div>
 
         </form>

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -33,7 +34,7 @@ public class ProductController {
     @Autowired
     private ProductServices productService;
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public String listProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String category,
@@ -91,7 +92,8 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct(Product product,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         product.setRegisterDate(LocalDate.now());
         product.setState(true);
@@ -139,7 +141,8 @@ public class ProductController {
             return "product/product_form";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto guardado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -162,7 +165,8 @@ public class ProductController {
     @PostMapping("/update")
     public String updateProduct(Product product,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         Product currentProduct = productService.getProduct(product.getIdProduct());
 
@@ -218,11 +222,12 @@ public class ProductController {
             return "product/product_form";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto editado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") int idProduct, Model model) {
+    public String deleteProduct(@PathVariable("id") int idProduct, Model model, RedirectAttributes redirectAttributes) {
         String result = productService.deleteProduct(idProduct);
 
         if (!result.isEmpty()) {
@@ -232,7 +237,8 @@ public class ProductController {
             return "product/product_list";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/details/{id}")

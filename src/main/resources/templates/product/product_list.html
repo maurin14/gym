@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Lista de productos</title>
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -15,7 +16,7 @@
 
         <div class="top-bar">
 
-            <form th:action="@{/products/}" method="get" style="display:flex; gap:10px; align-items:center;">
+            <form th:action="@{/products}" method="get" style="display:flex; gap:10px; align-items:center;">
 
                 <span style="font-weight:bold; margin-right:5px;">Filtrar por:</span>
 
@@ -46,7 +47,7 @@
 
                 <button type="submit" class="btn btn-primary">Filtrar</button>
 
-                <a th:href="@{/products/}" class="btn btn-secondary">Limpiar</a>
+                <a th:href="@{/products}" class="btn btn-secondary">Limpiar</a>
 
             </form>
 
@@ -110,7 +111,7 @@
                                 <a class="btn btn-warning" th:href="@{/products/edit/{id}(id=${product.idProduct})}">Editar</a>
                                 <a class="btn btn-danger"
                                    th:href="@{/products/delete/{id}(id=${product.idProduct})}"
-                                   onclick="return confirm('¿Está seguro de eliminar este producto?');">
+                                   data-delete-link>
                                    Eliminar
                                 </a>
                             </div>
@@ -127,7 +128,7 @@
 
             <a class="btn btn-secondary"
                th:if="${currentPage > 0}"
-               th:href="@{/products/(page=${currentPage - 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
+               th:href="@{/products(page=${currentPage - 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
                 Anterior
             </a>
 
@@ -137,7 +138,7 @@
 
             <a class="btn btn-secondary"
                th:if="${currentPage + 1 < totalPages}"
-               th:href="@{/products/(page=${currentPage + 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
+               th:href="@{/products(page=${currentPage + 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
                 Siguiente
             </a>
 
@@ -146,6 +147,39 @@
     </div>
 
 </div>
+
+<script th:inline="javascript">
+    const successMessage = /*[[${successMessage}]]*/ null;
+
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Operación realizada',
+            text: successMessage,
+            confirmButtonText: 'Aceptar'
+        });
+    }
+
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                icon: 'warning',
+                title: '¿Desea eliminar este elemento?',
+                text: 'Esta acción no se puede deshacer.',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#dc2626'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

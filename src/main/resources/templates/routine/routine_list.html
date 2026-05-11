@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Lista de rutinas</title>
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -15,7 +16,7 @@
 
         <div class="top-bar">
 
-            <form method="get" th:action="@{/routine/list}" style="display:flex; gap:10px; align-items:center;">
+            <form method="get" th:action="@{/routines}" style="display:flex; gap:10px; align-items:center;">
 
                 <span style="font-weight:bold; margin-right:5px;">Filtrar por:</span>
 
@@ -35,11 +36,11 @@
 
                 <button type="submit" class="btn btn-primary">Filtrar</button>
 
-                <a th:href="@{/routine/list}" class="btn btn-secondary">Limpiar</a>
+                <a th:href="@{/routines}" class="btn btn-secondary">Limpiar</a>
 
             </form>
 
-            <a th:href="@{/routine/form}" class="btn btn-success">Nueva rutina</a>
+            <a th:href="@{/routines/form}" class="btn btn-success">Nueva rutina</a>
 
         </div>
 
@@ -78,9 +79,9 @@
 
                         <td>
                             <div class="actions">
-                                <a class="btn btn-info" th:href="@{/routine/details/{id}(id=${routine.idRoutine})}">Ver</a>
-                                <a class="btn btn-warning" th:href="@{/routine/edit/{id}(id=${routine.idRoutine})}">Editar</a>
-                                <a class="btn btn-danger" th:href="@{/routine/delete/{id}(id=${routine.idRoutine})}" onclick="return confirm('¿Eliminar rutina?')">Eliminar</a>
+                                <a class="btn btn-info" th:href="@{/routines/details/{id}(id=${routine.idRoutine})}">Ver</a>
+                                <a class="btn btn-warning" th:href="@{/routines/edit/{id}(id=${routine.idRoutine})}">Editar</a>
+                                <a class="btn btn-danger" th:href="@{/routines/delete/{id}(id=${routine.idRoutine})}" data-delete-link>Eliminar</a>
                             </div>
                         </td>
 
@@ -95,7 +96,7 @@
 
             <a class="btn btn-secondary"
                th:if="${currentPage > 0}"
-               th:href="@{/routine/list(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+               th:href="@{/routines(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
                 Anterior
             </a>
 
@@ -105,7 +106,7 @@
 
             <a class="btn btn-secondary"
                th:if="${currentPage + 1 < totalPages}"
-               th:href="@{/routine/list(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+               th:href="@{/routines(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
                 Siguiente
             </a>
 
@@ -114,6 +115,39 @@
     </div>
 
 </div>
+
+<script th:inline="javascript">
+    const successMessage = /*[[${successMessage}]]*/ null;
+
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Operación realizada',
+            text: successMessage,
+            confirmButtonText: 'Aceptar'
+        });
+    }
+
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                icon: 'warning',
+                title: '¿Desea eliminar este elemento?',
+                text: 'Esta acción no se puede deshacer.',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#dc2626'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

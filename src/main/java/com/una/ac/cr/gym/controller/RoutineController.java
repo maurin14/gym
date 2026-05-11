@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
  * @author alira
  */
 @Controller
+@RequestMapping("/routines")
 public class RoutineController {
 
     @Autowired
     private RoutineServices routineService;
 
-    @GetMapping("/routine/list")
+    @GetMapping({"", "/"})
     public String listRoutines(
             @RequestParam(required = false) String difficultyLevel,
             @RequestParam(required = false) String routineType,
@@ -45,15 +47,16 @@ public class RoutineController {
         return "routine/routine_list";
     }
 
-    @GetMapping("/routine/form")
+    @GetMapping("/form")
     public String showRoutineForm(Model model) {
         model.addAttribute("title", "Registrar rutina");
         model.addAttribute("routine", new Routine());
         return "routine/routine_form";
     }
 
-    @PostMapping("/routine/save")
-    public String saveRoutine(Routine routine, Model model) {
+    @PostMapping("/save")
+    public String saveRoutine(Routine routine, Model model, RedirectAttributes redirectAttributes) {
+        boolean isUpdate = routine.getIdRoutine() > 0;
         String result = routineService.saveRoutine(routine);
 
         if (!result.isEmpty()) {
@@ -63,15 +66,17 @@ public class RoutineController {
             return "routine/routine_form";
         }
 
-        return "redirect:/routine/list";
+        String message = isUpdate ? "Rutina editada correctamente." : "Rutina guardada correctamente.";
+        redirectAttributes.addFlashAttribute("successMessage", message);
+        return "redirect:/routines";
     }
 
-    @GetMapping("/routine/edit/{idRoutine}")
+    @GetMapping("/edit/{idRoutine}")
     public String editRoutine(@PathVariable int idRoutine, Model model) {
         Routine routine = routineService.getRoutine(idRoutine);
 
         if (routine == null) {
-            return "redirect:/routine/list";
+            return "redirect:/routines";
         }
 
         model.addAttribute("title", "Editar rutina");
@@ -79,12 +84,12 @@ public class RoutineController {
         return "routine/routine_form";
     }
 
-    @GetMapping("/routine/details/{idRoutine}")
+    @GetMapping("/details/{idRoutine}")
     public String detailsRoutine(@PathVariable int idRoutine, Model model) {
         Routine routine = routineService.getRoutine(idRoutine);
 
         if (routine == null) {
-            return "redirect:/routine/list";
+            return "redirect:/routines";
         }
 
         model.addAttribute("title", "Detalle de la rutina");
@@ -92,9 +97,10 @@ public class RoutineController {
         return "routine/routine_details";
     }
 
-    @GetMapping("/routine/delete/{idRoutine}")
-    public String deleteRoutine(@PathVariable int idRoutine) {
+    @GetMapping("/delete/{idRoutine}")
+    public String deleteRoutine(@PathVariable int idRoutine, RedirectAttributes redirectAttributes) {
         routineService.deleteRoutine(idRoutine);
-        return "redirect:/routine/list";
+        redirectAttributes.addFlashAttribute("successMessage", "Rutina eliminada correctamente.");
+        return "redirect:/routines";
     }
 }
