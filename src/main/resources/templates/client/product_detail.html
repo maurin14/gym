@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Detalle del producto</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
+</head>
+<body>
+
+<header class="client-header">
+    <a th:href="@{/}" class="client-brand">
+        <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
+        <span>SAM GYM FITNESS</span>
+    </a>
+
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/client/products}" class="active">Productos</a>
+        <a th:href="@{/client/routines}">Rutinas</a>
+    </nav>
+</header>
+
+<main class="detail-page">
+    <section class="detail-shell">
+        <div class="detail-media">
+            <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
+                 th:src="@{/{img}(img=${product.imagePath})}"
+                 th:alt="${product.nameProduct}">
+
+            <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
+                 class="image-placeholder large">
+                Sin imagen
+            </div>
+        </div>
+
+        <div class="detail-content">
+            <a th:href="@{/client/products}" class="back-link">Volver al catálogo</a>
+            <span class="tag" th:text="${product.category}">Categoría</span>
+            <h1 th:text="${product.nameProduct}">Producto</h1>
+            <p class="detail-description" th:text="${product.description}">Descripción del producto</p>
+
+            <div class="detail-meta">
+                <div class="meta-item price-item">
+                    <span>Precio</span>
+                    <strong th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</strong>
+                </div>
+
+                <div class="meta-item">
+                    <span>Disponibilidad</span>
+                    <strong th:text="${product.quantityStock > 0 ? 'Disponible' : 'Sin stock'}">Disponible</strong>
+                </div>
+
+                <div class="meta-item">
+                    <span>Stock</span>
+                    <strong th:text="${product.quantityStock}">0</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
