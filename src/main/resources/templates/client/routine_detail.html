@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -9,20 +9,18 @@
 </head>
 <body>
 
-<header class="client-header">
-    <a th:href="@{/}" class="client-brand">
-        <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
-        <span>SAM GYM FITNESS</span>
-    </a>
-
-    <nav>
-        <a th:href="@{/}">Inicio</a>
-        <a th:href="@{/client/products}">Productos</a>
-        <a th:href="@{/client/routines}" class="active">Rutinas</a>
-    </nav>
-</header>
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('routines')}"></div>
 
 <main class="detail-page">
+    <nav class="client-breadcrumb" aria-label="Ruta de navegación">
+        <a th:href="@{/client/home}">Inicio</a>
+        <span>/</span>
+        <a th:href="@{/client/routines}">Rutinas</a>
+        <span>/</span>
+        <strong>Detalle</strong>
+    </nav>
+
     <section class="routine-detail-shell">
         <a th:href="@{/client/routines}" class="back-link">Volver a rutinas</a>
 
@@ -62,6 +60,8 @@
     </section>
 </main>
 
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
+
 <script>
     document.querySelector('.select-routine-btn').addEventListener('click', function () {
         Swal.fire({
@@ -73,6 +73,7 @@
         });
     });
 </script>
+<script th:src="@{/js/client-home.js}" defer></script>
 
 </body>
 </html>

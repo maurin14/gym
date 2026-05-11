@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="clientHeader" class="client-header">
+    <a th:href="@{/client/home}" class="client-brand">
+        <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
+        <span>
+            <strong>SAM GYM FITNESS</strong>
+            <small>Portal cliente</small>
+        </span>
+    </a>
+
+    <nav class="client-top-nav" aria-label="Navegación principal">
+        <a th:href="@{/client/home}">Inicio</a>
+    </nav>
+
+    <div class="header-context">
+        <span>Entrena mejor, vive mejor</span>
+    </div>
+
+    <button type="button"
+            class="menu-toggle"
+            aria-label="Abrir menú de funcionalidades"
+            aria-controls="clientMenuDrawer"
+            aria-expanded="false"
+            data-menu-toggle>
+        <span></span>
+        <span></span>
+        <span></span>
+        <strong>Menú</strong>
+    </button>
+</header>
+
+<div th:fragment="clientMenuDrawer(active)" class="client-menu-shell">
+    <button type="button" class="menu-backdrop" aria-label="Cerrar menú cliente" data-menu-close></button>
+
+    <aside id="clientMenuDrawer" class="client-menu-drawer" aria-label="Menú de funcionalidades">
+        <div class="drawer-head">
+            <div>
+                <span class="section-kicker">Portal cliente</span>
+                <strong>Funcionalidades</strong>
+                <p>Accede a los servicios disponibles y próximos módulos de SAM GYM FITNESS.</p>
+            </div>
+            <button type="button" class="drawer-close" aria-label="Cerrar menú cliente" data-menu-close>×</button>
+        </div>
+
+        <nav class="drawer-nav">
+            <div class="drawer-section">
+                <span class="drawer-section-title">Sección principal</span>
+
+                <a th:href="@{/client/products}" class="drawer-option" th:classappend="${active == 'products'} ? ' active'">
+                    <span>
+                        <strong>Productos</strong>
+                        <small>Catálogo visual de productos disponibles.</small>
+                    </span>
+                    <em>Disponible</em>
+                </a>
+
+                <a th:href="@{/client/routines}" class="drawer-option" th:classappend="${active == 'routines'} ? ' active'">
+                    <span>
+                        <strong>Rutinas</strong>
+                        <small>Planes de entrenamiento para distintos objetivos.</small>
+                    </span>
+                    <em>Disponible</em>
+                </a>
+            </div>
+
+            <div class="drawer-section">
+                <span class="drawer-section-title">Próximamente</span>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Clases">
+                    <span>
+                        <strong>Clases</strong>
+                        <small>Consulta e inscripción a clases grupales.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Horarios">
+                    <span>
+                        <strong>Horarios</strong>
+                        <small>Organización de clases y atención.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Pagos">
+                    <span>
+                        <strong>Pagos</strong>
+                        <small>Historial y control de pagos.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Sucursales">
+                    <span>
+                        <strong>Sucursales</strong>
+                        <small>Sedes, ubicación y datos generales.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Asistencia">
+                    <span>
+                        <strong>Asistencia</strong>
+                        <small>Seguimiento de visitas e historial.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+
+                <button type="button" class="drawer-option" data-placeholder-module="Equipamiento">
+                    <span>
+                        <strong>Equipamiento</strong>
+                        <small>Consulta de equipos disponibles.</small>
+                    </span>
+                    <em class="pending">Próximamente</em>
+                </button>
+            </div>
+        </nav>
+    </aside>
+</div>
+            </a>
+            <a th:href="@{/client/routines}" th:classappend="${active == 'routines'} ? ' active'">
+                <span>Rutinas</span>
+            </a>
+            <button type="button" data-placeholder-module="Clases">
+                <span>Clases</span>
+            </button>
+            <button type="button" data-placeholder-module="Horarios">
+                <span>Horarios</span>
+            </button>
+            <button type="button" data-placeholder-module="Pagos">
+                <span>Pagos</span>
+            </button>
+            <button type="button" data-placeholder-module="Sucursales">
+                <span>Sucursales</span>
+            </button>
+            <button type="button" data-placeholder-module="Asistencia">
+                <span>Asistencia</span>
+            </button>
+            <button type="button" data-placeholder-module="Equipamiento">
+                <span>Equipamiento</span>
+            </button>
+        </nav>
+    </aside>
+</div>
+
+<footer th:fragment="clientFooter" class="client-footer">
+    <div class="footer-main">
+        <div class="footer-about">
+            <div class="footer-brand-block">
+                <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
+                <div>
+                    <strong>SAM GYM FITNESS</strong>
+                    <p>Entrena mejor, vive mejor.</p>
+                </div>
+            </div>
+            <p>Portal digital para clientes, rutinas, productos y servicios del gimnasio.</p>
+        </div>
+
+        <div>
+            <h3>Contacto</h3>
+            <p>info@samgymfitness.com</p>
+            <p>+506 8888-8888</p>
+            <p>San José, Costa Rica</p>
+        </div>
+
+        <div class="footer-schedule">
+            <h3>Horarios</h3>
+            <p><span>Lunes a viernes</span><strong>5:00 a.m. - 10:00 p.m.</strong></p>
+            <p><span>Sábado</span><strong>6:00 a.m. - 6:00 p.m.</strong></p>
+            <p><span>Domingo</span><strong>7:00 a.m. - 2:00 p.m.</strong></p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span>© 2026 SAM GYM FITNESS. Todos los derechos reservados.</span>
+    </div>
+</footer>
+
+</body>
+</html>

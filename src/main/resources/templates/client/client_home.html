@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio Cliente - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/client-home.js}" defer></script>
+</head>
+<body>
+
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('home')}"></div>
+
+<main>
+    <section class="client-home-hero">
+        <div class="home-hero-content">
+            <span class="section-kicker">Portal fitness premium</span>
+            <h1>Bienvenido a SAM GYM FITNESS</h1>
+            <p class="home-slogan">Entrena mejor, vive mejor</p>
+            <p>
+                Tu entrenamiento, tus rutinas y los servicios del gimnasio reunidos en una experiencia digital moderna,
+                clara y preparada para acompañar cada etapa de tu progreso.
+            </p>
+            <div class="home-actions">
+                <a th:href="@{/client/routines}" class="btn-primary">Explorar rutinas</a>
+                <a th:href="@{/client/products}" class="btn-secondary dark">Ver productos</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="portal-intro">
+        <div>
+            <span class="section-kicker">Tu progreso comienza aquí</span>
+            <h2>Todo tu gimnasio en un solo lugar</h2>
+        </div>
+        <p>
+            Consulta servicios activos, descubre rutinas, revisa productos y deja listo el camino para futuras funciones como
+            pagos, asistencia, clases y horarios desde un portal diseñado para clientes.
+        </p>
+    </section>
+
+    <section class="feature-split">
+        <article class="feature-visual routine-visual">
+            <div>
+                <span class="module-label">Disponible</span>
+                <h2>Rutinas para cada objetivo</h2>
+                <p>
+                    Explora entrenamientos por dificultad y tipo. Revisa duración, objetivo y ejercicios antes de elegir cómo entrenar.
+                </p>
+                <a th:href="@{/client/routines}" class="btn-primary">Explorar rutinas</a>
+            </div>
+        </article>
+
+        <article class="feature-copy">
+            <span class="section-kicker">Entrenamiento organizado</span>
+            <h2>Planifica mejor cada sesión</h2>
+            <p>
+                Las rutinas del portal están presentadas para lectura rápida, comparación sencilla y detalle claro. La selección
+                quedará lista para integrarse con el inicio de sesión cuando el módulo de usuarios esté disponible.
+            </p>
+        </article>
+    </section>
+
+    <section class="feature-split reverse">
+        <article class="feature-copy">
+            <span class="section-kicker">Productos y suplementos</span>
+            <h2>Catálogo visual del gimnasio</h2>
+            <p>
+                Consulta productos disponibles con imágenes, categorías, precios y detalle individual. Es una vitrina informativa,
+                sin carrito ni compra en línea.
+            </p>
+            <a th:href="@{/client/products}" class="btn-primary">Ver productos</a>
+        </article>
+
+        <article class="feature-visual product-visual">
+            <div>
+                <span class="module-label">Disponible</span>
+                <h2>Equipamiento, accesorios y productos</h2>
+                <p>Una forma clara y visual de conocer lo que el gimnasio tiene disponible.</p>
+            </div>
+        </article>
+    </section>
+
+    <section class="coming-soon-zone">
+        <div class="section-heading centered">
+            <span class="section-kicker">Disponible próximamente en tu portal</span>
+            <h2>Servicios que completan tu experiencia</h2>
+            <p>Estos módulos quedan integrados visualmente para activarse cuando sus funcionalidades estén listas.</p>
+        </div>
+
+        <div class="premium-service-grid">
+            <button type="button" class="premium-service" data-placeholder-module="Clases">
+                <span>Clases</span>
+                <strong>Consulta e inscripción a clases grupales.</strong>
+            </button>
+
+            <button type="button" class="premium-service" data-placeholder-module="Horarios">
+                <span>Horarios</span>
+                <strong>Organiza clases, atención y disponibilidad.</strong>
+            </button>
+
+            <button type="button" class="premium-service" data-placeholder-module="Pagos">
+                <span>Pagos</span>
+                <strong>Historial, estados y control de pagos.</strong>
+            </button>
+
+            <button type="button" class="premium-service" data-placeholder-module="Sucursales">
+                <span>Sucursales</span>
+                <strong>Sedes, ubicación y datos generales.</strong>
+            </button>
+
+            <button type="button" class="premium-service" data-placeholder-module="Asistencia">
+                <span>Asistencia</span>
+                <strong>Seguimiento de visitas e historial.</strong>
+            </button>
+
+            <button type="button" class="premium-service" data-placeholder-module="Equipamiento">
+                <span>Equipamiento</span>
+                <strong>Consulta de equipos disponibles.</strong>
+            </button>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
+
+</body>
+</html>
