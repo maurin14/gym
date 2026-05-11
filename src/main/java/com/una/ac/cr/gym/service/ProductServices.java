@@ -57,6 +57,18 @@ public class ProductServices {
         );
     }
 
+    public Page<Product> getClientProducts(String search, String category, Pageable pageable) {
+        if (search == null) {
+            search = "";
+        }
+
+        if (category == null) {
+            category = "";
+        }
+
+        return productRepository.findActiveProductsForClient(search.trim(), category.trim(), pageable);
+    }
+
     public Double getMinProductPrice() {
         Double min = productRepository.findMinPrice();
         return min != null ? min : 0.0;
@@ -69,6 +81,10 @@ public class ProductServices {
     
     public List<String> getCategories() {
         return productRepository.findDistinctCategories();
+    }
+
+    public List<String> getActiveCategories() {
+        return productRepository.findDistinctActiveCategories();
     }
 
 

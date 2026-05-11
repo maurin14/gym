@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 /**
@@ -26,8 +27,24 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             Pageable pageable
     );
 
+    @Query("""
+           SELECT p FROM Product p
+           WHERE p.state = true
+           AND (:search = '' OR LOWER(p.nameProduct) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')))
+           AND (:category = '' OR LOWER(p.category) = LOWER(:category))
+           """)
+    Page<Product> findActiveProductsForClient(
+            @Param("search") String search,
+            @Param("category") String category,
+            Pageable pageable
+    );
+
     @Query("SELECT DISTINCT p.category FROM Product p WHERE p.category IS NOT NULL AND p.category <> ''")
     List<String> findDistinctCategories();
+
+    @Query("SELECT DISTINCT p.category FROM Product p WHERE p.state = true AND p.category IS NOT NULL AND p.category <> ''")
+    List<String> findDistinctActiveCategories();
 
     @Query("SELECT MIN(p.price) FROM Product p")
     Double findMinPrice();

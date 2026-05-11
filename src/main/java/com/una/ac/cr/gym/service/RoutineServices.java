@@ -116,4 +116,20 @@ public class RoutineServices {
 
         return routineRepository.findByRoutineType(routineType, pageable);
     }
+
+    public Page<Routine> getClientRoutines(String difficultyLevel, String routineType, Pageable pageable) {
+        if (difficultyLevel == null) {
+            difficultyLevel = "";
+        }
+
+        if (routineType == null) {
+            routineType = "";
+        }
+
+        return routineRepository.findActiveRoutinesForClient(
+                difficultyLevel.trim(),
+                routineType.trim(),
+                pageable
+        );
+    }
 }

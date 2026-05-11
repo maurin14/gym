@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}">Rutinas disponibles</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
+    <script th:src="@{/js/client-catalog.js}" defer></script>
 </head>
 <body>
 
@@ -31,42 +32,41 @@
     </section>
 
     <section class="client-section">
-        <div class="section-heading">
-            <h2>Elige una rutina</h2>
-            <p th:text="${#lists.size(routines) + ' rutinas activas'}">0 rutinas activas</p>
-        </div>
+        <form class="catalog-toolbar"
+              method="get"
+              th:action="@{/client/routines}"
+              data-catalog-form
+              data-target="#routine-results"
+              th:data-fragment-url="@{/client/routines/fragment}">
 
-        <div class="empty-state" th:if="${routines == null or #lists.isEmpty(routines)}">
-            No hay rutinas disponibles por el momento.
-        </div>
+            <input type="hidden" name="size" th:value="${pageSize}">
 
-        <div class="routine-grid" th:if="${routines != null and !#lists.isEmpty(routines)}">
-            <article class="routine-card" th:each="routine : ${routines}">
-                <div class="routine-topline">
-                    <span class="tag" th:text="${routine.difficultyLevel}">Dificultad</span>
-                    <span class="pill" th:text="${routine.routineType}">Tipo</span>
-                </div>
+            <div class="toolbar-field">
+                <label for="routineDifficulty">Dificultad</label>
+                <select id="routineDifficulty" name="difficulty">
+                    <option value="">Todas</option>
+                    <option value="Principiante" th:selected="${difficulty == 'Principiante'}">Principiante</option>
+                    <option value="Intermedio" th:selected="${difficulty == 'Intermedio'}">Intermedio</option>
+                    <option value="Avanzado" th:selected="${difficulty == 'Avanzado'}">Avanzado</option>
+                </select>
+            </div>
 
-                <h3 th:text="${routine.nameRoutine}">Rutina</h3>
-                <p class="muted-text" th:text="${routine.description}">Descripción</p>
+            <div class="toolbar-field">
+                <label for="routineType">Tipo</label>
+                <select id="routineType" name="type">
+                    <option value="">Todos</option>
+                    <option value="Cardio" th:selected="${type == 'Cardio'}">Cardio</option>
+                    <option value="Fuerza" th:selected="${type == 'Fuerza'}">Fuerza</option>
+                    <option value="Funcional" th:selected="${type == 'Funcional'}">Funcional</option>
+                </select>
+            </div>
 
-                <div class="routine-stats">
-                    <div>
-                        <span>Duración</span>
-                        <strong th:text="${routine.estimatedDuration + ' min'}">0 min</strong>
-                    </div>
-                    <div>
-                        <span>Objetivo</span>
-                        <strong th:text="${routine.trainingObjective}">Objetivo</strong>
-                    </div>
-                    <div>
-                        <span>Ejercicios</span>
-                        <strong th:text="${routine.quantityExercises}">0</strong>
-                    </div>
-                </div>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            <a th:href="@{/client/routines}" class="btn-secondary">Limpiar</a>
+        </form>
 
-                <a th:href="@{/client/routines/{id}(id=${routine.idRoutine})}" class="btn-primary full-width">Ver rutina</a>
-            </article>
+        <div id="routine-results" class="catalog-results" aria-live="polite">
+            <div th:replace="~{client/fragments/routine_cards :: routineResults}"></div>
         </div>
     </section>
 </main>
