@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Detalle rutina</title>
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<body>
+
+<div class="page-container">
+
+    <h1 class="page-title" th:text="${title}"></h1>
+
+    <div class="card">
+
+        <div class="details-info">
+
+            <div class="detail-item">
+                <div class="detail-label">Nombre</div>
+                <div class="detail-value" th:text="${routine.nameRoutine}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Dificultad</div>
+                <div class="detail-value" th:text="${routine.difficultyLevel}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Duración</div>
+                <div class="detail-value" th:text="${routine.estimatedDuration + ' min'}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Objetivo</div>
+                <div class="detail-value" th:text="${routine.trainingObjective}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Tipo</div>
+                <div class="detail-value" th:text="${routine.routineType}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Cantidad ejercicios</div>
+                <div class="detail-value" th:text="${routine.quantityExercises}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Estado</div>
+                <div class="detail-value">
+                    <span th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <br>
+
+        <h3>Ejercicios</h3>
+
+        <div class="card">
+            <p style="white-space: pre-line;" th:text="${routine.exercises}"></p>
+        </div>
+
+        <br>
+
+        <a th:href="@{/routines/edit/{id}(id=${routine.idRoutine})}" class="btn btn-warning">
+            Editar
+        </a>
+
+        <a th:href="@{/routines}" class="btn btn-secondary">
+            Volver
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
