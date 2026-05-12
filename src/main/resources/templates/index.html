@@ -203,4 +203,33 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 </footer>
 
 </body>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Inicio</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <div class="container start-panel">
+
+            <div class="user-session" th:if="${session.user != null}">
+                <p th:text="'Bienvenido ' + ${session.user.fullName}"></p>
+                <a th:href="@{/profile/password}" class="btn-settings">⚙</a>
+                <a th:href="@{/logout}">Cerrar sesión</a>
+            </div>
+            
+            <h1>SAM GYM FITNESS</h1>
+            <p>Gestión de usuarios y reportes</p>
+
+            <div class="menu">
+                <a th:if="${session.user.role == 'administrator' or session.user.role == 'trainer'}"
+                   th:href="@{/users}">Usuarios</a>
+
+                <a th:if="${session.user.role == 'administrator'}"
+                   th:href="@{/reports}">Reportes</a>
+            </div> 
+
+        </div>
+    </body>
 </html>
