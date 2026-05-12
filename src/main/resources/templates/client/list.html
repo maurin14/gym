@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Asistencias</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="public-page">
+
+<header class="main-header">
+    <div class="header-left">
+        <div class="brand-text">
+            <span class="system-name">Gimnasio</span>
+            <span class="brand-subtitle">Portal del cliente</span>
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <a href="/user/home">Inicio</a>
+        <a href="/client/classes">Clases</a>
+        <a href="/client/attendances">Mis Asistencias</a>
+    </nav>
+</header>
+
+<section class="hero-branches">
+    <h1>Mis Asistencias</h1>
+    <p>Consulte sus asistencias registradas</p>
+</section>
+
+<div class="public-container">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Clase</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Observación</th>
+                <th>Registro</th>
+            </tr>
+        </thead>
+
+        <tbody id="attendancesTableBody"></tbody>
+    </table>
+
+</div>
+
+<script src="/js/client-attendances-list.js"></script>
+
+</body>
+</html>
