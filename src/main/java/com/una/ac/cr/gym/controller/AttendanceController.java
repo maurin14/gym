@@ -10,42 +10,86 @@ package com.una.ac.cr.gym.controller;
  */
 
 import com.una.ac.cr.gym.domain.Attendance;
+import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.AttendanceService;
+import com.una.ac.cr.gym.service.UserService;
 import java.util.List;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/attendances")
+@Controller
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final UserService userService;
 
-    public AttendanceController(AttendanceService attendanceService) {
+    public AttendanceController(AttendanceService attendanceService, UserService userService) {
         this.attendanceService = attendanceService;
+        this.userService = userService;
     }
 
-    @GetMapping
+
+    @GetMapping("/trainer/attendances")
+    public String trainerAttendancesList() {
+        return "trainer/attendances/list";
+    }
+
+    @GetMapping("/trainer/attendances/form")
+    public String trainerAttendancesForm() {
+        return "trainer/attendances/form";
+    }
+
+    @GetMapping("/trainer/attendances/form/{idAttendance}")
+    public String trainerAttendancesEdit(@PathVariable int idAttendance) {
+        return "trainer/attendances/form";
+    }
+
+
+    @GetMapping("/client/attendances")
+    public String clientAttendancesList() {
+        return "client/attendances/list";
+    }
+
+    @GetMapping("/client/attendances/form")
+    public String clientAttendancesForm() {
+        return "client/attendances/form";
+    }
+
+    @ResponseBody
+    @GetMapping("/attendances")
     public List<Attendance> getAllAttendances() {
         return attendanceService.getAllAttendances();
     }
 
-    @GetMapping("/{idAttendance}")
+    @ResponseBody
+    @GetMapping("/attendances/{idAttendance}")
     public Attendance getAttendanceById(@PathVariable int idAttendance) {
         return attendanceService.getAttendanceById(idAttendance);
     }
 
-    @PostMapping
+    @ResponseBody
+    @PostMapping("/attendances")
     public Attendance saveAttendance(@RequestBody Attendance attendance) {
         return attendanceService.saveAttendance(attendance);
     }
 
-    @PutMapping("/{idAttendance}")
-    public Attendance updateAttendance(@PathVariable int idAttendance, @RequestBody Attendance attendance) {
+    @ResponseBody
+    @PutMapping("/attendances/{idAttendance}")
+    public Attendance updateAttendance(@PathVariable int idAttendance,
+            @RequestBody Attendance attendance) {
+
         return attendanceService.updateAttendance(idAttendance, attendance);
     }
 
-    @DeleteMapping("/{idAttendance}")
+    @ResponseBody
+    @DeleteMapping("/attendances/{idAttendance}")
     public void deleteAttendance(@PathVariable int idAttendance) {
         attendanceService.deleteAttendance(idAttendance);
+    }
+
+    @ResponseBody
+    @GetMapping("/attendances/clients")
+    public List<User> getClients() {
+        return userService.filterUsers(null, "client");
     }
 }
