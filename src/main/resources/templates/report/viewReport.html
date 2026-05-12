@@ -1,36 +1,82 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Vista de Reporte</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    </head>
-    <body>
-        <div class="container report-preview">
-            <h1>Reporte del Sistema</h1>
+<head>
+    <title>Vista de Reporte - SAM GYM FITNESS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+</head>
+<body>
 
-            <div class="detail-grid">
-                <div class="detail-item"><strong>Tipo:</strong> <span th:text="${reportView.reportType}"></span></div>
-                <div class="detail-item"><strong>Generado por:</strong> <span th:text="${reportView.userName}"></span></div>
-                <div class="detail-item"><strong>Fecha de generación:</strong> <span th:text="${reportView.formattedGenerationDate}"></span></div>
-                <div class="detail-item"><strong>Rango:</strong> <span th:text="${reportView.formattedStartDate + ' - ' + reportView.formattedEndDate}"></span></div>
-                <div class="detail-item full"><strong>Descripción:</strong> <span th:text="${reportView.description}"></span></div>
-            </div>
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
+        </a>
+        <span class="system-name">SAM GYM FITNESS</span>
+    </div>
 
-            <table border="1" class="compact-table report-table">
-                <tr>
-                    <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>
-                </tr>
-                <tr th:each="fila : ${reportData}">
-                    <td th:each="entry : ${fila}" th:text="${entry.value}"></td>
-                </tr>
-            </table>
+    <nav class="header-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/admin/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
 
-            <div class="menu">
-                <a th:href="@{/reports}">Volver</a>
-                <a th:href="@{/reports/edit(id=${reportView.reportId})}" class="btn-edit">Editar</a>
-            </div>
+<main class="container">
+    <h1 class="page-title">Reporte del Sistema</h1>
+    <p class="admin-description">
+        Vista previa del reporte generado con los datos disponibles en el sistema.
+    </p>
+
+    <section class="detail-info">
+        <div class="info-card">
+            <h3>Información del reporte</h3>
+
+            <p><strong>Tipo:</strong>
+                <span th:if="${reportView.reportType == 'users'}">Usuarios</span>
+                <span th:if="${reportView.reportType == 'payments'}">Pagos</span>
+                <span th:if="${reportView.reportType == 'attendances'}">Asistencias</span>
+            </p>
+
+            <p><strong>Generado por:</strong> <span th:text="${reportView.userName}"></span></p>
+            <p><strong>Fecha de generación:</strong> <span th:text="${reportView.formattedGenerationDate}"></span></p>
+            <p><strong>Rango:</strong>
+                <span th:text="${reportView.formattedStartDate + ' - ' + reportView.formattedEndDate}"></span>
+            </p>
+            <p><strong>Descripción:</strong> <span th:text="${reportView.description}"></span></p>
         </div>
-    </body>
+    </section>
+
+    <table th:if="${reportData != null and !#lists.isEmpty(reportData)}">
+        <thead>
+        <tr>
+            <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="fila : ${reportData}">
+            <td th:each="entry : ${fila}" th:text="${entry.value}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${reportData == null or #lists.isEmpty(reportData)}" class="empty-message">
+        No hay datos disponibles para este reporte.
+    </p>
+
+    <div class="buttons">
+        <a th:href="@{/reports}" class="btn-secondary">Volver</a>
+        <a th:href="@{/reports/edit(id=${reportView.reportId})}" class="btn-primary">Editar</a>
+        <a th:href="@{/reports/download(id=${reportView.reportId})}" class="btn-secondary">Descargar</a>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <p>SAM GYM FITNESS - Panel de Administración</p>
+</footer>
+
+</body>
 </html>
