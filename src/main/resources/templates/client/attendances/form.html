@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Registrar Asistencia</title>
-    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="public-page">
 
@@ -16,9 +16,9 @@
     </div>
 
     <nav class="header-nav">
-        <a href="/user/home">Inicio</a>
-        <a href="/client/classes">Clases</a>
-        <a href="/client/attendances">Mis Asistencias</a>
+        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/client/classes}">Clases</a>
+        <a th:href="@{/client/attendances}">Mis Asistencias</a>
     </nav>
 </header>
 
@@ -38,13 +38,13 @@
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClientAttendance()">Registrar</button>
-            <a class="btn-secondary" href="/client/classes">Volver</a>
+            <a class="btn-secondary" th:href="@{/client/classes}">Volver</a>
         </div>
     </form>
 
 </div>
 
-<script src="/js/client/attendances/form.js"></script>
+<script th:src="@{/js/client/attendances/form.js}"></script>
 
 </body>
 </html>
