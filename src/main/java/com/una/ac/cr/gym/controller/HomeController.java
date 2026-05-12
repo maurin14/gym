@@ -1,23 +1,14 @@
 package com.una.ac.cr.gym.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-
+    
     @GetMapping("/")
-    public String landing(HttpSession session) {
-        if (session.getAttribute("user") == null) {
-            return "redirect:/login";
-        }
+    public String landing() {
         return "index";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
     }
 
     @GetMapping("/admin/home")
@@ -29,4 +20,5 @@ public class HomeController {
     public String userHome() {
         return "user/index";
     }
+
 }
