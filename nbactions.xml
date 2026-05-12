@@ -43,6 +43,7 @@
             <exec.executable>java</exec.executable>
         </properties>
     </action>
+<<<<<<< HEAD
     <action>
             <actionName>build</actionName>
             <packagings>
@@ -54,4 +55,6 @@
                 <goal>-DskipTests</goal>
             </goals>
         </action>
+=======
+>>>>>>> feature/classes
 </actions>
