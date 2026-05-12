@@ -1,5 +1,5 @@
 const clientHeader = document.querySelector('.client-header');
-const menuToggle = document.querySelector('[data-menu-toggle]');
+const menuToggles = document.querySelectorAll('[data-menu-toggle]');
 const menuCloseButtons = document.querySelectorAll('[data-menu-close]');
 
 if (clientHeader) {
@@ -14,16 +14,16 @@ if (clientHeader) {
 function setMenuState(isOpen) {
     document.body.classList.toggle('menu-open', isOpen);
 
-    if (menuToggle) {
-        menuToggle.setAttribute('aria-expanded', String(isOpen));
-    }
-}
-
-if (menuToggle) {
-    menuToggle.addEventListener('click', function () {
-        setMenuState(!document.body.classList.contains('menu-open'));
+    menuToggles.forEach(function (toggle) {
+        toggle.setAttribute('aria-expanded', String(isOpen));
     });
 }
+
+menuToggles.forEach(function (toggle) {
+    toggle.addEventListener('click', function () {
+        setMenuState(!document.body.classList.contains('menu-open'));
+    });
+});
 
 menuCloseButtons.forEach(function (button) {
     button.addEventListener('click', function () {

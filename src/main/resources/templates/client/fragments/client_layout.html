@@ -7,17 +7,12 @@
         <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
         <span>
             <strong>SAM GYM FITNESS</strong>
-            <small>Portal cliente</small>
         </span>
     </a>
 
     <nav class="client-top-nav" aria-label="Navegación principal">
         <a th:href="@{/client/home}">Inicio</a>
     </nav>
-
-    <div class="header-context">
-        <span>Entrena mejor, vive mejor</span>
-    </div>
 
     <button type="button"
             class="menu-toggle"
@@ -38,110 +33,93 @@
     <aside id="clientMenuDrawer" class="client-menu-drawer" aria-label="Menú de funcionalidades">
         <div class="drawer-head">
             <div>
-                <span class="section-kicker">Portal cliente</span>
-                <strong>Funcionalidades</strong>
-                <p>Accede a los servicios disponibles y próximos módulos de SAM GYM FITNESS.</p>
+                <span class="section-kicker">SAM GYM FITNESS</span>
+                <strong>Menú cliente</strong>
+                <p>Accede rápido a entrenamiento, tienda, cuenta y sedes.</p>
             </div>
             <button type="button" class="drawer-close" aria-label="Cerrar menú cliente" data-menu-close>×</button>
         </div>
 
         <nav class="drawer-nav">
             <div class="drawer-section">
-                <span class="drawer-section-title">Sección principal</span>
+                <span class="drawer-section-title">Entrenamiento</span>
 
-                <a th:href="@{/client/products}" class="drawer-option" th:classappend="${active == 'products'} ? ' active'">
-                    <span>
-                        <strong>Productos</strong>
-                        <small>Catálogo visual de productos disponibles.</small>
-                    </span>
-                    <em>Disponible</em>
-                </a>
-
-                <a th:href="@{/client/routines}" class="drawer-option" th:classappend="${active == 'routines'} ? ' active'">
+                <a th:href="@{/client/routines}" class="drawer-link" th:classappend="${active == 'routines'} ? ' active'">
+                    <span class="drawer-icon">R</span>
                     <span>
                         <strong>Rutinas</strong>
-                        <small>Planes de entrenamiento para distintos objetivos.</small>
+                        <small>Planes para entrenar por objetivo.</small>
                     </span>
-                    <em>Disponible</em>
+                </a>
+
+                <button type="button" class="drawer-link" data-placeholder-module="Clases">
+                    <span class="drawer-icon">C</span>
+                    <span>
+                        <strong>Clases</strong>
+                        <small>Sesiones grupales del gimnasio.</small>
+                    </span>
+                </button>
+
+                <button type="button" class="drawer-link" data-placeholder-module="Horarios">
+                    <span class="drawer-icon">H</span>
+                    <span>
+                        <strong>Horarios</strong>
+                        <small>Clases, atención y disponibilidad.</small>
+                    </span>
+                </button>
+
+                <button type="button" class="drawer-link" data-placeholder-module="Equipamiento">
+                    <span class="drawer-icon">E</span>
+                    <span>
+                        <strong>Equipamiento</strong>
+                        <small>Equipos y recursos del gimnasio.</small>
+                    </span>
+                </button>
+            </div>
+
+            <div class="drawer-section">
+                <span class="drawer-section-title">Tienda</span>
+
+                <a th:href="@{/client/products}" class="drawer-link" th:classappend="${active == 'products'} ? ' active'">
+                    <span class="drawer-icon">P</span>
+                    <span>
+                        <strong>Productos</strong>
+                        <small>Catálogo visual disponible.</small>
+                    </span>
                 </a>
             </div>
 
             <div class="drawer-section">
-                <span class="drawer-section-title">Próximamente</span>
+                <span class="drawer-section-title">Mi cuenta</span>
 
-                <button type="button" class="drawer-option" data-placeholder-module="Clases">
-                    <span>
-                        <strong>Clases</strong>
-                        <small>Consulta e inscripción a clases grupales.</small>
-                    </span>
-                    <em class="pending">Próximamente</em>
-                </button>
-
-                <button type="button" class="drawer-option" data-placeholder-module="Horarios">
-                    <span>
-                        <strong>Horarios</strong>
-                        <small>Organización de clases y atención.</small>
-                    </span>
-                    <em class="pending">Próximamente</em>
-                </button>
-
-                <button type="button" class="drawer-option" data-placeholder-module="Pagos">
+                <button type="button" class="drawer-link" data-placeholder-module="Pagos">
+                    <span class="drawer-icon">P</span>
                     <span>
                         <strong>Pagos</strong>
                         <small>Historial y control de pagos.</small>
                     </span>
-                    <em class="pending">Próximamente</em>
                 </button>
 
-                <button type="button" class="drawer-option" data-placeholder-module="Sucursales">
-                    <span>
-                        <strong>Sucursales</strong>
-                        <small>Sedes, ubicación y datos generales.</small>
-                    </span>
-                    <em class="pending">Próximamente</em>
-                </button>
-
-                <button type="button" class="drawer-option" data-placeholder-module="Asistencia">
+                <button type="button" class="drawer-link" data-placeholder-module="Asistencia">
+                    <span class="drawer-icon">A</span>
                     <span>
                         <strong>Asistencia</strong>
-                        <small>Seguimiento de visitas e historial.</small>
+                        <small>Seguimiento de visitas.</small>
                     </span>
-                    <em class="pending">Próximamente</em>
-                </button>
-
-                <button type="button" class="drawer-option" data-placeholder-module="Equipamiento">
-                    <span>
-                        <strong>Equipamiento</strong>
-                        <small>Consulta de equipos disponibles.</small>
-                    </span>
-                    <em class="pending">Próximamente</em>
                 </button>
             </div>
-        </nav>
-    </aside>
-</div>
-            </a>
-            <a th:href="@{/client/routines}" th:classappend="${active == 'routines'} ? ' active'">
-                <span>Rutinas</span>
-            </a>
-            <button type="button" data-placeholder-module="Clases">
-                <span>Clases</span>
-            </button>
-            <button type="button" data-placeholder-module="Horarios">
-                <span>Horarios</span>
-            </button>
-            <button type="button" data-placeholder-module="Pagos">
-                <span>Pagos</span>
-            </button>
-            <button type="button" data-placeholder-module="Sucursales">
-                <span>Sucursales</span>
-            </button>
-            <button type="button" data-placeholder-module="Asistencia">
-                <span>Asistencia</span>
-            </button>
-            <button type="button" data-placeholder-module="Equipamiento">
-                <span>Equipamiento</span>
-            </button>
+
+            <div class="drawer-section">
+                <span class="drawer-section-title">Sedes</span>
+
+                <button type="button" class="drawer-link" data-placeholder-module="Sucursales">
+                    <span class="drawer-icon">S</span>
+                    <span>
+                        <strong>Sucursales</strong>
+                        <small>Ubicación y datos generales.</small>
+                    </span>
+                </button>
+            </div>
         </nav>
     </aside>
 </div>
