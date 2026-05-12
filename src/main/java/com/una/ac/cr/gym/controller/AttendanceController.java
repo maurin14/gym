@@ -16,6 +16,7 @@ import com.una.ac.cr.gym.service.UserService;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AttendanceController {
@@ -66,10 +67,18 @@ public class AttendanceController {
     public Attendance getAttendanceById(@PathVariable int idAttendance) {
         return attendanceService.getAttendanceById(idAttendance);
     }
-
+    
     @ResponseBody
     @PostMapping("/attendances")
-    public Attendance saveAttendance(@RequestBody Attendance attendance) {
+    public Attendance saveAttendance(@RequestBody Attendance attendance,
+            HttpSession session) {
+
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession != null && "client".equals(userSession.getRole())) {
+            attendance.setClient(userSession);
+        }
+
         return attendanceService.saveAttendance(attendance);
     }
 
