@@ -1,59 +1,111 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+
     <title>Listado de Asistencias</title>
-    <link rel="stylesheet" href="/css/app.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/app.css}">
 </head>
+
 <body>
 
 <header class="main-header">
+
     <div class="header-left">
+
         <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">Panel de entrenador / administrador</span>
+
+            <span class="system-name">
+                Gimnasio
+            </span>
+
+            <span class="brand-subtitle">
+                Panel de entrenador / administrador
+            </span>
+
         </div>
+
     </div>
 
     <nav class="header-nav">
-        <a href="/admin/home">Inicio</a>
-        <a href="/trainer/classes">Clases</a>
-        <a href="/trainer/attendances">Asistencias</a>
+
+        <a th:href="@{/admin/home}">
+            Inicio
+        </a>
+
+        <a th:href="@{/trainer/classes}">
+            Clases
+        </a>
+
+        <a th:href="@{/trainer/attendances}">
+            Asistencias
+        </a>
+
     </nav>
+
 </header>
 
 <div class="container">
 
-    <h1 class="page-title">Listado de Asistencias</h1>
+    <h1 class="page-title">
+        Listado de Asistencias
+    </h1>
 
     <p class="admin-description">
         Administración de asistencias registradas por los clientes.
     </p>
 
     <div class="buttons">
-        <a class="btn-primary" href="/trainer/attendances/form">Agregar Asistencia</a>
-        <a class="btn-secondary" href="/admin/home">Volver</a>
+
+        <a class="btn-primary"
+           th:href="@{/trainer/attendances/form}">
+
+            Agregar Asistencia
+
+        </a>
+
+        <a class="btn-secondary"
+           th:href="@{/admin/home}">
+
+            Volver
+
+        </a>
+
     </div>
 
     <table>
+
         <thead>
+
             <tr>
+
                 <th>Cliente</th>
+
                 <th>Clase</th>
+
                 <th>Fecha</th>
+
                 <th>Estado</th>
+
                 <th>Observación</th>
+
                 <th>Registro</th>
+
                 <th>Acciones</th>
+
             </tr>
+
         </thead>
 
         <tbody id="attendancesTableBody"></tbody>
+
     </table>
 
 </div>
 
-<script src="/js/trainer/attendances/list.js"></script>
+<script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>
 </html>
