@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 /**
@@ -33,6 +35,58 @@ public class ProductServices {
 
         return productRepository.findById(idProduct).orElse(null);
     }
+    
+    public Page<Product> getProductsFiltered(String category, Double minPrice, Double maxPrice, Pageable pageable) {
+        if (category == null) {
+            category = "";
+        }
+
+        if (minPrice == null) {
+            minPrice = 0.0;
+        }
+
+        if (maxPrice == null) {
+            maxPrice = Double.MAX_VALUE;
+        }
+
+        return productRepository.findByCategoryContainingIgnoreCaseAndPriceBetween(
+                category,
+                minPrice,
+                maxPrice,
+                pageable
+        );
+    }
+
+    public Page<Product> getClientProducts(String search, String category, Pageable pageable) {
+        if (search == null) {
+            search = "";
+        }
+
+        if (category == null) {
+            category = "";
+        }
+
+        return productRepository.findActiveProductsForClient(search.trim(), category.trim(), pageable);
+    }
+
+    public Double getMinProductPrice() {
+        Double min = productRepository.findMinPrice();
+        return min != null ? min : 0.0;
+    }
+
+    public Double getMaxProductPrice() {
+        Double max = productRepository.findMaxPrice();
+        return max != null ? max : 0.0;
+    }
+    
+    public List<String> getCategories() {
+        return productRepository.findDistinctCategories();
+    }
+
+    public List<String> getActiveCategories() {
+        return productRepository.findDistinctActiveCategories();
+    }
+
 
     public String saveProduct(Product product) {
         String validation = validateProduct(product, false);
