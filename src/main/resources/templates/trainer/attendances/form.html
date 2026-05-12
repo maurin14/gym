@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+<<<<<<< HEAD
+    <title>Formulario de Asistencia</title>
+=======
+    <title>Formulario de Clase</title>
+>>>>>>> feature/classes
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <div class="brand-text">
+            <span class="system-name">Gimnasio</span>
+<<<<<<< HEAD
+            <span class="brand-subtitle">Gestión de asistencias</span>
+=======
+            <span class="brand-subtitle">Gestión de clases</span>
+>>>>>>> feature/classes
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <a href="/admin/home">Inicio</a>
+<<<<<<< HEAD
+        <a href="/trainer/attendances">Asistencias</a>
+=======
+        <a href="/trainer/classes">Clases</a>
+>>>>>>> feature/classes
+    </nav>
+</header>
+
+<div class="container form-container">
+
+<<<<<<< HEAD
+    <h1 class="page-title" id="formTitle">Agregar Asistencia</h1>
+
+    <input type="hidden" id="idAttendance">
+
+    <form>
+        <label>Cliente</label>
+        <select id="clientId"></select>
+
+        <label>Clase</label>
+        <select id="classId"></select>
+
+        <label>Fecha de Asistencia</label>
+        <input type="date" id="attendanceDate">
+
+        <label>Estado de Asistencia</label>
+        <select id="attendanceStatus">
+            <option value="Presente">Presente</option>
+            <option value="Ausente">Ausente</option>
+            <option value="Tarde">Tarde</option>
+        </select>
+
+        <label>Observación</label>
+        <textarea id="observation"></textarea>
+
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="saveAttendance()">Guardar</button>
+            <a class="btn-secondary" href="/trainer/attendances">Volver</a>
+=======
+    <h1 class="page-title" id="formTitle">Agregar Clase</h1>
+
+    <input type="hidden" id="idClass">
+
+    <form>
+        <label>Tipo de Clase</label>
+        <input type="text" id="classType">
+
+        <label>Fecha</label>
+        <input type="date" id="classDate">
+
+        <label>Hora Inicio</label>
+        <input type="time" id="startTime">
+
+        <label>Hora Final</label>
+        <input type="time" id="endTime">
+
+        <label>Capacidad Máxima</label>
+        <input type="number" id="maxCapacity">
+
+        <label>Entrenador</label>
+        <select id="trainerId"></select>
+
+        <label>Cantidad Inscritos</label>
+        <input type="number" id="enrolledCount">
+
+        <label>Dificultad</label>
+        <select id="difficultyLevel">
+            <option value="Bajo">Bajo</option>
+            <option value="Medio">Medio</option>
+            <option value="Alto">Alto</option>
+        </select>
+
+        <label>Descripción</label>
+        <textarea id="description"></textarea>
+
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
+            <a class="btn-secondary" href="/trainer/classes">Volver</a>
+>>>>>>> feature/classes
+        </div>
+    </form>
+
+</div>
+
+<<<<<<< HEAD
+<script src="/js/trainer-attendances-form.js"></script>
+=======
+<script src="/js/trainer-classes-form.js"></script>
+>>>>>>> feature/classes
+
+</body>
+</html>

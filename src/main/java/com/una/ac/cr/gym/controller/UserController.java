@@ -101,8 +101,8 @@ public class UserController {
             redirect.addFlashAttribute("messageSuccess", "Usuario actualizado correctamente");
         }
 
-                return "redirect:/users";
-            }
+        return "redirect:/users";
+    }
     
     @GetMapping("/edit")
     public String edit(@RequestParam Integer id, Model model, HttpSession session, RedirectAttributes redirect){
