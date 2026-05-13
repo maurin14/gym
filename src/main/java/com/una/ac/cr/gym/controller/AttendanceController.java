@@ -1,16 +1,13 @@
 package com.una.ac.cr.gym.controller;
 
-/**
- *
- * @author Amanda
- */
-
 import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,13 +49,34 @@ public class AttendanceController {
 
     @ResponseBody
     @GetMapping("/attendances")
-    public List<Attendance> getAllAttendances() {
-        return attendanceService.getAllAttendances();
+    public List<Map<String, Object>> getAllAttendances() {
+        return attendanceService.getAllAttendances()
+                .stream()
+                .map(attendance -> {
+                    Map<String, Object> map = new HashMap<>();
+
+                    map.put("idAttendance", attendance.getIdAttendance());
+                    map.put("attendanceDate", attendance.getAttendanceDate());
+                    map.put("attendanceStatus", attendance.getAttendanceStatus());
+                    map.put("observation", attendance.getObservation());
+                    map.put("registerDate", attendance.getRegisterDate());
+
+                    map.put("clientName", attendance.getClient() != null
+                            ? attendance.getClient().getFullName()
+                            : "Sin cliente");
+
+                    map.put("classType", attendance.getGymClass() != null
+                            ? attendance.getGymClass().getClassType()
+                            : "Sin clase");
+
+                    return map;
+                })
+                .toList();
     }
 
     @ResponseBody
     @GetMapping("/client/attendances/data")
-    public List<Attendance> getClientAttendances(HttpSession session) {
+    public List<Map<String, Object>> getClientAttendances(HttpSession session) {
 
         User userSession = (User) session.getAttribute("user");
 
@@ -72,6 +90,21 @@ public class AttendanceController {
                         attendance.getClient() != null
                         && attendance.getClient().getUserId() == userSession.getUserId()
                 )
+                .map(attendance -> {
+                    Map<String, Object> map = new HashMap<>();
+
+                    map.put("idAttendance", attendance.getIdAttendance());
+                    map.put("attendanceDate", attendance.getAttendanceDate());
+                    map.put("attendanceStatus", attendance.getAttendanceStatus());
+                    map.put("observation", attendance.getObservation());
+                    map.put("registerDate", attendance.getRegisterDate());
+
+                    map.put("classType", attendance.getGymClass() != null
+                            ? attendance.getGymClass().getClassType()
+                            : "Sin clase");
+
+                    return map;
+                })
                 .toList();
     }
 
