@@ -52,13 +52,17 @@
                     </span>
                 </a>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Clases">
+                <a th:href="@{/client/classes}"
+                   class="drawer-link"
+                   th:classappend="${active == 'classes'} ? ' active'">
+
                     <span class="drawer-icon">C</span>
+
                     <span>
                         <strong>Clases</strong>
                         <small>Sesiones grupales del gimnasio.</small>
                     </span>
-                </button>
+                </a>
 
                 <button type="button" class="drawer-link" data-placeholder-module="Horarios">
                     <span class="drawer-icon">H</span>
@@ -100,13 +104,18 @@
                     </span>
                 </button>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Asistencia">
+                <a th:href="@{/client/attendances}"
+                   class="drawer-link"
+                   th:classappend="${active == 'attendances'} ? ' active'">
+
                     <span class="drawer-icon">A</span>
+
                     <span>
                         <strong>Asistencia</strong>
                         <small>Seguimiento de visitas.</small>
                     </span>
-                </button>
+
+                </a>
             </div>
 
             <div class="drawer-section">

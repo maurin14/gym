@@ -1,11 +1,15 @@
 <!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Inicio Admin - SAM GYM FITNESS</title>
+    <title>Inicio Usuario - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-
+  
 <header class="main-header">
     <div class="header-left">
         <a th:href="@{/admin/home}">
@@ -15,13 +19,27 @@
     </div>
 
     <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/admin/branches}">Sucursales</a>
-        <a th:href="@{/admin/payments}">Pagos</a>
-        <a th:href="@{/admin/routines}">Rutinas</a>
-        <a th:href="@{/admin/classes}">Clases</a>
-        <a th:href="@{/admin/products}">Productos</a>
-        <a th:href="@{/admin/schedules}">Horarios</a>
+        <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
+        <a th:href="@{/routines}">Rutinas</a>
+        <a th:if="${session.user != null and session.user.role == 'client'}"
+           th:href="@{/client/classes}">
+            Clases
+        </a>
+        <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+           th:href="@{/trainer/classes}">
+            Clases
+        </a>
+        <a th:if="${session.user != null and session.user.role == 'client'}"
+           th:href="@{/client/attendances}">
+            Asistencia
+        </a>
+        <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+           th:href="@{/trainer/attendances}">
+            Asistencia
+        </a>
+        <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
 </header>
@@ -31,74 +49,74 @@
     <section class="hero-section">
         <div class="hero-overlay">
             <img th:src="@{/images/logo.jpeg}" alt="Logo SAM GYM FITNESS" class="hero-logo">
-            <h1>Panel de Administración</h1>
-            <p class="hero-slogan">Control total del sistema</p>
+            <h1>Bienvenido a SAM GYM FITNESS</h1>
+            <p class="hero-slogan">Entrena mejor, vive mejor</p>
             <p class="hero-text">
-                Desde este panel puedes administrar sucursales, pagos y otros módulos del sistema.
+                Desde este portal puedes consultar sucursales, revisar tus pagos, acceder a tus
+                rutinas, clases, horarios y otros servicios disponibles dentro de la plataforma.
             </p>
+
         </div>
     </section>
 
     <section class="container">
-        <h2 class="section-title">Gestión del sistema</h2>
+        <h2 class="section-title">Servicios disponibles</h2>
 
         <div class="modules-grid">
-
             <article class="module-card">
                 <h3>Sucursales</h3>
-                <p>Crear, editar, eliminar y administrar sucursales.</p>
+                <p>Consulta sucursales activas, ubicación, capacidad, contacto y detalle general.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/branches}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/branches}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Pagos</h3>
-                <p>Registrar, editar y eliminar pagos de usuarios.</p>
+                <p>Consulta el historial de pagos, estados, métodos y detalle de cada registro.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/payments}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/payments/listPayment(userId=1)}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Rutinas</h3>
-                <p>Gestión de rutinas de entrenamiento.</p>
+                <p>Revisa tus rutinas asignadas y da seguimiento a tu entrenamiento personal.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/routines}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/routines}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Clases</h3>
-                <p>Gestión de clases y horarios.</p>
+                <p>Consulta horarios, disponibilidad e inscríbete en clases del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/classes}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/trainer/classes}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Horarios</h3>
-                <p>Administración de horarios del gimnasio.</p>
+                <p>Consulta los horarios disponibles de clases y actividades del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/schedules}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/schedules}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Productos</h3>
-                <p>Gestión de productos e inventario.</p>
+                <p>Consulta productos disponibles y servicios complementarios del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/products}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/products}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
-
         </div>
     </section>
 
 </main>
 
 <footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
+    <p>SAM GYM FITNESS - Portal de Administración</p>
 </footer>
 
 </body>

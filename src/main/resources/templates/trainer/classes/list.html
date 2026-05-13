@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Clases</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body class="dashboard-page">
+
+<header class="main-header">
+    <div class="header-left">
+        <div class="brand-text">
+            <span class="system-name">Gimnasio</span>
+            <span class="brand-subtitle">
+                Panel de entrenador / administrador
+            </span>
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/trainer/classes}">Clases</a>
+        <a th:href="@{/trainer/attendances}">Asistencias</a>
+    </nav>
+</header>
+
+<section class="hero-branches">
+
+    <h1>Listado de Clases</h1>
+
+    <p>
+        Administración de clases disponibles en el gimnasio.
+    </p>
+
+    <div style="margin-top: 30px; display: flex; justify-content: center;">
+        <a class="btn-primary"
+           th:href="@{/trainer/classes/form}">
+            Agregar Clase
+        </a>
+    </div>
+
+</section>
+
+<div class="public-container">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Entrenador</th>
+                <th>Fecha</th>
+                <th>Inicio</th>
+                <th>Final</th>
+                <th>Duración</th>
+                <th>Capacidad</th>
+                <th>Inscritos</th>
+                <th>Dificultad</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody id="classesTableBody"></tbody>
+    </table>
+
+    <div class="pagination">
+        <button id="pageInfo" disabled>Página 1 de 1</button>
+        <button id="prevBtn" onclick="previousPage()">Anterior</button>
+        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
+    </div>
+
+</div>
+
+<script th:src="@{/js/trainer/classes/list.js}"></script>
+
+</body>
+</html>
