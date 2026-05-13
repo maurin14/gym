@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Sucursal</title>
+    <link rel="stylesheet" th:href="@{/css/branch.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
+</head>
+<body class="page-portal">
+
+<header class="portal-header">
+    <div class="portal-brand">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
+        </a>
+        <div>
+            <span class="portal-title">SAM GYM FITNESS</span>
+            <span class="portal-subtitle">Panel administrador</span>
+        </div>
+    </div>
+
+    <nav class="portal-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/admin/payments}">Pagos</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="portal-main">
+
+    <section class="portal-head">
+        <span class="portal-tag">Sucursal</span>
+        <h1 th:text="${branch.id == 0 ? 'Agregar sucursal' : 'Editar sucursal'}"></h1>
+        <p>Completa la información de la sucursal.</p>
+    </section>
+
+    <section class="portal-card">
+
+        <form id="branchForm"
+              class="portal-form"
+              th:action="@{/admin/branches/save}"
+              th:object="${branch}"
+              method="post"
+              novalidate>
+
+            <input type="hidden" th:field="*{id}">
+
+            <label>Imagen</label>
+            <input type="text" th:field="*{imageUrl}" required maxlength="255" placeholder="Ejemplo: central.jpg">
+            <small class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
+
+            <label>Fecha de apertura</label>
+            <input type="date" th:field="*{openingDate}" required>
+            <small class="error-message" th:if="${#fields.hasErrors('openingDate')}" th:errors="*{openingDate}"></small>
+
+            <label>Nombre de la sucursal</label>
+            <input type="text" th:field="*{name}" required maxlength="100" placeholder="Ejemplo: SAM Gym Central">
+            <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+
+            <label>Dirección</label>
+            <input type="text" th:field="*{address}" required maxlength="150" placeholder="Ejemplo: San José centro">
+            <small class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+
+            <label>Teléfono</label>
+            <input type="text"
+                   th:field="*{phone}"
+                   required
+                   maxlength="8"
+                   pattern="[0-9]{8}"
+                   placeholder="Ejemplo: 88887777"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <small class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+
+            <label>Capacidad máxima</label>
+            <input type="number" th:field="*{capacity}" required min="1" placeholder="Ejemplo: 150">
+            <small class="error-message" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></small>
+
+            <label>Estado</label>
+            <select th:field="*{active}" required>
+                <option value="">Seleccione</option>
+                <option th:value="true">Activa</option>
+                <option th:value="false">Inactiva</option>
+            </select>
+            <small class="error-message" th:if="${#fields.hasErrors('active')}" th:errors="*{active}"></small>
+
+            <div class="buttons">
+                <button type="button" class="btn-primary" onclick="confirmSaveBranch()">Guardar</button>
+                <button type="button" class="btn-secondary" onclick="confirmCancelBranch()">Cancelar</button>
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>
