@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Clase</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <div class="brand-text">
+            <span class="system-name">Gimnasio</span>
+            <span class="brand-subtitle">Gestión de clases</span>
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <a href="/admin/home">Inicio</a>
+        <a href="/trainer/classes">Clases</a>
+    </nav>
+</header>
+
+<div class="container form-container">
+
+    <h1 class="page-title" id="formTitle">Agregar Clase</h1>
+
+    <input type="hidden" id="idClass">
+
+    <form>
+        <label>Tipo de Clase</label>
+        <input type="text" id="classType">
+
+        <label>Fecha</label>
+        <input type="date" id="classDate">
+
+        <label>Hora Inicio</label>
+        <input type="time" id="startTime">
+
+        <label>Hora Final</label>
+        <input type="time" id="endTime">
+
+        <label>Capacidad Máxima</label>
+        <input type="number" id="maxCapacity">
+
+        <label>Entrenador</label>
+        <select id="trainerId"></select>
+
+        <label>Cantidad Inscritos</label>
+        <input type="number" id="enrolledCount">
+
+        <label>Dificultad</label>
+        <select id="difficultyLevel">
+            <option value="Bajo">Bajo</option>
+            <option value="Medio">Medio</option>
+            <option value="Alto">Alto</option>
+        </select>
+
+        <label>Descripción</label>
+        <textarea id="description"></textarea>
+
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
+            <a class="btn-secondary" href="/trainer/classes">Volver</a>
+        </div>
+    </form>
+
+</div>
+
+<script th:src="@{/js/trainer/classes/form.js}"></script>
+
+</body>
+</html>

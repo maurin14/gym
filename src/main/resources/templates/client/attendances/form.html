@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Asistencia</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body class="public-page">
+
+<header class="main-header">
+    <div class="header-left">
+        <div class="brand-text">
+            <span class="system-name">Gimnasio</span>
+            <span class="brand-subtitle">Portal del cliente</span>
+        </div>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/client/classes}">Clases</a>
+        <a th:href="@{/client/attendances}">Mis Asistencias</a>
+    </nav>
+</header>
+
+<div class="container form-container">
+
+    <h1 class="page-title">Registrar Asistencia</h1>
+
+    <form>
+        <label>Clase</label>
+        <select id="classId" onchange="setAttendanceDate()"></select>
+
+        <label>Fecha de Asistencia</label>
+        <input type="date" id="attendanceDate" readonly>
+
+        <label>Observación</label>
+        <textarea id="observation"></textarea>
+
+        <div class="buttons">
+            <button type="button"
+                    class="btn-primary"
+                    onclick="saveClientAttendance()">
+                Registrar
+            </button>
+
+            <a class="btn-secondary"
+               th:href="@{/client/classes}">
+                Volver
+            </a>
+        </div>
+    </form>
+
+</div>
+
+<script th:src="@{/js/client/attendances/form.js}"></script>
+
+</body>
+</html>
