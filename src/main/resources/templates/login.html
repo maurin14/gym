@@ -3,7 +3,7 @@
 <head>
     <title>Iniciar sesión</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 
@@ -13,7 +13,7 @@
     <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
 
     <div class="login-logo">
-        <img src="/img/samgym.png" alt="Sam Gym Fitness">
+        <img th:src="@{/img/logo.jpeg}" alt="Sam Gym Fitness">
     </div>
     
     <form th:action="@{/login}" method="post">
