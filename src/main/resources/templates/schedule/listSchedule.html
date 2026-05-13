@@ -9,11 +9,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" th:href="@{/css/app.css}">
     </head>
     <body>
 <div th:fragment="tableContainer">
 
-<div class="busqueda">
+<div class="filters">
 
     <select id="searchType" onchange="changeSearch()">
         <option value="">Buscar por...</option>
@@ -58,8 +59,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <td th:text="${s.branch?.name} ?: '—'"></td>
 
                 <td>
-                    <a href="#" th:attr="data-id=${s.id}" onclick="loadEditSchedule(this); return false;">Editar</a>
-                    <a href="#" th:attr="data-id=${s.id}" onclick="confirmDeleteSchedule(this); return false;">Eliminar</a>
+                   <button class="edit-btn"
+                                th:attr="data-id=${s.id}"
+                                onclick="loadEditSchedule(this); return false;">
+                            Editar
+                        </button>
+
+                        <button class="delete-btn"
+                                th:attr="data-id=${s.id}"
+                                onclick="confirmDeleteSchedule(this); return false;">
+                            Eliminar
+                        </button>
                 </td>
             </tr>
         </table>
