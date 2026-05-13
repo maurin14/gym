@@ -19,7 +19,22 @@
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
-        <a th:href="@{/classes}">Clases</a>
+        <a th:if="${session.user.role == 'client'}"
+           th:href="@{/client/classes}">
+            Clases
+        </a>
+        <a th:if="${session.user.role == 'trainer' or session.user.role == 'administrator'}"
+           th:href="@{/trainer/classes}">
+            Clases
+        </a>
+        <a th:if="${session.user.role == 'client'}"
+           th:href="@{/client/attendances}">
+            Asistencia
+        </a>
+        <a th:if="${session.user.role == 'trainer' or session.user.role == 'administrator'}"
+           th:href="@{/trainer/attendances}">
+            Asistencia
+        </a>
         <a th:href="@{/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
