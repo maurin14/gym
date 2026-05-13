@@ -1,89 +1,131 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Lista de Usuarios</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Lista de Usuarios</h1> 
-            
-            <div th:if="${messageSuccess}" class="alert success" th:text="${messageSuccess}"></div>
-            <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
-            
-            <div class="menu">
-                <a th:href="@{/}">Inicio</a>
-                <a th:href="@{/users/add}">Agregar Usuario</a>
-            </div>
+<head>
+    <title>Lista de Usuarios - SAM GYM FITNESS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+</head>
+<body>
 
-            <form th:action="@{/users}" method="get" class="filter-form">
-                <label>Nombre</label>
-                <input type="text" name="fullName" th:value="${fullName}" placeholder="Buscar por nombre"/>
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
+        </a>
+        <span class="system-name">SAM GYM FITNESS</span>
+    </div>
 
-                <label>Rol</label>
-                <select name="role">
-                    <option value="">Todos</option>
-                    <option value="administrator" th:selected="${role == 'administrator'}">Administrador</option>
-                    <option value="trainer" th:selected="${role == 'trainer'}">Entrenador</option>
-                    <option value="client" th:selected="${role == 'client'}">Cliente</option>
-                </select>
+    <nav class="header-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
 
-                <button type="submit">Buscar</button>
-                <a th:href="@{/users}">Limpiar</a>
-            </form>
-            
-            <div class="table-container no-scroll">
-                <table border="1" class="compact-table">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cédula</th>
-                        <th>Nombre de Usuario</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Fecha de Registro</th>
-                        <th colspan="3">Acciones</th>
-                    </tr>
+<main class="container">
+    <h1 class="page-title">Lista de Usuarios</h1>
+    <p class="admin-description">
+        Administre los usuarios registrados, sus roles, estados y datos principales.
+    </p>
 
-                    <tr th:each="u : ${users}">
-                        <td th:text="${u.fullName}"></td>
-                        <td th:text="${u.idCard}"></td>
-                        <td th:text="${u.username}"></td>
-                        <td>
-                            <span th:text="${u.role}"
-                                  th:class="'badge ' + ${u.role}"></span>
-                        </td>
-                        <td>
-                            <span th:text="${u.status}"
-                                  th:class="'badge state-' + ${u.status}"></span>
-                        </td>
-                        <td th:text="${u.formattedRecordDate}"></td>
-                        <td><a th:href="@{/users/detail(id=${u.userId})}" class="btn-view">Ver Detalles</a></td>
-                        <td><a th:href="@{/users/edit(id=${u.userId})}" class="btn-edit">Editar</a></td>
-                        <td>
-                            <a th:if="${session.user.role == 'administrator'}"
-                               th:href="@{/users/delete(id=${u.userId})}"
-                               class="btn-delete"
-                               onclick="return confirm('¿Desea eliminar este usuario?')">Eliminar</a>
-                        </td>
-                    </tr>
-                </table>
-                
-                <div class="pagination">
-                    <a th:if="${currentPage > 1}"
-                       th:href="@{/users(page=${currentPage - 1})}">Anterior</a>
+    <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-                    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-                        <a th:href="@{/users(page=${i})}"
-                           th:text="${i}"
-                           th:classappend="${i == currentPage} ? 'active'"></a>
-                    </span>
+    <div class="buttons">
+        <a th:href="@{/users/add}" class="btn-primary">Agregar usuario</a>
+    </div>
 
-                    <a th:if="${currentPage < totalPages}"
-                       th:href="@{/users(page=${currentPage + 1})}">Siguiente</a>
+    <form th:action="@{/users}" method="get" class="filters">
+        <input type="text" name="fullName" th:value="${fullName}" placeholder="Buscar por nombre">
+
+        <select name="role">
+            <option value="">Todos los roles</option>
+            <option value="administrator" th:selected="${role == 'administrator'}">Administrador</option>
+            <option value="trainer" th:selected="${role == 'trainer'}">Entrenador</option>
+            <option value="client" th:selected="${role == 'client'}">Cliente</option>
+        </select>
+
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/users}" class="btn-secondary">Limpiar</a>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Cédula</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.fullName}"></td>
+            <td th:text="${u.idCard}"></td>
+            <td th:text="${u.username}"></td>
+
+            <td>
+                <span th:if="${u.role == 'administrator'}" class="badge badge-active">Administrador</span>
+                <span th:if="${u.role == 'trainer'}" class="badge badge-pending">Entrenador</span>
+                <span th:if="${u.role == 'client'}" class="badge badge-inactive">Cliente</span>
+            </td>
+
+            <td>
+                <span th:if="${u.status == 'active'}" class="status-active">Activo</span>
+                <span th:if="${u.status == 'inactive'}" class="status-inactive">Inactivo</span>
+            </td>
+
+            <td th:text="${u.formattedRecordDate}"></td>
+
+            <td>
+                <div class="actions">
+                    <a th:href="@{/users/detail(id=${u.userId})}" class="btn-secondary">Ver</a>
+                    <a th:href="@{/users/edit(id=${u.userId})}" class="btn-primary">Editar</a>
+
+                    <a th:if="${session.user.role == 'administrator'}"
+                       th:href="@{/users/delete(id=${u.userId})}"
+                       class="btn-danger"
+                       onclick="return confirm('¿Desea eliminar este usuario?')">
+                        Eliminar
+                    </a>
                 </div>
-            </div>
-        </div>
-    </body>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(users)}">
+            <td colspan="7" class="empty-message">No hay usuarios registrados.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a th:if="${currentPage > 1}"
+           th:href="@{/users(page=${currentPage - 1}, fullName=${fullName}, role=${role})}">
+            Anterior
+        </a>
+
+        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/users(page=${i}, fullName=${fullName}, role=${role})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'page-active'"></a>
+        </span>
+
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/users(page=${currentPage + 1}, fullName=${fullName}, role=${role})}">
+            Siguiente
+        </a>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <p>SAM GYM FITNESS - Panel de Administración</p>
+</footer>
+
+</body>
 </html>
