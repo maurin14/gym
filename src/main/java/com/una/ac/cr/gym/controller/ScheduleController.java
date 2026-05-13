@@ -7,7 +7,7 @@ package com.una.ac.cr.gym.controller;
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Schedule;
 import com.una.ac.cr.gym.service.BranchService;
-import com.una.ac.cr.gym.service.ScheduleService.ScheduleServices;
+import com.una.ac.cr.gym.service.ScheduleService;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ScheduleController {
     
  @Autowired
-    private ScheduleServices scheduleServices;
+    private ScheduleService scheduleServices;
 
     @Autowired
     private BranchService branchServices;
@@ -70,18 +70,18 @@ public class ScheduleController {
     model.addAttribute("totalPages", data.getTotalPages());
 
     if ("XMLHttpRequest".equals(ajax)) {
-      return "schedule/indexSchedule :: tableContainer";
+      return "schedule/listSchedule :: tableContainer";
     }
 
-    return "schedule/indexSchedule";
+    return "schedule/listSchedule";
 }
 
 
     @GetMapping("/add")
     public String addForm(Model model) {
+       
         Schedule schedule = new Schedule();
 
-  
         schedule.setBranch(new Branch());
 
         var branches = branchServices.getAll();
@@ -120,7 +120,7 @@ public class ScheduleController {
         Schedule schedule = scheduleServices.getById(id);
 
         if (schedule == null) {
-            return "redirect:/schedule";
+            return "redirect:/listSchedule";
         }
 
         model.addAttribute("schedule", schedule);

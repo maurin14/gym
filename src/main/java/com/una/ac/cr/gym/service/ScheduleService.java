@@ -19,9 +19,8 @@ import org.springframework.stereotype.Service;
  *
  * @author PC
  */
-public class ScheduleService {
     @Service 
-public class ScheduleServices implements CRUD<Schedule>{
+public class ScheduleService implements CRUD<Schedule>{
 @Autowired
 private ScheduleRepository scheduleData;
 @Autowired
@@ -85,5 +84,4 @@ return scheduleData.findAll();
         public Schedule getById(int id) {
             return (Schedule)scheduleData.findById(id).orElse(null);        }
     }
-}
 

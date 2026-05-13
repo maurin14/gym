@@ -5,8 +5,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 -->
 <html>
     <head>
-        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
-
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <label>Branch:</label>
         <select th:field="*{branch.id}" required>
-            <option value="">-- Select Branch --</option>
+            <option value="0" disabled selected >-- Select Branch --</option> 
             <option th:each="bra : ${branches}" 
                     th:value="${bra.id}" 
                     th:text="${bra.name}">

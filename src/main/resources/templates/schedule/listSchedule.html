@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body>
+<div th:fragment="tableContainer">
+
+<div class="busqueda">
+
+    <select id="searchType" onchange="changeSearch()">
+        <option value="">Buscar por...</option>
+        <option value="branch">Sucursal</option>
+        <option value="hora">Horario</option>
+    </select>
+
+    <div id="searchBranch" style="display:none;">
+        <input type="number" id="branchFilter" placeholder="ID sucursal">
+        <button onclick="searchForBranch()">Buscar</button>
+    </div>
+
+    <div id="searchHour" style="display:none;">
+        <input type="time" id="startFilter">
+        <input type="time" id="endFilter">
+        <button onclick="searchForHour()">Buscar</button>
+    </div>
+
+</div>
+
+
+
+    <div id="tableContent" th:fragment="tableContent">
+        <table border="1">
+            <tr>
+                <th>Día</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Tipo</th>
+                <th>Activo</th>
+                <th>Sucursal</th>
+                <th>Acciones</th>
+            </tr>
+
+            <tr th:each="s : ${schedules}">
+                <td th:text="${s.dayOfWeek}"></td>
+                <td th:text="${#temporals.format(s.startTime,'HH:mm')}"></td>
+                <td th:text="${#temporals.format(s.endTime,'HH:mm')}"></td>
+             
+                <td th:text="${s.scheduleType}"></td>
+                <td th:text="${s.active ? 'Sí' : 'No'}"></td>
+                <td th:text="${s.branch?.name} ?: '—'"></td>
+
+                <td>
+                    <a href="#" th:attr="data-id=${s.id}" onclick="loadEditSchedule(this); return false;">Editar</a>
+                    <a href="#" th:attr="data-id=${s.id}" onclick="confirmDeleteSchedule(this); return false;">Eliminar</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+
+    <select onchange="changeSizeSchedule(this.value)">
+        <option value="0" disabled selected>Tamaño</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+       
+    <div>
+        <button th:if="${currentPage > 0}"
+                th:attr="data-page=${currentPage - 1}"
+                onclick="cargarPaginaSchedule(this.getAttribute('data-page'))">
+            ←
+        </button>
+
+        <span>
+            Página <span th:text="${currentPage + 1}"></span>
+            de <span th:text="${totalPages}"></span>
+        </span>
+
+        <button th:if="${currentPage + 1 < totalPages}"
+                th:attr="data-page=${currentPage + 1}"
+                onclick="cargarPaginaSchedule(this.getAttribute('data-page'))">
+            →
+        </button>
+    </div>
+
+</div>
+</body>
+    
+</html>
