@@ -21,7 +21,7 @@ public class EquipmentService implements CRUD<Equipment>  {
 @Autowired
 private EquipmentRepository equipmentData;
 @Autowired
-private BranchRepository branchRe;
+private BranchRepository branchRepository;
 
     @Override
     public void save(Equipment t) {
@@ -38,12 +38,8 @@ private BranchRepository branchRe;
        return  equipmentData.findAll();
     }
 
-    @Override
-    public Equipment getByid(int id) {
-        return (Equipment) equipmentData.findById(id).orElse(null);
-    }
+ 
 
-    @Override
     public void update(int id, Equipment t) {
 
     
@@ -62,7 +58,7 @@ private BranchRepository branchRe;
     existing.setAvailable(t.getAvailable());
 
        if (t.getBranch() != null) {
-        Branch branch = branchRe
+        Branch branch = branchRepository
                 .findById(t.getBranch().getId())
                 .orElse(null);
 
@@ -84,6 +80,11 @@ public Page<Equipment> findByBranchId(int id, Pageable pageable) {
 public Page<Equipment> findByCostBetween(double min, double max, Pageable pageable) {
     return equipmentData.findByCostBetween(min, max, pageable);
 }
+
+ 
+    public Equipment getById(int id) {
+           return (Equipment) equipmentData.findById(id).orElse(null);
+    }
 
    
 }
