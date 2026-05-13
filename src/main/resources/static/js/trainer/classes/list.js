@@ -1,5 +1,5 @@
-let classes = [];
 let currentPage = 1;
+let totalPages = 1;
 
 const rowsPerPage = 5;
 
@@ -9,59 +9,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadClasses() {
 
-    fetch("/classes")
+    fetch("/classes/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage)
         .then(response => response.json())
         .then(data => {
 
-            classes = data;
-            currentPage = 1;
+            totalPages = data.totalPages;
 
-            showClasses();
+            showClasses(data.classes);
             showPagination();
 
         });
-
 }
 
-function showClasses() {
+function showClasses(classes) {
 
-    const tbody =
-            document.getElementById("classesTableBody");
-
+    const tbody = document.getElementById("classesTableBody");
     tbody.innerHTML = "";
 
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    const pageClasses = classes.slice(start, end);
-
-    pageClasses.forEach(gymClass => {
+    classes.forEach(gymClass => {
 
         tbody.innerHTML += `
             <tr>
-
                 <td>${gymClass.classType}</td>
-
                 <td>${gymClass.trainerName}</td>
-
                 <td>${gymClass.classDate}</td>
-
                 <td>${gymClass.startTime}</td>
-
                 <td>${gymClass.endTime}</td>
-
                 <td>${gymClass.duration} min</td>
-
                 <td>${gymClass.maxCapacity}</td>
-
                 <td>${gymClass.enrolledCount}</td>
-
                 <td>${gymClass.difficultyLevel}</td>
-
                 <td>${gymClass.description}</td>
 
                 <td class="actions">
-
                     <a class="btn-primary"
                        href="/trainer/classes/form/${gymClass.idClass}">
                         Editar
@@ -72,18 +52,17 @@ function showClasses() {
                             onclick="deleteClass(${gymClass.idClass})">
                         Eliminar
                     </button>
-
                 </td>
-
             </tr>
         `;
     });
-
 }
 
 function showPagination() {
 
-    const totalPages = Math.ceil(classes.length / rowsPerPage);
+    if (totalPages === 0) {
+        totalPages = 1;
+    }
 
     document.getElementById("pageInfo").innerText =
             "Página " + currentPage + " de " + totalPages;
@@ -97,27 +76,17 @@ function showPagination() {
 
 function nextPage() {
 
-    const totalPages = Math.ceil(classes.length / rowsPerPage);
-
     if (currentPage < totalPages) {
-
         currentPage++;
-
-        showClasses();
-        showPagination();
-
+        loadClasses();
     }
 }
 
 function previousPage() {
 
     if (currentPage > 1) {
-
         currentPage--;
-
-        showClasses();
-        showPagination();
-
+        loadClasses();
     }
 }
 
@@ -127,10 +96,12 @@ function deleteClass(idClass) {
         method: "DELETE"
     })
     .then(() => {
-
         alert("Clase eliminada correctamente");
 
-        loadClasses();
+        if (currentPage > 1) {
+            currentPage--;
+        }
 
+        loadClasses();
     });
 }
