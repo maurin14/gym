@@ -13,8 +13,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
     </head>
        <body class="center-form">
-  
-     
    <form class="glass-form"
          onsubmit="return saveForm(this)"
       th:action="@{/save}"
@@ -53,7 +51,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </option>
     </select>
 
-    <div class="button-group">
+   <div class="button-group">
         
         <button type="submit"
             th:text="${newEquipment.id != 0} ? 'Actualizar' : 'Guardar'">
@@ -62,7 +60,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
  
       <button type="button"
         onclick="returnTable()"
-        class="cancelar">
     Cancelar
       </button>
     </div>
