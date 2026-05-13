@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -30,10 +34,47 @@ public class ProductController {
     @Autowired
     private ProductServices productService;
 
-    @GetMapping("/")
-    public String listProducts(Model model) {
+    @GetMapping({"", "/"})
+    public String listProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            Model model
+    ) {
+
+        Double minProductPrice = productService.getMinProductPrice();
+        Double maxProductPrice = productService.getMaxProductPrice();
+
+        if (minPrice == null) {
+            minPrice = minProductPrice;
+        }
+
+        if (maxPrice == null) {
+            maxPrice = maxProductPrice;
+        }
+
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Page<Product> productPage = productService.getProductsFiltered(
+                category,
+                minPrice,
+                maxPrice,
+                pageable
+        );
+
         model.addAttribute("title", "Lista de productos");
-        model.addAttribute("products", productService.getProducts());
+        model.addAttribute("products", productPage.getContent());
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+
+        model.addAttribute("category", category);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+
+        model.addAttribute("categories", productService.getCategories());
+
         return "product/product_list";
     }
 
@@ -51,7 +92,8 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct(Product product,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         product.setRegisterDate(LocalDate.now());
         product.setState(true);
@@ -99,7 +141,8 @@ public class ProductController {
             return "product/product_form";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto guardado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -122,7 +165,8 @@ public class ProductController {
     @PostMapping("/update")
     public String updateProduct(Product product,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         Product currentProduct = productService.getProduct(product.getIdProduct());
 
@@ -178,11 +222,12 @@ public class ProductController {
             return "product/product_form";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto editado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") int idProduct, Model model) {
+    public String deleteProduct(@PathVariable("id") int idProduct, Model model, RedirectAttributes redirectAttributes) {
         String result = productService.deleteProduct(idProduct);
 
         if (!result.isEmpty()) {
@@ -192,7 +237,8 @@ public class ProductController {
             return "product/product_list";
         }
 
-        return "redirect:/products/";
+        redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
+        return "redirect:/products";
     }
 
     @GetMapping("/details/{id}")

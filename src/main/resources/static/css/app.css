@@ -28,6 +28,34 @@ body {
 }
 
 /* =========================
+   FONDOS GENERALES
+========================= */
+
+.page-with-background,
+.page-portal,
+.landing-page,
+.admin-home-page,
+.user-home-page,
+.portal-background,
+.admin-background,
+.user-background,
+.branch-background,
+.payment-background {
+    background:
+        linear-gradient(135deg, rgba(17,17,17,0.92), rgba(31,31,31,0.88)),
+        url('/images/fondo.jpg') center/cover fixed no-repeat;
+    min-height: 100vh;
+}
+
+.portal-background,
+.admin-background,
+.user-background,
+.branch-background,
+.payment-background {
+    padding-bottom: 50px;
+}
+
+/* =========================
    HEADER GENERAL
 ========================= */
 
@@ -790,12 +818,66 @@ select.valid {
     transform: translateY(-5px);
 }
 
+/* =========================
+   IMÁGENES DE SUCURSALES
+========================= */
+
+.branch-card img,
 .branch-image img,
 .card img {
     width: 100%;
     height: 240px;
     object-fit: cover;
     display: block;
+}
+
+.branch-card img {
+    filter: brightness(0.90);
+}
+
+.branch-image-preview {
+    width: 75px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+
+.branch-detail-image {
+    width: 100%;
+    max-height: 430px;
+    object-fit: cover;
+    border-radius: 18px;
+    display: block;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+}
+
+.image-preview-container {
+    margin-top: 10px;
+}
+
+.image-preview-container img {
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.no-image {
+    width: 75px;
+    height: 55px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
 }
 
 .coming-soon {
@@ -1045,5 +1127,20 @@ select.valid {
 
     td, th {
         padding: 10px;
+    }
+
+    .branch-card img,
+    .branch-image img,
+    .card img {
+        height: 210px;
+    }
+
+    .branch-detail-image {
+        max-height: 300px;
+    }
+
+    .image-preview-container img {
+        width: 100%;
+        height: 180px;
     }
 }

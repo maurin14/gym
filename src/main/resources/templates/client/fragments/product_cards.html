@@ -1,0 +1,58 @@
+<div th:fragment="productResults" xmlns:th="http://www.thymeleaf.org">
+    <div class="section-heading">
+        <h2>Productos disponibles</h2>
+        <p th:text="${totalItems + ' productos para consultar'}">0 productos para consultar</p>
+    </div>
+
+    <div class="empty-state" th:if="${products == null or #lists.isEmpty(products)}">
+        No hay productos disponibles con esos criterios.
+    </div>
+
+    <div class="catalog-grid" th:if="${products != null and !#lists.isEmpty(products)}">
+        <article class="product-card" th:each="product : ${products}">
+            <a class="product-image-link" th:href="@{/client/products/{id}(id=${product.idProduct})}">
+                <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
+                     th:src="@{/{img}(img=${product.imagePath})}"
+                     th:alt="${product.nameProduct}">
+
+                <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
+                     class="image-placeholder">
+                    Sin imagen
+                </div>
+            </a>
+
+            <div class="card-content">
+                <span class="tag" th:text="${product.category}">Categoría</span>
+                <h3 th:text="${product.nameProduct}">Producto</h3>
+                <p class="muted-text" th:text="${product.description}">Descripción</p>
+
+                <div class="card-footer">
+                    <strong th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</strong>
+                    <a th:href="@{/client/products/{id}(id=${product.idProduct})}" class="btn-primary">Ver detalle</a>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginación de productos">
+        <a class="pagination-link"
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/client/products(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, search=${search}, category=${category})}">
+            Anterior
+        </a>
+
+        <a class="pagination-link page-number"
+           th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+           th:classappend="${pageNumber == currentPage} ? ' active'"
+           th:href="@{/client/products(page=${pageNumber}, size=${pageSize}, search=${search}, category=${category})}"
+           th:text="${pageNumber + 1}">
+            1
+        </a>
+
+        <a class="pagination-link"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/client/products(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, search=${search}, category=${category})}">
+            Siguiente
+        </a>
+    </nav>
+</div>
