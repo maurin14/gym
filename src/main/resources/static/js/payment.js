@@ -1,10 +1,9 @@
 function loadPayments(page) {
-    let status = document.getElementById("filterStatus").value;
-    let paymentMethod = document.getElementById("filterPaymentMethod").value;
-    let branchIdElement = document.getElementById("filterBranch");
-    let branchId = branchIdElement ? branchIdElement.value : "";
+    const status = document.getElementById("filterStatus") ? document.getElementById("filterStatus").value : "";
+    const paymentMethod = document.getElementById("filterPaymentMethod") ? document.getElementById("filterPaymentMethod").value : "";
+    const branchId = document.getElementById("filterBranch") ? document.getElementById("filterBranch").value : "";
 
-    let xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4 && xhttp.status === 200) {
@@ -12,7 +11,7 @@ function loadPayments(page) {
         }
     };
 
-    let params = "page=" + encodeURIComponent(page)
+    const params = "page=" + encodeURIComponent(page)
             + "&status=" + encodeURIComponent(status)
             + "&paymentMethod=" + encodeURIComponent(paymentMethod)
             + "&branchId=" + encodeURIComponent(branchId);
@@ -31,11 +30,11 @@ function changePaymentPage(element) {
 
 function confirmSavePayment() {
     Swal.fire({
-        title: '¿Desea guardar el pago?',
-        icon: 'question',
+        title: "¿Desea guardar el pago?",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Guardar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById("paymentForm").submit();
@@ -43,15 +42,32 @@ function confirmSavePayment() {
     });
 }
 
-function confirmDeletePayment(element) {
-    let id = element.dataset.id;
+function confirmChangePaymentStatus(element) {
+    const id = element.dataset.id;
 
     Swal.fire({
-        title: '¿Está seguro de eliminar este pago?',
-        icon: 'warning',
+        title: "¿Desea cambiar el estado del pago?",
+        text: "El estado cambiará entre Pagado, Pendiente y Anulado.",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Sí, cambiar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/admin/payments/status/" + id;
+        }
+    });
+}
+
+function confirmDeletePayment(element) {
+    const id = element.dataset.id;
+
+    Swal.fire({
+        title: "¿Está seguro de eliminar este pago?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Eliminar",
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "/admin/payments/delete/" + id;
@@ -61,12 +77,12 @@ function confirmDeletePayment(element) {
 
 function confirmCancelPayment() {
     Swal.fire({
-        title: '¿Cancelar?',
-        text: 'Los cambios no guardados se perderán.',
-        icon: 'warning',
+        title: "¿Cancelar?",
+        text: "Los cambios no guardados se perderán.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'Seguir editando'
+        confirmButtonText: "Sí, cancelar",
+        cancelButtonText: "Seguir editando"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "/admin/payments";

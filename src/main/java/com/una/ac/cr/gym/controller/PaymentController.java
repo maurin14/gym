@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
@@ -11,142 +15,160 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+
+
+/**
+ *
+ * @author sharo
+ */
 @Controller
 public class PaymentController {
 
     @Autowired
-    private PaymentService service;
+    private PaymentService paymentService;
 
     @Autowired
     private BranchService branchService;
 
-   
-
     @GetMapping("/admin/payments")
-    public String adminList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String paymentMethod,
-            @RequestParam(required = false) Integer branchId,
-            Model model) {
+    public String adminList(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(required = false) String status,
+                            @RequestParam(required = false) String paymentMethod,
+                            @RequestParam(required = false) Integer branchId,
+                            Model model) {
 
-        Page<Payment> payments = service.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
+        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
 
         model.addAttribute("payments", payments);
         model.addAttribute("status", status);
         model.addAttribute("paymentMethod", paymentMethod);
         model.addAttribute("branchId", branchId);
         model.addAttribute("branches", branchService.getAll());
-        model.addAttribute("role", "ADMIN");
 
-        return "admin/payments/listPayment";
+        return "payments/admin/listPayment";
     }
 
     @GetMapping("/admin/payments/ajax/list")
-    public String adminAjaxList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String paymentMethod,
-            @RequestParam(required = false) Integer branchId,
-            Model model) {
+    public String adminAjaxList(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(required = false) String status,
+                                @RequestParam(required = false) String paymentMethod,
+                                @RequestParam(required = false) Integer branchId,
+                                Model model) {
 
-        Page<Payment> payments = service.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
-
+        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
         model.addAttribute("payments", payments);
-        return "admin/payments/tablePayment :: tablePayment";
+
+        return "payments/admin/tablePayment :: tablePayment";
     }
 
     @GetMapping("/admin/payments/new")
-    public String add(Model model) {
+    public String newPayment(Model model) {
         model.addAttribute("payment", new Payment());
-        model.addAttribute("branches", branchService.getAll());
-        model.addAttribute("role", "ADMIN");
-        return "admin/payments/formPayment";
+        model.addAttribute("branches", branchService.getActiveBranches());
+        return "payments/admin/formPayment";
     }
 
     @PostMapping("/admin/payments/save")
-public String save(
-        @Valid @ModelAttribute("payment") Payment payment,
-        BindingResult result,
-        @RequestParam(required = false) Integer branchId,
-        Model model) {
+    public String savePayment(@Valid @ModelAttribute("payment") Payment payment,
+                              BindingResult result,
+                              @RequestParam(required = false) Integer branchId,
+                              Model model) {
 
-    Branch branch = (branchId != null) ? branchService.getById(branchId) : null;
+        Branch branch = branchId != null ? branchService.getById(branchId) : null;
 
-    if (branch == null) {
-        result.rejectValue("branch", "error.payment", "La sucursal es obligatoria.");
-    } else {
-        payment.setBranch(branch);
+        if (branch == null) {
+            result.rejectValue("branch", "error.payment", "Debe seleccionar una sucursal.");
+        } else {
+            payment.setBranch(branch);
+        }
+
+        if (result.hasErrors()) {
+            model.addAttribute("branches", branchService.getActiveBranches());
+            return "payments/admin/formPayment";
+        }
+
+        boolean isNew = payment.getId() == 0;
+        paymentService.save(payment);
+
+        return "redirect:/admin/payments?success=" + (isNew ? "save" : "edit");
     }
-
-    if (result.hasErrors()) {
-        model.addAttribute("branches", branchService.getAll());
-        model.addAttribute("role", "ADMIN");
-        return "admin/payments/formPayment";
-    }
-
-    service.save(payment);
-    return "redirect:/admin/payments?success=save";
-}
 
     @GetMapping("/admin/payments/edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
-        Payment payment = service.getById(id);
+    public String editPayment(@PathVariable int id, Model model) {
+        Payment payment = paymentService.getById(id);
 
         if (payment == null) {
             return "redirect:/admin/payments?error=notfound";
         }
 
         model.addAttribute("payment", payment);
-        model.addAttribute("branches", branchService.getAll());
-        model.addAttribute("role", "ADMIN");
-        return "admin/payments/formPayment";
+        model.addAttribute("branches", branchService.getActiveBranches());
+
+        return "payments/admin/formPayment";
     }
 
     @GetMapping("/admin/payments/delete/{id}")
-    public String delete(@PathVariable int id) {
-        service.delete(id);
+    public String deletePayment(@PathVariable int id) {
+        paymentService.delete(id);
         return "redirect:/admin/payments?success=delete";
     }
 
+    @GetMapping("/admin/payments/status/{id}")
+    public String changePaymentStatus(@PathVariable int id) {
+        Payment payment = paymentService.getById(id);
 
-    @GetMapping("/payments/my-payments")
-    public String myPayments(
-            @RequestParam Integer userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String paymentMethod,
-            Model model) {
+        if (payment != null) {
+            if ("Pagado".equals(payment.getStatus())) {
+                payment.setStatus("Pendiente");
+            } else if ("Pendiente".equals(payment.getStatus())) {
+                payment.setStatus("Anulado");
+            } else {
+                payment.setStatus("Pagado");
+            }
 
-        Page<Payment> payments = service.getUserPayments(userId, status, paymentMethod, PageRequest.of(page, 5));
+            paymentService.save(payment);
+        }
+
+        return "redirect:/admin/payments?success=status";
+    }
+
+    @GetMapping("/payments")
+    public String userPayments(@RequestParam(defaultValue = "1") Integer userId,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(required = false) String status,
+                               @RequestParam(required = false) String paymentMethod,
+                               Model model) {
+
+        Page<Payment> payments = paymentService.getUserPayments(userId, status, paymentMethod, PageRequest.of(page, 5));
 
         model.addAttribute("payments", payments);
         model.addAttribute("status", status);
         model.addAttribute("paymentMethod", paymentMethod);
         model.addAttribute("userId", userId);
-        model.addAttribute("role", "USER");
 
-        return "user/payments/listPayment";
+        return "payments/user/listPayment";
     }
 
     @GetMapping("/payments/{id}")
-    public String paymentDetail(
-            @PathVariable int id,
-            @RequestParam Integer userId,
-            Model model) {
+    public String userPaymentDetail(@PathVariable int id,
+                                    @RequestParam(defaultValue = "1") Integer userId,
+                                    Model model) {
 
-        Payment payment = service.getById(id);
+        Payment payment = paymentService.getById(id);
 
-        if (payment == null || !payment.getUserId().equals(userId)) {
-            return "redirect:/payments/my-payments?userId=" + userId;
+        if (payment == null || !payment.getIdUser().equals(userId)) {
+            return "redirect:/payments?userId=" + userId;
         }
 
         model.addAttribute("payment", payment);
-        model.addAttribute("role", "USER");
         model.addAttribute("userId", userId);
 
-        return "user/payments/detailPayment";
+        return "payments/user/detailPayment";
     }
 }

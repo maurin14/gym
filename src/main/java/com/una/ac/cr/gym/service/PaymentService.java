@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Payment;
@@ -8,6 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
+
+/**
+ *
+ * @author sharo
+ */
 @Service
 public class PaymentService implements CRUD<Payment> {
 
@@ -35,7 +45,6 @@ public class PaymentService implements CRUD<Payment> {
     }
 
     public Page<Payment> getPage(String status, String paymentMethod, Integer branchId, Pageable pageable) {
-
         boolean hasStatus = status != null && !status.trim().isEmpty();
         boolean hasPaymentMethod = paymentMethod != null && !paymentMethod.trim().isEmpty();
         boolean hasBranch = branchId != null;
@@ -75,24 +84,25 @@ public class PaymentService implements CRUD<Payment> {
         return paymentRepository.findAll(pageable);
     }
 
-    public Page<Payment> getUserPayments(Integer userId, String status, String paymentMethod, Pageable pageable) {
-
+    public Page<Payment> getUserPayments(Integer idUser, String status, String paymentMethod, Pageable pageable) {
         boolean hasStatus = status != null && !status.trim().isEmpty();
         boolean hasPaymentMethod = paymentMethod != null && !paymentMethod.trim().isEmpty();
 
         if (hasStatus && hasPaymentMethod) {
-            return paymentRepository.findByUserIdAndStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
-                    userId, status.trim(), paymentMethod.trim(), pageable);
+            return paymentRepository.findByIdUserAndStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
+                    idUser, status.trim(), paymentMethod.trim(), pageable);
         }
 
         if (hasStatus) {
-            return paymentRepository.findByUserIdAndStatusContainingIgnoreCase(userId, status.trim(), pageable);
+            return paymentRepository.findByIdUserAndStatusContainingIgnoreCase(
+                    idUser, status.trim(), pageable);
         }
 
         if (hasPaymentMethod) {
-            return paymentRepository.findByUserIdAndPaymentMethodContainingIgnoreCase(userId, paymentMethod.trim(), pageable);
+            return paymentRepository.findByIdUserAndPaymentMethodContainingIgnoreCase(
+                    idUser, paymentMethod.trim(), pageable);
         }
 
-        return paymentRepository.findByUserId(userId, pageable);
+        return paymentRepository.findByIdUser(idUser, pageable);
     }
 }
