@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.controller;
 
 /**
@@ -13,11 +9,11 @@ import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.GymClassService;
 import com.una.ac.cr.gym.service.UserService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
-import java.util.HashMap;
 
 @Controller
 public class GymClassController {
@@ -25,7 +21,9 @@ public class GymClassController {
     private final GymClassService gymClassService;
     private final UserService userService;
 
-    public GymClassController(GymClassService gymClassService, UserService userService) {
+    public GymClassController(GymClassService gymClassService,
+            UserService userService) {
+
         this.gymClassService = gymClassService;
         this.userService = userService;
     }
@@ -45,7 +43,6 @@ public class GymClassController {
         return "trainer/classes/form";
     }
 
-
     @GetMapping("/client/classes")
     public String clientClassesList() {
         return "client/classes/list";
@@ -53,12 +50,13 @@ public class GymClassController {
 
     @ResponseBody
     @GetMapping("/classes")
-    public List<java.util.Map<String, Object>> getAllClasses() {
+    public List<Map<String, Object>> getAllClasses() {
 
         return gymClassService.getAllClasses()
                 .stream()
                 .map(gymClass -> {
-                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+
+                    Map<String, Object> map = new HashMap<>();
 
                     map.put("idClass", gymClass.getIdClass());
                     map.put("classType", gymClass.getClassType());
@@ -72,11 +70,10 @@ public class GymClassController {
                     map.put("duration", gymClass.getDuration());
                     map.put("status", gymClass.isStatus());
 
-                    if (gymClass.getTrainer() != null) {
-                        map.put("trainerName", gymClass.getTrainer().getFullName());
-                    } else {
-                        map.put("trainerName", "Sin entrenador");
-                    }
+                    map.put("trainerName",
+                            gymClass.getTrainer() != null
+                            ? gymClass.getTrainer().getFullName()
+                            : "Sin entrenador");
 
                     return map;
                 })
@@ -97,7 +94,9 @@ public class GymClassController {
 
     @ResponseBody
     @PutMapping("/classes/{idClass}")
-    public GymClass updateClass(@PathVariable int idClass, @RequestBody GymClass gymClass) {
+    public GymClass updateClass(@PathVariable int idClass,
+            @RequestBody GymClass gymClass) {
+
         return gymClassService.updateClass(idClass, gymClass);
     }
 
