@@ -21,7 +21,7 @@ import java.time.LocalTime;
  * @author PC
  */  
 @Entity
-@Table(name = "tb_schedule")
+@Table(name = "tb_schedules")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
