@@ -5,6 +5,7 @@
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Equipment;
+import com.una.ac.cr.gym.service.EquipmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -24,10 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ControllerEquipment {
    @org.springframework.beans.factory.annotation.Autowired
-    private EquipmentServices es;
+    private EquipmentService equipmentService;
 
    @org.springframework.beans.factory.annotation.Autowired
-    private BranchServices bs;
+    private BranchServices branchServices;
    @GetMapping("/equip")
 public String equipment(
         @RequestParam(defaultValue = "0") int page,
@@ -41,11 +42,11 @@ public String equipment(
     Page<Equipment> data;
 
     if (id != null) {
-        data = es.findByBranchId(id, PageRequest.of(page, size));
+        data = equipmentService.findByBranchId(id, PageRequest.of(page, size));
     } else if (min != null && max != null) {
-        data = es.findByCostBetween(min, max, PageRequest.of(page, size));
+        data = equipmentService.findByCostBetween(min, max, PageRequest.of(page, size));
     } else {
-        data = es.getAll(PageRequest.of(page, size));
+        data = equipmentService.getAll(PageRequest.of(page, size));
     }
 
     model.addAttribute("equipment", data.getContent());
@@ -64,7 +65,7 @@ public String equipment(
         Equipment e = new Equipment();
         e.setBranch(new Branch());
         model.addAttribute("newEquipment", e);
-        model.addAttribute("branches", bs.getAll()); 
+        model.addAttribute("branches", branchServices.getAll()); 
         
         return("equipment/formEquipment");
     }
@@ -74,9 +75,9 @@ public String equipment(
 public String save(Equipment newEquipment){
 
     if (newEquipment.getId() == 0) {
-        es.save(newEquipment);
+        equipmentService.save(newEquipment);
     } else {
-        es.update(newEquipment.getId(), newEquipment);
+        equipmentService.update(newEquipment.getId(), newEquipment);
     }
 
     return "ok";
@@ -85,21 +86,21 @@ public String save(Equipment newEquipment){
   @GetMapping("/edit/{id}")
 public String editEquipment(@PathVariable("id") int id, Model model) {
 
-    Equipment e = es.getByid(id);
+    Equipment e = equipmentService.getByid(id);
 
     if (e.getBranch() == null) {
         e.setBranch(new Branch());
     }
 
     model.addAttribute("newEquipment", e);
-    model.addAttribute("branches", bs.getAll());
+    model.addAttribute("branches", branchServices.getAll());
 
     return "equipment/formEquipment";
 }
   @GetMapping("/delete/{id}")
 public String delete(@PathVariable("id") int id){
 
-    es.delete(id);
+    equipmentService.delete(id);
 
     return "ok";
 }
