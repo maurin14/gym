@@ -13,28 +13,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
        <body>
         <div class="busqueda">
 
-    <select id="tipoBusqueda" onchange="cambiarBusqueda()">
+            <select id="searchtype" onchange="changeSearch()">
         <option value="">Buscar por...</option>
         <option value="id">Sucursal (ID)</option>
         <option value="costo">Costo</option>
     </select>
 
 
-    <div id="busquedaId" style="display:none;">
+    <div id="searchId" style="display:none;">
         <input type="number" id="inputId" placeholder="Ingrese ID">
-        <button onclick="buscarPorId()">Buscar</button>
+        <button onclick="searchById()">Buscar</button>
     </div>
 
-    <div id="busquedaCosto" style="display:none;">
+    <div id="searchCost" style="display:none;">
         <input type="number" id="minCosto" placeholder="Costo mínimo">
         <input type="number" id="maxCosto" placeholder="Costo máximo">
-        <button onclick="buscarPorCosto()">Buscar</button>
+        <button onclick="searchByCost()">Buscar</button>
     </div>
 
 </div>
-    <div th:fragment="tablaContainer">
+    <div th:fragment="tableContainer">
 
-    <div id="tablaContent" th:fragment="tablaContent">
+    <div id="tableContent" th:fragment="tableContent">
         <table border="1">
             <tr>
                 <th>Nombre</th>
@@ -55,7 +55,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <td th:text="${equi.available}"></td>
                 <td th:text="${equi.branch != null ? equi.branch.name : 'Sin sucursal'}"></td>
                 <td>
-                    <a href="#" th:attr="data-id=${equi.id}" onclick="cargarEditar(this); return false;">Editar</a>
+                    <a href="#" th:attr="data-id=${equi.id}" onclick="loadEdit(this); return false;">Editar</a>
                     <a href="#" th:attr="data-id=${equi.id}" onclick="confirmDelete(this); return false;">Eliminar</a>
                 </td>
             </tr>
@@ -65,7 +65,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <br>
 
  
-    <select onchange="cambiarSize(this.value)">
+    <select onchange="changeSize(this.value)">
          <option value="0" disabled selected>Tamaño</option>
         <option value="5">5</option>
         <option value="10">10</option>
@@ -77,7 +77,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <button th:if="${currentPage > 0}"
                 th:attr="data-page=${currentPage - 1}"
-                onclick="cargarPagina(this.getAttribute('data-page'))">
+                onclick="loadpage(this.getAttribute('data-page'))">
             ←
         </button>
 
@@ -88,7 +88,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <button th:if="${currentPage + 1 < totalPages}"
                 th:attr="data-page=${currentPage + 1}"
-                onclick="cargarPagina(this.getAttribute('data-page'))">
+                onclick="loadpage(this.getAttribute('data-page'))">
             →
         </button>
 

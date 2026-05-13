@@ -13,7 +13,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
   
      
    <form class="glass-form"
-      onsubmit="return guardarFormulario(this)"
+         onsubmit="return saveForm(this)"
       th:action="@{/save}"
       th:object="${newEquipment}"
       method="post">
@@ -56,7 +56,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </button>
 
  
-      <a href="#" onclick="volverTabla(); return false;" class="cancelar">Cancelar</a>
+        <a href="#" onclick="returnTable(); return false;" class="cancelar">Cancelar</a>
     </div>
 
 </form>
