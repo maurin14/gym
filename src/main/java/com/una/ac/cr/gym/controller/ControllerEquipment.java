@@ -59,7 +59,7 @@ public String equipment(
        return "equipment/listEquipment :: tableContent";
     }
 
-    return "equipment/ListEquipment";
+    return "equipment/listEquipment";
 }
 
      @GetMapping("/add")

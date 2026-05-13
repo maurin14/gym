@@ -44,7 +44,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
     <label>Sucursal:</label>
     <select th:field="*{branch.id}">
-        <option value="" disabled selected>Seleccione una sucursal</option>
+        <option value="0" disabled selected>Seleccione una sucursal</option>
         <option th:each="bra : ${branches}"
                 th:value="${bra.id}"
                 th:text="${bra.name}">
