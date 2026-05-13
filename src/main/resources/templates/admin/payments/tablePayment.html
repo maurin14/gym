@@ -39,7 +39,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </td>
 
             <td th:text="${p.userId}"></td>
-            <td th:text="${p.branch.name}"></td>
+            <td th:text="${p.branch != null ? p.branch.name : 'Sin sucursal'}"></td>
             <td th:text="${p.description}"></td>
 
             <td class="actions">

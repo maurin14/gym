@@ -52,11 +52,11 @@ public class Payment {
 
     @NotNull(message = "El usuario es obligatorio.")
     @Min(value = 1, message = "El usuario debe ser mayor a 0.")
-    @Column(name = "user_id")
+    @Column(name = "id_user")
     private Integer userId;
 
     @ManyToOne
-    @JoinColumn(name = "branch_id")
+    @JoinColumn(name = "id_branch")
     private Branch branch;
 
     public Payment() {
