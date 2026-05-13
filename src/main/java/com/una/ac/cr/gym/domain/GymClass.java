@@ -9,6 +9,7 @@ package com.una.ac.cr.gym.domain;
  * @author Amanda
  */
 
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
