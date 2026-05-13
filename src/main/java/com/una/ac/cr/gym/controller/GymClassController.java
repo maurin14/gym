@@ -51,8 +51,34 @@ public class GymClassController {
 
     @ResponseBody
     @GetMapping("/classes")
-    public List<GymClass> getAllClasses() {
-        return gymClassService.getAllClasses();
+    public List<Object> getAllClasses() {
+
+        return gymClassService.getAllClasses()
+                .stream()
+                .map(gymClass -> {
+                    return new java.util.HashMap<String, Object>() {
+                        {
+                            put("idClass", gymClass.getIdClass());
+                            put("classType", gymClass.getClassType());
+                            put("classDate", gymClass.getClassDate());
+                            put("startTime", gymClass.getStartTime());
+                            put("endTime", gymClass.getEndTime());
+                            put("maxCapacity", gymClass.getMaxCapacity());
+                            put("enrolledCount", gymClass.getEnrolledCount());
+                            put("difficultyLevel", gymClass.getDifficultyLevel());
+                            put("description", gymClass.getDescription());
+                            put("duration", gymClass.getDuration());
+                            put("status", gymClass.isStatus());
+
+                            if (gymClass.getTrainer() != null) {
+                                put("trainerName", gymClass.getTrainer().getFullName());
+                            } else {
+                                put("trainerName", "Sin entrenador");
+                            }
+                        }
+                    };
+                })
+                .toList();
     }
 
     @ResponseBody
