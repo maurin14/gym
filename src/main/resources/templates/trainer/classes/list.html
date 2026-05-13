@@ -5,37 +5,58 @@
     <title>Listado de Clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
+
+<body class="dashboard-page">
 
 <header class="main-header">
+
     <div class="header-left">
+
         <div class="brand-text">
             <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">Panel de entrenador / administrador</span>
+            <span class="brand-subtitle">
+                Panel de entrenador / administrador
+            </span>
         </div>
+
     </div>
 
     <nav class="header-nav">
-        <a href="/admin/home">Inicio</a>
-        <a href="/trainer/classes">Clases</a>
-        <a href="/trainer/attendances">Asistencias</a>
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/trainer/classes}">Clases</a>
+        <a th:href="@{/trainer/attendances}">Asistencias</a>
     </nav>
+
 </header>
 
-<div class="container">
+<section class="hero-branches">
 
-    <h1 class="page-title">Listado de Clases</h1>
+    <h1>Listado de Clases</h1>
 
-    <p class="admin-description">
+    <p>
         Administración de clases disponibles en el gimnasio.
     </p>
 
     <div class="buttons">
-        <a class="btn-primary" href="/trainer/classes/form">Agregar Clase</a>
-        <a class="btn-secondary" href="/admin/home">Volver</a>
+
+        <a class="btn-primary"
+           th:href="@{/trainer/classes/form}">
+            Agregar Clase
+        </a>
+
+        <a class="btn-secondary"
+           th:href="@{/admin/home}">
+            Volver
+        </a>
+
     </div>
 
+</section>
+
+<div class="public-container">
+
     <table>
+
         <thead>
             <tr>
                 <th>Tipo</th>
@@ -53,7 +74,24 @@
         </thead>
 
         <tbody id="classesTableBody"></tbody>
+
     </table>
+
+    <div class="pagination">
+
+        <button id="pageInfo" disabled>
+            Página 1 de 1
+        </button>
+
+        <button id="prevBtn" onclick="previousPage()">
+            Anterior
+        </button>
+
+        <button id="nextBtn" onclick="nextPage()">
+            Siguiente
+        </button>
+
+    </div>
 
 </div>
 

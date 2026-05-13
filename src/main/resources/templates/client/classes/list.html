@@ -48,6 +48,12 @@
         <tbody id="classesTableBody"></tbody>
     </table>
 
+    <div class="pagination">
+        <button id="pageInfo" disabled>Página 1 de 1</button>
+        <button id="prevBtn" onclick="previousPage()">Anterior</button>
+        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
+    </div>
+
 </div>
 
 <script th:src="@{/js/client/classes/list.js}"></script>
