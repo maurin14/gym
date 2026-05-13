@@ -34,7 +34,11 @@ public class LoginController {
 
         session.setAttribute("user", user);
 
-        return "redirect:/";
+        if("administrator".equals(user.getRole())){
+            return "redirect:/admin/home";
+        }
+
+        return "redirect:/user/home";
     }
 
     @GetMapping("/logout")
