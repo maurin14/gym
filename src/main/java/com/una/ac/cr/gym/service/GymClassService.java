@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.service;
 
 /**
@@ -13,6 +9,8 @@ import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.repository.GymClassRepository;
 import java.time.Duration;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,19 +26,29 @@ public class GymClassService {
         return gymClassRepository.findAll();
     }
 
+    public Page<GymClass> getClassesPage(int page, int size) {
+        return gymClassRepository.findAll(PageRequest.of(page, size));
+    }
+
     public GymClass getClassById(int idClass) {
         return gymClassRepository.findById(idClass).orElse(null);
     }
 
     public GymClass saveClass(GymClass gymClass) {
+
         calculateDuration(gymClass);
+
         gymClass.setStatus(true);
+
         return gymClassRepository.save(gymClass);
     }
 
     public GymClass updateClass(int idClass, GymClass gymClass) {
+
         gymClass.setIdClass(idClass);
+
         calculateDuration(gymClass);
+
         return gymClassRepository.save(gymClass);
     }
 
@@ -49,6 +57,7 @@ public class GymClassService {
     }
 
     private void calculateDuration(GymClass gymClass) {
+
         int duration = (int) Duration.between(
                 gymClass.getStartTime(),
                 gymClass.getEndTime()
