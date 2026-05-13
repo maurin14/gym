@@ -91,16 +91,13 @@
 
             <article class="module-card">
                 <h3>Clases</h3>
-                <p>Consulta horarios, disponibilidad e inscríbete en clases del gimnasio.</p>
+                <p>
+                    Consulta horarios, disponibilidad e inscríbete
+                    en clases del gimnasio.
+                </p>
                 <div class="buttons">
-                    <a th:if="${session.user != null and session.user.role == 'client'}"
-                       th:href="@{/client/classes}"
-                       class="btn-primary">
-                        Ingresar
-                    </a>
 
-                    <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
-                       th:href="@{/trainer/classes}"
+                    <a th:href="@{/client/classes}"
                        class="btn-primary">
                         Ingresar
                     </a>
@@ -109,16 +106,12 @@
 
             <article class="module-card">
                 <h3>Asistencia</h3>
-                <p>Consulta y administra el registro de asistencias del gimnasio.</p>
+                <p>
+                    Consulta y administra el registro
+                    de asistencias del gimnasio.
+                </p>
                 <div class="buttons">
-                    <a th:if="${session.user != null and session.user.role == 'client'}"
-                       th:href="@{/client/attendances}"
-                       class="btn-primary">
-                        Ingresar
-                    </a>
-
-                    <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
-                       th:href="@{/trainer/attendances}"
+                    <a th:href="@{/client/attendances}"
                        class="btn-primary">
                         Ingresar
                     </a>
