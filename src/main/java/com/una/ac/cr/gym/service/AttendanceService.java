@@ -5,6 +5,7 @@ package com.una.ac.cr.gym.service;
  * @author Amanda
  */
 
+
 import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.repository.AttendanceRepository;
 import java.time.LocalDate;
