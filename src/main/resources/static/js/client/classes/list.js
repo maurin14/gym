@@ -1,24 +1,58 @@
 document.addEventListener("DOMContentLoaded", function () {
-    loadAttendances();
+
+    loadClasses();
+
 });
 
-function loadAttendances() {
-    fetch("/attendances")
+function loadClasses() {
+
+    fetch("/classes")
         .then(response => response.json())
         .then(data => {
-            const tbody = document.getElementById("attendancesTableBody");
+
+            const tbody =
+                    document.getElementById("classesTableBody");
+
             tbody.innerHTML = "";
 
-            data.forEach(attendance => {
+            data.forEach(gymClass => {
+
                 tbody.innerHTML += `
                     <tr>
-                        <td>${attendance.gymClass.classType}</td>
-                        <td>${attendance.attendanceDate}</td>
-                        <td><span class="badge status-active">${attendance.attendanceStatus}</span></td>
-                        <td>${attendance.observation}</td>
-                        <td>${attendance.registerDate}</td>
+
+                        <td>${gymClass.classType}</td>
+
+                        <td>
+                            ${gymClass.trainer
+                                ? gymClass.trainer.fullName
+                                : "Sin entrenador"}
+                        </td>
+
+                        <td>${gymClass.classDate}</td>
+
+                        <td>${gymClass.startTime}</td>
+
+                        <td>${gymClass.endTime}</td>
+
+                        <td>${gymClass.duration} min</td>
+
+                        <td>${gymClass.maxCapacity}</td>
+
+                        <td>${gymClass.difficultyLevel}</td>
+
+                        <td>${gymClass.description}</td>
+
+                        <td>
+                            <a class="btn-primary"
+                               href="/client/attendances/form?classId=${gymClass.idClass}">
+                                Registrar
+                            </a>
+                        </td>
+
                     </tr>
                 `;
             });
+
         });
+
 }

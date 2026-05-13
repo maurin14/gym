@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Asistencias</title>
     <title>Listado de Clases</title>
-    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 
@@ -25,16 +24,6 @@
 
 <div class="container">
 
-<<<<<<< HEAD
-    <h1 class="page-title">Listado de Asistencias</h1>
-
-    <p class="admin-description">
-        Administración de asistencias registradas por los clientes.
-    </p>
-
-    <div class="buttons">
-        <a class="btn-primary" href="/trainer/attendances/form">Agregar Asistencia</a>
-=======
     <h1 class="page-title">Listado de Clases</h1>
 
     <p class="admin-description">
@@ -43,21 +32,12 @@
 
     <div class="buttons">
         <a class="btn-primary" href="/trainer/classes/form">Agregar Clase</a>
->>>>>>> feature/classes
         <a class="btn-secondary" href="/admin/home">Volver</a>
     </div>
 
     <table>
         <thead>
             <tr>
-<<<<<<< HEAD
-                <th>Cliente</th>
-                <th>Clase</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Observación</th>
-                <th>Registro</th>
-=======
                 <th>Tipo</th>
                 <th>Entrenador</th>
                 <th>Fecha</th>
@@ -68,25 +48,16 @@
                 <th>Inscritos</th>
                 <th>Dificultad</th>
                 <th>Descripción</th>
->>>>>>> feature/classes
                 <th>Acciones</th>
             </tr>
         </thead>
 
-<<<<<<< HEAD
-        <tbody id="attendancesTableBody"></tbody>
-=======
         <tbody id="classesTableBody"></tbody>
->>>>>>> feature/classes
     </table>
 
 </div>
 
-<<<<<<< HEAD
-<script src="/js/trainer/attendances/list.js"></script>
-=======
-<script src="/js/trainer/classes/list.js"></script>
->>>>>>> feature/classes
+<script th:src="@{/js/trainer/classes/list.js}"></script>
 
 </body>
 </html>

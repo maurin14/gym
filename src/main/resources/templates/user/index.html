@@ -10,7 +10,7 @@
     <div class="header-left">
         <a th:href="@{/user/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>  
+        </a>
         <span class="system-name">SAM GYM FITNESS</span>
     </div>
 
@@ -19,7 +19,27 @@
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
-        <a th:href="@{/client/classes}">Clases</a>
+
+        <a th:if="${session.user != null and session.user.role == 'client'}"
+           th:href="@{/client/classes}">
+            Clases
+        </a>
+
+        <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+           th:href="@{/trainer/classes}">
+            Clases
+        </a>
+
+        <a th:if="${session.user != null and session.user.role == 'client'}"
+           th:href="@{/client/attendances}">
+            Asistencia
+        </a>
+
+        <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+           th:href="@{/trainer/attendances}">
+            Asistencia
+        </a>
+
         <a th:href="@{/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
@@ -37,7 +57,6 @@
                 Desde este portal puedes consultar sucursales, revisar tus pagos, acceder a tus
                 rutinas, clases, horarios y otros servicios disponibles dentro de la plataforma.
             </p>
-
         </div>
     </section>
 
@@ -72,9 +91,30 @@
 
             <article class="module-card">
                 <h3>Clases</h3>
-                <p>Consulta horarios, disponibilidad e inscríbete en clases del gimnasio.</p>
+                <p>
+                    Consulta horarios, disponibilidad e inscríbete
+                    en clases del gimnasio.
+                </p>
                 <div class="buttons">
-                    <a th:href="@{/client/classes}" class="btn-primary">Ingresar</a>
+
+                    <a th:href="@{/client/classes}"
+                       class="btn-primary">
+                        Ingresar
+                    </a>
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h3>Asistencia</h3>
+                <p>
+                    Consulta y administra el registro
+                    de asistencias del gimnasio.
+                </p>
+                <div class="buttons">
+                    <a th:href="@{/client/attendances}"
+                       class="btn-primary">
+                        Ingresar
+                    </a>
                 </div>
             </article>
 

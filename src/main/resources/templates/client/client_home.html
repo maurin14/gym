@@ -36,11 +36,41 @@
                 la integración con asistencia para dar seguimiento a tu actividad dentro del gimnasio.
             </p>
             <div class="service-list">
-                <a th:href="@{/client/routines}">Rutinas</a>
-                <button type="button" data-placeholder-module="Clases">Clases</button>
+                <a th:if="${session.user != null and session.user.role == 'client'}"
+                   th:href="@{/client/classes}">
+                    Clases
+                </a>
+
+                <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+                   th:href="@{/trainer/classes}">
+                    Clases
+                </a>
+                <a th:if="${session.user != null and session.user.role == 'client'}"
+                   th:href="@{/client/attendances}">
+
+                    <span class="module-icon">A</span>
+
+                    <div>
+                        <h3>Asistencia</h3>
+                        <p>Seguimiento de visitas.</p>
+                    </div>
+
+                </a>
+
+                <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+                   th:href="@{/trainer/attendances}">
+
+                    <span class="module-icon">A</span>
+
+                    <div>
+                        <h3>Asistencia</h3>
+                        <p>Seguimiento de visitas.</p>
+                    </div>
+
+                </a>
                 <button type="button" data-placeholder-module="Horarios">Horarios</button>
                 <button type="button" data-placeholder-module="Equipamiento">Equipamiento</button>
-                <button type="button" data-placeholder-module="Asistencia">Asistencia</button>
+                
             </div>
         </div>
     </section>

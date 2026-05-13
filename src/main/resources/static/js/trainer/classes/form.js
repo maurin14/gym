@@ -1,84 +1,135 @@
 document.addEventListener("DOMContentLoaded", function () {
-    loadClients();
-    loadClasses();
+
+    loadTrainers();
 
     const parts = window.location.pathname.split("/");
-    const idAttendance = parts[parts.length - 1];
+    const idClass = parts[parts.length - 1];
 
-    if (!isNaN(idAttendance)) {
-        loadAttendance(idAttendance);
+    if (!isNaN(idClass)) {
+        loadClass(idClass);
     }
+
 });
 
-function loadClients() {
-    fetch("/attendances/clients")
+function loadTrainers() {
+
+    fetch("/classes/trainers")
         .then(response => response.json())
         .then(data => {
-            const clientSelect = document.getElementById("clientId");
-            clientSelect.innerHTML = '<option value="">Seleccione un cliente</option>';
 
-            data.forEach(client => {
-                clientSelect.innerHTML += `
-                    <option value="${client.userId}">
-                        ${client.fullName}
-                    </option>
-                `;
-            });
+            const trainerSelect =
+                    document.getElementById("trainerId");
+
+            trainerSelect.innerHTML =
+                    '<option value="">Seleccione un entrenador</option>';
+
+            data
+                .filter(user =>
+                    user.role &&
+                    user.role.toLowerCase() === "trainer"
+                )
+                .forEach(trainer => {
+
+                    trainerSelect.innerHTML += `
+                        <option value="${trainer.userId}">
+                            ${trainer.fullName}
+                        </option>
+                    `;
+                });
+
         });
+
 }
 
-function loadClasses() {
-    fetch("/classes")
+function loadClass(idClass) {
+
+    fetch("/classes/" + idClass)
         .then(response => response.json())
-        .then(data => {
-            const classSelect = document.getElementById("classId");
-            classSelect.innerHTML = '<option value="">Seleccione una clase</option>';
+        .then(gymClass => {
 
-            data.forEach(gymClass => {
-                classSelect.innerHTML += `
-                    <option value="${gymClass.idClass}">
-                        ${gymClass.classType} - ${gymClass.classDate}
-                    </option>
-                `;
-            });
+            document.getElementById("formTitle").innerText =
+                    "Modificar Clase";
+
+            document.getElementById("idClass").value =
+                    gymClass.idClass;
+
+            document.getElementById("classType").value =
+                    gymClass.classType;
+
+            document.getElementById("classDate").value =
+                    gymClass.classDate;
+
+            document.getElementById("startTime").value =
+                    gymClass.startTime;
+
+            document.getElementById("endTime").value =
+                    gymClass.endTime;
+
+            document.getElementById("maxCapacity").value =
+                    gymClass.maxCapacity;
+
+            document.getElementById("trainerId").value =
+                    gymClass.trainer.userId;
+
+            document.getElementById("enrolledCount").value =
+                    gymClass.enrolledCount;
+
+            document.getElementById("difficultyLevel").value =
+                    gymClass.difficultyLevel;
+
+            document.getElementById("description").value =
+                    gymClass.description;
+
         });
+
 }
 
-function loadAttendance(idAttendance) {
-    fetch("/attendances/" + idAttendance)
-        .then(response => response.json())
-        .then(attendance => {
-            document.getElementById("formTitle").innerText = "Modificar Asistencia";
-            document.getElementById("idAttendance").value = attendance.idAttendance;
-            document.getElementById("clientId").value = attendance.client.userId;
-            document.getElementById("classId").value = attendance.gymClass.idClass;
-            document.getElementById("attendanceDate").value = attendance.attendanceDate;
-            document.getElementById("attendanceStatus").value = attendance.attendanceStatus;
-            document.getElementById("observation").value = attendance.observation;
-        });
-}
+function saveClass() {
 
-function saveAttendance() {
-    const idAttendance = document.getElementById("idAttendance").value;
+    const idClass =
+            document.getElementById("idClass").value;
 
-    const attendance = {
-        client: {
-            userId: document.getElementById("clientId").value
+    const gymClass = {
+
+        classType:
+                document.getElementById("classType").value,
+
+        classDate:
+                document.getElementById("classDate").value,
+
+        startTime:
+                document.getElementById("startTime").value,
+
+        endTime:
+                document.getElementById("endTime").value,
+
+        maxCapacity:
+                document.getElementById("maxCapacity").value,
+
+        trainer: {
+            userId:
+                    document.getElementById("trainerId").value
         },
-        gymClass: {
-            idClass: document.getElementById("classId").value
-        },
-        attendanceDate: document.getElementById("attendanceDate").value,
-        attendanceStatus: document.getElementById("attendanceStatus").value,
-        observation: document.getElementById("observation").value
+
+        enrolledCount:
+                document.getElementById("enrolledCount").value,
+
+        difficultyLevel:
+                document.getElementById("difficultyLevel").value,
+
+        description:
+                document.getElementById("description").value
+
     };
 
-    let url = "/attendances";
+    let url = "/classes";
     let method = "POST";
 
-    if (idAttendance !== "") {
-        url = "/attendances/" + idAttendance;
+    if (idClass !== "") {
+
+        url = "/classes/" + idClass;
         method = "PUT";
+
     }
 
     fetch(url, {
@@ -86,9 +137,14 @@ function saveAttendance() {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(attendance)
-    }).then(() => {
-        alert("Asistencia guardada correctamente");
-        window.location.href = "/trainer/attendances";
+        body: JSON.stringify(gymClass)
+    })
+    .then(() => {
+
+        alert("Clase guardada correctamente");
+
+        window.location.href = "/trainer/classes";
+
     });
+
 }

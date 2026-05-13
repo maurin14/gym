@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Formulario de Clase</title>
-    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 
@@ -11,49 +11,18 @@
     <div class="header-left">
         <div class="brand-text">
             <span class="system-name">Gimnasio</span>
-
             <span class="brand-subtitle">Gestión de clases</span>
         </div>
     </div>
 
     <nav class="header-nav">
         <a href="/admin/home">Inicio</a>
-        <a href="/trainer/attendances">Asistencias</a>
         <a href="/trainer/classes">Clases</a>
     </nav>
 </header>
 
 <div class="container form-container">
 
-<<<<<<< HEAD
-    <h1 class="page-title" id="formTitle">Agregar Asistencia</h1>
-
-    <input type="hidden" id="idAttendance">
-
-    <form>
-        <label>Cliente</label>
-        <select id="clientId"></select>
-
-        <label>Clase</label>
-        <select id="classId"></select>
-
-        <label>Fecha de Asistencia</label>
-        <input type="date" id="attendanceDate">
-
-        <label>Estado de Asistencia</label>
-        <select id="attendanceStatus">
-            <option value="Presente">Presente</option>
-            <option value="Ausente">Ausente</option>
-            <option value="Tarde">Tarde</option>
-        </select>
-
-        <label>Observación</label>
-        <textarea id="observation"></textarea>
-
-        <div class="buttons">
-            <button type="button" class="btn-primary" onclick="saveAttendance()">Guardar</button>
-            <a class="btn-secondary" href="/trainer/attendances">Volver</a>
-=======
     <h1 class="page-title" id="formTitle">Agregar Clase</h1>
 
     <input type="hidden" id="idClass">
@@ -93,17 +62,12 @@
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
             <a class="btn-secondary" href="/trainer/classes">Volver</a>
->>>>>>> feature/classes
         </div>
     </form>
 
 </div>
 
-<<<<<<< HEAD
-<script src="/js/trainer/attendances/form.js"></script>
-=======
-<script src="/js/trainer/classes/form.js"></script>
->>>>>>> feature/classes
+<script th:src="@{/js/trainer/classes/form.js}"></script>
 
 </body>
 </html>
