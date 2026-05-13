@@ -2,7 +2,7 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.domain.User;
-import com.una.ac.cr1.gym.domain.Attendance;
+import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.repository.ReportRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
