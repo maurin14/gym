@@ -49,6 +49,49 @@ public class GymClassController {
     }
 
     @ResponseBody
+    @GetMapping("/classes/page")
+    public Map<String, Object> getClassesPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        var classPage = gymClassService.getClassesPage(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("currentPage", classPage.getNumber() + 1);
+        response.put("totalPages", classPage.getTotalPages());
+
+        response.put("classes", classPage.getContent()
+                .stream()
+                .map(gymClass -> {
+
+                    Map<String, Object> map = new HashMap<>();
+
+                    map.put("idClass", gymClass.getIdClass());
+                    map.put("classType", gymClass.getClassType());
+                    map.put("classDate", gymClass.getClassDate());
+                    map.put("startTime", gymClass.getStartTime());
+                    map.put("endTime", gymClass.getEndTime());
+                    map.put("maxCapacity", gymClass.getMaxCapacity());
+                    map.put("enrolledCount", gymClass.getEnrolledCount());
+                    map.put("difficultyLevel", gymClass.getDifficultyLevel());
+                    map.put("description", gymClass.getDescription());
+                    map.put("duration", gymClass.getDuration());
+                    map.put("status", gymClass.isStatus());
+
+                    map.put("trainerName",
+                            gymClass.getTrainer() != null
+                            ? gymClass.getTrainer().getFullName()
+                            : "Sin entrenador");
+
+                    return map;
+                })
+                .toList());
+
+        return response;
+    }
+
+    @ResponseBody
     @GetMapping("/classes")
     public List<Map<String, Object>> getAllClasses() {
 
