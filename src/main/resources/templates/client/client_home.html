@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio Cliente - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/client-home.js}" defer></script>
+</head>
+<body>
+
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('home')}"></div>
+
+<main>
+    <section class="client-home-hero">
+        <div class="home-hero-content">
+            <span class="section-kicker">SAM GYM FITNESS</span>
+            <h1>Tu centro digital del gimnasio</h1>
+            <p class="home-slogan">Todo lo que necesitas para vivir mejor tu experiencia fitness.</p>
+            <p>
+                Desde este espacio podrás consultar información importante, prepararte antes de entrenar y mantener
+                una conexión más clara con los servicios del gimnasio.
+            </p>
+        </div>
+    </section>
+
+    <section class="home-service-section dark-section">
+        <div class="home-service-visual training-visual"></div>
+        <div class="home-service-content">
+            <span class="section-kicker">Entrenamiento</span>
+            <h2>Entrena con más claridad, orden y seguimiento</h2>
+            <p>
+                Consulta rutinas por objetivo, revisa clases y horarios, conoce el equipamiento disponible y deja preparada
+                la integración con asistencia para dar seguimiento a tu actividad dentro del gimnasio.
+            </p>
+            <div class="service-list">
+                <a th:href="@{/client/routines}">Rutinas</a>
+                <button type="button" data-placeholder-module="Clases">Clases</button>
+                <button type="button" data-placeholder-module="Horarios">Horarios</button>
+                <button type="button" data-placeholder-module="Equipamiento">Equipamiento</button>
+                <button type="button" data-placeholder-module="Asistencia">Asistencia</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-service-section light-section reverse">
+        <div class="home-service-content">
+            <span class="section-kicker">Funciones complementarias</span>
+            <h2>Consulta información clave del gimnasio</h2>
+            <p>
+                Además de entrenar, el sistema te permite consultar productos disponibles, revisar información de pagos
+                y conocer las sucursales del gimnasio desde una experiencia organizada.
+            </p>
+            <div class="category-actions">
+                <a th:href="@{/client/products}" class="btn-primary">Ver productos</a>
+                <button type="button" class="btn-secondary" data-placeholder-module="Pagos">Consultar pagos</button>
+                <button type="button" class="btn-secondary" data-placeholder-module="Sucursales">Ver sucursales</button>
+            </div>
+        </div>
+        <div class="home-service-visual shop-visual"></div>
+    </section>
+
+    <section class="home-final-cta">
+        <span class="section-kicker">Explora nuestro sistema</span>
+        <h2>Una forma más clara de conectar con el gimnasio</h2>
+        <p>
+            Con SAM GYM FITNESS podrás acceder de forma organizada a las principales áreas del gimnasio, consultar
+            información importante y prepararte para una experiencia más clara, cómoda y conectada.
+        </p>
+        <div class="home-actions centered-actions">
+            <button type="button" class="btn-primary" data-menu-toggle>Explorar sistema</button>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
+
+</body>
+</html>
