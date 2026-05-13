@@ -17,6 +17,8 @@
     <nav class="header-nav">
         <a th:href="@{/admin/home}">Inicio</a>
         <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
         <a th:href="@{/admin/payments}">Pagos</a>
         <a th:href="@{/admin/routines}">Rutinas</a>
         <a th:href="@{/admin/classes}">Clases</a>
@@ -52,6 +54,22 @@
                 </div>
             </article>
 
+            <article class="module-card">
+                <h3>Usuarios</h3>
+                <p>Administrar clientes, entrenadores y administradores.</p>
+                <div class="buttons">
+                    <a th:href="@{/users}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h3>Reportes</h3>
+                <p>Generar, visualizar y descargar reportes del sistema.</p>
+                <div class="buttons">
+                    <a th:href="@{/reports}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+            
             <article class="module-card">
                 <h3>Pagos</h3>
                 <p>Registrar, editar y eliminar pagos de usuarios.</p>

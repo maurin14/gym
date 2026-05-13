@@ -10,6 +10,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.una.ac.cr.gym.domain.Attendance;
 import jakarta.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -42,6 +43,9 @@ public class ReportService implements CRUD<Report>{
     
     @Autowired
     private PaymentService paymentService;
+    
+    @Autowired
+    private AttendanceService attendanceService;
     
     public void save(Report r){
         String validation = validate(r);
@@ -216,12 +220,40 @@ public class ReportService implements CRUD<Report>{
             }   list.add(row("Cliente", "María Solano", "Monto", "₡15 000", "Estado", "Pagado"));
 
         }else if("attendances".equalsIgnoreCase(reportType)){
-            list.add(row("Cliente", "Ana Pérez", "Fecha", "14/04/26", "Asistencia", "Sí"));
-            list.add(row("Cliente", "Luis Mora", "Fecha", "15/04/26", "Asistencia", "Sí"));
-            list.add(row("Cliente", "María Solano", "Fecha", "16/04/26", "Asistencia", "No"));
+
+            List<Attendance> attendances = attendanceService.getAllAttendances();
+
+            for(Attendance a : attendances){
+
+                Map<String, String> map = new LinkedHashMap<>();
+
+                if(a.getClient() != null){
+                    map.put("Cliente", a.getClient().getFullName());
+                }else{
+                    map.put("Cliente", "Sin cliente");
+                }
+
+                if(a.getGymClass() != null){
+                    map.put("Clase", a.getGymClass().getClassType());
+                }else{
+                    map.put("Clase", "Sin clase");
+                }
+
+                map.put("Fecha", String.valueOf(a.getAttendanceDate()));
+                map.put("Asistencia", a.getAttendanceStatus());
+
+                if(a.getObservation() != null){
+                    map.put("Observación", a.getObservation());
+                }else{
+                    map.put("Observación", "Sin observación");
+                }
+
+                list.add(map);
+            }
         }
 
         return list;
+ 
     }
 
     private Map<String, String> row(String k1, String v1, String k2, String v2, String k3, String v3){

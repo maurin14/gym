@@ -98,7 +98,7 @@ public class ReportController {
         }
 
         boolean isNew = reportNew.getReportId() == null;
-        rService.save(report);
+        rService.save(reportNew);
         boolean saved = true;
 
         if (saved) {
