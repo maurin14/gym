@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    loadTrainers();
-
     const parts = window.location.pathname.split("/");
     const idClass = parts[parts.length - 1];
 
-    if (!isNaN(idClass)) {
-        loadClass(idClass);
-    }
+    loadTrainers().then(() => {
+        if (!isNaN(idClass)) {
+            loadClass(idClass);
+        }
+    });
 
 });
 
 function loadTrainers() {
 
-    fetch("/trainer/classes/trainers")
+    return fetch("/classes/trainers")
         .then(response => response.json())
         .then(data => {
 
@@ -22,65 +22,38 @@ function loadTrainers() {
             trainerSelect.innerHTML =
                     '<option value="">Seleccione un entrenador</option>';
 
-            data
-                .filter(user =>
-                    user.role &&
-                    user.role.toLowerCase() === "trainer"
-                )
-                .forEach(trainer => {
-
-                    trainerSelect.innerHTML += `
-                        <option value="${trainer.userId}">
-                            ${trainer.fullName}
-                        </option>
-                    `;
-                });
-
+            data.forEach(trainer => {
+                trainerSelect.innerHTML += `
+                    <option value="${trainer.userId}">
+                        ${trainer.fullName}
+                    </option>
+                `;
+            });
         });
-
 }
 
 function loadClass(idClass) {
 
-    fetch("/trainer/classes/" + idClass)
+    fetch("/classes/" + idClass)
         .then(response => response.json())
         .then(gymClass => {
 
-            document.getElementById("formTitle").innerText =
-                    "Modificar Clase";
+            document.getElementById("formTitle").innerText = "Modificar Clase";
+            document.getElementById("idClass").value = gymClass.idClass;
+            document.getElementById("classType").value = gymClass.classType;
+            document.getElementById("classDate").value = gymClass.classDate;
+            document.getElementById("startTime").value = gymClass.startTime;
+            document.getElementById("endTime").value = gymClass.endTime;
+            document.getElementById("maxCapacity").value = gymClass.maxCapacity;
 
-            document.getElementById("idClass").value =
-                    gymClass.idClass;
+            if (gymClass.trainer !== null) {
+                document.getElementById("trainerId").value = gymClass.trainer.userId;
+            }
 
-            document.getElementById("classType").value =
-                    gymClass.classType;
-
-            document.getElementById("classDate").value =
-                    gymClass.classDate;
-
-            document.getElementById("startTime").value =
-                    gymClass.startTime;
-
-            document.getElementById("endTime").value =
-                    gymClass.endTime;
-
-            document.getElementById("maxCapacity").value =
-                    gymClass.maxCapacity;
-
-            document.getElementById("trainerId").value =
-                    gymClass.trainer.userId;
-
-            document.getElementById("enrolledCount").value =
-                    gymClass.enrolledCount;
-
-            document.getElementById("difficultyLevel").value =
-                    gymClass.difficultyLevel;
-
-            document.getElementById("description").value =
-                    gymClass.description;
-
+            document.getElementById("enrolledCount").value = gymClass.enrolledCount;
+            document.getElementById("difficultyLevel").value = gymClass.difficultyLevel;
+            document.getElementById("description").value = gymClass.description;
         });
-
 }
 
 function saveClass() {
@@ -98,7 +71,6 @@ function saveClass() {
     if (classType === "" || classDate === "" || startTime === "" || endTime === "" ||
             maxCapacity === "" || trainerId === "" || enrolledCount === "" ||
             difficultyLevel === "" || description === "") {
-
         alert("Debe completar todos los campos.");
         return;
     }
@@ -139,11 +111,11 @@ function saveClass() {
         description: description
     };
 
-    let url = "/trainer/classes";
+    let url = "/classes";
     let method = "POST";
 
     if (idClass !== "") {
-        url = "/trainer/classes/" + idClass;
+        url = "/classes/" + idClass;
         method = "PUT";
     }
 

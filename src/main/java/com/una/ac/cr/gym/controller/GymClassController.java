@@ -16,6 +16,8 @@ import com.una.ac.cr.gym.service.UserService;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 public class GymClassController {
@@ -51,8 +53,34 @@ public class GymClassController {
 
     @ResponseBody
     @GetMapping("/classes")
-    public List<GymClass> getAllClasses() {
-        return gymClassService.getAllClasses();
+    public List<java.util.Map<String, Object>> getAllClasses() {
+
+        return gymClassService.getAllClasses()
+                .stream()
+                .map(gymClass -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+
+                    map.put("idClass", gymClass.getIdClass());
+                    map.put("classType", gymClass.getClassType());
+                    map.put("classDate", gymClass.getClassDate());
+                    map.put("startTime", gymClass.getStartTime());
+                    map.put("endTime", gymClass.getEndTime());
+                    map.put("maxCapacity", gymClass.getMaxCapacity());
+                    map.put("enrolledCount", gymClass.getEnrolledCount());
+                    map.put("difficultyLevel", gymClass.getDifficultyLevel());
+                    map.put("description", gymClass.getDescription());
+                    map.put("duration", gymClass.getDuration());
+                    map.put("status", gymClass.isStatus());
+
+                    if (gymClass.getTrainer() != null) {
+                        map.put("trainerName", gymClass.getTrainer().getFullName());
+                    } else {
+                        map.put("trainerName", "Sin entrenador");
+                    }
+
+                    return map;
+                })
+                .toList();
     }
 
     @ResponseBody
