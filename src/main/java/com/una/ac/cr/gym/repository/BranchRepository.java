@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.una.ac.cr.gym.repository;
 
 import com.una.ac.cr.gym.domain.Branch;
@@ -6,27 +10,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
+
+/**
+ *
+ * @author sharo
+ */
 public interface BranchRepository extends JpaRepository<Branch, Integer> {
 
     Page<Branch> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
-    Page<Branch> findByActive(boolean active, Pageable pageable);
+    Page<Branch> findByActive(Boolean active, Pageable pageable);
 
-    Page<Branch> findByProvinceContainingIgnoreCase(String province, Pageable pageable);
-
-    Page<Branch> findByNameContainingIgnoreCaseAndActive(
-            String name, boolean active, Pageable pageable);
-
-    Page<Branch> findByNameContainingIgnoreCaseAndProvinceContainingIgnoreCase(
-            String name, String province, Pageable pageable);
-
-    Page<Branch> findByProvinceContainingIgnoreCaseAndActive(
-            String province, boolean active, Pageable pageable);
-
-    Page<Branch> findByNameContainingIgnoreCaseAndProvinceContainingIgnoreCaseAndActive(
-            String name, String province, boolean active, Pageable pageable);
-
-    List<Branch> findTop3ByActiveTrueOrderByIdAsc();
+    Page<Branch> findByNameContainingIgnoreCaseAndActive(String name, Boolean active, Pageable pageable);
 
     List<Branch> findByActiveTrue();
 }

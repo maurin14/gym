@@ -7,17 +7,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <body>
 <div th:fragment="tableBranch">
 
-    <table>
+    <table class="portal-table">
         <thead>
         <tr>
+            <th>Imagen</th>
             <th>Fecha apertura</th>
             <th>Nombre</th>
-            <th>Provincia</th>
             <th>Dirección</th>
             <th>Teléfono</th>
             <th>Capacidad</th>
-            <th>Correo</th>
-            <th>Imagen</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
@@ -25,30 +23,35 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <tbody>
         <tr th:if="${branches.content.size() == 0}">
-            <td colspan="10">No se encontraron sucursales registradas.</td>
+            <td colspan="8">No se encontraron sucursales registradas.</td>
         </tr>
 
         <tr th:each="b : ${branches.content}">
+            <td>
+                <img th:src="@{'/images/branches/' + ${b.imageUrl}}"
+                     alt="Sucursal"
+                     style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
+            </td>
+
             <td th:text="${#temporals.format(b.openingDate, 'dd/MM/yyyy')}"></td>
             <td th:text="${b.name}"></td>
-            <td th:text="${b.province}"></td>
             <td th:text="${b.address}"></td>
             <td th:text="${b.phone}"></td>
             <td th:text="${b.capacity}"></td>
-            <td th:text="${b.email}"></td>
-            <td th:text="${b.imageUrl}"></td>
+
             <td>
-                <span th:text="${b.active ? 'Activo' : 'Inactivo'}"
+                <span th:text="${b.active ? 'Activa' : 'Inactiva'}"
                       th:class="${b.active ? 'badge badge-active' : 'badge badge-inactive'}"></span>
             </td>
+
             <td class="actions">
                 <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">Editar</a>
 
                 <a href="#"
                    th:data-id="${b.id}"
                    class="btn-primary"
-                   onclick="confirmToggleBranch(this); return false;">
-                    Activar/Inactivar
+                   onclick="confirmChangeBranchStatus(this); return false;">
+                    Cambiar estado
                 </a>
 
                 <a href="#"
@@ -88,6 +91,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             Siguiente
         </button>
     </div>
+
 </div>
 </body>
 </html>
