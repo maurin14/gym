@@ -35,3 +35,4 @@ build/
 
 # Configuración sensible
 src/main/resources/application.properties
+src/main/java/com/una/ac/cr/gym/domain/Attendance.java
