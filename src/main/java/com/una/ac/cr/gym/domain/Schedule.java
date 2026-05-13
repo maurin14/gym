@@ -25,7 +25,7 @@ import java.time.LocalTime;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
   
     @Enumerated(EnumType.STRING)
  
@@ -39,7 +39,7 @@ public class Schedule {
 @JoinColumn(name = "branch_id")
  private Branch branch;
 
-    public Schedule(Integer id, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, String scheduleType, boolean active, Branch branch) {
+    public Schedule(int id, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, String scheduleType, boolean active, Branch branch) {
         this.id = id;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
