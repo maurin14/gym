@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author PC
  */
+
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
     Page<Schedule> findByBranchId(Integer branchId, Pageable pageable);
     Page<Schedule> findByStartTimeBetween(LocalTime start, LocalTime end, Pageable pageable);
