@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 
@@ -21,15 +22,20 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_product")
     private int idProduct;
 
+    @Column(name = "name_product")
     private String nameProduct;
     private String description;
     private String category;
     private double price;
+    @Column(name = "quantity_stock")
     private int quantityStock;
+    @Column(name = "register_date")
     private LocalDate registerDate;
     private boolean state;
+    @Column(name = "image_path")
     private String imagePath;
 
     public Product() {

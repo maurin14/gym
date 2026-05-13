@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
@@ -26,7 +25,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
+        <a th:href="@{/client/home}" class="btn-primary">Iniciar sesión</a>
     </nav>
 </header>
 
@@ -43,7 +42,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </p>
 
             <div class="landing-buttons">
-                <a th:href="@{/login}" class="btn-primary">Ingresar al sistema</a>
+                <a th:href="@{/client/home}" class="btn-primary">Ingresar al sistema</a>
             </div>
         </div>
 
@@ -177,7 +176,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 solicítalo directamente en la recepción del gimnasio.
             </p>
             <div class="landing-buttons centered">
-                <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
+                <a th:href="@{/client/home}" class="btn-primary">Iniciar sesión</a>
             </div>
         </div>
     </section>
@@ -199,40 +198,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/login}">Iniciar sesión</a>
+        <a th:href="@{/client/home}">Iniciar sesión</a>
     </div>
 </footer>
 
 </body>
-=======
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Inicio</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    </head>
-    <body>
-        <div class="container start-panel">
-
-            <div class="user-session" th:if="${session.user != null}">
-                <p th:text="'Bienvenido ' + ${session.user.fullName}"></p>
-                <a th:href="@{/profile/password}" class="btn-settings">⚙</a>
-                <a th:href="@{/logout}">Cerrar sesión</a>
-            </div>
-            
-            <h1>SAM GYM FITNESS</h1>
-            <p>Gestión de usuarios y reportes</p>
-
-            <div class="menu">
-                <a th:if="${session.user.role == 'administrator' or session.user.role == 'trainer'}"
-                   th:href="@{/users}">Usuarios</a>
-
-                <a th:if="${session.user.role == 'administrator'}"
-                   th:href="@{/reports}">Reportes</a>
-            </div> 
-
-        </div>
-    </body>
->>>>>>> feature/users
 </html>
