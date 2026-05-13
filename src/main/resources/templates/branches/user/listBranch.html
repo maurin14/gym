@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sucursales - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/branch.css}">
+</head>
+<body class="page-portal">
+
+<header class="portal-header">
+    <div class="portal-brand">
+        <a th:href="@{/user/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
+        </a>
+        <div>
+            <span class="portal-title">SAM GYM FITNESS</span>
+            <span class="portal-subtitle">Portal cliente</span>
+        </div>
+    </div>
+
+    <nav class="portal-nav">
+        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/payments(userId=1)}">Mis pagos</a>
+        <a th:href="@{/routines}">Rutinas</a>
+        <a th:href="@{/classes}">Clases</a>
+        <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/schedules}">Horarios</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="portal-main">
+
+    <section class="portal-head">
+        <span class="portal-tag">Sucursales</span>
+        <h1>Sucursales disponibles</h1>
+        <p>Consulta las sedes activas del gimnasio, su ubicación, capacidad y datos generales.</p>
+    </section>
+
+    <section class="portal-card">
+
+        <div class="portal-filters">
+            <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
+
+            <button type="button"
+                    class="btn-primary"
+                    onclick="window.location.href='/branches?name=' + encodeURIComponent(document.getElementById('filterName').value)">
+                Buscar
+            </button>
+
+            <a th:href="@{/branches}" class="btn-secondary">Limpiar filtros</a>
+        </div>
+
+        <div class="portal-grid">
+
+            <article class="branch-card" th:each="b : ${branches.content}">
+                <img th:src="@{'/images/branches/' + ${b.imageUrl}}" alt="Sucursal">
+
+                <div class="branch-card-body">
+                    <h3 th:text="${b.name}"></h3>
+
+
+                    <p>
+                        <strong>Dirección:</strong>
+                        <span th:text="${b.address}"></span>
+                    </p>
+
+
+                    <p>
+                        <strong>Estado:</strong>
+                        <span class="badge badge-active">Activa</span>
+                    </p>
+
+                    <div class="buttons">
+                        <a th:href="@{/branches/{id}(id=${b.id})}" class="btn-primary">Ver detalle</a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <div th:if="${branches.content.size() == 0}">
+            <p>No hay sucursales disponibles.</p>
+        </div>
+
+        <div class="pagination" th:if="${branches.totalPages > 1}">
+            <a class="btn-secondary"
+               th:if="${branches.hasPrevious()}"
+               th:href="@{/branches(page=${branches.number - 1}, name=${name})}">
+                Anterior
+            </a>
+
+            <span th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}">
+                <a th:text="${i + 1}"
+                   th:href="@{/branches(page=${i}, name=${name})}"
+                   th:class="${i == branches.number ? 'btn-primary' : 'btn-secondary'}">
+                </a>
+            </span>
+
+            <a class="btn-secondary"
+               th:if="${branches.hasNext()}"
+               th:href="@{/branches(page=${branches.number + 1}, name=${name})}">
+                Siguiente
+            </a>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

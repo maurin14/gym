@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalle de Pago - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="page-portal">
+
+<header class="portal-header">
+    <div class="portal-brand">
+        <a th:href="@{/user/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
+        </a>
+        <div>
+            <span class="portal-title">SAM GYM FITNESS</span>
+            <span class="portal-subtitle">Portal cliente</span>
+        </div>
+    </div>
+
+    <nav class="portal-nav">
+        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/payments(userId=${userId})}">Mis pagos</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="portal-main">
+
+    <section class="portal-head">
+        <span class="portal-tag">Detalle de pago</span>
+        <h1>Información del pago</h1>
+        <p>Detalle completo del pago seleccionado.</p>
+    </section>
+
+    <section class="portal-card">
+
+        <div class="info-card">
+            <p>
+                <strong>Fecha pago:</strong>
+                <span th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy')}"></span>
+            </p>
+
+            <p>
+                <strong>Cliente:</strong>
+                <span th:text="${payment.idUser}"></span>
+            </p>
+
+            <p>
+                <strong>Sucursal:</strong>
+                <span th:text="${payment.branch != null ? payment.branch.name : 'Sin sucursal'}"></span>
+            </p>
+
+            <p>
+                <strong>Monto:</strong>
+                <span th:text="${'₡' + payment.amount}"></span>
+            </p>
+
+            <p>
+                <strong>Método:</strong>
+                <span th:text="${payment.paymentMethod}"></span>
+            </p>
+
+            <p>
+                <strong>Estado:</strong>
+                <span th:text="${payment.status}"
+                      th:class="${payment.status == 'Pagado' ? 'badge badge-active' :
+                               (payment.status == 'Pendiente' ? 'badge badge-pending' : 'badge badge-inactive')}">
+                </span>
+            </p>
+
+            <p>
+                <strong>Descripción:</strong>
+                <span th:text="${payment.description}"></span>
+            </p>
+        </div>
+
+        <div class="buttons">
+            <a th:href="@{/payments(userId=${userId})}" class="btn-secondary">Volver</a>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>
