@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+       <body>
+        <div class="busqueda">
+
+    <select id="tipoBusqueda" onchange="cambiarBusqueda()">
+        <option value="">Buscar por...</option>
+        <option value="id">Sucursal (ID)</option>
+        <option value="costo">Costo</option>
+    </select>
+
+
+    <div id="busquedaId" style="display:none;">
+        <input type="number" id="inputId" placeholder="Ingrese ID">
+        <button onclick="buscarPorId()">Buscar</button>
+    </div>
+
+    <div id="busquedaCosto" style="display:none;">
+        <input type="number" id="minCosto" placeholder="Costo mínimo">
+        <input type="number" id="maxCosto" placeholder="Costo máximo">
+        <button onclick="buscarPorCosto()">Buscar</button>
+    </div>
+
+</div>
+    <div th:fragment="tablaContainer">
+
+    <div id="tablaContent" th:fragment="tablaContent">
+        <table border="1">
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Costo</th>
+                <th>Disponible</th>
+                <th>Sucursal</th>
+                <th>Acciones</th>
+            </tr>
+            <tr th:each="equi : ${equipment}">
+                <td th:text="${equi.name}"></td>
+                <td th:text="${equi.type}"></td>
+                <td th:text="${equi.state}"></td>
+                <td th:text="${equi.purchaseDate}"></td>
+                <td th:text="${equi.cost}"></td>
+                <td th:text="${equi.available}"></td>
+                <td th:text="${equi.branch != null ? equi.branch.name : 'Sin sucursal'}"></td>
+                <td>
+                    <a href="#" th:attr="data-id=${equi.id}" onclick="cargarEditar(this); return false;">Editar</a>
+                    <a href="#" th:attr="data-id=${equi.id}" onclick="confirmDelete(this); return false;">Eliminar</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+
+ 
+    <select onchange="cambiarSize(this.value)">
+         <option value="0" disabled selected>Tamaño</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+    </select>
+
+    <!-- PAGINACIÓN -->
+    <div>
+
+        <button th:if="${currentPage > 0}"
+                th:attr="data-page=${currentPage - 1}"
+                onclick="cargarPagina(this.getAttribute('data-page'))">
+            ←
+        </button>
+
+        <span>
+            Página <span th:text="${currentPage + 1}"></span>
+            de <span th:text="${totalPages}"></span>
+        </span>
+
+        <button th:if="${currentPage + 1 < totalPages}"
+                th:attr="data-page=${currentPage + 1}"
+                onclick="cargarPagina(this.getAttribute('data-page'))">
+            →
+        </button>
+
+    </div>
+
+</div>
+        
+    </body>
+</html>
