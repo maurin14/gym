@@ -4,7 +4,9 @@
  */
 package com.una.ac.cr.gym.controller;
 
+import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Equipment;
+import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.EquipmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,7 @@ public class ControllerEquipment {
     private EquipmentService equipmentService;
 
    @org.springframework.beans.factory.annotation.Autowired
-    private BranchServices branchServices;
+    private BranchService branchServices;
    @GetMapping("/equip")
 public String equipment(
         @RequestParam(defaultValue = "0") int page,
@@ -54,10 +56,10 @@ public String equipment(
     model.addAttribute("totalPages", data.getTotalPages());
 
     if ("XMLHttpRequest".equals(ajax)) {
-       return "equipment/equipment :: tablaContent";
+       return "equipment/listEquipment :: tableContent";
     }
 
-    return "equipment/equipment";
+    return "equipment/ListEquipment";
 }
 
      @GetMapping("/add")
@@ -86,7 +88,7 @@ public String save(Equipment newEquipment){
   @GetMapping("/edit/{id}")
 public String editEquipment(@PathVariable("id") int id, Model model) {
 
-    Equipment e = equipmentService.getByid(id);
+    Equipment e = equipmentService.getById(id);
 
     if (e.getBranch() == null) {
         e.setBranch(new Branch());

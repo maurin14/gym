@@ -4,7 +4,9 @@
  */
 package com.una.ac.cr.gym.service;
 
+import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Equipment;
+import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.EquipmentRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

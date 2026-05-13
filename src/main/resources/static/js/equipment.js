@@ -17,7 +17,7 @@ function loadpage(page) {
 
 function changeSize(size) {
     pageSize = parseInt(size);
-    cargarPagina(0);
+    loadpage(0);
 }
 
 function loadForm() {
@@ -32,7 +32,7 @@ function loadForm() {
 
 function returnTable() {
     document.getElementById("formContainer").style.display = "none";
-    cargarPagina(currentPage);
+    loadpage(currentPage);
 }
 
 function saveForm(form) {
@@ -82,7 +82,7 @@ if (!formData.get("available")) {
     })
     .then(() => {
         Swal.fire('Éxito', 'Guardado correctamente', 'success');
-        volverTabla();
+                returnTable();
     });
 
     return false;
@@ -112,14 +112,14 @@ function confirmDelete(btn) {
             fetch(`/delete/${id}`)
                 .then(() => {
                     Swal.fire('Eliminado', '', 'success');
-                    cargarPagina(currentPage);
+                    loadpage(currentPage);
                 });
         }
     });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    cargarPagina(0);
+    loadpage(0);
 });
 
 //Busqueda
