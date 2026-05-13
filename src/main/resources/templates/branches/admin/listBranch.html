@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Administración de Sucursales</title>
+    <link rel="stylesheet" th:href="@{/css/branch.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
+</head>
+<body class="page-portal">
+
+<header class="portal-header">
+    <div class="portal-brand">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
+        </a>
+        <div>
+            <span class="portal-title">SAM GYM FITNESS</span>
+            <span class="portal-subtitle">Panel administrador</span>
+        </div>
+    </div>
+
+    <nav class="portal-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/admin/payments}">Pagos</a>
+        <a th:href="@{/admin/routines}">Rutinas</a>
+        <a th:href="@{/admin/classes}">Clases</a>
+        <a th:href="@{/admin/products}">Productos</a>
+        <a th:href="@{/admin/schedules}">Horarios</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="portal-main">
+
+    <section class="portal-head">
+        <span class="portal-tag">Gestión administrativa</span>
+        <h1>Administración de sucursales</h1>
+        <p>Consulta, registra, modifica y cambia el estado de las sucursales del gimnasio.</p>
+    </section>
+
+    <section class="portal-card">
+
+        <div class="portal-filters">
+            <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
+
+            <select id="filterActive">
+                <option value="">Todos los estados</option>
+                <option value="true" th:selected="${active == 'true'}">Activa</option>
+                <option value="false" th:selected="${active == 'false'}">Inactiva</option>
+            </select>
+
+            <button type="button" class="btn-primary" onclick="filterBranches()">Buscar</button>
+            <a th:href="@{/admin/branches}" class="btn-secondary">Limpiar filtros</a>
+        </div>
+
+        <div id="branch-table-container">
+            <div th:replace="branches/admin/tableBranch :: tableBranch"></div>
+        </div>
+
+        <div class="buttons">
+            <a th:href="@{/admin/branches/new}" class="btn-primary">Agregar sucursal</a>
+        </div>
+
+    </section>
+
+</main>
+
+<script th:inline="javascript">
+    const success = [[${param.success}]];
+
+    if (success != null) {
+        let message = "Acción realizada correctamente.";
+
+        if (success[0] === "save") message = "Sucursal registrada correctamente.";
+        if (success[0] === "edit") message = "Sucursal modificada correctamente.";
+        if (success[0] === "delete") message = "Sucursal eliminada correctamente.";
+        if (success[0] === "status") message = "Estado de la sucursal modificado correctamente.";
+
+        Swal.fire({
+            icon: "success",
+            title: message,
+            confirmButtonText: "OK"
+        });
+    }
+</script>
+
+</body>
+</html>
