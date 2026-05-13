@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Iniciar sesión</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Iniciar sesión</h1>
+
+    <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
+
+    <div class="login-logo">
+        <img th:src="@{/img/logo.jpeg}" alt="Sam Gym Fitness">
+    </div>
+    
+    <form th:action="@{/login}" method="post">
+
+        <label>Nombre de usuario</label>
+        <input type="text" name="username" required/>
+
+        <label>Contraseña</label>
+        <input type="password" name="password" required/>
+
+        <button type="submit">Ingresar</button>
+    </form>
+</div>
+
+</body>
+</html>
