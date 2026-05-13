@@ -5,6 +5,7 @@
     <title>Registrar Asistencia</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+
 <body class="public-page">
 
 <header class="main-header">
@@ -28,17 +29,25 @@
 
     <form>
         <label>Clase</label>
-        <select id="classId"></select>
+        <select id="classId" onchange="setAttendanceDate()"></select>
 
         <label>Fecha de Asistencia</label>
-        <input type="date" id="attendanceDate">
+        <input type="date" id="attendanceDate" readonly>
 
         <label>Observación</label>
         <textarea id="observation"></textarea>
 
         <div class="buttons">
-            <button type="button" class="btn-primary" onclick="saveClientAttendance()">Registrar</button>
-            <a class="btn-secondary" th:href="@{/client/classes}">Volver</a>
+            <button type="button"
+                    class="btn-primary"
+                    onclick="saveClientAttendance()">
+                Registrar
+            </button>
+
+            <a class="btn-secondary"
+               th:href="@{/client/classes}">
+                Volver
+            </a>
         </div>
     </form>
 
