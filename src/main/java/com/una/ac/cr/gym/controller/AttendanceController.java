@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.controller;
 
 /**
@@ -13,10 +9,10 @@ import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AttendanceController {
@@ -28,7 +24,6 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
         this.userService = userService;
     }
-
 
     @GetMapping("/trainer/attendances")
     public String trainerAttendancesList() {
@@ -44,7 +39,6 @@ public class AttendanceController {
     public String trainerAttendancesEdit(@PathVariable int idAttendance) {
         return "trainer/attendances/form";
     }
-
 
     @GetMapping("/client/attendances")
     public String clientAttendancesList() {
@@ -63,11 +57,30 @@ public class AttendanceController {
     }
 
     @ResponseBody
+    @GetMapping("/client/attendances/data")
+    public List<Attendance> getClientAttendances(HttpSession session) {
+
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession == null) {
+            return List.of();
+        }
+
+        return attendanceService.getAllAttendances()
+                .stream()
+                .filter(attendance ->
+                        attendance.getClient() != null
+                        && attendance.getClient().getUserId() == userSession.getUserId()
+                )
+                .toList();
+    }
+
+    @ResponseBody
     @GetMapping("/attendances/{idAttendance}")
     public Attendance getAttendanceById(@PathVariable int idAttendance) {
         return attendanceService.getAttendanceById(idAttendance);
     }
-    
+
     @ResponseBody
     @PostMapping("/attendances")
     public Attendance saveAttendance(@RequestBody Attendance attendance,
