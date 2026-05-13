@@ -9,19 +9,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
-    <body>
-       
-<div class="hero-gym">
-    <div class="hero-content">
-        <h2>¡AÑADE MÁS PODER!</h2>
-        <p>Registra nuevo equipamiento</p>
+         <link rel="stylesheet" th:href="@{/css/app.css}">
 
-        <a href="#" onclick="loadForm(); return false;" class="add-btn">
-            + Añadir Equipamiento
-        </a>
+    </head>
+    <body class="page-container">
+       
+<div class="table-header">
+    <h1 class="page-title">El equipamento de campeones</h1>
+      
+
+        <button onclick="loadForm()" class="add-btn">
+                + Añadir Equipamento
+            </button>
+    
     </div>
-</div>
 
 
 <div id="tableContainer"></div>

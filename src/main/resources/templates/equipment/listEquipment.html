@@ -9,8 +9,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <link rel="stylesheet" th:href="@{/css/app.css}">
+ 
     </head>
-    <body>
+    <body >
        
         <div class="busqueda">
 
@@ -36,7 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <div th:fragment="tableContainer">
 
     <div id="tableContent" th:fragment="tableContent">
-        <table border="1">
+        <table class="custom-table">
             <tr>
                 <th>Nombre</th>
                 <th>Tipo</th>
@@ -53,12 +55,26 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <td th:text="${equi.state}"></td>
                 <td th:text="${equi.purchaseDate}"></td>
                 <td th:text="${equi.cost}"></td>
-                <td th:text="${equi.available}"></td>
+                        <td>
+                            <span th:class="${equi.available} ? 'status-active' : 'status-inactive'"
+                                  th:text="${equi.available} ? 'Sí' : 'No'">
+                            </span>
+                        </td>
                 <td th:text="${equi.branch != null ? equi.branch.name : 'Sin sucursal'}"></td>
-                <td>
-                    <a href="#" th:attr="data-id=${equi.id}" onclick="loadEdit(this); return false;">Editar</a>
-                    <a href="#" th:attr="data-id=${equi.id}" onclick="confirmDelete(this); return false;">Eliminar</a>
-                </td>
+               <td class="actions">
+                            <a href="#"
+                               class="btn-edit"
+                               th:attr="data-id=${equi.id}"
+                               onclick="loadEdit(this); return false;">
+                                Editar
+                            </a>
+
+                            <a href="#"
+                               class="btn-delete"
+                               th:attr="data-id=${equi.id}"
+                               onclick="confirmDelete(this); return false;">
+                                Eliminar
+                            </a>
             </tr>
         </table>
     </div>
@@ -74,7 +90,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </select>
 
     <!-- PAGINACIÓN -->
-    <div>
+    <div class="pagination">
 
         <button th:if="${currentPage > 0}"
                 th:attr="data-page=${currentPage - 1}"

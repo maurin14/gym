@@ -9,6 +9,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                 <link rel="stylesheet" th:href="@{/css/app.css}">
+
     </head>
        <body class="center-form">
   
@@ -52,12 +54,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </select>
 
     <div class="button-group">
+        
         <button type="submit"
             th:text="${newEquipment.id != 0} ? 'Actualizar' : 'Guardar'">
         </button>
 
  
-        <a href="#" onclick="returnTable(); return false;" class="cancelar">Cancelar</a>
+      <button type="button"
+        onclick="returnTable()"
+        class="cancelar">
+    Cancelar
+      </button>
     </div>
 
 </form>
