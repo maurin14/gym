@@ -9,16 +9,13 @@
 <body class="dashboard-page">
 
 <header class="main-header">
-
     <div class="header-left">
-
         <div class="brand-text">
             <span class="system-name">Gimnasio</span>
             <span class="brand-subtitle">
                 Panel de entrenador / administrador
             </span>
         </div>
-
     </div>
 
     <nav class="header-nav">
@@ -26,7 +23,6 @@
         <a th:href="@{/trainer/classes}">Clases</a>
         <a th:href="@{/trainer/attendances}">Asistencias</a>
     </nav>
-
 </header>
 
 <section class="hero-branches">
@@ -37,18 +33,11 @@
         Administración de clases disponibles en el gimnasio.
     </p>
 
-    <div class="buttons">
-
+    <div style="margin-top: 30px; display: flex; justify-content: center;">
         <a class="btn-primary"
            th:href="@{/trainer/classes/form}">
             Agregar Clase
         </a>
-
-        <a class="btn-secondary"
-           th:href="@{/admin/home}">
-            Volver
-        </a>
-
     </div>
 
 </section>
@@ -56,7 +45,6 @@
 <div class="public-container">
 
     <table>
-
         <thead>
             <tr>
                 <th>Tipo</th>
@@ -74,23 +62,12 @@
         </thead>
 
         <tbody id="classesTableBody"></tbody>
-
     </table>
 
     <div class="pagination">
-
-        <button id="pageInfo" disabled>
-            Página 1 de 1
-        </button>
-
-        <button id="prevBtn" onclick="previousPage()">
-            Anterior
-        </button>
-
-        <button id="nextBtn" onclick="nextPage()">
-            Siguiente
-        </button>
-
+        <button id="pageInfo" disabled>Página 1 de 1</button>
+        <button id="prevBtn" onclick="previousPage()">Anterior</button>
+        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
     </div>
 
 </div>
