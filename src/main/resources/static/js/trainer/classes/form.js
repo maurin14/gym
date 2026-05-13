@@ -13,12 +13,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadTrainers() {
 
-    fetch("/classes/trainers")
+    fetch("/trainer/classes/trainers")
         .then(response => response.json())
         .then(data => {
 
-            const trainerSelect =
-                    document.getElementById("trainerId");
+            const trainerSelect = document.getElementById("trainerId");
 
             trainerSelect.innerHTML =
                     '<option value="">Seleccione un entrenador</option>';
@@ -43,7 +42,7 @@ function loadTrainers() {
 
 function loadClass(idClass) {
 
-    fetch("/classes/" + idClass)
+    fetch("/trainer/classes/" + idClass)
         .then(response => response.json())
         .then(gymClass => {
 
@@ -140,11 +139,11 @@ function saveClass() {
         description: description
     };
 
-    let url = "/classes";
+    let url = "/trainer/classes";
     let method = "POST";
 
     if (idClass !== "") {
-        url = "/classes/" + idClass;
+        url = "/trainer/classes/" + idClass;
         method = "PUT";
     }
 
