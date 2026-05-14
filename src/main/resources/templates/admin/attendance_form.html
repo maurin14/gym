@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de asistencia - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="page-portal">
+
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">ASISTENCIA</span>
+        <h1 id="formTitle">Agregar asistencia</h1>
+        <p class="hero-text">Registre la asistencia de clientes a las clases programadas.</p>
+    </div>
+</section>
+
+<main class="container portal-card admin-page-card">
+    <input type="hidden" id="idAttendance">
+
+    <form class="portal-form" novalidate>
+        <div class="form-group">
+            <label for="clientId">Cliente</label>
+            <select id="clientId">
+                <option value="">Seleccione un cliente</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="classId">Clase</label>
+            <select id="classId" onchange="setAttendanceDate()">
+                <option value="">Seleccione una clase</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="attendanceDate">Fecha de asistencia</label>
+            <input type="date" id="attendanceDate" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="attendanceStatus">Estado de asistencia</label>
+            <select id="attendanceStatus">
+                <option value="Presente">Presente</option>
+                <option value="Ausente">Ausente</option>
+                <option value="Tarde">Tarde</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="observation">Observacion</label>
+            <textarea id="observation"></textarea>
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="saveAttendance()">Guardar</button>
+            <a class="btn-secondary" th:href="@{/admin/attendance}">Volver</a>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+<script th:src="@{/js/trainer/attendances/form.js}"></script>
+
+</body>
+</html>

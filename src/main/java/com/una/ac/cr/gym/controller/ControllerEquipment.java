@@ -28,16 +28,60 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class ControllerEquipment {
-     @GetMapping("/eq")
+    @org.springframework.beans.factory.annotation.Autowired
+    private EquipmentService equipmentService;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private BranchService branchServices;
+
+    @GetMapping("/eq")
     public String page(Model model) {
       
         return "equipment/indexEquipment";
     }
-   @org.springframework.beans.factory.annotation.Autowired
-    private EquipmentService equipmentService;
 
-   @org.springframework.beans.factory.annotation.Autowired
-    private BranchService branchServices;
+    @GetMapping("/admin/equipment")
+    public String adminEquipment(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) Double min,
+            @RequestParam(required = false) Double max,
+            Model model,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        Page<Equipment> data;
+
+        if (id != null) {
+            data = equipmentService.findByBranchId(id, PageRequest.of(page, size));
+        } else if (min != null && max != null) {
+            data = equipmentService.findByCostBetween(min, max, PageRequest.of(page, size));
+        } else {
+            data = equipmentService.getAll(PageRequest.of(page, size));
+        }
+
+        model.addAttribute("equipment", data.getContent());
+        model.addAttribute("branches", branchServices.getAll());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", data.getTotalPages());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("selectedBranchId", id);
+        model.addAttribute("minCost", min);
+        model.addAttribute("maxCost", max);
+
+        return "admin/equipment";
+    }
+
    @GetMapping("/equip")
 public String equipment(
         @RequestParam(defaultValue = "0") int page,

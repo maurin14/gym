@@ -39,6 +39,52 @@ public class AttendanceController {
         return "trainer/attendances/form";
     }
 
+    @GetMapping("/admin/attendance")
+    public String adminAttendanceList(HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(userSession.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "admin/attendance";
+    }
+
+    @GetMapping("/admin/attendance/form")
+    public String adminAttendanceForm(HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(userSession.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "admin/attendance_form";
+    }
+
+    @GetMapping("/admin/attendance/form/{idAttendance}")
+    public String adminAttendanceEdit(@PathVariable int idAttendance,
+            HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(userSession.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "admin/attendance_form";
+    }
+
     @GetMapping("/client/attendances")
     public String clientAttendancesList() {
         return "client/attendances/list";
