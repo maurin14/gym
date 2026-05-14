@@ -3,78 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Detalle rutina</title>
-    <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<div class="page-container">
-
-    <h1 class="page-title" th:text="${title}"></h1>
-
-    <div class="card">
-
-        <div class="details-info">
-
-            <div class="detail-item">
-                <div class="detail-label">Nombre</div>
-                <div class="detail-value" th:text="${routine.nameRoutine}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Dificultad</div>
-                <div class="detail-value" th:text="${routine.difficultyLevel}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Duración</div>
-                <div class="detail-value" th:text="${routine.estimatedDuration + ' min'}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Objetivo</div>
-                <div class="detail-value" th:text="${routine.trainingObjective}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Tipo</div>
-                <div class="detail-value" th:text="${routine.routineType}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Cantidad ejercicios</div>
-                <div class="detail-value" th:text="${routine.quantityExercises}"></div>
-            </div>
-
-            <div class="detail-item">
-                <div class="detail-label">Estado</div>
-                <div class="detail-value">
-                    <span th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
-                </div>
-            </div>
-
-        </div>
-
-        <br>
-
-        <h3>Ejercicios</h3>
-
-        <div class="card">
-            <p style="white-space: pre-line;" th:text="${routine.exercises}"></p>
-        </div>
-
-        <br>
-
-        <a th:href="@{/routines/edit/{id}(id=${routine.idRoutine})}" class="btn btn-warning">
-            Editar
+<header class="main-header portal-header">
+    <div class="header-left portal-brand">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
         </a>
-
-        <a th:href="@{/routines}" class="btn btn-secondary">
-            Volver
-        </a>
-
+        <div class="brand-text">
+            <span class="system-name portal-title">SAM GYM FITNESS</span>
+            <span class="brand-subtitle portal-subtitle">PANEL ADMINISTRADOR</span>
+        </div>
     </div>
 
-</div>
+    <nav class="header-nav portal-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/admin/payments}">Pagos</a>
+        <a th:href="@{/admin/routines}">Rutinas</a>
+        <a th:href="@{/trainer/classes}">Clases</a>
+        <a th:href="@{/admin/products}">Productos</a>
+        <a th:href="@{/schedules}">Horarios</a>
+        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+    </nav>
+</header>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">RUTINA</span>
+        <h1 th:text="${title}">Detalle rutina</h1>
+        <p class="hero-text">Informaci&oacute;n general de la rutina seleccionada.</p>
+    </div>
+</section>
+
+<main class="container portal-card">
+    <div class="breadcrumb">
+        <a th:href="@{/admin/routines}">Rutinas</a>
+        <span>/</span>
+        <span>Detalle</span>
+    </div>
+
+    <section class="detail-title">
+        <p>Rutina</p>
+        <h1 th:text="${title}">Detalle rutina</h1>
+    </section>
+
+    <section class="detail-layout">
+        <div class="detail-info">
+            <article class="info-card highlight">
+                <h3 th:text="${routine.nameRoutine}">Rutina</h3>
+                <p th:text="${routine.description}">Descripci&oacute;n de la rutina</p>
+            </article>
+
+            <article class="info-card">
+                <h3>Informaci&oacute;n general</h3>
+                <p><strong>Dificultad:</strong> <span th:text="${routine.difficultyLevel}"></span></p>
+                <p><strong>Duraci&oacute;n:</strong> <span th:text="${routine.estimatedDuration + ' min'}"></span></p>
+                <p><strong>Objetivo:</strong> <span th:text="${routine.trainingObjective}"></span></p>
+                <p><strong>Tipo:</strong> <span th:text="${routine.routineType}"></span></p>
+                <p><strong>Cantidad ejercicios:</strong> <span th:text="${routine.quantityExercises}"></span></p>
+            </article>
+        </div>
+
+        <div class="detail-info">
+            <article class="info-card">
+                <h3>Estado</h3>
+                <span th:class="${routine.state} ? 'badge badge-active' : 'badge badge-inactive'"
+                      th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
+            </article>
+
+            <article class="info-card">
+                <h3>Ejercicios</h3>
+                <p th:text="${routine.exercises}"></p>
+            </article>
+
+            <div class="buttons">
+                <a th:href="@{/admin/routines/edit/{id}(id=${routine.idRoutine})}" class="btn-primary">Editar</a>
+                <a th:href="@{/admin/routines}" class="btn-secondary">Volver</a>
+            </div>
+        </div>
+    </section>
+</main>
 
 </body>
 </html>

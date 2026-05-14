@@ -11,13 +11,16 @@
 <header class="main-header">
     <div class="header-left">
         <a th:href="@{/admin/home}">
-            <img th:src="@{/img/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
         </a>
         <span class="system-name">SAM GYM FITNESS</span>
     </div>
 
     <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'administrator'}"
+            th:href="@{/admin/home}">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'trainer'}"
+            th:href="@{/trainer/home}">Inicio</a>
         <a th:href="@{/users}">Usuarios</a>
         <a th:href="@{/reports}">Reportes</a>
         <a th:href="@{/logout}">Cerrar sesión</a>

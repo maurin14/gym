@@ -15,7 +15,12 @@
     </div>
 
     <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'administrator'}"
+            th:href="@{/admin/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'trainer'}"
+            th:href="@{/trainer/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'client'}"
+            th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>

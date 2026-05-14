@@ -37,6 +37,10 @@ public class LoginController {
         if ("administrator".equals(user.getRole())) {
             return "redirect:/admin/home";
         }
+        
+        if("trainer".equals(user.getRole())){
+            return "redirect:/trainer/home";
+        }
 
         return "redirect:/client/home";
     }
