@@ -1,12 +1,5 @@
 package com.una.ac.cr.gym.service;
 
-
-
-
-
-
-
-
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.domain.Attendance;

@@ -1,9 +1,5 @@
 package com.una.ac.cr.gym.repository;
 
-
-
-
-
 import com.una.ac.cr.gym.domain.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
