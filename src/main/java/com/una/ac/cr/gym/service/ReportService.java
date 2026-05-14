@@ -209,7 +209,7 @@ public class ReportService implements CRUD<Report>{
                 Map<String, String> map = new LinkedHashMap<>();
 
                 map.put("ID Pago", String.valueOf(p.getId()));
-                map.put("Usuario ID", String.valueOf(p.getUserId()));
+                map.put("Usuario ID", String.valueOf(p.getIdUser()));
                 map.put("Monto", "₡" + p.getAmount());
                 map.put("Fecha de pago", String.valueOf(p.getPaymentDate()));
                 map.put("Método de pago", p.getPaymentMethod());
