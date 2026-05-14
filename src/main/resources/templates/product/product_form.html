@@ -7,28 +7,7 @@
 </head>
 <body class="page-portal">
 
-<header class="main-header portal-header">
-    <div class="header-left portal-brand">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
-        </a>
-        <div class="brand-text">
-            <span class="system-name portal-title">SAM GYM FITNESS</span>
-            <span class="brand-subtitle portal-subtitle">PANEL ADMINISTRADOR</span>
-        </div>
-    </div>
-
-    <nav class="header-nav portal-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/admin/branches}">Sucursales</a>
-        <a th:href="@{/admin/payments}">Pagos</a>
-        <a th:href="@{/admin/routines}">Rutinas</a>
-        <a th:href="@{/trainer/classes}">Clases</a>
-        <a th:href="@{/admin/products}">Productos</a>
-        <a th:href="@{/schedules}">Horarios</a>
-        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
-    </nav>
-</header>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('products')}"></div>
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
@@ -38,7 +17,7 @@
     </div>
 </section>
 
-<main class="container form-container portal-card">
+<main class="container form-container portal-card admin-page-card">
     <div th:if="${error != null and !#strings.isEmpty(error)}" class="error-message" th:text="${error}">
         Error
     </div>
@@ -100,6 +79,8 @@
         </div>
     </form>
 </main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

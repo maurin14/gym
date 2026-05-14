@@ -37,38 +37,63 @@
                 la integración con asistencia para dar seguimiento a tu actividad dentro del gimnasio.
             </p>
 
-            <div class="service-list">
+            <div class="service-list" aria-label="Accesos de entrenamiento">
 
                 <a th:if="${session.user != null and session.user.role == 'client'}"
-                   th:href="@{/client/classes}">
-                    Clases
+                   th:href="@{/client/classes}"
+                   class="service-chip">
+                    <span class="module-icon">C</span>
+                    <span class="service-chip-copy">
+                        <strong>Clases</strong>
+                        <small>Sesiones grupales disponibles.</small>
+                    </span>
                 </a>
 
                 <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
-                   th:href="@{/trainer/classes}">
-                    Clases
+                   th:href="@{/trainer/classes}"
+                   class="service-chip">
+                    <span class="module-icon">C</span>
+                    <span class="service-chip-copy">
+                        <strong>Clases</strong>
+                        <small>Sesiones grupales disponibles.</small>
+                    </span>
                 </a>
 
                 <a th:if="${session.user != null and session.user.role == 'client'}"
-                   th:href="@{/client/attendances}">
+                   th:href="@{/client/attendances}"
+                   class="service-chip">
                     <span class="module-icon">A</span>
-                    <div>
-                        <h3>Asistencia</h3>
-                        <p>Seguimiento de visitas.</p>
-                    </div>
+                    <span class="service-chip-copy">
+                        <strong>Asistencia</strong>
+                        <small>Seguimiento de visitas.</small>
+                    </span>
                 </a>
 
                 <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
-                   th:href="@{/trainer/attendances}">
+                   th:href="@{/trainer/attendances}"
+                   class="service-chip">
                     <span class="module-icon">A</span>
-                    <div>
-                        <h3>Asistencia</h3>
-                        <p>Seguimiento de visitas.</p>
-                    </div>
+                    <span class="service-chip-copy">
+                        <strong>Asistencia</strong>
+                        <small>Seguimiento de visitas.</small>
+                    </span>
                 </a>
 
-                <button type="button" data-placeholder-module="Horarios">Horarios</button>
-                <button type="button" data-placeholder-module="Equipamiento">Equipamiento</button>
+                <button type="button" class="service-chip" data-placeholder-module="Horarios">
+                    <span class="module-icon">H</span>
+                    <span class="service-chip-copy">
+                        <strong>Horarios</strong>
+                        <small>Clases y atenci&oacute;n.</small>
+                    </span>
+                </button>
+
+                <button type="button" class="service-chip" data-placeholder-module="Equipamiento">
+                    <span class="module-icon">E</span>
+                    <span class="service-chip-copy">
+                        <strong>Equipamiento</strong>
+                        <small>Recursos del gimnasio.</small>
+                    </span>
+                </button>
 
             </div>
         </div>

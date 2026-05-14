@@ -4,56 +4,11 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Lista de productos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
-    <style>
-        .admin-filter-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            margin-bottom: 20px;
-        }
-
-        .admin-filter-row input,
-        .admin-filter-row select {
-            flex: 0 0 180px;
-            min-width: 180px;
-        }
-
-        .admin-filter-row button,
-        .admin-filter-row a {
-            flex: 0 0 auto;
-            white-space: nowrap;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="page-portal">
 
-<header class="main-header portal-header">
-    <div class="header-left portal-brand">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
-        </a>
-        <div class="brand-text">
-            <span class="system-name portal-title">SAM GYM FITNESS</span>
-            <span class="brand-subtitle portal-subtitle">PANEL ADMINISTRADOR</span>
-        </div>
-    </div>
-
-    <nav class="header-nav portal-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/admin/branches}">Sucursales</a>
-        <a th:href="@{/admin/payments}">Pagos</a>
-        <a th:href="@{/admin/routines}">Rutinas</a>
-        <a th:href="@{/trainer/classes}">Clases</a>
-        <a th:href="@{/admin/products}">Productos</a>
-        <a th:href="@{/schedules}">Horarios</a>
-        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
-    </nav>
-</header>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('products')}"></div>
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
@@ -63,7 +18,7 @@
     </div>
 </section>
 
-<main class="container portal-card">
+<main class="container portal-card admin-page-card">
 
     <div th:if="${error != null and !#strings.isEmpty(error)}"
          class="error-message"
@@ -177,6 +132,8 @@
         <a th:href="@{/admin/products/create}" class="btn-primary">Agregar producto</a>
     </div>
 </main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
     const successMessage = /*[[${successMessage}]]*/ null;

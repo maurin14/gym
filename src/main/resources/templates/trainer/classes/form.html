@@ -7,41 +7,11 @@
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
-<body>
+<body class="page-portal">
 
-<header class="main-header">
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-    <div class="header-left">
-
-        <div class="brand-text">
-
-            <span class="system-name">
-                Gimnasio
-            </span>
-
-            <span class="brand-subtitle">
-                Gestión de clases
-            </span>
-
-        </div>
-
-    </div>
-
-    <nav class="header-nav">
-
-        <a th:href="@{/admin/home}">
-            Inicio
-        </a>
-
-        <a th:href="@{/trainer/classes}">
-            Clases
-        </a>
-
-    </nav>
-
-</header>
-
-<div class="container form-container">
+<main class="container form-container portal-card admin-page-card">
 
     <h1 class="page-title"
         id="formTitle">
@@ -140,7 +110,9 @@
 
     </form>
 
-</div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:src="@{/js/trainer/classes/form.js}"></script>
 

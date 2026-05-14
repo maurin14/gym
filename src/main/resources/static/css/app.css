@@ -132,6 +132,11 @@ h1, h2, h3 {
     transform: none;
 }
 
+.header-nav a.active,
+.portal-nav a.active {
+    color: var(--orange);
+}
+
 /* CONTENEDORES */
 
 .container {
@@ -272,7 +277,8 @@ textarea:focus {
 }
 
 .filters,
-.portal-filters {
+.portal-filters,
+.admin-filter-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 14px;
@@ -283,9 +289,26 @@ textarea:focus {
 .filters input,
 .filters select,
 .portal-filters input,
-.portal-filters select {
+.portal-filters select,
+.admin-filter-row input,
+.admin-filter-row select {
     width: 100%;
     min-height: 45px;
+}
+
+.admin-filter-row button,
+.admin-filter-row a {
+    white-space: nowrap;
+}
+
+.admin-page-hero {
+    margin-bottom: 0;
+    max-width: none;
+}
+
+.admin-page-card {
+    max-width: 1180px;
+    margin: 35px auto;
 }
 
 /* FORMULARIO PORTAL CORREGIDO */

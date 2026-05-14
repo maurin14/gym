@@ -1,27 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Routine;
 import com.una.ac.cr.gym.repository.RoutineRepository;
+import com.una.ac.cr.gym.repository.RoutineUserRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-/**
- *
- * @author alira
- */
 @Service
 public class RoutineServices {
 
     @Autowired
     private RoutineRepository routineRepository;
+
+    @Autowired
+    private RoutineUserRepository routineUserRepository;
 
     public List<Routine> getRoutines() {
         return routineRepository.findAll();
@@ -31,6 +30,7 @@ public class RoutineServices {
         if (idRoutine <= 0) {
             return null;
         }
+
         return routineRepository.findById(idRoutine).orElse(null);
     }
 
@@ -45,26 +45,29 @@ public class RoutineServices {
         return "";
     }
 
+    @Transactional
     public String deleteRoutine(int idRoutine) {
         if (idRoutine <= 0) {
-            return "ID de rutina inválido";
+            return "ID de rutina invalido";
         }
 
-        Routine routine = getRoutine(idRoutine);
-
-        if (routine == null) {
+        if (!routineRepository.existsById(idRoutine)) {
             return "Rutina no encontrada";
         }
 
-        // Eliminación lógica
-        routine.setState(false);
-        routineRepository.save(routine);
+        try {
+            routineUserRepository.deleteByIdRoutine(idRoutine);
+            routineRepository.deleteById(idRoutine);
+            routineRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return "No se puede eliminar la rutina porque tiene registros relacionados.";
+        }
 
         return "";
     }
 
     private String validateRoutine(Routine routine) {
-
         if (routine == null) {
             return "La rutina es nula";
         }
@@ -82,7 +85,7 @@ public class RoutineServices {
         }
 
         if (routine.getEstimatedDuration() <= 0) {
-            return "La duración estimada debe ser mayor a 0";
+            return "La duracion estimada debe ser mayor a 0";
         }
 
         if (routine.getQuantityExercises() <= 0) {
@@ -90,23 +93,22 @@ public class RoutineServices {
         }
 
         if (routine.getExercises() == null || routine.getExercises().isEmpty()) {
-            return "Debe ingresar la descripción de los ejercicios";
+            return "Debe ingresar la descripcion de los ejercicios";
         }
 
         return "";
     }
-    
-    public Page<Routine> getFilteredRoutines(String difficultyLevel, String routineType, int page) {
 
+    public Page<Routine> getFilteredRoutines(String difficultyLevel, String routineType, int page) {
         Pageable pageable = PageRequest.of(page, 5);
 
-        if ((difficultyLevel == null || difficultyLevel.isEmpty()) &&
-            (routineType == null || routineType.isEmpty())) {
+        if ((difficultyLevel == null || difficultyLevel.isEmpty())
+                && (routineType == null || routineType.isEmpty())) {
             return routineRepository.findAll(pageable);
         }
 
-        if (difficultyLevel != null && !difficultyLevel.isEmpty() &&
-            routineType != null && !routineType.isEmpty()) {
+        if (difficultyLevel != null && !difficultyLevel.isEmpty()
+                && routineType != null && !routineType.isEmpty()) {
             return routineRepository.findByDifficultyLevelAndRoutineType(difficultyLevel, routineType, pageable);
         }
 

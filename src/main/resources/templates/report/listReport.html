@@ -6,28 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
-    </div>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-    <nav class="header-nav">
-        <a th:if="${session.user != null and session.user.role == 'administrator'}"
-            th:href="@{/admin/home}">Inicio</a>
-        <a th:if="${session.user != null and session.user.role == 'trainer'}"
-            th:href="@{/trainer/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container">
+<main class="container portal-card admin-page-card">
     <h1 class="page-title">Lista de Reportes</h1>
     <p class="admin-description">
         Consulta, filtra, descarga y administra los reportes generados por el sistema.
@@ -129,9 +112,7 @@
     </div>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

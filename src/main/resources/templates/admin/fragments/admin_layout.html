@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="adminHeader(active)" class="main-header portal-header">
+    <div class="header-left portal-brand">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
+        </a>
+        <div class="brand-text">
+            <span class="system-name portal-title">SAM GYM FITNESS</span>
+            <span class="brand-subtitle portal-subtitle">Panel administrador</span>
+        </div>
+    </div>
+
+    <nav class="header-nav portal-nav" aria-label="Navegaci&oacute;n administrativa">
+        <a th:href="@{/admin/home}" th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+        <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
+        <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
+        <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
+        <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
+        <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
+        <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
+        <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
+        <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
+        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+    </nav>
+</header>
+
+<footer th:fragment="adminFooter" class="main-footer">
+    <p>SAM GYM FITNESS - Panel de Administraci&oacute;n</p>
+</footer>
+
+</body>
+</html>

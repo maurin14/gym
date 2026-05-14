@@ -50,12 +50,22 @@ function saveClientAttendance() {
     const observation = document.getElementById("observation").value.trim();
 
     if (classId === "") {
-        alert("Debe seleccionar una clase.");
+        Swal.fire({
+            icon: "warning",
+            title: "Seleccione una clase",
+            text: "Debe seleccionar una clase para registrar la asistencia.",
+            confirmButtonColor: "#d97818"
+        });
         return;
     }
 
     if (attendanceDate === "") {
-        alert("La fecha de asistencia no puede estar vacía.");
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha requerida",
+            text: "La fecha de asistencia no puede estar vacia.",
+            confirmButtonColor: "#d97818"
+        });
         return;
     }
 
@@ -75,7 +85,13 @@ function saveClientAttendance() {
         },
         body: JSON.stringify(attendance)
     }).then(() => {
-        alert("Asistencia registrada correctamente");
-        window.location.href = "/client/attendances";
+        Swal.fire({
+            icon: "success",
+            title: "Asistencia registrada",
+            text: "Tu asistencia se registro correctamente.",
+            confirmButtonColor: "#d97818"
+        }).then(() => {
+            window.location.href = "/client/attendances";
+        });
     });
 }

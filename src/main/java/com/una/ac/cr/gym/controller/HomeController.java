@@ -29,6 +29,36 @@ public class HomeController {
         return "admin/index";
     }
 
+    @GetMapping("/admin/classes")
+    public String adminClasses(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "redirect:/trainer/classes";
+    }
+
+    @GetMapping("/admin/schedules")
+    public String adminSchedules(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "redirect:/admin/home";
+    }
+
     @GetMapping("/client/home")
     public String clientHome(HttpSession session) {
 

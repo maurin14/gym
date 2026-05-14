@@ -99,7 +99,13 @@ public class RoutineController {
 
     @GetMapping("/delete/{idRoutine}")
     public String deleteRoutine(@PathVariable int idRoutine, RedirectAttributes redirectAttributes) {
-        routineService.deleteRoutine(idRoutine);
+        String result = routineService.deleteRoutine(idRoutine);
+
+        if (!result.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", result);
+            return "redirect:/admin/routines";
+        }
+
         redirectAttributes.addFlashAttribute("successMessage", "Rutina eliminada correctamente.");
         return "redirect:/admin/routines";
     }
