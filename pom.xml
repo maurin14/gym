@@ -23,7 +23,7 @@
     </properties>
 
     <dependencies>
-
+        
         <!-- JPA / Base de datos -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
