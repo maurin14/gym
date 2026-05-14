@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Reporte - SAM GYM FITNESS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/img/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
+        </a>
+        <span class="system-name">SAM GYM FITNESS</span>
+    </div>
+
+    <nav class="header-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="container form-container">
+    <h1 class="page-title">Formulario de Reporte</h1>
+    <p class="admin-description">
+        Complete la información necesaria para generar o actualizar un reporte del sistema.
+    </p>
+
+    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+
+    <form th:action="@{/reports/save}" th:object="${reportNew}" method="post">
+        <input type="hidden" th:field="*{reportId}">
+
+        <label>Tipo de reporte</label>
+        <select th:field="*{reportType}" required>
+            <option value="">Seleccione</option>
+            <option value="users">Usuarios</option>
+            <option value="payments">Pagos</option>
+            <option value="attendances">Asistencias</option>
+        </select>
+
+        <label>Generado por</label>
+        <input type="hidden" th:field="*{generatedBy}">
+        <input type="text" th:field="*{userName}" readonly>
+
+        <label>Descripción</label>
+        <textarea th:field="*{description}" rows="3" required></textarea>
+
+        <label>Fecha de inicio</label>
+        <input type="date" th:field="*{startDate}" required onchange="checkDates()">
+
+        <label>Fecha final</label>
+        <input type="date" th:field="*{endDate}" required onchange="checkDates()">
+
+        <span id="dateMessage" class="error-message"></span>
+
+        <label>Formato</label>
+        <select th:field="*{format}" required>
+            <option value="">Seleccione</option>
+            <option value="pdf">PDF</option>
+            <option value="excel">Excel</option>
+            <option value="csv">CSV</option>
+        </select>
+
+        <label>Estado del reporte</label>
+        <select th:field="*{reportStatus}" required>
+            <option value="">Seleccione</option>
+            <option value="generated">Generado</option>
+            <option value="pending">Pendiente</option>
+            <option value="error">Error</option>
+        </select>
+
+        <label>Ruta del archivo</label>
+        <input type="text" th:field="*{filePath}" placeholder="Se puede dejar vacío">
+
+        <div class="buttons">
+            <button type="submit" class="btn-primary">Guardar reporte</button>
+            <a th:href="@{/reports}" class="btn-secondary">Volver</a>
+        </div>
+    </form>
+</main>
+
+<footer class="main-footer">
+    <p>SAM GYM FITNESS - Panel de Administración</p>
+</footer>
+
+<script>
+    function checkDates(){
+        let startDate = document.getElementById("startDate").value;
+        let endDate = document.getElementById("endDate").value;
+        let message = document.getElementById("dateMessage");
+
+        if(startDate === "" || endDate === ""){
+            message.innerHTML = "";
+            return;
+        }
+
+        if(startDate > endDate){
+            message.innerHTML = "La fecha de inicio no puede ser mayor que la fecha final";
+            message.style.color = "#dc2626";
+        }else{
+            message.innerHTML = "Rango de fechas válido";
+            message.style.color = "#15803d";
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -23,7 +23,7 @@
     </properties>
 
     <dependencies>
-
+        
         <!-- JPA / Base de datos -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -60,6 +60,18 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
         </dependency>
 
         <!-- Tests: JUnit y SpringBootTest -->

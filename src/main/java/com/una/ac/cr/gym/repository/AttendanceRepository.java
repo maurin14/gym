@@ -9,6 +9,7 @@ package com.una.ac.cr.gym.repository;
  * @author Amanda
  */
 
+
 import com.una.ac.cr.gym.domain.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 

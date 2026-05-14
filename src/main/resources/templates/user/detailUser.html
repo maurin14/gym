@@ -1,30 +1,122 @@
 <!DOCTYPE html>
+
+
+
+
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Detalle de Usuario</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}"/>
-    </head>
-    <body>
-        <div class="container detail-panel">
-            <h1>Detalle de Usuario</h1>
+<head>
+    <title>Detalle de Usuario - SAM GYM FITNESS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+</head>
+<body>
 
-            <div class="detail-grid">
-                <div class="detail-item"><strong>Nombre:</strong> <span th:text="${userView.fullName}"></span></div>
-                <div class="detail-item"><strong>Cédula:</strong> <span th:text="${userView.idCard}"></span></div>
-                <div class="detail-item"><strong>Correo:</strong> <span th:text="${userView.email}"></span></div>
-                <div class="detail-item"><strong>Teléfono:</strong> <span th:text="${userView.phone}"></span></div>
-                <div class="detail-item"><strong>Nombre de usuario:</strong> <span th:text="${userView.username}"></span></div>
-                <div class="detail-item"><strong>Rol:</strong> <span th:text="${userView.role}"></span></div>
-                <div class="detail-item"><strong>Estado:</strong> <span th:text="${userView.status}"></span></div>
-                <div class="detail-item"><strong>Fecha de registro:</strong> <span th:text="${userView.formattedRecordDate}"></span></div>
-            </div>
+<header class="main-header">
+    <div class="header-left">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
+        </a>
+        <span class="system-name">SAM GYM FITNESS</span>
+    </div>
 
-            <div class="menu">
-                <a th:href="@{/users}">Volver</a>
-                <a th:href="@{/users/edit(id=${userView.userId})}" class="btn-edit">Editar</a>
-            </div>
+    <nav class="header-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1 class="page-title">Detalle de Usuario</h1>
+
+    <p class="admin-description">
+        Información completa del usuario registrado en el sistema.
+    </p>
+
+    <section class="detail-info">
+        <div class="info-card">
+
+            <p>
+                <strong>Nombre:</strong>
+                <span th:text="${userView.fullName}"></span>
+            </p>
+
+            <p>
+                <strong>Cédula:</strong>
+                <span th:text="${userView.idCard}"></span>
+            </p>
+
+            <p>
+                <strong>Correo:</strong>
+                <span th:text="${userView.email}"></span>
+            </p>
+
+            <p>
+                <strong>Teléfono:</strong>
+                <span th:text="${userView.phone}"></span>
+            </p>
+
+            <p>
+                <strong>Nombre de usuario:</strong>
+                <span th:text="${userView.username}"></span>
+            </p>
+
+            <p>
+                <strong>Rol:</strong>
+
+                <span th:if="${userView.role == 'administrator'}"
+                      class="badge badge-active">
+                    Administrador
+                </span>
+
+                <span th:if="${userView.role == 'trainer'}"
+                      class="badge badge-pending">
+                    Entrenador
+                </span>
+
+                <span th:if="${userView.role == 'client'}"
+                      class="badge badge-inactive">
+                    Cliente
+                </span>
+            </p>
+
+            <p>
+                <strong>Estado:</strong>
+
+                <span th:if="${userView.status == 'active'}"
+                      class="status-active">
+                    Activo
+                </span>
+
+                <span th:if="${userView.status == 'inactive'}"
+                      class="status-inactive">
+                    Inactivo
+                </span>
+            </p>
+
+            <p>
+                <strong>Fecha de registro:</strong>
+                <span th:text="${userView.formattedRecordDate}"></span>
+            </p>
+
         </div>
-    </body>
+    </section>
+
+    <div class="buttons">
+        <a th:href="@{/users}" class="btn-secondary">Volver</a>
+
+        <a th:href="@{/users/edit(id=${userView.userId})}"
+           class="btn-primary">
+            Editar
+        </a>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <p>SAM GYM FITNESS - Panel de Administración</p>
+</footer>
+
+</body>
 </html>
