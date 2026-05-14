@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipamiento - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="page-portal">
 
@@ -12,24 +13,30 @@
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
-        <span class="hero-badge">EQUIPAMIENTO</span>
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
         <h1>Equipamiento</h1>
-        <p class="hero-text">Gestione el equipamiento asociado a las sucursales del gimnasio.</p>
+        <p class="hero-text">Registre, actualice y controle el equipamiento asociado a cada sucursal.</p>
     </div>
 </section>
 
 <main class="container portal-card admin-page-card">
+    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+
     <div class="admin-title-row">
         <div>
             <h2 class="section-title">Inventario de equipamiento</h2>
             <p class="admin-description">
-                Consulte maquinas, implementos, costos, disponibilidad y sucursal asignada.
+                Administre maquinas, implementos, costos, disponibilidad y sucursal asignada.
             </p>
+        </div>
+        <div class="buttons">
+            <a th:href="@{/admin/equipment/new}" class="btn-primary">Nuevo equipamiento</a>
         </div>
     </div>
 
-    <form class="admin-filter-row" th:action="@{/admin/equipment}" method="get">
-        <select name="id" aria-label="Filtrar por sucursal">
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/equipment}" method="get">
+        <select name="branchId" aria-label="Filtrar por sucursal">
             <option value="">Todas las sucursales</option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
@@ -56,7 +63,7 @@
         <input type="hidden" name="size" th:value="${pageSize}">
 
         <button type="submit" class="btn-primary">Filtrar</button>
-        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar</a>
+        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar filtros</a>
     </form>
 
     <div class="table-responsive">
@@ -70,11 +77,12 @@
                     <th>Costo</th>
                     <th>Disponibilidad</th>
                     <th>Sucursal</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${equipment == null or #lists.isEmpty(equipment)}">
-                    <td colspan="7" class="empty-message">
+                    <td colspan="8" class="empty-message">
                         No hay equipamiento registrado.
                     </td>
                 </tr>
@@ -85,14 +93,23 @@
                     <td th:text="${item.purchaseDate != null ? #temporals.format(item.purchaseDate, 'dd/MM/yyyy') : 'Sin fecha'}">
                         Fecha
                     </td>
-                    <td th:text="${#numbers.formatDecimal(item.cost, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                    <td th:text="'₡ ' + ${#numbers.formatDecimal(item.cost, 1, 2)}">₡ 0.00</td>
                     <td>
                         <span th:class="${item.available == 'true'} ? 'status-active' : 'status-inactive'"
-                              th:text="${item.available == 'true'} ? 'Si' : 'No'">
-                            Si
+                              th:text="${item.available == 'true'} ? 'Disponible' : 'No disponible'">
+                            Disponible
                         </span>
                     </td>
                     <td th:text="${item.branch != null ? item.branch.name : 'Sin sucursal'}">Sucursal</td>
+                    <td class="actions">
+                        <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}" class="btn-primary">Editar</a>
+                        <a th:href="@{/admin/equipment/status/{id}(id=${item.id})}" class="btn-secondary">Cambiar estado</a>
+                        <a th:href="@{/admin/equipment/delete/{id}(id=${item.id})}"
+                           class="btn-danger"
+                           onclick="return confirm('¿Eliminar este equipamiento?');">
+                            Eliminar
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -101,7 +118,7 @@
     <div class="pagination">
         <a class="btn-secondary"
            th:if="${currentPage > 0}"
-           th:href="@{/admin/equipment(page=${currentPage - 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+           th:href="@{/admin/equipment(page=${currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
             Anterior
         </a>
 
@@ -112,13 +129,34 @@
 
         <a class="btn-primary"
            th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/admin/equipment(page=${currentPage + 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+           th:href="@{/admin/equipment(page=${currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
             Siguiente
         </a>
     </div>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+<script th:inline="javascript">
+    const successMessage = [[${successMessage != null ? successMessage : null}]];
+    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+
+    if (successMessage != null) {
+        Swal.fire({
+            icon: "success",
+            title: successMessage,
+            confirmButtonText: "OK"
+        });
+    }
+
+    if (errorMessage != null) {
+        Swal.fire({
+            icon: "error",
+            title: errorMessage,
+            confirmButtonText: "OK"
+        });
+    }
+</script>
 
 </body>
 </html>
