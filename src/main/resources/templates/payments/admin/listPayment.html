@@ -1,68 +1,61 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Administración de Pagos</title>
+    <meta charset="UTF-8">
+    <title>Administracion de Pagos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/js/payment.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/payment.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('payments')}"></div>
 
-<main class="portal-main">
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de pagos</h1>
+        <p class="hero-text">Consulta, registra, modifica y cambia el estado de los pagos del gimnasio.</p>
+    </div>
+</section>
 
-    <section class="portal-head">
-        <span class="portal-tag">Gestión administrativa</span>
-        <h1>Administración de pagos</h1>
-        <p>Consulta, registra, modifica y cambia el estado de los pagos del gimnasio.</p>
-    </section>
+<main class="container portal-card admin-page-card">
+    <form class="admin-filter-row portal-filters" onsubmit="filterPayments(); return false;">
+        <select id="filterStatus">
+            <option value="">Todos los estados</option>
+            <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
+            <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
+            <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
+        </select>
 
-    <section class="portal-card">
+        <select id="filterPaymentMethod">
+            <option value="">Todos los metodos</option>
+            <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
+            <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
+            <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}">SINPE</option>
+            <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
+        </select>
 
-        <div class="portal-filters">
-            <select id="filterStatus">
-                <option value="">Todos los estados</option>
-                <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
-                <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
-                <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
-            </select>
+        <select id="filterBranch">
+            <option value="">Todas las sucursales</option>
+            <option th:each="b : ${branches}"
+                    th:value="${b.id}"
+                    th:text="${b.name}"
+                    th:selected="${branchId != null and branchId == b.id}">
+            </option>
+        </select>
 
-            <select id="filterPaymentMethod">
-                <option value="">Todos los métodos</option>
-                <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
-                <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
-                <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}">SINPE</option>
-                <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
-            </select>
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/admin/payments}" class="btn-secondary">Limpiar filtros</a>
+    </form>
 
-            <select id="filterBranch">
-                <option value="">Todas las sucursales</option>
-                <option th:each="b : ${branches}"
-                        th:value="${b.id}"
-                        th:text="${b.name}"
-                        th:selected="${branchId != null and branchId == b.id}">
-                </option>
-            </select>
+    <div id="payment-table-container">
+        <div th:replace="payments/admin/tablePayment :: tablePayment"></div>
+    </div>
 
-            <button type="button" class="btn-primary" onclick="filterPayments()">Buscar</button>
-            <a th:href="@{/admin/payments}" class="btn-secondary">Limpiar filtros</a>
-        </div>
-
-        <div id="payment-table-container">
-            <div th:replace="payments/admin/tablePayment :: tablePayment"></div>
-        </div>
-
-        <div class="buttons">
-            <a th:href="@{/admin/payments/new}" class="btn-primary">Agregar pago</a>
-        </div>
-
-    </section>
-
+    <div class="buttons">
+        <a th:href="@{/admin/payments/new}" class="btn-primary">Agregar pago</a>
+    </div>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
@@ -71,7 +64,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = "Acción realizada correctamente.";
+        let message = "Accion realizada correctamente.";
 
         if (success[0] === "save") message = "Pago registrado correctamente.";
         if (success[0] === "edit") message = "Pago modificado correctamente.";

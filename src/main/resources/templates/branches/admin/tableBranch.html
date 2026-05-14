@@ -41,24 +41,26 @@
                       th:class="${b.active ? 'badge badge-active' : 'badge badge-inactive'}"></span>
             </td>
 
-            <td class="actions">
-                <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">
-                    Editar
-                </a>
+            <td>
+                <div class="actions">
+                    <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">
+                        Editar
+                    </a>
 
-                <a href="#"
-                   th:data-id="${b.id}"
-                   class="btn-primary"
-                   onclick="confirmChangeBranchStatus(this); return false;">
-                    Cambiar estado
-                </a>
+                    <a href="#"
+                       th:data-id="${b.id}"
+                       class="btn-primary"
+                       onclick="confirmChangeBranchStatus(this); return false;">
+                        Cambiar estado
+                    </a>
 
-                <a href="#"
-                   th:data-id="${b.id}"
-                   class="btn-danger"
-                   onclick="confirmDeleteBranch(this); return false;">
-                    Eliminar
-                </a>
+                    <a href="#"
+                       th:data-id="${b.id}"
+                       class="btn-danger"
+                       onclick="confirmDeleteBranch(this); return false;">
+                        Eliminar
+                    </a>
+                </div>
             </td>
         </tr>
         </tbody>

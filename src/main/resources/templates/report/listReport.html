@@ -10,20 +10,25 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-<main class="container portal-card admin-page-card">
-    <h1 class="page-title">Lista de Reportes</h1>
-    <p class="admin-description">
-        Consulta, filtra, descarga y administra los reportes generados por el sistema.
-    </p>
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de reportes</h1>
+        <p class="hero-text">
+            Consulta, filtra, descarga y administra reportes con la misma estructura visual del panel admin.
+        </p>
+    </div>
+</section>
 
+<main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <div class="buttons">
+    <div class="buttons admin-action-row">
         <a th:href="@{/reports/add}" class="btn-primary">Agregar reporte</a>
     </div>
 
-    <form th:action="@{/reports}" method="get" class="filters">
+    <form th:action="@{/reports}" method="get" class="admin-filter-row portal-filters">
         <select name="reportType">
             <option value="">Todos los tipos</option>
             <option value="users" th:selected="${reportType == 'users'}">Usuarios</option>
@@ -42,11 +47,11 @@
         <a th:href="@{/reports}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table>
+    <table class="portal-table">
         <thead>
         <tr>
             <th>Tipo</th>
-            <th>Generación</th>
+            <th>Generacion</th>
             <th>Generado por</th>
             <th>Inicio</th>
             <th>Final</th>
@@ -82,7 +87,7 @@
                     <a th:href="@{/reports/edit(id=${r.reportId})}" class="btn-secondary">Editar</a>
                     <a th:href="@{/reports/delete(id=${r.reportId})}"
                        class="btn-danger"
-                       onclick="return confirm('¿Desea eliminar este reporte?')">Eliminar</a>
+                       onclick="return confirm('Desea eliminar este reporte?')">Eliminar</a>
                 </div>
             </td>
         </tr>

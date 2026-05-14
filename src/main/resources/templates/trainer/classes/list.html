@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Clases</title>
+    <title>Administracion de clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
@@ -10,26 +10,23 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-<section class="hero-section portal-head admin-page-hero">
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de clases</h1>
+        <p class="hero-text">
+            Administra clases, entrenadores, horarios, cupos y niveles de dificultad desde un panel unificado.
+        </p>
 
-    <h1>Listado de Clases</h1>
-
-    <p>
-        Administración de clases disponibles en el gimnasio.
-    </p>
-
-    <div class="hero-buttons centered">
-        <a class="btn-primary"
-           th:href="@{/trainer/classes/form}">
-            Agregar Clase
-        </a>
+        <div class="hero-buttons centered">
+            <a class="btn-primary" th:href="@{/trainer/classes/form}">Agregar clase</a>
+        </div>
     </div>
-
 </section>
 
 <main class="container portal-card admin-page-card">
 
-    <table>
+    <table class="portal-table">
         <thead>
             <tr>
                 <th>Tipo</th>
@@ -37,11 +34,11 @@
                 <th>Fecha</th>
                 <th>Inicio</th>
                 <th>Final</th>
-                <th>Duración</th>
+                <th>Duracion</th>
                 <th>Capacidad</th>
                 <th>Inscritos</th>
                 <th>Dificultad</th>
-                <th>Descripción</th>
+                <th>Descripcion</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -50,7 +47,7 @@
     </table>
 
     <div class="pagination">
-        <button id="pageInfo" disabled>Página 1 de 1</button>
+        <button id="pageInfo" disabled>Pagina 1 de 1</button>
         <button id="prevBtn" onclick="previousPage()">Anterior</button>
         <button id="nextBtn" onclick="nextPage()">Siguiente</button>
     </div>

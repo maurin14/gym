@@ -1,134 +1,93 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulario de Sucursal</title>
+    <title>Formulario de sucursal</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/js/branch.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('branches')}"></div>
 
-<main class="portal-main">
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">SUCURSAL</span>
+        <h1 th:text="${branch.id == 0 ? 'Agregar sucursal' : 'Editar sucursal'}">Formulario de sucursal</h1>
+        <p class="hero-text">Completa la informacion de la sucursal.</p>
+    </div>
+</section>
 
-    <section class="portal-head">
-        <span class="portal-tag">Sucursal</span>
-        <h1 th:text="${branch.id == 0 ? 'Agregar sucursal' : 'Editar sucursal'}"></h1>
-        <p>Completa la información de la sucursal.</p>
-    </section>
+<main class="container form-container portal-card admin-page-card">
+    <form id="branchForm"
+          class="portal-form"
+          th:action="@{/admin/branches/save}"
+          th:object="${branch}"
+          method="post"
+          novalidate>
 
-    <section class="portal-card">
+        <input type="hidden" th:field="*{id}">
 
-        <form id="branchForm"
-              class="portal-form"
-              th:action="@{/admin/branches/save}"
-              th:object="${branch}"
-              method="post"
-              novalidate>
+        <label>Imagen</label>
+        <input type="text"
+               th:field="*{imageUrl}"
+               required
+               maxlength="255"
+               placeholder="Ejemplo: central.jpg">
+        <small class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
 
-            <input type="hidden" th:field="*{id}">
+        <label>Fecha de apertura</label>
+        <input type="date" th:field="*{openingDate}" required>
+        <small class="error-message" th:if="${#fields.hasErrors('openingDate')}" th:errors="*{openingDate}"></small>
 
-            <div class="form-group">
-                <label>Imagen</label>
-                <input type="text"
-                       th:field="*{imageUrl}"
-                       required
-                       maxlength="255"
-                       placeholder="Ejemplo: central.jpg">
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('imageUrl')}"
-                       th:errors="*{imageUrl}">
-                </small>
-            </div>
+        <label>Nombre de la sucursal</label>
+        <input type="text"
+               th:field="*{name}"
+               required
+               maxlength="100"
+               placeholder="Ejemplo: SAM Gym Central">
+        <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
 
-            <div class="form-group">
-                <label>Fecha de apertura</label>
-                <input type="date"
-                       th:field="*{openingDate}"
-                       required>
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('openingDate')}"
-                       th:errors="*{openingDate}">
-                </small>
-            </div>
+        <label>Direccion</label>
+        <input type="text"
+               th:field="*{address}"
+               required
+               maxlength="150"
+               placeholder="Ejemplo: San Jose centro">
+        <small class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
 
-            <div class="form-group">
-                <label>Nombre de la sucursal</label>
-                <input type="text"
-                       th:field="*{name}"
-                       required
-                       maxlength="100"
-                       placeholder="Ejemplo: SAM Gym Central">
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('name')}"
-                       th:errors="*{name}">
-                </small>
-            </div>
+        <label>Telefono</label>
+        <input type="text"
+               th:field="*{phone}"
+               required
+               maxlength="8"
+               pattern="[0-9]{8}"
+               placeholder="Ejemplo: 88887777"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <small class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
 
-            <div class="form-group">
-                <label>Dirección</label>
-                <input type="text"
-                       th:field="*{address}"
-                       required
-                       maxlength="150"
-                       placeholder="Ejemplo: San José centro">
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('address')}"
-                       th:errors="*{address}">
-                </small>
-            </div>
+        <label>Capacidad maxima</label>
+        <input type="number"
+               th:field="*{capacity}"
+               required
+               min="1"
+               placeholder="Ejemplo: 150">
+        <small class="error-message" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></small>
 
-            <div class="form-group">
-                <label>Teléfono</label>
-                <input type="text"
-                       th:field="*{phone}"
-                       required
-                       maxlength="8"
-                       pattern="[0-9]{8}"
-                       placeholder="Ejemplo: 88887777"
-                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('phone')}"
-                       th:errors="*{phone}">
-                </small>
-            </div>
+        <label>Estado</label>
+        <select th:field="*{active}" required>
+            <option value="">Seleccione</option>
+            <option th:value="true">Activa</option>
+            <option th:value="false">Inactiva</option>
+        </select>
+        <small class="error-message" th:if="${#fields.hasErrors('active')}" th:errors="*{active}"></small>
 
-            <div class="form-group">
-                <label>Capacidad máxima</label>
-                <input type="number"
-                       th:field="*{capacity}"
-                       required
-                       min="1"
-                       placeholder="Ejemplo: 150">
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('capacity')}"
-                       th:errors="*{capacity}">
-                </small>
-            </div>
-
-            <div class="form-group">
-                <label>Estado</label>
-                <select th:field="*{active}" required>
-                    <option value="">Seleccione</option>
-                    <option th:value="true">Activa</option>
-                    <option th:value="false">Inactiva</option>
-                </select>
-                <small class="error-message"
-                       th:if="${#fields.hasErrors('active')}"
-                       th:errors="*{active}">
-                </small>
-            </div>
-
-            <div class="buttons">
-                <button type="button" class="btn-primary" onclick="confirmSaveBranch()">Guardar</button>
-                <button type="button" class="btn-secondary" onclick="confirmCancelBranch()">Cancelar</button>
-            </div>
-
-        </form>
-
-    </section>
-
+        <div class="buttons">
+            <button type="button" class="btn-primary" onclick="confirmSaveBranch()">Guardar</button>
+            <button type="button" class="btn-secondary" onclick="confirmCancelBranch()">Cancelar</button>
+        </div>
+    </form>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>

@@ -1,48 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Administración de Sucursales</title>
+    <meta charset="UTF-8">
+    <title>Administracion de Sucursales</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/js/branch.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/branch.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('branches')}"></div>
 
-<main class="portal-main">
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de sucursales</h1>
+        <p class="hero-text">Consulta, registra, modifica y cambia el estado de las sucursales del gimnasio.</p>
+    </div>
+</section>
 
-    <section class="portal-head">
-        <span class="portal-tag">Gestión administrativa</span>
-        <h1>Administración de sucursales</h1>
-        <p>Consulta, registra, modifica y cambia el estado de las sucursales del gimnasio.</p>
-    </section>
+<main class="container portal-card admin-page-card">
+    <form class="admin-filter-row portal-filters" onsubmit="filterBranches(); return false;">
+        <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
 
-    <section class="portal-card">
+        <select id="filterActive">
+            <option value="">Todos los estados</option>
+            <option value="true" th:selected="${active == 'true'}">Activa</option>
+            <option value="false" th:selected="${active == 'false'}">Inactiva</option>
+        </select>
 
-        <div class="portal-filters">
-            <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/admin/branches}" class="btn-secondary">Limpiar filtros</a>
+    </form>
 
-            <select id="filterActive">
-                <option value="">Todos los estados</option>
-                <option value="true" th:selected="${active == 'true'}">Activa</option>
-                <option value="false" th:selected="${active == 'false'}">Inactiva</option>
-            </select>
+    <div id="branch-table-container">
+        <div th:replace="branches/admin/tableBranch :: tableBranch"></div>
+    </div>
 
-            <button type="button" class="btn-primary" onclick="filterBranches()">Buscar</button>
-            <a th:href="@{/admin/branches}" class="btn-secondary">Limpiar filtros</a>
-        </div>
-
-        <div id="branch-table-container">
-            <div th:replace="branches/admin/tableBranch :: tableBranch"></div>
-        </div>
-
-        <div class="buttons">
-            <a th:href="@{/admin/branches/new}" class="btn-primary">Agregar sucursal</a>
-        </div>
-
-    </section>
-
+    <div class="buttons">
+        <a th:href="@{/admin/branches/new}" class="btn-primary">Agregar sucursal</a>
+    </div>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
@@ -51,7 +48,7 @@
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = "Acción realizada correctamente.";
+        let message = "Accion realizada correctamente.";
 
         if (success[0] === "save") message = "Sucursal registrada correctamente.";
         if (success[0] === "edit") message = "Sucursal modificada correctamente.";

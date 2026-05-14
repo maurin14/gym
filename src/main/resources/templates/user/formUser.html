@@ -14,15 +14,18 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-<main class="container form-container portal-card admin-page-card">
-    <h1 class="page-title">Formulario de Usuario</h1>
-    <p class="admin-description">
-        Registre o actualice la información personal y de acceso del usuario.
-    </p>
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">USUARIO</span>
+        <h1>Formulario de usuario</h1>
+        <p class="hero-text">Registre o actualice la informacion personal y de acceso del usuario.</p>
+    </div>
+</section>
 
+<main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off">
+    <form class="portal-form" th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off">
         <input type="hidden" th:field="*{userId}">
 
         <label>Nombre completo</label>

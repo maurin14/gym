@@ -42,22 +42,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <td th:text="${p.description}"></td>
 
-            <td class="actions">
-                <a th:href="@{/admin/payments/edit/{id}(id=${p.id})}" class="btn-secondary">Editar</a>
+            <td>
+                <div class="actions">
+                    <a th:href="@{/admin/payments/edit/{id}(id=${p.id})}" class="btn-secondary">Editar</a>
 
-                <a href="#"
-                   class="btn-primary"
-                   th:data-id="${p.id}"
-                   onclick="confirmChangePaymentStatus(this); return false;">
-                    Cambiar estado
-                </a>
+                    <a href="#"
+                       class="btn-primary"
+                       th:data-id="${p.id}"
+                       onclick="confirmChangePaymentStatus(this); return false;">
+                        Cambiar estado
+                    </a>
 
-                <a href="#"
-                   class="btn-danger"
-                   th:data-id="${p.id}"
-                   onclick="confirmDeletePayment(this); return false;">
-                    Eliminar
-                </a>
+                    <a href="#"
+                       class="btn-danger"
+                       th:data-id="${p.id}"
+                       onclick="confirmDeletePayment(this); return false;">
+                        Eliminar
+                    </a>
+                </div>
             </td>
         </tr>
         </tbody>
