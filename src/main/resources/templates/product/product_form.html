@@ -1,88 +1,105 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Formulario de producto</title>
-    <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<div class="page-container">
-    <h1 class="page-title" th:text="${title}">Formulario de producto</h1>
+<header class="main-header portal-header">
+    <div class="header-left portal-brand">
+        <a th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
+        </a>
+        <div class="brand-text">
+            <span class="system-name portal-title">SAM GYM FITNESS</span>
+            <span class="brand-subtitle portal-subtitle">PANEL ADMINISTRADOR</span>
+        </div>
+    </div>
 
-    <div class="card">
+    <nav class="header-nav portal-nav">
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/admin/branches}">Sucursales</a>
+        <a th:href="@{/admin/payments}">Pagos</a>
+        <a th:href="@{/admin/routines}">Rutinas</a>
+        <a th:href="@{/trainer/classes}">Clases</a>
+        <a th:href="@{/admin/products}">Productos</a>
+        <a th:href="@{/schedules}">Horarios</a>
+        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+    </nav>
+</header>
 
-        <div th:if="${error != null and !#strings.isEmpty(error)}" class="alert alert-error" th:text="${error}">
-            Error
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">PRODUCTO</span>
+        <h1 th:text="${title}">Formulario de producto</h1>
+        <p class="hero-text">Completa la informaci&oacute;n del producto.</p>
+    </div>
+</section>
+
+<main class="container form-container portal-card">
+    <div th:if="${error != null and !#strings.isEmpty(error)}" class="error-message" th:text="${error}">
+        Error
+    </div>
+
+    <form class="portal-form" th:action="@{${action}}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{idProduct}">
+        <input type="hidden" th:field="*{registerDate}">
+        <input type="hidden" th:field="*{imagePath}">
+
+        <label for="nameProduct">Nombre del producto</label>
+        <input type="text"
+               id="nameProduct"
+               th:field="*{nameProduct}"
+               placeholder="Digite el nombre del producto">
+
+        <label for="category">Categor&iacute;a</label>
+        <input type="text"
+               id="category"
+               th:field="*{category}"
+               placeholder="Digite la categoria">
+
+        <label for="price">Precio</label>
+        <input type="number"
+               step="0.01"
+               id="price"
+               th:field="*{price}"
+               placeholder="Digite el precio">
+
+        <label for="quantityStock">Cantidad en stock</label>
+        <input type="number"
+               id="quantityStock"
+               th:field="*{quantityStock}"
+               placeholder="Digite la cantidad en stock">
+
+        <label for="state">Estado</label>
+        <select id="state" th:field="*{state}">
+            <option th:value="true">Activo</option>
+            <option th:value="false">Inactivo</option>
+        </select>
+
+        <label for="description">Descripci&oacute;n</label>
+        <textarea id="description"
+                  th:field="*{description}"
+                  placeholder="Digite la descripcion del producto"></textarea>
+
+        <label for="imageFile">Imagen del producto</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*">
+
+        <div class="image-preview-container"
+             th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}">
+            <label>Vista previa actual</label>
+            <img th:src="@{/{img}(img=${product.imagePath})}"
+                 alt="Vista previa de la imagen">
         </div>
 
-        <form th:action="@{${action}}" th:object="${product}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{idProduct}">
-            <input type="hidden" th:field="*{registerDate}">
-            <input type="hidden" th:field="*{imagePath}">
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label class="form-label" for="nameProduct">Nombre del producto</label>
-                    <input class="form-control" type="text" id="nameProduct" th:field="*{nameProduct}" placeholder="Digite el nombre del producto">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="category">Categoría</label>
-                    <input class="form-control" type="text" id="category" th:field="*{category}" placeholder="Digite la categoría">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="price">Precio</label>
-                    <input class="form-control" type="number" step="0.01" id="price" th:field="*{price}" placeholder="Digite el precio">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="quantityStock">Cantidad en stock</label>
-                    <input class="form-control" type="number" id="quantityStock" th:field="*{quantityStock}" placeholder="Digite la cantidad en stock">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="state">Estado</label>
-                    <select class="form-control" id="state" th:field="*{state}">
-                        <option th:value="true">Activo</option>
-                        <option th:value="false">Inactivo</option>
-                    </select>
-                </div>
-
-                <div class="form-group form-group-full">
-                    <label class="form-label" for="description">Descripción</label>
-                    <textarea class="form-control" id="description" th:field="*{description}" placeholder="Digite la descripción del producto"></textarea>
-                </div>
-
-                <div class="form-group form-group-full">
-                    <label class="form-label" for="imageFile">Imagen del producto</label>
-                    <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/*">
-                </div>
-
-                <div class="form-group form-group-full"
-                     th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}">
-                    <label class="form-label">Vista previa actual</label>
-                    <img th:src="@{/{img}(img=${product.imagePath})}"
-                         alt="Vista previa de la imagen"
-                         class="details-image"
-                         style="max-width: 220px; height: 220px;">
-                </div>
-
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">Guardar</button>
-                <a th:href="@{/products}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="buttons">
+            <button type="submit" class="btn-primary">Guardar</button>
+            <a th:href="@{/admin/products}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</main>
 
 </body>
 </html>
