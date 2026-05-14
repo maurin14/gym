@@ -31,11 +31,11 @@ function changeBranchPage(element) {
 
 function confirmSave() {
     Swal.fire({
-        title: '¿Desea guardar la sucursal?',
-        icon: 'question',
+        title: "¿Desea guardar la sucursal?",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Guardar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById("branchForm").submit();
@@ -43,15 +43,20 @@ function confirmSave() {
     });
 }
 
+function confirmSaveBranch() {
+    confirmSave();
+}
+
 function confirmDeleteBranch(element) {
     let id = element.dataset.id;
 
     Swal.fire({
-        title: '¿Está seguro de eliminar esta sucursal?',
-        icon: 'warning',
+        title: "¿Está seguro de eliminar esta sucursal?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Eliminar",
+        cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "/admin/branches/delete/" + id;
@@ -59,30 +64,34 @@ function confirmDeleteBranch(element) {
     });
 }
 
+function confirmChangeBranchStatus(element) {
+    confirmToggleBranch(element);
+}
+
 function confirmToggleBranch(element) {
     let id = element.dataset.id;
 
     Swal.fire({
-        title: '¿Desea cambiar el estado de la sucursal?',
-        icon: 'question',
+        title: "¿Desea cambiar el estado de la sucursal?",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'No'
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "/admin/branches/toggle/" + id;
+            window.location.href = "/admin/branches/status/" + id;
         }
     });
 }
 
 function confirmCancelBranch() {
     Swal.fire({
-        title: '¿Cancelar?',
-        text: 'Los cambios no guardados se perderán.',
-        icon: 'warning',
+        title: "¿Cancelar?",
+        text: "Los cambios no guardados se perderán.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'Seguir editando'
+        confirmButtonText: "Sí, cancelar",
+        cancelButtonText: "Seguir editando"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "/admin/branches";

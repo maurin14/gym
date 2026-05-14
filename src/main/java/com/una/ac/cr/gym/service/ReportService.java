@@ -12,6 +12,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,10 +48,6 @@ public class ReportService implements CRUD<Report>{
     private AttendanceService attendanceService;
     
     public void save(Report r){
-        String validation = validate(r);
-        if(validation != null){
-        }
-
         if(r.getReportId() == null){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             r.setGenerationDate(LocalDateTime.now().format(formatter));
@@ -149,31 +146,81 @@ public class ReportService implements CRUD<Report>{
     }
 
     public String validate(Report r){
+        Map<String, String> errors = validateFields(r);
+        return errors.isEmpty() ? null : errors.values().iterator().next();
+    }
+
+    public Map<String, String> validateFields(Report r){
+        Map<String, String> errors = new LinkedHashMap<>();
+
         if(r == null){
-            return "Datos inválidos";
+            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            return errors;
         }
-        
-        if(isEmpty(r.getReportType()) || r.getGeneratedBy() == null
-                || isEmpty(r.getDescription()) || isEmpty(r.getStartDate()) || isEmpty(r.getEndDate())
-                || isEmpty(r.getFormat()) || isEmpty(r.getReportStatus())){
-            return "Debe completar todos los campos obligatorios";
-        }
-        if(r.getStartDate().compareTo(r.getEndDate()) > 0){
-            return "La fecha de inicio no puede ser mayor que la fecha final";
-        }
-        if(!r.getReportType().equals("users") && !r.getReportType().equals("payments") 
+
+        if(isEmpty(r.getReportType())){
+            errors.put("reportType", "Seleccione una opción.");
+        }else if(!r.getReportType().equals("users") && !r.getReportType().equals("payments")
                 && !r.getReportType().equals("attendances")){
-            return "El tipo de reporte debe ser usuarios, pagos o asistencias";
+            errors.put("reportType", "Seleccione una opción.");
         }
-        if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel") 
+
+        if(r.getGeneratedBy() == null){
+            errors.put("generatedBy", "Este campo es obligatorio.");
+        }
+
+        if(isEmpty(r.getDescription())){
+            errors.put("description", "Este campo es obligatorio.");
+        }else if(r.getDescription().length() > 255){
+            errors.put("description", "Ingrese 255 caracteres o menos.");
+        }
+
+        LocalDate startDate = parseDate(r.getStartDate());
+        LocalDate endDate = parseDate(r.getEndDate());
+
+        if(isEmpty(r.getStartDate())){
+            errors.put("startDate", "La fecha es obligatoria.");
+        }else if(startDate == null){
+            errors.put("startDate", "Ingrese una fecha válida.");
+        }
+
+        if(isEmpty(r.getEndDate())){
+            errors.put("endDate", "La fecha es obligatoria.");
+        }else if(endDate == null){
+            errors.put("endDate", "Ingrese una fecha válida.");
+        }
+
+        if(startDate != null && endDate != null && startDate.isAfter(endDate)){
+            errors.put("endDate", "La fecha final debe ser mayor o igual a la fecha de inicio.");
+        }
+
+        if(isEmpty(r.getFormat())){
+            errors.put("format", "Seleccione una opción.");
+        }else if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel")
                 && !r.getFormat().equals("csv")){
-            return "El formato debe ser PDF, Excel o CSV";
+            errors.put("format", "Seleccione una opción.");
         }
-        if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending") 
+
+        if(isEmpty(r.getReportStatus())){
+            errors.put("reportStatus", "Seleccione una opción.");
+        }else if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending")
                 && !r.getReportStatus().equals("error")){
-            return "El estado del reporte debe ser generado, pendiente o error";
+            errors.put("reportStatus", "Seleccione una opción.");
         }
-        return null;
+
+        if(r.getFilePath() != null && r.getFilePath().length() > 255){
+            errors.put("filePath", "Ingrese 255 caracteres o menos.");
+        }
+
+        return errors;
+    }
+
+    private LocalDate parseDate(String value){
+        try {
+            return isEmpty(value) ? null : LocalDate.parse(value);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public List<Map<String, String>> getPreviewData(String reportType){
@@ -288,7 +335,7 @@ public class ReportService implements CRUD<Report>{
 
     public String validateAdministratorAccess(HttpSession session){
         if(!isAdministrator(session)){
-            return "Solo los administradores pueden gestionar reportes";
+            return "Solo los administradores pueden gestiónar reportes";
         }
         return null;
     }

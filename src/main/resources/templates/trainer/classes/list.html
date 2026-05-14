@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Administracion de clases</title>
+    <title>Administración de clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
@@ -12,14 +12,14 @@
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
-        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
-        <h1>Administracion de clases</h1>
+        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
+        <h1>Administración de clases</h1>
         <p class="hero-text">
             Administra clases, entrenadores, horarios, cupos y niveles de dificultad desde un panel unificado.
         </p>
 
         <div class="hero-buttons centered">
-            <a class="btn-primary" th:href="@{/trainer/classes/form}">Agregar clase</a>
+            <a class="btn-primary" th:href="@{/admin/classes/form}">Agregar clase</a>
         </div>
     </div>
 </section>
@@ -34,11 +34,11 @@
                 <th>Fecha</th>
                 <th>Inicio</th>
                 <th>Final</th>
-                <th>Duracion</th>
+                <th>Duración</th>
                 <th>Capacidad</th>
                 <th>Inscritos</th>
                 <th>Dificultad</th>
-                <th>Descripcion</th>
+                <th>Descripción</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -47,7 +47,7 @@
     </table>
 
     <div class="pagination">
-        <button id="pageInfo" disabled>Pagina 1 de 1</button>
+        <button id="pageInfo" disabled>Página 1 de 1</button>
         <button id="prevBtn" onclick="previousPage()">Anterior</button>
         <button id="nextBtn" onclick="nextPage()">Siguiente</button>
     </div>

@@ -26,13 +26,13 @@ public class Routine {
     private String difficultyLevel;
 
     @Column(name = "estimated_duration")
-    private int estimatedDuration;
+    private Integer estimatedDuration;
 
     @Column(name = "training_objective")
     private String trainingObjective;
 
     @Column(name = "quantity_exercises")
-    private int quantityExercises;
+    private Integer quantityExercises;
 
     @Column(name = "routine_type")
     private String routineType;
@@ -47,8 +47,8 @@ public class Routine {
     }
 
     public Routine(int idRoutine, String nameRoutine, String description,
-                   String difficultyLevel, int estimatedDuration,
-                   String trainingObjective, int quantityExercises,
+                   String difficultyLevel, Integer estimatedDuration,
+                   String trainingObjective, Integer quantityExercises,
                    String routineType, String exercises, boolean state) {
         this.idRoutine = idRoutine;
         this.nameRoutine = nameRoutine;
@@ -94,11 +94,11 @@ public class Routine {
         this.difficultyLevel = difficultyLevel;
     }
 
-    public int getEstimatedDuration() {
+    public Integer getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(int estimatedDuration) {
+    public void setEstimatedDuration(Integer estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 
@@ -110,11 +110,11 @@ public class Routine {
         this.trainingObjective = trainingObjective;
     }
 
-    public int getQuantityExercises() {
+    public Integer getQuantityExercises() {
         return quantityExercises;
     }
 
-    public void setQuantityExercises(int quantityExercises) {
+    public void setQuantityExercises(Integer quantityExercises) {
         this.quantityExercises = quantityExercises;
     }
 

@@ -14,36 +14,44 @@
     <div class="hero-overlay">
         <span class="hero-badge">CLASE</span>
         <h1 id="formTitle">Agregar clase</h1>
-        <p class="hero-text">Completa la informacion de la clase.</p>
+        <p class="hero-text">Completa la información de la clase.</p>
     </div>
 </section>
 
 <main class="container form-container portal-card admin-page-card">
     <input type="hidden" id="idClass">
+    <small id="formError" class="field-error"></small>
 
     <form class="portal-form">
         <label>Tipo de clase</label>
         <input type="text" id="classType">
+        <small id="classTypeError" class="field-error"></small>
 
         <label>Fecha</label>
         <input type="date" id="classDate">
+        <small id="classDateError" class="field-error"></small>
 
         <label>Hora inicio</label>
         <input type="time" id="startTime">
+        <small id="startTimeError" class="field-error"></small>
 
         <label>Hora final</label>
         <input type="time" id="endTime">
+        <small id="endTimeError" class="field-error"></small>
 
-        <label>Capacidad maxima</label>
-        <input type="number" id="maxCapacity">
+        <label>Capacidad máxima</label>
+        <input type="number" id="maxCapacity" min="1">
+        <small id="maxCapacityError" class="field-error"></small>
 
         <label>Entrenador</label>
         <select id="trainerId">
             <option value="">Seleccione un entrenador</option>
         </select>
+        <small id="trainerIdError" class="field-error"></small>
 
         <label>Cantidad inscritos</label>
-        <input type="number" id="enrolledCount" value="0" readonly>
+        <input type="number" id="enrolledCount" value="0" min="0" readonly>
+        <small id="enrolledCountError" class="field-error"></small>
 
         <label>Dificultad</label>
         <select id="difficultyLevel">
@@ -51,13 +59,15 @@
             <option value="Medio">Medio</option>
             <option value="Alto">Alto</option>
         </select>
+        <small id="difficultyLevelError" class="field-error"></small>
 
-        <label>Descripcion</label>
+        <label>Descripción</label>
         <textarea id="description"></textarea>
+        <small id="descriptionError" class="field-error"></small>
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
-            <a class="btn-secondary" th:href="@{/trainer/classes}">Volver</a>
+            <a class="btn-secondary" th:href="@{/admin/classes}">Volver</a>
         </div>
     </form>
 </main>

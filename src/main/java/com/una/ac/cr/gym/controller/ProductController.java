@@ -9,6 +9,7 @@ import com.una.ac.cr.gym.service.ProductServices;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,6 +99,16 @@ public class ProductController {
         product.setRegisterDate(LocalDate.now());
         product.setState(true);
 
+        Map<String, String> fieldErrors = productService.validateFields(product, false);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("title", "Agregar producto");
+            model.addAttribute("product", product);
+            model.addAttribute("action", "/admin/products/save");
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            return "product/product_form";
+        }
+
         if (!imageFile.isEmpty()) {
             try {
                 String uploadDir = System.getProperty("user.dir") + File.separator
@@ -178,6 +189,16 @@ public class ProductController {
         }
 
         product.setRegisterDate(currentProduct.getRegisterDate());
+
+        Map<String, String> fieldErrors = productService.validateFields(product, true);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("title", "Editar producto");
+            model.addAttribute("product", product);
+            model.addAttribute("action", "/admin/products/update");
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            return "product/product_form";
+        }
 
         if (!imageFile.isEmpty()) {
             try {

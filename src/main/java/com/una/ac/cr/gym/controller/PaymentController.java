@@ -10,13 +10,12 @@ import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,21 +76,19 @@ public class PaymentController {
     }
 
     @PostMapping("/admin/payments/save")
-    public String savePayment(@Valid @ModelAttribute("payment") Payment payment,
-                              BindingResult result,
+    public String savePayment(@ModelAttribute("payment") Payment payment,
                               @RequestParam(required = false) Integer branchId,
                               Model model) {
 
         Branch branch = branchId != null ? branchService.getById(branchId) : null;
+        payment.setBranch(branch);
 
-        if (branch == null) {
-            result.rejectValue("branch", "error.payment", "Debe seleccionar una sucursal.");
-        } else {
-            payment.setBranch(branch);
-        }
-
-        if (result.hasErrors()) {
+        Map<String, String> fieldErrors = paymentService.validateFields(payment);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("payment", payment);
             model.addAttribute("branches", branchService.getActiveBranches());
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "payments/admin/formPayment";
         }
 

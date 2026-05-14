@@ -340,8 +340,22 @@ textarea:focus {
 .portal-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px 24px;
+    gap: 8px 24px;
     align-items: start;
+}
+
+.portal-form > label,
+.portal-form > input,
+.portal-form > select,
+.portal-form > textarea,
+.portal-form > small,
+.portal-form > span,
+.portal-form > .image-preview-container {
+    grid-column: 1 / -1;
+}
+
+.portal-form > label:not(:first-of-type) {
+    margin-top: 14px;
 }
 
 .form-group {
@@ -368,13 +382,15 @@ textarea:focus {
     background: #f9fafb;
 }
 
+.field-error,
 .error-message {
-    color: #dc2626;
-    font-size: 13px;
-    font-weight: 900;
-    min-height: 18px;
-    line-height: 1.3;
     display: block;
+    margin-top: 6px;
+    color: #dc2626;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+    min-height: 18px;
 }
 
 .portal-form .buttons {

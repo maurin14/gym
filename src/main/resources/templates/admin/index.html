@@ -35,7 +35,7 @@
             <h1>Panel de Administraci&oacute;n</h1>
             <p class="hero-slogan">Control total del sistema</p>
             <p class="hero-text">
-                Desde este panel puedes administrar sucursales, pagos, rutinas, clases, productos, usuarios y reportes.
+                Desde este panel puedes administrar sucursales, pagos, rutinas, clases, equipamiento, productos, usuarios y reportes.
             </p>
         </div>
     </section>
@@ -81,6 +81,14 @@
                 <p>Administraci&oacute;n de horarios del gimnasio.</p>
                 <div class="buttons">
                     <a th:href="@{/admin/schedules}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h3>Equipamiento <span class="badge badge-pending">Pr&oacute;ximamente</span></h3>
+                <p>Consulta el acceso al inventario de m&aacute;quinas, implementos y equipos del gimnasio.</p>
+                <div class="buttons">
+                    <a th:href="@{/admin/equipment}" class="btn-secondary">Ver estado</a>
                 </div>
             </article>
 
