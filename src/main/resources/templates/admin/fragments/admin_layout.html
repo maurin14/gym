@@ -4,17 +4,29 @@
 
 <header th:fragment="adminHeader(active)" class="main-header portal-header">
     <div class="header-left portal-brand">
-        <a th:href="@{/admin/home}">
+        <a th:if="${session.user != null and session.user.role == 'administrator'}" th:href="@{/admin/home}">
+            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
+        </a>
+        <a th:if="${session.user != null and session.user.role == 'trainer'}" th:href="@{/trainer/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
         </a>
         <div class="brand-text">
             <span class="system-name portal-title">SAM GYM FITNESS</span>
-            <span class="brand-subtitle portal-subtitle">Panel administrador</span>
+            <span th:if="${session.user != null and session.user.role == 'administrator'}" 
+                  class="brand-subtitle portal-subtitle">Panel administrador</span>
+            <span th:if="${session.user != null and session.user.role == 'trainer'}" 
+                  class="brand-subtitle portal-subtitle">PANEL ENTRENADOR</span>
         </div>
     </div>
 
     <nav class="header-nav portal-nav" aria-label="Navegaci&oacute;n administrativa">
-        <a th:href="@{/admin/home}" th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'administrator'}"
+            th:href="@{/admin/home}"
+            th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+
+         <a th:if="${session.user != null and session.user.role == 'trainer'}"
+            th:href="@{/trainer/home}"
+            th:classappend="${active == 'home'} ? ' active'">Inicio</a>
         <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
         <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
         <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>

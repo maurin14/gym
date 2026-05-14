@@ -44,6 +44,22 @@ public class HomeController {
 
         return "client/client_home";
     }
+    
+    @GetMapping("/trainer/home")
+        public String trainerHome(HttpSession session) {
+
+            User user = (User) session.getAttribute("user");
+
+            if (user == null) {
+                return "redirect:/login";
+            }
+
+            if (!"trainer".equals(user.getRole())) {
+                return "redirect:/client/home";
+            }
+
+            return "trainer/index";
+        }
 
     @GetMapping("/user/home")
     public String oldUserHome() {
