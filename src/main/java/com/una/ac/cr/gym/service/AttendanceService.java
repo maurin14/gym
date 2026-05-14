@@ -48,9 +48,7 @@ public class AttendanceService {
 
             if (gymClass != null) {
 
-                gymClass.setEnrolledCount(
-                        gymClass.getEnrolledCount() + 1
-                );
+                gymClass.setEnrolledCount(gymClass.getEnrolledCount() + 1);
 
                 gymClassRepository.save(gymClass);
 
@@ -67,6 +65,21 @@ public class AttendanceService {
     }
 
     public void deleteAttendance(int idAttendance) {
+
+        Attendance attendance = attendanceRepository.findById(idAttendance).orElse(null);
+
+        if (attendance != null && attendance.getGymClass() != null) {
+
+            GymClass gymClass = gymClassRepository
+                    .findById(attendance.getGymClass().getIdClass())
+                    .orElse(null);
+
+            if (gymClass != null && gymClass.getEnrolledCount() > 0) {
+                gymClass.setEnrolledCount(gymClass.getEnrolledCount() - 1);
+                gymClassRepository.save(gymClass);
+            }
+        }
+
         attendanceRepository.deleteById(idAttendance);
     }
 }
