@@ -21,7 +21,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <nav class="header-nav">
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
-        <a th:href="@{/routines}">Rutinas</a>
+        <a th:href="@{/admin/routines}">Rutinas</a>
         <a th:if="${session.user != null and session.user.role == 'client'}"
            th:href="@{/client/classes}">
             Clases
@@ -38,7 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
            th:href="@{/trainer/attendances}">
             Asistencia
         </a>
-        <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/admin/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
@@ -83,7 +83,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <h3>Rutinas</h3>
                 <p>Revisa tus rutinas asignadas y da seguimiento a tu entrenamiento personal.</p>
                 <div class="buttons">
-                    <a th:href="@{/routines}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/routines}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
@@ -107,7 +107,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <h3>Productos</h3>
                 <p>Consulta productos disponibles y servicios complementarios del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/products}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/products}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
         </div>
