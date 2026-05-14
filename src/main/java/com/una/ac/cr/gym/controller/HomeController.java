@@ -28,11 +28,6 @@ public class HomeController {
 
         return "admin/index";
     }
-    
-    @GetMapping("/trainer/home")
-    public String trainerHome() {
-        return "trainer/index";
-    }
 
     @GetMapping("/client/home")
     public String clientHome(HttpSession session) {

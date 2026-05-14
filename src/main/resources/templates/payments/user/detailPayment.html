@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Detalle de Pago - SAM GYM FITNESS</title>
+    <title>Mis Pagos - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
@@ -21,6 +21,10 @@
         <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments}">Mis pagos</a>
+        <a th:href="@{/client/routines}">Rutinas</a>
+        <a th:href="@{/client/classes}">Clases</a>
+        <a th:href="@{/client/products}">Productos</a>
+        <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
 </header>
@@ -28,55 +32,99 @@
 <main class="portal-main">
 
     <section class="portal-head">
-        <span class="portal-tag">Detalle de pago</span>
-        <h1>Información del pago</h1>
-        <p>Detalle completo del pago seleccionado.</p>
+        <span class="portal-tag">Historial</span>
+        <h1>Mis pagos</h1>
+        <p>Consulta el historial de pagos asociados a tu usuario.</p>
     </section>
 
     <section class="portal-card">
 
-        <div class="info-card">
-            <p>
-                <strong>Fecha pago:</strong>
-                <span th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy')}"></span>
-            </p>
+        <div class="portal-filters">
+            <select id="filterStatus">
+                <option value="">Todos los estados</option>
+                <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
+                <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
+                <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
+            </select>
 
-            <p>
-                <strong>Cliente:</strong>
-                <span th:text="${payment.idUser}"></span>
-            </p>
+            <select id="filterPaymentMethod">
+                <option value="">Todos los métodos</option>
+                <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
+                <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
+                <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}">SINPE</option>
+                <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
+            </select>
 
-            <p>
-                <strong>Sucursal:</strong>
-                <span th:text="${payment.branch != null ? payment.branch.name : 'Sin sucursal'}"></span>
-            </p>
+            <button type="button"
+                    class="btn-primary"
+                    th:onclick="'window.location.href=\'/payments?status=\' + encodeURIComponent(document.getElementById(\'filterStatus\').value) + \'&paymentMethod=\' + encodeURIComponent(document.getElementById(\'filterPaymentMethod\').value)'">
+                Buscar
+            </button>
 
-            <p>
-                <strong>Monto:</strong>
-                <span th:text="${'₡' + payment.amount}"></span>
-            </p>
-
-            <p>
-                <strong>Método:</strong>
-                <span th:text="${payment.paymentMethod}"></span>
-            </p>
-
-            <p>
-                <strong>Estado:</strong>
-                <span th:text="${payment.status}"
-                      th:class="${payment.status == 'Pagado' ? 'badge badge-active' :
-                               (payment.status == 'Pendiente' ? 'badge badge-pending' : 'badge badge-inactive')}">
-                </span>
-            </p>
-
-            <p>
-                <strong>Descripción:</strong>
-                <span th:text="${payment.description}"></span>
-            </p>
+            <a th:href="@{/payments}" class="btn-secondary">Limpiar filtros</a>
         </div>
 
-        <div class="buttons">
-            <a th:href="@{/payments}" class="btn-secondary">Volver</a>
+        <table class="portal-table">
+            <thead>
+            <tr>
+                <th>Fecha pago</th>
+                <th>Cliente</th>
+                <th>Sucursal</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Estado</th>
+                <th>Descripción</th>
+                <th>Detalle</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:if="${payments.content.size() == 0}">
+                <td colspan="8" class="empty-message">No se encontraron pagos.</td>
+            </tr>
+
+            <tr th:each="p : ${payments.content}">
+                <td th:text="${#temporals.format(p.paymentDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${p.idUser}"></td>
+                <td th:text="${p.branch != null ? p.branch.name : 'Sin sucursal'}"></td>
+                <td th:text="${'₡' + p.amount}"></td>
+                <td th:text="${p.paymentMethod}"></td>
+
+                <td>
+                    <span th:text="${p.status}"
+                          th:class="${p.status == 'Pagado' ? 'badge badge-active' :
+                                   (p.status == 'Pendiente' ? 'badge badge-pending' : 'badge badge-inactive')}">
+                    </span>
+                </td>
+
+                <td th:text="${p.description}"></td>
+
+                <td>
+                    <a th:href="@{/payments/{id}(id=${p.id})}" class="btn-primary">Ver detalle</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination" th:if="${payments.totalPages > 1}">
+            <a class="btn-secondary"
+               th:if="${payments.hasPrevious()}"
+               th:href="@{/payments(page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}">
+                Anterior
+            </a>
+
+            <span th:each="i : ${#numbers.sequence(0, payments.totalPages - 1)}">
+                <a th:text="${i + 1}"
+                   th:href="@{/payments(page=${i}, status=${status}, paymentMethod=${paymentMethod})}"
+                   th:class="${i == payments.number ? 'btn-primary' : 'btn-secondary'}">
+                </a>
+            </span>
+
+            <a class="btn-secondary"
+               th:if="${payments.hasNext()}"
+               th:href="@{/payments(page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}">
+                Siguiente
+            </a>
         </div>
 
     </section>
