@@ -28,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author alira
  */
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductController {
 
     @Autowired
@@ -85,7 +85,7 @@ public class ProductController {
 
         model.addAttribute("title", "Agregar producto");
         model.addAttribute("product", product);
-        model.addAttribute("action", "/products/save");
+        model.addAttribute("action", "/admin/products/save");
         return "product/product_form";
     }
 
@@ -125,7 +125,7 @@ public class ProductController {
                 e.printStackTrace();
                 model.addAttribute("title", "Agregar producto");
                 model.addAttribute("product", product);
-                model.addAttribute("action", "/products/save");
+                model.addAttribute("action", "/admin/products/save");
                 model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
                 return "product/product_form";
             }
@@ -136,13 +136,13 @@ public class ProductController {
         if (!result.isEmpty()) {
             model.addAttribute("title", "Agregar producto");
             model.addAttribute("product", product);
-            model.addAttribute("action", "/products/save");
+            model.addAttribute("action", "/admin/products/save");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto guardado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -158,7 +158,7 @@ public class ProductController {
 
         model.addAttribute("title", "Editar producto");
         model.addAttribute("product", product);
-        model.addAttribute("action", "/products/update");
+        model.addAttribute("action", "/admin/products/update");
         return "product/product_form";
     }
 
@@ -206,7 +206,7 @@ public class ProductController {
                 e.printStackTrace();
                 model.addAttribute("title", "Editar producto");
                 model.addAttribute("product", product);
-                model.addAttribute("action", "/products/update");
+                model.addAttribute("action", "/admin/products/update");
                 model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
                 return "product/product_form";
             }
@@ -217,13 +217,13 @@ public class ProductController {
         if (!result.isEmpty()) {
             model.addAttribute("title", "Editar producto");
             model.addAttribute("product", product);
-            model.addAttribute("action", "/products/update");
+            model.addAttribute("action", "/admin/products/update");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto editado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/delete/{id}")
@@ -238,7 +238,7 @@ public class ProductController {
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/details/{id}")

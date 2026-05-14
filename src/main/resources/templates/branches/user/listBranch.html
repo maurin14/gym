@@ -26,7 +26,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments(userId=1)}">Mis pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
-        <a th:href="@{/classes}">Clases</a>
+        <a th:if="${session.user != null and session.user.role == 'client'}"
+           th:href="@{/client/classes}">
+            Clases
+        </a>
+        <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
+           th:href="@{/trainer/classes}">
+            Clases
+        </a>
         <a th:href="@{/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>

@@ -1,35 +1,46 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- *
- * @author alira
- */
 @Entity
 @Table(name = "tb_routines")
 public class Routine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_routine")
     private int idRoutine;
 
+    @Column(name = "name_routine")
     private String nameRoutine;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "difficulty_level")
     private String difficultyLevel;
+
+    @Column(name = "estimated_duration")
     private int estimatedDuration;
+
+    @Column(name = "training_objective")
     private String trainingObjective;
+
+    @Column(name = "quantity_exercises")
     private int quantityExercises;
+
+    @Column(name = "routine_type")
     private String routineType;
+
+    @Column(name = "exercises")
     private String exercises;
+
+    @Column(name = "state")
     private boolean state;
 
     public Routine() {
@@ -37,9 +48,8 @@ public class Routine {
 
     public Routine(int idRoutine, String nameRoutine, String description,
                    String difficultyLevel, int estimatedDuration,
-                   String trainingObjective,
-                   int quantityExercises, String routineType,
-                   String exercises, boolean state) {
+                   String trainingObjective, int quantityExercises,
+                   String routineType, String exercises, boolean state) {
         this.idRoutine = idRoutine;
         this.nameRoutine = nameRoutine;
         this.description = description;
