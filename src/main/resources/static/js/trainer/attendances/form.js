@@ -1,6 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
+    loadClients();
     loadClasses();
 });
+
+function loadClients() {
+
+    fetch("/attendances/clients")
+        .then(response => response.json())
+        .then(data => {
+
+            const clientSelect = document.getElementById("clientId");
+
+            clientSelect.innerHTML =
+                    '<option value="">Seleccione un cliente</option>';
+
+            data
+                .filter(client => client.status === "active")
+                .forEach(client => {
+
+                    clientSelect.innerHTML += `
+                        <option value="${client.userId}">
+                            ${client.fullName}
+                        </option>
+                    `;
+                });
+        });
+}
 
 function loadClasses() {
 
@@ -21,14 +46,6 @@ function loadClasses() {
                     </option>
                 `;
             });
-
-            const params = new URLSearchParams(window.location.search);
-            const classId = params.get("classId");
-
-            if (classId !== null) {
-                classSelect.value = classId;
-                setAttendanceDate();
-            }
         });
 }
 
@@ -43,38 +60,28 @@ function setAttendanceDate() {
     }
 }
 
-function saveClientAttendance() {
+function saveAttendance() {
 
+    const clientId = document.getElementById("clientId").value;
     const classId = document.getElementById("classId").value;
     const attendanceDate = document.getElementById("attendanceDate").value;
+    const attendanceStatus = document.getElementById("attendanceStatus").value;
     const observation = document.getElementById("observation").value.trim();
 
-    if (classId === "") {
-        Swal.fire({
-            icon: "warning",
-            title: "Seleccione una clase",
-            text: "Debe seleccionar una clase para registrar la asistencia.",
-            confirmButtonColor: "#d97818"
-        });
-        return;
-    }
-
-    if (attendanceDate === "") {
-        Swal.fire({
-            icon: "warning",
-            title: "Fecha requerida",
-            text: "La fecha de asistencia no puede estar vacia.",
-            confirmButtonColor: "#d97818"
-        });
+    if (clientId === "" || classId === "" || attendanceDate === "" || attendanceStatus === "") {
+        alert("Debe completar todos los campos obligatorios.");
         return;
     }
 
     const attendance = {
+        client: {
+            userId: clientId
+        },
         gymClass: {
             idClass: classId
         },
         attendanceDate: attendanceDate,
-        attendanceStatus: "Presente",
+        attendanceStatus: attendanceStatus,
         observation: observation
     };
 
@@ -85,13 +92,7 @@ function saveClientAttendance() {
         },
         body: JSON.stringify(attendance)
     }).then(() => {
-        Swal.fire({
-            icon: "success",
-            title: "Asistencia registrada",
-            text: "Tu asistencia se registro correctamente.",
-            confirmButtonColor: "#d97818"
-        }).then(() => {
-            window.location.href = "/client/attendances";
-        });
+        alert("Asistencia guardada correctamente");
+        window.location.href = "/trainer/attendances";
     });
 }

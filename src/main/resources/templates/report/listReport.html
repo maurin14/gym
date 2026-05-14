@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reportes - SAM GYM FITNESS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+</head>
+<body class="page-portal">
+
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de reportes</h1>
+        <p class="hero-text">
+            Consulta, filtra, descarga y administra reportes con la misma estructura visual del panel admin.
+        </p>
+    </div>
+</section>
+
+<main class="container portal-card admin-page-card">
+    <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+
+    <div class="buttons admin-action-row">
+        <a th:href="@{/reports/add}" class="btn-primary">Agregar reporte</a>
+    </div>
+
+    <form th:action="@{/reports}" method="get" class="admin-filter-row portal-filters">
+        <select name="reportType">
+            <option value="">Todos los tipos</option>
+            <option value="users" th:selected="${reportType == 'users'}">Usuarios</option>
+            <option value="payments" th:selected="${reportType == 'payments'}">Pagos</option>
+            <option value="attendances" th:selected="${reportType == 'attendances'}">Asistencias</option>
+        </select>
+
+        <select name="reportStatus">
+            <option value="">Todos los estados</option>
+            <option value="generated" th:selected="${reportStatus == 'generated'}">Generado</option>
+            <option value="pending" th:selected="${reportStatus == 'pending'}">Pendiente</option>
+            <option value="error" th:selected="${reportStatus == 'error'}">Error</option>
+        </select>
+
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/reports}" class="btn-secondary">Limpiar</a>
+    </form>
+
+    <table class="portal-table">
+        <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Generacion</th>
+            <th>Generado por</th>
+            <th>Inicio</th>
+            <th>Final</th>
+            <th>Formato</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="r : ${reports}">
+            <td>
+                <span th:if="${r.reportType == 'users'}">Usuarios</span>
+                <span th:if="${r.reportType == 'payments'}">Pagos</span>
+                <span th:if="${r.reportType == 'attendances'}">Asistencias</span>
+            </td>
+            <td th:text="${r.formattedGenerationDate}"></td>
+            <td th:text="${r.userName}"></td>
+            <td th:text="${r.formattedStartDate}"></td>
+            <td th:text="${r.formattedEndDate}"></td>
+            <td th:text="${r.format}"></td>
+            <td>
+                <span th:class="'badge status-' + ${r.reportStatus}">
+                    <span th:if="${r.reportStatus == 'generated'}">Generado</span>
+                    <span th:if="${r.reportStatus == 'pending'}">Pendiente</span>
+                    <span th:if="${r.reportStatus == 'error'}">Error</span>
+                </span>
+            </td>
+            <td>
+                <div class="actions">
+                    <a th:href="@{/reports/view(id=${r.reportId})}" class="btn-secondary">Ver</a>
+                    <a th:href="@{/reports/download(id=${r.reportId})}" class="btn-primary">Descargar</a>
+                    <a th:href="@{/reports/edit(id=${r.reportId})}" class="btn-secondary">Editar</a>
+                    <a th:href="@{/reports/delete(id=${r.reportId})}"
+                       class="btn-danger"
+                       onclick="return confirm('Desea eliminar este reporte?')">Eliminar</a>
+                </div>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(reports)}">
+            <td colspan="8" class="empty-message">No hay reportes registrados.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a th:if="${currentPage > 1}"
+           th:href="@{/reports(page=${currentPage - 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
+            Anterior
+        </a>
+
+        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/reports(page=${i}, reportType=${reportType}, reportStatus=${reportStatus})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'page-active'"></a>
+        </span>
+
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/reports(page=${currentPage + 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
+            Siguiente
+        </a>
+    </div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+</body>
+</html>

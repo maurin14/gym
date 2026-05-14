@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>SAM GYM FITNESS</title>
@@ -25,7 +21,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/client/home}" class="btn-primary">Iniciar sesión</a>
+        <a th:href="@{/login}" class="btn-primary landing-login-button">Iniciar sesión</a>
     </nav>
 </header>
 
@@ -42,7 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </p>
 
             <div class="landing-buttons">
-                <a th:href="@{/client/home}" class="btn-primary">Ingresar al sistema</a>
+                <a th:href="@{/login}" class="btn-primary">Ingresar al sistema</a>
             </div>
         </div>
 
@@ -176,12 +172,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 solicítalo directamente en la recepción del gimnasio.
             </p>
             <div class="landing-buttons centered">
-                <a th:href="@{/client/home}" class="btn-primary">Iniciar sesión</a>
+                <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
             </div>
         </div>
     </section>
-
-
 
 </main>
 
@@ -198,7 +192,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/client/home}">Iniciar sesión</a>
+        <a th:href="@{/login}">Iniciar sesión</a>
     </div>
 </footer>
 

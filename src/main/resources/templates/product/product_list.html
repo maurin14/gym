@@ -3,150 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Lista de productos</title>
-    <link rel="stylesheet" th:href="@{/css/product.css}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body class="page-portal">
 
-<div class="page-container">
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('products')}"></div>
 
-    <h1 class="page-title" th:text="${title}">Lista de productos</h1>
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTI&Oacute;N ADMINISTRATIVA</span>
+        <h1>Administraci&oacute;n de productos</h1>
+        <p class="hero-text">Consulta, registra, modifica y cambia el estado de los productos del gimnasio.</p>
+    </div>
+</section>
 
-    <div class="card">
+<main class="container portal-card admin-page-card">
 
-        <div class="top-bar">
-
-            <form th:action="@{/products}" method="get" style="display:flex; gap:10px; align-items:center;">
-
-                <span style="font-weight:bold; margin-right:5px;">Filtrar por:</span>
-
-                <select class="form-control" name="category" style="width:180px;">
-                    <option value="">Categoría</option>
-                    <option th:each="cat : ${categories}"
-                            th:value="${cat}"
-                            th:text="${cat}"
-                            th:selected="${cat == category}">
-                    </option>
-                </select>
-
-                <input class="form-control"
-                       type="number"
-                       step="0.01"
-                       name="minPrice"
-                       th:value="${minPrice != null ? minPrice : minProductPrice}"
-                       placeholder="Menor precio"
-                       style="width:160px;">
-
-                <input class="form-control"
-                       type="number"
-                       step="0.01"
-                       name="maxPrice"
-                       th:value="${maxPrice != null ? maxPrice : maxProductPrice}"
-                       placeholder="Mayor precio"
-                       style="width:160px;">
-
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-
-                <a th:href="@{/products}" class="btn btn-secondary">Limpiar</a>
-
-            </form>
-
-            <a th:href="@{/products/create}" class="btn btn-success">Agregar producto</a>
-
-        </div>
-
-        <div th:if="${error != null and !#strings.isEmpty(error)}"
-             class="alert alert-error"
-             th:text="${error}">
-        </div>
-
-        <div class="table-container">
-            <table class="product-table">
-
-                <thead>
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <tr th:if="${products == null or #lists.isEmpty(products)}">
-                        <td colspan="7">No hay productos registrados.</td>
-                    </tr>
-
-                    <tr th:each="product : ${products}">
-
-                        <td>
-                            <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
-                                 th:src="@{/{img}(img=${product.imagePath})}"
-                                 class="product-image-thumb">
-
-                            <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
-                                 class="no-image">
-                                Sin imagen
-                            </div>
-                        </td>
-
-                        <td th:text="${product.nameProduct}"></td>
-                        <td th:text="${product.category}"></td>
-                        <td th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
-                        <td th:text="${product.quantityStock}"></td>
-
-                        <td>
-                            <span th:class="${product.state} ? 'badge badge-active' : 'badge badge-inactive'">
-                                <span th:text="${product.state ? 'Activo' : 'Inactivo'}"></span>
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="actions">
-                                <a class="btn btn-info" th:href="@{/products/details/{id}(id=${product.idProduct})}">Ver</a>
-                                <a class="btn btn-warning" th:href="@{/products/edit/{id}(id=${product.idProduct})}">Editar</a>
-                                <a class="btn btn-danger"
-                                   th:href="@{/products/delete/{id}(id=${product.idProduct})}"
-                                   data-delete-link>
-                                   Eliminar
-                                </a>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-        </div>
-
-        <div class="form-actions" th:if="${totalPages > 1}">
-
-            <a class="btn btn-secondary"
-               th:if="${currentPage > 0}"
-               th:href="@{/products(page=${currentPage - 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
-                Anterior
-            </a>
-
-            <span class="btn btn-info"
-                  th:text="${'Página ' + (currentPage + 1) + ' de ' + totalPages}">
-            </span>
-
-            <a class="btn btn-secondary"
-               th:if="${currentPage + 1 < totalPages}"
-               th:href="@{/products(page=${currentPage + 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
-                Siguiente
-            </a>
-
-        </div>
-
+    <div th:if="${error != null and !#strings.isEmpty(error)}"
+         class="error-message"
+         th:text="${error}">
     </div>
 
-</div>
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/products}" method="get">
+        <select name="category">
+            <option value="">Todas las categor&iacute;as</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat}"
+                    th:text="${cat}"
+                    th:selected="${cat == category}">
+            </option>
+        </select>
+
+        <input type="number"
+               step="0.01"
+               name="minPrice"
+               th:value="${minPrice != null ? minPrice : minProductPrice}"
+               placeholder="Menor precio">
+
+        <input type="number"
+               step="0.01"
+               name="maxPrice"
+               th:value="${maxPrice != null ? maxPrice : maxProductPrice}"
+               placeholder="Mayor precio">
+
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/admin/products}" class="btn-secondary">Limpiar filtros</a>
+    </form>
+
+    <table class="portal-table">
+        <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Categor&iacute;a</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${products == null or #lists.isEmpty(products)}">
+            <td colspan="7" class="empty-message">No hay productos registrados.</td>
+        </tr>
+
+        <tr th:each="product : ${products}">
+            <td>
+                <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
+                     th:src="@{/{img}(img=${product.imagePath})}"
+                     alt="Imagen del producto"
+                     class="branch-image-preview">
+
+                <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
+                     class="no-image">
+                    Sin imagen
+                </div>
+            </td>
+
+            <td th:text="${product.nameProduct}"></td>
+            <td th:text="${product.category}"></td>
+            <td th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
+            <td th:text="${product.quantityStock}"></td>
+
+            <td>
+                <span th:class="${product.state} ? 'badge badge-active' : 'badge badge-inactive'">
+                    <span th:text="${product.state ? 'Activo' : 'Inactivo'}"></span>
+                </span>
+            </td>
+
+            <td>
+                <div class="actions">
+                    <a class="btn-secondary" th:href="@{/admin/products/details/{id}(id=${product.idProduct})}">Ver</a>
+                    <a class="btn-primary" th:href="@{/admin/products/edit/{id}(id=${product.idProduct})}">Editar</a>
+                    <a class="btn-danger"
+                       th:href="@{/admin/products/delete/{id}(id=${product.idProduct})}"
+                       data-delete-link>
+                        Eliminar
+                    </a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a class="btn-secondary"
+           th:if="${currentPage > 0}"
+           th:href="@{/admin/products(page=${currentPage - 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
+            Anterior
+        </a>
+
+        <button type="button"
+                class="page-active"
+                disabled
+                th:text="${'Pagina ' + (currentPage + 1) + ' de ' + totalPages}">
+        </button>
+
+        <a class="btn-secondary"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/admin/products(page=${currentPage + 1}, category=${category}, minPrice=${minPrice}, maxPrice=${maxPrice})}">
+            Siguiente
+        </a>
+    </div>
+
+    <div class="buttons">
+        <a th:href="@{/admin/products/create}" class="btn-primary">Agregar producto</a>
+    </div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
     const successMessage = /*[[${successMessage}]]*/ null;
@@ -154,7 +141,7 @@
     if (successMessage) {
         Swal.fire({
             icon: 'success',
-            title: 'Operación realizada',
+            title: 'Operacion realizada',
             text: successMessage,
             confirmButtonText: 'Aceptar'
         });
@@ -166,8 +153,8 @@
 
             Swal.fire({
                 icon: 'warning',
-                title: '¿Desea eliminar este elemento?',
-                text: 'Esta acción no se puede deshacer.',
+                title: 'Desea eliminar este elemento?',
+                text: 'Esta accion no se puede deshacer.',
                 showCancelButton: true,
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Cancelar',

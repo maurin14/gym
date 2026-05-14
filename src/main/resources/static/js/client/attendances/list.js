@@ -13,6 +13,15 @@ function loadAttendances() {
 
             tbody.innerHTML = "";
 
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-message">No hay asistencias registradas.</td>
+                    </tr>
+                `;
+                return;
+            }
+
             data.forEach(attendance => {
 
                 tbody.innerHTML += `

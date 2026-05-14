@@ -2,98 +2,89 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
     <title>Listado de Asistencias</title>
 
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
-<body>
+<body class="dashboard-page">
 
 <header class="main-header">
 
     <div class="header-left">
 
         <div class="brand-text">
-
-            <span class="system-name">
-                Gimnasio
-            </span>
+            <span class="system-name">Gimnasio</span>
 
             <span class="brand-subtitle">
                 Panel de entrenador / administrador
             </span>
-
         </div>
 
     </div>
 
     <nav class="header-nav">
-
-        <a th:href="@{/admin/home}">
-            Inicio
-        </a>
-
-        <a th:href="@{/trainer/classes}">
-            Clases
-        </a>
-
-        <a th:href="@{/trainer/attendances}">
-            Asistencias
-        </a>
-
+        <a th:href="@{/admin/home}">Inicio</a>
+        <a th:href="@{/trainer/classes}">Clases</a>
+        <a th:href="@{/trainer/attendances}">Asistencias</a>
     </nav>
 
 </header>
 
-<div class="container">
+<section class="hero-branches">
 
-    <h1 class="page-title">
-        Listado de Asistencias
-    </h1>
+    <h1>Listado de Asistencias</h1>
 
-    <p class="admin-description">
+    <p>
         Administración de asistencias registradas por los clientes.
     </p>
 
-    <div class="buttons">
+    <div style="display:flex; justify-content:center; margin-top:30px;">
 
         <a class="btn-primary"
            th:href="@{/trainer/attendances/form}">
-
             Agregar Asistencia
-
         </a>
 
     </div>
 
+</section>
+
+<div class="public-container">
+
     <table>
-
         <thead>
-
             <tr>
-
                 <th>Cliente</th>
-
                 <th>Clase</th>
-
                 <th>Fecha</th>
-
                 <th>Estado</th>
-
                 <th>Observación</th>
-
                 <th>Registro</th>
-
                 <th>Acciones</th>
-
             </tr>
-
         </thead>
 
         <tbody id="attendancesTableBody"></tbody>
-
     </table>
+
+    <div class="pagination">
+
+        <button id="pageInfo" disabled>
+            Página 1 de 1
+        </button>
+
+        <button id="prevBtn"
+                onclick="previousPage()">
+            Anterior
+        </button>
+
+        <button id="nextBtn"
+                onclick="nextPage()">
+            Siguiente
+        </button>
+
+    </div>
 
 </div>
 

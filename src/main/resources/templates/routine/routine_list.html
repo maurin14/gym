@@ -3,127 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Lista de rutinas</title>
-    <link rel="stylesheet" th:href="@{/css/product.css}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body class="page-portal">
 
-<div class="page-container">
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-    <h1 class="page-title" th:text="${title}">Lista de rutinas</h1>
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTI&Oacute;N ADMINISTRATIVA</span>
+        <h1>Administraci&oacute;n de rutinas</h1>
+        <p class="hero-text">Consulta, registra, modifica y cambia el estado de las rutinas del gimnasio.</p>
+    </div>
+</section>
 
-    <div class="card">
+<main class="container portal-card admin-page-card">
 
-        <div class="top-bar">
+    <form class="admin-filter-row portal-filters" method="get" th:action="@{/admin/routines}">
+        <select name="difficultyLevel">
+            <option value="">Todas las dificultades</option>
+            <option value="Principiante" th:selected="${difficultyLevel == 'Principiante'}">Principiante</option>
+            <option value="Intermedio" th:selected="${difficultyLevel == 'Intermedio'}">Intermedio</option>
+            <option value="Avanzado" th:selected="${difficultyLevel == 'Avanzado'}">Avanzado</option>
+        </select>
 
-            <form method="get" th:action="@{/routines}" style="display:flex; gap:10px; align-items:center;">
+        <select name="routineType">
+            <option value="">Todos los tipos</option>
+            <option value="Cardio" th:selected="${routineType == 'Cardio'}">Cardio</option>
+            <option value="Fuerza" th:selected="${routineType == 'Fuerza'}">Fuerza</option>
+            <option value="Funcional" th:selected="${routineType == 'Funcional'}">Funcional</option>
+        </select>
 
-                <span style="font-weight:bold; margin-right:5px;">Filtrar por:</span>
+        <button type="submit" class="btn-primary">Buscar</button>
+        <a th:href="@{/admin/routines}" class="btn-secondary">Limpiar filtros</a>
+    </form>
 
-                <select name="difficultyLevel" class="form-control" style="width:180px;">
-                    <option value="">Dificultad</option>
-                    <option value="Principiante" th:selected="${difficultyLevel == 'Principiante'}">Principiante</option>
-                    <option value="Intermedio" th:selected="${difficultyLevel == 'Intermedio'}">Intermedio</option>
-                    <option value="Avanzado" th:selected="${difficultyLevel == 'Avanzado'}">Avanzado</option>
-                </select>
+    <table class="portal-table">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Dificultad</th>
+            <th>Duraci&oacute;n</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
 
-                <select name="routineType" class="form-control" style="width:180px;">
-                    <option value="">Tipo</option>
-                    <option value="Cardio" th:selected="${routineType == 'Cardio'}">Cardio</option>
-                    <option value="Fuerza" th:selected="${routineType == 'Fuerza'}">Fuerza</option>
-                    <option value="Funcional" th:selected="${routineType == 'Funcional'}">Funcional</option>
-                </select>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(routines)}">
+            <td colspan="6" class="empty-message">No hay rutinas registradas.</td>
+        </tr>
 
-                <button type="submit" class="btn btn-primary">Filtrar</button>
+        <tr th:each="routine : ${routines}">
+            <td th:text="${routine.nameRoutine}"></td>
+            <td th:text="${routine.difficultyLevel}"></td>
+            <td th:text="${routine.estimatedDuration + ' min'}"></td>
+            <td th:text="${routine.routineType}"></td>
 
-                <a th:href="@{/routines}" class="btn btn-secondary">Limpiar</a>
+            <td>
+                <span th:class="${routine.state} ? 'badge badge-active' : 'badge badge-inactive'">
+                    <span th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
+                </span>
+            </td>
 
-            </form>
+            <td>
+                <div class="actions">
+                    <a class="btn-secondary" th:href="@{/admin/routines/details/{id}(id=${routine.idRoutine})}">Ver</a>
+                    <a class="btn-primary" th:href="@{/admin/routines/edit/{id}(id=${routine.idRoutine})}">Editar</a>
+                    <a class="btn-danger" th:href="@{/admin/routines/delete/{id}(id=${routine.idRoutine})}" data-delete-link>Eliminar</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-            <a th:href="@{/routines/form}" class="btn btn-success">Nueva rutina</a>
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a class="btn-secondary"
+           th:if="${currentPage > 0}"
+           th:href="@{/admin/routines(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+            Anterior
+        </a>
 
-        </div>
+        <button type="button"
+                class="page-active"
+                disabled
+                th:text="${'Pagina ' + (currentPage + 1) + ' de ' + totalPages}">
+        </button>
 
-        <div class="table-container">
-            <table class="product-table">
-
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Dificultad</th>
-                        <th>Duración</th>
-                        <th>Tipo</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <tr th:if="${#lists.isEmpty(routines)}">
-                        <td colspan="6" style="text-align:center;">No hay rutinas registradas</td>
-                    </tr>
-
-                    <tr th:each="routine : ${routines}">
-
-                        <td th:text="${routine.nameRoutine}"></td>
-                        <td th:text="${routine.difficultyLevel}"></td>
-                        <td th:text="${routine.estimatedDuration + ' min'}"></td>
-                        <td th:text="${routine.routineType}"></td>
-
-                        <td>
-                            <span th:class="${routine.state} ? 'badge badge-active' : 'badge badge-inactive'">
-                                <span th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="actions">
-                                <a class="btn btn-info" th:href="@{/routines/details/{id}(id=${routine.idRoutine})}">Ver</a>
-                                <a class="btn btn-warning" th:href="@{/routines/edit/{id}(id=${routine.idRoutine})}">Editar</a>
-                                <a class="btn btn-danger" th:href="@{/routines/delete/{id}(id=${routine.idRoutine})}" data-delete-link>Eliminar</a>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-        </div>
-
-        <div class="form-actions" th:if="${totalPages > 1}">
-
-            <a class="btn btn-secondary"
-               th:if="${currentPage > 0}"
-               th:href="@{/routines(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
-                Anterior
-            </a>
-
-            <span class="btn btn-info"
-                  th:text="${'Página ' + (currentPage + 1) + ' de ' + totalPages}">
-            </span>
-
-            <a class="btn btn-secondary"
-               th:if="${currentPage + 1 < totalPages}"
-               th:href="@{/routines(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
-                Siguiente
-            </a>
-
-        </div>
-
+        <a class="btn-secondary"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/admin/routines(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+            Siguiente
+        </a>
     </div>
 
-</div>
+    <div class="buttons">
+        <a th:href="@{/admin/routines/form}" class="btn-primary">Nueva rutina</a>
+    </div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
     const successMessage = /*[[${successMessage}]]*/ null;
+    const errorMessage = /*[[${errorMessage}]]*/ null;
 
     if (successMessage) {
         Swal.fire({
             icon: 'success',
-            title: 'Operación realizada',
+            title: 'Operacion realizada',
             text: successMessage,
+            confirmButtonText: 'Aceptar'
+        });
+    }
+
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo eliminar',
+            text: errorMessage,
             confirmButtonText: 'Aceptar'
         });
     }
@@ -134,8 +134,8 @@
 
             Swal.fire({
                 icon: 'warning',
-                title: '¿Desea eliminar este elemento?',
-                text: 'Esta acción no se puede deshacer.',
+                title: 'Desea eliminar este elemento?',
+                text: 'Esta accion no se puede deshacer.',
                 showCancelButton: true,
                 confirmButtonText: 'Confirmar',
                 cancelButtonText: 'Cancelar',

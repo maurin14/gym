@@ -9,53 +9,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadAttendances() {
 
-    fetch("/attendances")
+    fetch("/attendances/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage)
         .then(response => response.json())
         .then(data => {
 
-            totalPages = Math.ceil(data.length / rowsPerPage);
+            totalPages = data.totalPages;
 
-            showAttendances(data);
-            showPagination(data);
+            showAttendances(data.attendances);
+            showPagination();
 
         });
 }
 
 function showAttendances(attendances) {
 
-    const tbody =
-            document.getElementById("attendancesTableBody");
-
+    const tbody = document.getElementById("attendancesTableBody");
     tbody.innerHTML = "";
 
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    const pageAttendances = attendances.slice(start, end);
-
-    pageAttendances.forEach(attendance => {
+    attendances.forEach(attendance => {
 
         tbody.innerHTML += `
             <tr>
-
                 <td>${attendance.clientName}</td>
-
                 <td>${attendance.classType}</td>
-
                 <td>${attendance.attendanceDate}</td>
-
                 <td>
                     <span class="badge status-active">
                         ${attendance.attendanceStatus}
                     </span>
                 </td>
-
                 <td>${attendance.observation}</td>
-
                 <td>${attendance.registerDate}</td>
-
                 <td class="actions">
-
                     <a class="btn-primary"
                        href="/trainer/attendances/form/${attendance.idAttendance}">
                         Editar
@@ -66,15 +51,13 @@ function showAttendances(attendances) {
                             onclick="deleteAttendance(${attendance.idAttendance})">
                         Eliminar
                     </button>
-
                 </td>
-
             </tr>
         `;
     });
 }
 
-function showPagination(attendances) {
+function showPagination() {
 
     if (totalPages === 0) {
         totalPages = 1;
@@ -93,22 +76,16 @@ function showPagination(attendances) {
 function nextPage() {
 
     if (currentPage < totalPages) {
-
         currentPage++;
-
         loadAttendances();
-
     }
 }
 
 function previousPage() {
 
     if (currentPage > 1) {
-
         currentPage--;
-
         loadAttendances();
-
     }
 }
 
@@ -118,10 +95,7 @@ function deleteAttendance(idAttendance) {
         method: "DELETE"
     })
     .then(() => {
-
         alert("Asistencia eliminada correctamente");
-
         loadAttendances();
-
     });
 }

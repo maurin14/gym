@@ -1,10 +1,5 @@
 package com.una.ac.cr.gym.service;
 
-/**
- *
- * @author Amanda
- */
-
 import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.repository.GymClassRepository;
 import java.time.Duration;
@@ -39,15 +34,26 @@ public class GymClassService {
         calculateDuration(gymClass);
 
         gymClass.setStatus(true);
+        gymClass.setEnrolledCount(0);
 
         return gymClassRepository.save(gymClass);
     }
 
     public GymClass updateClass(int idClass, GymClass gymClass) {
 
+        GymClass currentClass = gymClassRepository.findById(idClass).orElse(null);
+
         gymClass.setIdClass(idClass);
 
         calculateDuration(gymClass);
+
+        if (currentClass != null) {
+            gymClass.setEnrolledCount(currentClass.getEnrolledCount());
+        } else {
+            gymClass.setEnrolledCount(0);
+        }
+
+        gymClass.setStatus(true);
 
         return gymClassRepository.save(gymClass);
     }

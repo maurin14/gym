@@ -1,86 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Clases Disponibles</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clases disponibles - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
+<body>
 
-<body class="public-page">
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('classes')}"></div>
 
-<header class="main-header">
-
-    <div class="header-left">
-
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">
-                Portal del cliente
-            </span>
+<main>
+    <section class="client-hero compact-hero classes-hero">
+        <div>
+            <span class="section-kicker">Entrenamiento</span>
+            <h1>Clases disponibles</h1>
+            <p>Consulta las sesiones grupales activas y registra tu asistencia en la clase que deseas tomar.</p>
         </div>
+    </section>
 
-    </div>
+    <section class="client-section">
+        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
+            <a th:href="@{/client/home}">Inicio</a>
+            <span>/</span>
+            <strong>Clases</strong>
+        </nav>
 
-    <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
-        <a th:href="@{/client/classes}">Clases</a>
-        <a th:href="@{/client/attendances}">Mis Asistencias</a>
-    </nav>
+        <div class="client-table-card">
+            <div class="section-heading table-heading">
+                <div>
+                    <span class="section-kicker">Agenda</span>
+                    <h2>Selecciona una clase</h2>
+                    <p>La disponibilidad se actualiza desde el m&oacute;dulo de clases del gimnasio.</p>
+                </div>
+            </div>
 
-</header>
+            <div class="table-responsive">
+                <table class="client-table">
+                    <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Entrenador</th>
+                        <th>Fecha</th>
+                        <th>Inicio</th>
+                        <th>Final</th>
+                        <th>Duraci&oacute;n</th>
+                        <th>Capacidad</th>
+                        <th>Dificultad</th>
+                        <th>Descripci&oacute;n</th>
+                        <th>Acci&oacute;n</th>
+                    </tr>
+                    </thead>
 
-<section class="hero-branches">
+                    <tbody id="classesTableBody"></tbody>
+                </table>
+            </div>
 
-    <h1>Clases Disponibles</h1>
+            <div class="client-pagination ajax-pagination">
+                <button id="prevBtn" type="button" class="pagination-link" onclick="previousPage()">Anterior</button>
+                <button id="pageInfo" type="button" class="pagination-link active" disabled>P&aacute;gina 1 de 1</button>
+                <button id="nextBtn" type="button" class="pagination-link" onclick="nextPage()">Siguiente</button>
+            </div>
+        </div>
+    </section>
+</main>
 
-    <p>
-        Seleccione una clase para registrar su asistencia
-    </p>
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
-</section>
-
-<div class="public-container">
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>Entrenador</th>
-                <th>Fecha</th>
-                <th>Inicio</th>
-                <th>Final</th>
-                <th>Duración</th>
-                <th>Capacidad</th>
-                <th>Dificultad</th>
-                <th>Descripción</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-
-        <tbody id="classesTableBody"></tbody>
-
-    </table>
-
-    <div class="pagination">
-
-        <button id="pageInfo" disabled>
-            Página 1 de 1
-        </button>
-
-        <button id="prevBtn" onclick="previousPage()">
-            Anterior
-        </button>
-
-        <button id="nextBtn" onclick="nextPage()">
-            Siguiente
-        </button>
-
-    </div>
-
-</div>
-
-<script th:src="@{/js/client/classes/list.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/client-home.js}" defer></script>
+<script th:src="@{/js/client/classes/list.js}" defer></script>
 
 </body>
 </html>

@@ -1,21 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 
-/**
- *
- * @author alira
- */
 @Entity
 @Table(name = "tb_products")
 public class Product {
@@ -27,14 +19,25 @@ public class Product {
 
     @Column(name = "name_product")
     private String nameProduct;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "category")
     private String category;
+
+    @Column(name = "price")
     private double price;
+
     @Column(name = "quantity_stock")
     private int quantityStock;
+
     @Column(name = "register_date")
     private LocalDate registerDate;
+
+    @Column(name = "state")
     private boolean state;
+
     @Column(name = "image_path")
     private String imagePath;
 

@@ -15,9 +15,14 @@
     </div>
 
     <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'administrator'}"
+            th:href="@{/admin/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'trainer'}"
+            th:href="@{/trainer/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'client'}"
+            th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
-        <a th:href="@{/payments/my-payments(userId=1)}">Mis pagos</a>
+        <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
         <a th:href="@{/classes}">Clases</a>
         <a th:href="@{/products}">Productos</a>
@@ -34,7 +39,8 @@
             <h1>Bienvenido a SAM GYM FITNESS</h1>
             <p class="hero-slogan">Entrena mejor, vive mejor</p>
             <p class="hero-text">
-                Consulta sucursales, revisa tus pagos y accede a los servicios disponibles.
+                Desde este portal puedes consultar sucursales, revisar tus pagos, acceder a tus
+                rutinas, clases, horarios y otros servicios disponibles dentro de la plataforma.
             </p>
         </div>
     </section>
@@ -46,25 +52,25 @@
 
             <article class="module-card">
                 <h3>Sucursales</h3>
-                <p>Consulta sucursales activas.</p>
+                <p>Consulta sucursales activas, ubicación, capacidad, contacto y detalle general.</p>
                 <div class="buttons">
-                    <a th:href="@{/branches}" class="btn-primary">Ver sucursales</a>
+                    <a th:href="@{/branches}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Mis pagos</h3>
-                <p>Consulta tu historial de pagos.</p>
+                <h3>Pagos</h3>
+                <p>Consulta el historial de pagos, estados, métodos y detalle de cada registro.</p>
                 <div class="buttons">
-                    <a th:href="@{/payments/my-payments(userId=1)}" class="btn-primary">Ver pagos</a>
+                    <a th:href="@{/payments/listPayment(userId=1)}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Rutinas</h3>
-                <p>Consulta tus rutinas.</p>
+                <p>Revisa tus rutinas asignadas y da seguimiento a tu entrenamiento personal.</p>
                 <div class="buttons">
-                    <a th:href="@{/routines}" class="btn-primary">ver rutinas</a>
+                    <a th:href="@{/routines}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
@@ -78,17 +84,17 @@
 
             <article class="module-card">
                 <h3>Horarios</h3>
-                <p>Consulta horarios disponibles.</p>
+                <p>Consulta los horarios disponibles de clases y actividades del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/schedules}" class="btn-primary">ver horarios</a>
+                    <a th:href="@{/schedules}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Productos</h3>
-                <p>Consulta productos disponibles.</p>
+                <p>Consulta productos disponibles y servicios complementarios del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/products}" class="btn-primary">ver productos</a>
+                    <a th:href="@{/products}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 

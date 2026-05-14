@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
-
-/**
- *
- * @author Amanda
- */
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_classes")
@@ -55,6 +47,11 @@ public class GymClass {
 
     @Column(name = "status")
     private boolean status;
+
+    @OneToMany(mappedBy = "gymClass",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Attendance> attendances;
 
     public GymClass() {
     }
@@ -153,5 +150,13 @@ public class GymClass {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 }

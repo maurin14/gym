@@ -10,34 +10,34 @@
         </span>
     </a>
 
-    <nav class="client-top-nav" aria-label="Navegación principal">
+    <nav class="client-top-nav" aria-label="Navegaci&oacute;n principal">
         <a th:href="@{/client/home}">Inicio</a>
     </nav>
 
     <button type="button"
             class="menu-toggle"
-            aria-label="Abrir menú de funcionalidades"
+            aria-label="Abrir men&uacute; de funcionalidades"
             aria-controls="clientMenuDrawer"
             aria-expanded="false"
             data-menu-toggle>
         <span></span>
         <span></span>
         <span></span>
-        <strong>Menú</strong>
+        <strong>Men&uacute;</strong>
     </button>
 </header>
 
 <div th:fragment="clientMenuDrawer(active)" class="client-menu-shell">
-    <button type="button" class="menu-backdrop" aria-label="Cerrar menú cliente" data-menu-close></button>
+    <button type="button" class="menu-backdrop" aria-label="Cerrar men&uacute; cliente" data-menu-close></button>
 
-    <aside id="clientMenuDrawer" class="client-menu-drawer" aria-label="Menú de funcionalidades">
+    <aside id="clientMenuDrawer" class="client-menu-drawer" aria-label="Men&uacute; de funcionalidades">
         <div class="drawer-head">
             <div>
                 <span class="section-kicker">SAM GYM FITNESS</span>
-                <strong>Menú cliente</strong>
-                <p>Accede rápido a entrenamiento, tienda, cuenta y sedes.</p>
+                <strong>Men&uacute; cliente</strong>
+                <p>Accede r&aacute;pido a entrenamiento, tienda, cuenta y sedes.</p>
             </div>
-            <button type="button" class="drawer-close" aria-label="Cerrar menú cliente" data-menu-close>×</button>
+            <button type="button" class="drawer-close" aria-label="Cerrar men&uacute; cliente" data-menu-close>&times;</button>
         </div>
 
         <nav class="drawer-nav">
@@ -55,9 +55,7 @@
                 <a th:href="@{/client/classes}"
                    class="drawer-link"
                    th:classappend="${active == 'classes'} ? ' active'">
-
                     <span class="drawer-icon">C</span>
-
                     <span>
                         <strong>Clases</strong>
                         <small>Sesiones grupales del gimnasio.</small>
@@ -68,7 +66,7 @@
                     <span class="drawer-icon">H</span>
                     <span>
                         <strong>Horarios</strong>
-                        <small>Clases, atención y disponibilidad.</small>
+                        <small>Clases, atenci&oacute;n y disponibilidad.</small>
                     </span>
                 </button>
 
@@ -88,7 +86,7 @@
                     <span class="drawer-icon">P</span>
                     <span>
                         <strong>Productos</strong>
-                        <small>Catálogo visual disponible.</small>
+                        <small>Cat&aacute;logo visual disponible.</small>
                     </span>
                 </a>
             </div>
@@ -96,38 +94,57 @@
             <div class="drawer-section">
                 <span class="drawer-section-title">Mi cuenta</span>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Pagos">
+                <a th:href="@{/payments}"
+                   class="drawer-link"
+                   th:classappend="${active == 'payments'} ? ' active'">
                     <span class="drawer-icon">P</span>
                     <span>
                         <strong>Pagos</strong>
                         <small>Historial y control de pagos.</small>
                     </span>
-                </button>
+                </a>
 
                 <a th:href="@{/client/attendances}"
                    class="drawer-link"
                    th:classappend="${active == 'attendances'} ? ' active'">
-
                     <span class="drawer-icon">A</span>
-
                     <span>
                         <strong>Asistencia</strong>
                         <small>Seguimiento de visitas.</small>
                     </span>
+                </a>
 
+                <a th:href="@{/profile/password}"
+                   class="drawer-link"
+                   th:classappend="${active == 'password'} ? ' active'">
+                    <span class="drawer-icon">C</span>
+                    <span>
+                        <strong>Cambiar contrase&ntilde;a</strong>
+                        <small>Actualiza la contrase&ntilde;a de tu cuenta.</small>
+                    </span>
+                </a>
+
+                <a th:href="@{/logout}" class="drawer-link drawer-link-logout">
+                    <span class="drawer-icon">S</span>
+                    <span>
+                        <strong>Cerrar sesi&oacute;n</strong>
+                        <small>Finaliza tu acceso al portal cliente.</small>
+                    </span>
                 </a>
             </div>
 
             <div class="drawer-section">
                 <span class="drawer-section-title">Sedes</span>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Sucursales">
+                <a th:href="@{/branches}"
+                   class="drawer-link"
+                   th:classappend="${active == 'branches'} ? ' active'">
                     <span class="drawer-icon">S</span>
                     <span>
                         <strong>Sucursales</strong>
-                        <small>Ubicación y datos generales.</small>
+                        <small>Ubicaci&oacute;n y datos generales.</small>
                     </span>
-                </button>
+                </a>
             </div>
         </nav>
     </aside>
@@ -150,19 +167,19 @@
             <h3>Contacto</h3>
             <p>info@samgymfitness.com</p>
             <p>+506 8888-8888</p>
-            <p>San José, Costa Rica</p>
+            <p>San Jos&eacute;, Costa Rica</p>
         </div>
 
         <div class="footer-schedule">
             <h3>Horarios</h3>
             <p><span>Lunes a viernes</span><strong>5:00 a.m. - 10:00 p.m.</strong></p>
-            <p><span>Sábado</span><strong>6:00 a.m. - 6:00 p.m.</strong></p>
+            <p><span>S&aacute;bado</span><strong>6:00 a.m. - 6:00 p.m.</strong></p>
             <p><span>Domingo</span><strong>7:00 a.m. - 2:00 p.m.</strong></p>
         </div>
     </div>
 
     <div class="footer-bottom">
-        <span>© 2026 SAM GYM FITNESS. Todos los derechos reservados.</span>
+        <span>&copy; 2026 SAM GYM FITNESS. Todos los derechos reservados.</span>
     </div>
 </footer>
 

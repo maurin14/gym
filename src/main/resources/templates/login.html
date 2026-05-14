@@ -7,24 +7,28 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container form-container">
     <h1>Iniciar sesión</h1>
 
     <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
 
     <div class="login-logo">
-        <img src="/img/samgym.png" alt="Sam Gym Fitness">
+        <img th:src="@{/images/logo.jpeg}" alt="Sam Gym Fitness" class="hero-logo">
     </div>
-    
+
     <form th:action="@{/login}" method="post">
 
         <label>Nombre de usuario</label>
-        <input type="text" name="username" required/>
+        <input type="text" name="username" required placeholder="Ingrese su usuario">
 
         <label>Contraseña</label>
-        <input type="password" name="password" required/>
+        <input type="password" name="password" required placeholder="Ingrese su contraseña">
 
-        <button type="submit">Ingresar</button>
+        <button type="submit" class="btn-primary">Ingresar</button>
+
+        <div class="buttons">
+            <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
+        </div>
     </form>
 </div>
 

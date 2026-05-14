@@ -2,49 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Clases</title>
+    <title>Administracion de clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
-<body class="dashboard-page">
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">
-                Panel de entrenador / administrador
-            </span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Administracion de clases</h1>
+        <p class="hero-text">
+            Administra clases, entrenadores, horarios, cupos y niveles de dificultad desde un panel unificado.
+        </p>
+
+        <div class="hero-buttons centered">
+            <a class="btn-primary" th:href="@{/trainer/classes/form}">Agregar clase</a>
         </div>
     </div>
-
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/trainer/classes}">Clases</a>
-        <a th:href="@{/trainer/attendances}">Asistencias</a>
-    </nav>
-</header>
-
-<section class="hero-branches">
-
-    <h1>Listado de Clases</h1>
-
-    <p>
-        Administración de clases disponibles en el gimnasio.
-    </p>
-
-    <div style="margin-top: 30px; display: flex; justify-content: center;">
-        <a class="btn-primary"
-           th:href="@{/trainer/classes/form}">
-            Agregar Clase
-        </a>
-    </div>
-
 </section>
 
-<div class="public-container">
+<main class="container portal-card admin-page-card">
 
-    <table>
+    <table class="portal-table">
         <thead>
             <tr>
                 <th>Tipo</th>
@@ -52,11 +34,11 @@
                 <th>Fecha</th>
                 <th>Inicio</th>
                 <th>Final</th>
-                <th>Duración</th>
+                <th>Duracion</th>
                 <th>Capacidad</th>
                 <th>Inscritos</th>
                 <th>Dificultad</th>
-                <th>Descripción</th>
+                <th>Descripcion</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -65,12 +47,14 @@
     </table>
 
     <div class="pagination">
-        <button id="pageInfo" disabled>Página 1 de 1</button>
+        <button id="pageInfo" disabled>Pagina 1 de 1</button>
         <button id="prevBtn" onclick="previousPage()">Anterior</button>
         <button id="nextBtn" onclick="nextPage()">Siguiente</button>
     </div>
 
-</div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:src="@{/js/trainer/classes/list.js}"></script>
 

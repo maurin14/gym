@@ -1,65 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Asistencias</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis asistencias - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
+<body>
 
-<body class="public-page">
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('attendances')}"></div>
 
-<header class="main-header">
-
-    <div class="header-left">
-
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">
-                Portal del cliente
-            </span>
+<main>
+    <section class="client-hero compact-hero attendances-hero">
+        <div>
+            <span class="section-kicker">Mi cuenta</span>
+            <h1>Mis asistencias</h1>
+            <p>Revisa las visitas y registros asociados a tus clases dentro del gimnasio.</p>
         </div>
+    </section>
 
-    </div>
+    <section class="client-section">
+        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
+            <a th:href="@{/client/home}">Inicio</a>
+            <span>/</span>
+            <strong>Asistencia</strong>
+        </nav>
 
-    <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
-        <a th:href="@{/client/classes}">Clases</a>
-        <a th:href="@{/client/attendances}">Mis Asistencias</a>
-    </nav>
+        <div class="client-table-card">
+            <div class="section-heading table-heading">
+                <div>
+                    <span class="section-kicker">Historial</span>
+                    <h2>Registros de asistencia</h2>
+                    <p>Consulta el estado, observaci&oacute;n y fecha de registro de tus asistencias.</p>
+                </div>
+                <a th:href="@{/client/classes}" class="btn-secondary">Ver clases</a>
+            </div>
 
-</header>
+            <div class="table-responsive">
+                <table class="client-table">
+                    <thead>
+                    <tr>
+                        <th>Clase</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Observaci&oacute;n</th>
+                        <th>Registro</th>
+                    </tr>
+                    </thead>
 
-<section class="hero-branches">
+                    <tbody id="attendancesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
 
-    <h1>Mis Asistencias</h1>
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
-    <p>
-        Consulte sus asistencias registradas
-    </p>
-
-</section>
-
-<div class="public-container">
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>Clase</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Observación</th>
-                <th>Registro</th>
-            </tr>
-        </thead>
-
-        <tbody id="attendancesTableBody"></tbody>
-
-    </table>
-
-</div>
-
-<script th:src="@{/js/client/attendances/list.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/client-home.js}" defer></script>
+<script th:src="@{/js/client/attendances/list.js}" defer></script>
 
 </body>
 </html>

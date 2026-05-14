@@ -2,52 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de Clase</title>
+    <title>Formulario de clase</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
 
-<header class="main-header">
-    <div class="header-left">
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">Gestión de clases</span>
-        </div>
+<body class="page-portal">
+
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">CLASE</span>
+        <h1 id="formTitle">Agregar clase</h1>
+        <p class="hero-text">Completa la informacion de la clase.</p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a href="/admin/home">Inicio</a>
-        <a href="/trainer/classes">Clases</a>
-    </nav>
-</header>
-
-<div class="container form-container">
-
-    <h1 class="page-title" id="formTitle">Agregar Clase</h1>
-
+<main class="container form-container portal-card admin-page-card">
     <input type="hidden" id="idClass">
 
-    <form>
-        <label>Tipo de Clase</label>
+    <form class="portal-form">
+        <label>Tipo de clase</label>
         <input type="text" id="classType">
 
         <label>Fecha</label>
         <input type="date" id="classDate">
 
-        <label>Hora Inicio</label>
+        <label>Hora inicio</label>
         <input type="time" id="startTime">
 
-        <label>Hora Final</label>
+        <label>Hora final</label>
         <input type="time" id="endTime">
 
-        <label>Capacidad Máxima</label>
+        <label>Capacidad maxima</label>
         <input type="number" id="maxCapacity">
 
         <label>Entrenador</label>
-        <select id="trainerId"></select>
+        <select id="trainerId">
+            <option value="">Seleccione un entrenador</option>
+        </select>
 
-        <label>Cantidad Inscritos</label>
-        <input type="number" id="enrolledCount">
+        <label>Cantidad inscritos</label>
+        <input type="number" id="enrolledCount" value="0" readonly>
 
         <label>Dificultad</label>
         <select id="difficultyLevel">
@@ -56,16 +52,17 @@
             <option value="Alto">Alto</option>
         </select>
 
-        <label>Descripción</label>
+        <label>Descripcion</label>
         <textarea id="description"></textarea>
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
-            <a class="btn-secondary" href="/trainer/classes">Volver</a>
+            <a class="btn-secondary" th:href="@{/trainer/classes}">Volver</a>
         </div>
     </form>
+</main>
 
-</div>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:src="@{/js/trainer/classes/form.js}"></script>
 
