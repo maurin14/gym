@@ -1,10 +1,5 @@
 package com.una.ac.cr.gym.service;
 
-
-
-
-
-
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
