@@ -1,14 +1,15 @@
+const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
+        ? "/admin/attendance"
+        : "/trainer/attendances";
+
 document.addEventListener("DOMContentLoaded", function () {
-    loadClients();
-    loadClasses();
+    Promise.all([loadClients(), loadClasses()]).then(loadAttendanceForEdit);
 });
 
 function loadClients() {
-
-    fetch("/attendances/clients")
+    return fetch("/attendances/clients")
         .then(response => response.json())
         .then(data => {
-
             const clientSelect = document.getElementById("clientId");
 
             clientSelect.innerHTML =
@@ -17,7 +18,6 @@ function loadClients() {
             data
                 .filter(client => client.status === "active")
                 .forEach(client => {
-
                     clientSelect.innerHTML += `
                         <option value="${client.userId}">
                             ${client.fullName}
@@ -28,18 +28,15 @@ function loadClients() {
 }
 
 function loadClasses() {
-
-    fetch("/classes")
+    return fetch("/classes")
         .then(response => response.json())
         .then(data => {
-
             const classSelect = document.getElementById("classId");
 
             classSelect.innerHTML =
                     '<option value="">Seleccione una clase</option>';
 
             data.forEach(gymClass => {
-
                 classSelect.innerHTML += `
                     <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
                         ${gymClass.classType} - ${gymClass.classDate}
@@ -49,8 +46,43 @@ function loadClasses() {
         });
 }
 
-function setAttendanceDate() {
+function loadAttendanceForEdit() {
+    const idAttendance = getAttendanceIdFromPath();
 
+    if (!idAttendance) {
+        return;
+    }
+
+    fetch("/attendances/" + idAttendance)
+        .then(response => response.json())
+        .then(attendance => {
+            document.getElementById("idAttendance").value = attendance.idAttendance || "";
+
+            const title = document.getElementById("formTitle");
+            if (title) {
+                title.textContent = "Editar asistencia";
+            }
+
+            if (attendance.client) {
+                document.getElementById("clientId").value = attendance.client.userId;
+            }
+
+            if (attendance.gymClass) {
+                document.getElementById("classId").value = attendance.gymClass.idClass;
+            }
+
+            document.getElementById("attendanceDate").value = attendance.attendanceDate || "";
+            document.getElementById("attendanceStatus").value = attendance.attendanceStatus || "Presente";
+            document.getElementById("observation").value = attendance.observation || "";
+        });
+}
+
+function getAttendanceIdFromPath() {
+    const match = window.location.pathname.match(/\/form\/(\d+)$/);
+    return match ? match[1] : "";
+}
+
+function setAttendanceDate() {
     const classSelect = document.getElementById("classId");
     const selectedOption = classSelect.options[classSelect.selectedIndex];
 
@@ -61,7 +93,7 @@ function setAttendanceDate() {
 }
 
 function saveAttendance() {
-
+    const idAttendance = document.getElementById("idAttendance").value;
     const clientId = document.getElementById("clientId").value;
     const classId = document.getElementById("classId").value;
     const attendanceDate = document.getElementById("attendanceDate").value;
@@ -85,14 +117,17 @@ function saveAttendance() {
         observation: observation
     };
 
-    fetch("/attendances", {
-        method: "POST",
+    const url = idAttendance ? "/attendances/" + idAttendance : "/attendances";
+    const method = idAttendance ? "PUT" : "POST";
+
+    fetch(url, {
+        method: method,
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(attendance)
     }).then(() => {
         alert("Asistencia guardada correctamente");
-        window.location.href = "/trainer/attendances";
+        window.location.href = attendanceBasePath;
     });
 }

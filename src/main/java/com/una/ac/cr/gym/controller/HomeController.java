@@ -44,21 +44,6 @@ public class HomeController {
         return "redirect:/admin/home";
     }
 
-    @GetMapping("/admin/equipment")
-    public String adminEquipment(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        if (!"administrator".equals(user.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "admin/equipment";
-    }
-
     @GetMapping("/client/home")
     public String clientHome(HttpSession session) {
 

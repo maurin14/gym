@@ -70,13 +70,15 @@
                     </span>
                 </button>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Equipamiento">
+                <a th:href="@{/client/equipment}"
+                   class="drawer-link"
+                   th:classappend="${active == 'equipment'} ? ' active'">
                     <span class="drawer-icon">E</span>
                     <span>
                         <strong>Equipamiento</strong>
                         <small>Equipos y recursos del gimnasio.</small>
                     </span>
-                </button>
+                </a>
             </div>
 
             <div class="drawer-section">
