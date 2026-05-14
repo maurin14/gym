@@ -15,7 +15,7 @@ public class LoginController {
     private UserService uService;
 
     @GetMapping("/login")
-    public String loginForm(Model model){
+    public String loginForm(Model model) {
         return "login";
     }
 
@@ -23,28 +23,35 @@ public class LoginController {
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         HttpSession session,
-                        Model model){
+                        Model model) {
 
         User user = uService.login(username, password);
 
-        if(user == null){
+        if (user == null) {
             model.addAttribute("messageError", "Usuario o contraseña incorrectos");
             return "login";
         }
 
         session.setAttribute("user", user);
 
-        if("administrator".equals(user.getRole())){
+        if ("administrator".equals(user.getRole())) {
             return "redirect:/admin/home";
         }
 
-        return "redirect:/user/home";
+        if ("client".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        if ("trainer".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return "redirect:/login";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session){
+    public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
 }
-

@@ -12,7 +12,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
 <header class="portal-header">
     <div class="portal-brand">
-        <a th:href="@{/user/home}">
+        <a th:href="@{/client/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
         </a>
         <div>
@@ -22,7 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </div>
 
     <nav class="portal-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments(userId=1)}">Mis pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
@@ -83,7 +83,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <tbody>
             <tr th:if="${payments.content.size() == 0}">
-                <td colspan="8">No se encontraron pagos.</td>
+                <td colspan="7">No se encontraron pagos.</td>
             </tr>
 
             <tr th:each="p : ${payments.content}">
@@ -101,8 +101,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </td>
 
                 <td th:text="${p.description}"></td>
-
-
             </tr>
             </tbody>
         </table>

@@ -6,13 +6,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Detalle de Sucursal - SAM GYM FITNESS</title>
-    <link rel="stylesheet" th:href="@{/css/branch.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
 
 <header class="portal-header">
     <div class="portal-brand">
-        <a th:href="@{/user/home}">
+        <a th:href="@{/client/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
         </a>
         <div>
@@ -22,7 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </div>
 
     <nav class="portal-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments(userId=1)}">Mis pagos</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
@@ -43,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div>
                 <img th:src="@{'/images/branches/' + ${branch.imageUrl}}"
                      alt="Sucursal"
-                     style="width:100%; max-height:420px; object-fit:cover; border-radius:18px;">
+                     class="branch-detail-image">
             </div>
 
             <div class="info-card">
