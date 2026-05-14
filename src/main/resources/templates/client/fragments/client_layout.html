@@ -62,13 +62,15 @@
                     </span>
                 </a>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Horarios">
+                <a th:href="@{/client/schedules}"
+                   class="drawer-link"
+                   th:classappend="${active == 'schedules'} ? ' active'">
                     <span class="drawer-icon">H</span>
                     <span>
                         <strong>Horarios</strong>
                         <small>Clases, atenci&oacute;n y disponibilidad.</small>
                     </span>
-                </button>
+                </a>
 
                 <a th:href="@{/client/equipment}"
                    class="drawer-link"
