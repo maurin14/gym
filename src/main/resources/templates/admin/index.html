@@ -5,7 +5,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Inicio Usuario - SAM GYM FITNESS</title>
+    <title>Inicio Administrador  - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
@@ -20,6 +20,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
     <nav class="header-nav">
         <a th:href="@{/branches}">Sucursales</a>
+        <a th:href="@{/users}">Usuarios</a>
+        <a th:href="@{/reports}">Reportes</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
         <a th:if="${session.user != null and session.user.role == 'client'}"
@@ -39,6 +41,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             Asistencia
         </a>
         <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/users/add}">Registrar cliente</a>
+        <a th:href="@{/profile/password}">Cambiar contraseña</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
@@ -68,6 +72,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <p>Consulta sucursales activas, ubicación, capacidad, contacto y detalle general.</p>
                 <div class="buttons">
                     <a th:href="@{/branches}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+            
+            <article class="module-card">
+                <h3>Usuarios</h3>
+                <p>Administra usuarios registrados, roles, estados y datos del sistema.</p>
+                <div class="buttons">
+                    <a th:href="@{/users}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h3>Reportes</h3>
+                <p>Consulta y genera reportes del sistema, pagos, usuarios y asistencias.</p>
+                <div class="buttons">
+                    <a th:href="@{/reports}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 

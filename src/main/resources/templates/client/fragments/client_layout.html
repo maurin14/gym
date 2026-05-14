@@ -114,8 +114,20 @@
                         <strong>Asistencia</strong>
                         <small>Seguimiento de visitas.</small>
                     </span>
-
                 </a>
+                
+                <a th:href="@{/profile/password}"
+                    class="drawer-link"
+                    th:classappend="${active == 'password'} ? ' active'">
+
+                     <span class="drawer-icon">C</span>
+
+                     <span>
+                         <strong>Cambiar contraseña</strong>
+                         <small>Actualiza la contraseña de tu cuenta.</small>
+                     </span>
+                 </a>
+                
             </div>
 
             <div class="drawer-section">
