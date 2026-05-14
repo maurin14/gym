@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Table(name = "tb_users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
@@ -48,8 +48,8 @@ public class User {
     public User() {
     }
 
-    public User(Integer userId, String fullName, String idCard, String email, String phone, 
-            String username, String password, String role, String status, String recordDate) {
+    public User(Integer userId, String fullName, String idCard, String email, String phone,
+                String username, String password, String role, String status, String recordDate) {
         this.userId = userId;
         this.fullName = fullName;
         this.idCard = idCard;
