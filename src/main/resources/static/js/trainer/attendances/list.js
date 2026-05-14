@@ -2,6 +2,9 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
+const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
+        ? "/admin/attendance"
+        : "/trainer/attendances";
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -26,6 +29,17 @@ function showAttendances(attendances) {
     const tbody = document.getElementById("attendancesTableBody");
     tbody.innerHTML = "";
 
+    if (!attendances || attendances.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-message">
+                    No hay asistencias registradas.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     attendances.forEach(attendance => {
 
         tbody.innerHTML += `
@@ -42,7 +56,7 @@ function showAttendances(attendances) {
                 <td>${attendance.registerDate}</td>
                 <td class="actions">
                     <a class="btn-primary"
-                       href="/trainer/attendances/form/${attendance.idAttendance}">
+                       href="${attendanceBasePath}/form/${attendance.idAttendance}">
                         Editar
                     </a>
 

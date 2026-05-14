@@ -14,19 +14,107 @@
     <div class="hero-overlay">
         <span class="hero-badge">EQUIPAMIENTO</span>
         <h1>Equipamiento</h1>
-        <p class="hero-text">M&oacute;dulo de equipamiento en desarrollo.</p>
+        <p class="hero-text">Gestione el equipamiento asociado a las sucursales del gimnasio.</p>
     </div>
 </section>
 
 <main class="container portal-card admin-page-card">
-    <h2 class="section-title">M&oacute;dulo en desarrollo</h2>
-    <p class="admin-description">
-        Este acceso est&aacute; reservado para la administraci&oacute;n de m&aacute;quinas,
-        implementos y equipos asociados a las sucursales.
-    </p>
+    <div class="admin-title-row">
+        <div>
+            <h2 class="section-title">Inventario de equipamiento</h2>
+            <p class="admin-description">
+                Consulte maquinas, implementos, costos, disponibilidad y sucursal asignada.
+            </p>
+        </div>
+    </div>
 
-    <div class="buttons">
-        <a th:href="@{/admin/home}" class="btn-secondary">Volver al panel</a>
+    <form class="admin-filter-row" th:action="@{/admin/equipment}" method="get">
+        <select name="id" aria-label="Filtrar por sucursal">
+            <option value="">Todas las sucursales</option>
+            <option th:each="branch : ${branches}"
+                    th:value="${branch.id}"
+                    th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
+                    th:text="${branch.name}">
+                Sucursal
+            </option>
+        </select>
+
+        <input type="number"
+               step="0.01"
+               min="0"
+               name="min"
+               th:value="${minCost}"
+               placeholder="Costo minimo">
+
+        <input type="number"
+               step="0.01"
+               min="0"
+               name="max"
+               th:value="${maxCost}"
+               placeholder="Costo maximo">
+
+        <input type="hidden" name="size" th:value="${pageSize}">
+
+        <button type="submit" class="btn-primary">Filtrar</button>
+        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar</a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha de compra</th>
+                    <th>Costo</th>
+                    <th>Disponibilidad</th>
+                    <th>Sucursal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${equipment == null or #lists.isEmpty(equipment)}">
+                    <td colspan="7" class="empty-message">
+                        No hay equipamiento registrado.
+                    </td>
+                </tr>
+                <tr th:each="item : ${equipment}">
+                    <td th:text="${item.name}">Nombre</td>
+                    <td th:text="${item.type}">Tipo</td>
+                    <td th:text="${item.state}">Estado</td>
+                    <td th:text="${item.purchaseDate != null ? #temporals.format(item.purchaseDate, 'dd/MM/yyyy') : 'Sin fecha'}">
+                        Fecha
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(item.cost, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                    <td>
+                        <span th:class="${item.available == 'true'} ? 'status-active' : 'status-inactive'"
+                              th:text="${item.available == 'true'} ? 'Si' : 'No'">
+                            Si
+                        </span>
+                    </td>
+                    <td th:text="${item.branch != null ? item.branch.name : 'Sin sucursal'}">Sucursal</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <a class="btn-secondary"
+           th:if="${currentPage > 0}"
+           th:href="@{/admin/equipment(page=${currentPage - 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+            Anterior
+        </a>
+
+        <button type="button" disabled>
+            Pagina <span th:text="${currentPage + 1}">1</span>
+            de <span th:text="${totalPages > 0 ? totalPages : 1}">1</span>
+        </button>
+
+        <a class="btn-primary"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/admin/equipment(page=${currentPage + 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+            Siguiente
+        </a>
     </div>
 </main>
 
