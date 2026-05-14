@@ -103,22 +103,22 @@ public class GymClassService {
         }
 
         if (gymClass.getMaxCapacity() <= 0) {
-            errors.put("maxCapacity", "Ingrese un valor valido.");
+            errors.put("maxCapacity", "Ingrese un valor válido.");
         }
 
         if (gymClass.getTrainer() == null || gymClass.getTrainer().getUserId() == null
                 || gymClass.getTrainer().getUserId() <= 0) {
-            errors.put("trainerId", "Seleccione una opcion.");
+            errors.put("trainerId", "Seleccione una opción.");
         }
 
         if (gymClass.getEnrolledCount() < 0) {
-            errors.put("enrolledCount", "Ingrese un valor valido.");
+            errors.put("enrolledCount", "Ingrese un valor válido.");
         } else if (gymClass.getMaxCapacity() > 0 && gymClass.getEnrolledCount() > gymClass.getMaxCapacity()) {
             errors.put("enrolledCount", "La cantidad de inscritos no puede superar la capacidad.");
         }
 
         if (isBlank(gymClass.getDifficultyLevel())) {
-            errors.put("difficultyLevel", "Seleccione una opcion.");
+            errors.put("difficultyLevel", "Seleccione una opción.");
         }
 
         if (isBlank(gymClass.getDescription())) {

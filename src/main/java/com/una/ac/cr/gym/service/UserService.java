@@ -65,24 +65,24 @@ public class UserService {
         if(isEmpty(u.getFullName())){
             errors.put("fullName", "Este campo es obligatorio.");
         }else if(!u.getFullName().matches("[A-Za-zÁÉÍÓÚáéíóúÑñ ]+")){
-            errors.put("fullName", "Ingrese un valor valido.");
+            errors.put("fullName", "Ingrese un valor válido.");
         }
 
         if(isEmpty(u.getIdCard())){
             errors.put("idCard", "Este campo es obligatorio.");
         }else if(!u.getIdCard().matches("\\d{9}")){
-            errors.put("idCard", "Ingrese un valor valido.");
+            errors.put("idCard", "Ingrese un valor válido.");
         }else{
             User userByIdCard = uData.findByIdCard(u.getIdCard());
             if(userByIdCard != null && !userByIdCard.getUserId().equals(u.getUserId())){
-                errors.put("idCard", "La cedula ya esta registrada.");
+                errors.put("idCard", "La cédula ya esta registrada.");
             }
         }
 
         if(isEmpty(u.getEmail())){
             errors.put("email", "Este campo es obligatorio.");
         }else if(!u.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")){
-            errors.put("email", "Ingrese un correo electronico valido.");
+            errors.put("email", "Ingrese un correo electrónico válido.");
         }else{
             User userByEmail = uData.findByEmail(u.getEmail());
             if(userByEmail != null && !userByEmail.getUserId().equals(u.getUserId())){
@@ -93,11 +93,11 @@ public class UserService {
         if(isEmpty(u.getPhone())){
             errors.put("phone", "Este campo es obligatorio.");
         }else if(!u.getPhone().matches("\\d{4}-\\d{4}")){
-            errors.put("phone", "Ingrese un valor valido.");
+            errors.put("phone", "Ingrese un valor válido.");
         }else{
             User userByPhone = uData.findByPhone(u.getPhone());
             if(userByPhone != null && !userByPhone.getUserId().equals(u.getUserId())){
-                errors.put("phone", "El telefono ya esta registrado.");
+                errors.put("phone", "El teléfono ya esta registrado.");
             }
         }
 
@@ -113,20 +113,20 @@ public class UserService {
         if(isEmpty(u.getPassword())){
             errors.put("password", "Este campo es obligatorio.");
         }else if(u.getPassword().length() < 4){
-            errors.put("password", "Ingrese un valor valido.");
+            errors.put("password", "Ingrese un valor válido.");
         }
 
         if(isEmpty(u.getRole())){
-            errors.put("role", "Seleccione una opcion.");
+            errors.put("role", "Seleccione una opción.");
         }else if(!u.getRole().equals("client") && !u.getRole().equals("trainer")
                 && !u.getRole().equals("administrator")){
-            errors.put("role", "Seleccione una opcion.");
+            errors.put("role", "Seleccione una opción.");
         }
 
         if(isEmpty(u.getStatus())){
-            errors.put("status", "Seleccione una opcion.");
+            errors.put("status", "Seleccione una opción.");
         }else if(!u.getStatus().equals("active") && !u.getStatus().equals("inactive")){
-            errors.put("status", "Seleccione una opcion.");
+            errors.put("status", "Seleccione una opción.");
         }
 
         if(isEmpty(u.getRecordDate())){
@@ -135,7 +135,7 @@ public class UserService {
             try {
                 LocalDate.parse(u.getRecordDate());
             } catch (Exception ex) {
-                errors.put("recordDate", "Ingrese una fecha valida.");
+                errors.put("recordDate", "Ingrese una fecha válida.");
             }
         }
 
@@ -213,7 +213,7 @@ public class UserService {
         User userSession = (User) session.getAttribute("user");
 
         if(userSession == null){
-            return "Debe iniciar sesion primero";
+            return "Debe iniciar sesión primero";
         }
 
         if(isEmpty(currentPassword) || isEmpty(newPassword) || isEmpty(confirmPassword)){

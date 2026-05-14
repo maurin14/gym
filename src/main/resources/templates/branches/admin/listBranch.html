@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Administracion de Sucursales</title>
+    <title>Administración de sucursales</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/branch.js}"></script>
@@ -13,13 +13,16 @@
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
-        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
-        <h1>Administracion de sucursales</h1>
+        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
+        <h1>Administración de sucursales</h1>
         <p class="hero-text">Consulta, registra, modifica y cambia el estado de las sucursales del gimnasio.</p>
     </div>
 </section>
 
 <main class="container portal-card admin-page-card">
+    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+
     <form class="admin-filter-row portal-filters" onsubmit="filterBranches(); return false;">
         <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
 
@@ -48,16 +51,35 @@
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = "Accion realizada correctamente.";
+        let message = "Acción realizada correctamente.";
 
         if (success[0] === "save") message = "Sucursal registrada correctamente.";
-        if (success[0] === "edit") message = "Sucursal modificada correctamente.";
+        if (success[0] === "edit") message = "Sucursal actualizada correctamente.";
         if (success[0] === "delete") message = "Sucursal eliminada correctamente.";
-        if (success[0] === "status") message = "Estado de la sucursal modificado correctamente.";
+        if (success[0] === "status") message = "Estado de la sucursal actualizado correctamente.";
 
         Swal.fire({
             icon: "success",
             title: message,
+            confirmButtonText: "OK"
+        });
+    }
+
+    const successMessage = [[${successMessage != null ? successMessage : null}]];
+    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+
+    if (successMessage != null) {
+        Swal.fire({
+            icon: "success",
+            title: successMessage,
+            confirmButtonText: "OK"
+        });
+    }
+
+    if (errorMessage != null) {
+        Swal.fire({
+            icon: "error",
+            title: errorMessage,
             confirmButtonText: "OK"
         });
     }

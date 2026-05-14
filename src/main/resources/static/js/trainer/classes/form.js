@@ -1,13 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const parts = window.location.pathname.split("/");
-    const idClass = parts[parts.length - 1];
+    const idClass = getClassIdFromPath();
 
     loadTrainers().then(() => {
-        if (!isNaN(idClass)) {
+        if (idClass !== null) {
             loadClass(idClass);
         }
     });
 });
+
+function getClassIdFromPath() {
+    const match = window.location.pathname.match(/\/(?:form|edit)\/(\d+)$/);
+    return match ? match[1] : null;
+}
+
+function getClassesListPath() {
+    return window.location.pathname.startsWith("/admin/classes")
+            ? "/admin/classes"
+            : "/trainer/classes";
+}
 
 function loadTrainers() {
     return fetch("/classes/trainers")
@@ -31,22 +41,52 @@ function loadClass(idClass) {
     fetch("/classes/" + idClass)
         .then(response => response.json())
         .then(gymClass => {
-            document.getElementById("formTitle").innerText = "Modificar clase";
-            document.getElementById("idClass").value = gymClass.idClass;
-            document.getElementById("classType").value = gymClass.classType;
-            document.getElementById("classDate").value = gymClass.classDate;
-            document.getElementById("startTime").value = gymClass.startTime;
-            document.getElementById("endTime").value = gymClass.endTime;
-            document.getElementById("maxCapacity").value = gymClass.maxCapacity;
-
-            if (gymClass.trainer !== null) {
-                document.getElementById("trainerId").value = gymClass.trainer.userId;
+            if (gymClass.success === false) {
+                showClassError("form", gymClass.message || "No se pudo cargar la clase.");
+                return;
             }
 
-            document.getElementById("enrolledCount").value = gymClass.enrolledCount;
-            document.getElementById("difficultyLevel").value = gymClass.difficultyLevel;
-            document.getElementById("description").value = gymClass.description;
-        });
+            document.getElementById("formTitle").innerText = "Editar clase";
+            document.getElementById("idClass").value = gymClass.idClass;
+            document.getElementById("classType").value = gymClass.classType || "";
+            document.getElementById("classDate").value = normalizeDate(gymClass.classDate);
+            document.getElementById("startTime").value = normalizeTime(gymClass.startTime);
+            document.getElementById("endTime").value = normalizeTime(gymClass.endTime);
+            document.getElementById("maxCapacity").value = gymClass.maxCapacity || "";
+
+            if (gymClass.trainerId !== null && gymClass.trainerId !== undefined) {
+                document.getElementById("trainerId").value = gymClass.trainerId;
+            }
+
+            document.getElementById("enrolledCount").value = gymClass.enrolledCount || 0;
+            setSelectValue("difficultyLevel", gymClass.difficultyLevel);
+            document.getElementById("description").value = gymClass.description || "";
+        })
+        .catch(() => showClassError("form", "No se pudo cargar la clase."));
+}
+
+function normalizeDate(value) {
+    return value ? String(value).substring(0, 10) : "";
+}
+
+function normalizeTime(value) {
+    return value ? String(value).substring(0, 5) : "";
+}
+
+function setSelectValue(selectId, value) {
+    const select = document.getElementById(selectId);
+
+    if (value === null || value === undefined || value === "") {
+        select.value = "";
+        return;
+    }
+
+    const exists = Array.from(select.options).some(option => option.value === value);
+    if (!exists) {
+        select.add(new Option(value, value));
+    }
+
+    select.value = value;
 }
 
 function saveClass() {
@@ -68,12 +108,13 @@ function saveClass() {
     if (startTime === "") clientErrors.startTime = "Este campo es obligatorio.";
     if (endTime === "") clientErrors.endTime = "Este campo es obligatorio.";
     if (maxCapacity === "") clientErrors.maxCapacity = "Este campo es obligatorio.";
-    if (trainerId === "") clientErrors.trainerId = "Seleccione una opcion.";
-    if (difficultyLevel === "") clientErrors.difficultyLevel = "Seleccione una opcion.";
+    if (trainerId === "") clientErrors.trainerId = "Seleccione una opción.";
+    if (difficultyLevel === "") clientErrors.difficultyLevel = "Seleccione una opción.";
     if (description === "") clientErrors.description = "Este campo es obligatorio.";
 
     if (Object.keys(clientErrors).length > 0) {
         showClassErrors(clientErrors);
+        showClassError("form", "Revise los campos marcados.");
         return;
     }
 
@@ -110,19 +151,23 @@ function saveClass() {
     .then(response => response.json())
     .then(data => {
         if (!data.success) {
-            showClassErrors(data.errors || {});
+            showClassErrors(data.fieldErrors || data.errors || {});
+            showClassError("form", data.message || "Revise los campos marcados.");
             return;
         }
 
         alert("Clase guardada correctamente");
-        window.location.href = "/trainer/classes";
+        window.location.href = getClassesListPath();
     })
     .catch(() => showClassError("form", "No se pudo guardar. Intente nuevamente."));
 }
 
 function clearClassErrors() {
-    document.querySelectorAll(".error-message").forEach(error => {
+    document.querySelectorAll(".field-error, .error-message").forEach(error => {
         error.textContent = "";
+    });
+    document.querySelectorAll(".invalid").forEach(field => {
+        field.classList.remove("invalid");
     });
 }
 
@@ -137,6 +182,10 @@ function showClassError(field, message) {
 
     if (error) {
         error.textContent = message;
+        const fieldElement = document.getElementById(field);
+        if (fieldElement) {
+            fieldElement.classList.add("invalid");
+        }
         return;
     }
 

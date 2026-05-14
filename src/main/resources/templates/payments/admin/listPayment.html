@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Administracion de Pagos</title>
+    <title>Administración de Pagos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/payment.js}"></script>
@@ -13,8 +13,8 @@
 
 <section class="hero-section portal-head">
     <div class="hero-overlay">
-        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
-        <h1>Administracion de pagos</h1>
+        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
+        <h1>Administración de pagos</h1>
         <p class="hero-text">Consulta, registra, modifica y cambia el estado de los pagos del gimnasio.</p>
     </div>
 </section>
@@ -29,7 +29,7 @@
         </select>
 
         <select id="filterPaymentMethod">
-            <option value="">Todos los metodos</option>
+            <option value="">Todos los métodos</option>
             <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
             <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
             <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}">SINPE</option>
@@ -64,12 +64,12 @@
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = "Accion realizada correctamente.";
+        let message = "Acción realizada correctamente.";
 
         if (success[0] === "save") message = "Pago registrado correctamente.";
-        if (success[0] === "edit") message = "Pago modificado correctamente.";
+        if (success[0] === "edit") message = "Pago actualizado correctamente.";
         if (success[0] === "delete") message = "Pago eliminado correctamente.";
-        if (success[0] === "status") message = "Estado del pago modificado correctamente.";
+        if (success[0] === "status") message = "Estado del pago actualizado correctamente.";
 
         Swal.fire({
             icon: "success",

@@ -104,7 +104,7 @@ public class ProductServices {
 
     public String deleteProduct(int idProduct) {
         if (idProduct <= 0) {
-            return "Id de producto invalido.";
+            return "Id de producto inválido.";
         }
 
         if (!productRepository.existsById(idProduct)) {
@@ -148,13 +148,13 @@ public class ProductServices {
         if (product.getQuantityStock() == null) {
             errors.put("quantityStock", "Este campo es obligatorio.");
         } else if (product.getQuantityStock() < 0) {
-            errors.put("quantityStock", "Ingrese un valor valido.");
+            errors.put("quantityStock", "Ingrese un valor válido.");
         }
 
         if (product.getRegisterDate() == null) {
             errors.put("registerDate", "La fecha es obligatoria.");
         } else if (product.getRegisterDate().isAfter(LocalDate.now())) {
-            errors.put("registerDate", "Ingrese una fecha valida.");
+            errors.put("registerDate", "Ingrese una fecha válida.");
         }
 
         if (isBlank(product.getDescription())) {

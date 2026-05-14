@@ -2,6 +2,9 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
+const classBasePath = window.location.pathname.startsWith("/admin/classes")
+        ? "/admin/classes"
+        : "/trainer/classes";
 
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
@@ -44,7 +47,7 @@ function showClasses(classes) {
                 <td>
                     <div class="actions">
                         <a class="btn-primary"
-                           href="/trainer/classes/form/${gymClass.idClass}">
+                           href="${classBasePath}/edit/${gymClass.idClass}">
                             Editar
                         </a>
 

@@ -18,11 +18,11 @@
 </section>
 
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${error != null and !#strings.isEmpty(error)}" class="error-message" th:text="${error}">
+    <div th:if="${error != null and !#strings.isEmpty(error)}" class="field-error" th:text="${error}">
         Error
     </div>
 
-    <form class="portal-form" th:action="@{${action}}" th:object="${product}" method="post" enctype="multipart/form-data">
+    <form class="portal-form" th:action="@{${action}}" th:object="${product}" method="post" enctype="multipart/form-data" novalidate>
         <input type="hidden" th:field="*{idProduct}">
         <input type="hidden" th:field="*{registerDate}">
         <input type="hidden" th:field="*{imagePath}">
@@ -32,14 +32,14 @@
                id="nameProduct"
                th:field="*{nameProduct}"
                placeholder="Digite el nombre del producto">
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="${fieldErrors['nameProduct']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="${fieldErrors['nameProduct']}"></small>
 
         <label for="category">Categor&iacute;a</label>
         <input type="text"
                id="category"
                th:field="*{category}"
                placeholder="Digite la categoria">
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['category'] != null}" th:text="${fieldErrors['category']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['category'] != null}" th:text="${fieldErrors['category']}"></small>
 
         <label for="price">Precio</label>
         <input type="number"
@@ -48,7 +48,7 @@
                id="price"
                th:field="*{price}"
                placeholder="Digite el precio">
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['price'] != null}" th:text="${fieldErrors['price']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['price'] != null}" th:text="${fieldErrors['price']}"></small>
 
         <label for="quantityStock">Cantidad en stock</label>
         <input type="number"
@@ -56,7 +56,7 @@
                id="quantityStock"
                th:field="*{quantityStock}"
                placeholder="Digite la cantidad en stock">
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['quantityStock'] != null}" th:text="${fieldErrors['quantityStock']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['quantityStock'] != null}" th:text="${fieldErrors['quantityStock']}"></small>
 
         <label for="state">Estado</label>
         <select id="state" th:field="*{state}">
@@ -67,12 +67,12 @@
         <label for="description">Descripci&oacute;n</label>
         <textarea id="description"
                   th:field="*{description}"
-                  placeholder="Digite la descripcion del producto"></textarea>
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
+                  placeholder="Digite la descripción del producto"></textarea>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
 
         <label for="imageFile">Imagen del producto</label>
         <input type="file" id="imageFile" name="imageFile" accept="image/*">
-        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['imagePath'] != null}" th:text="${fieldErrors['imagePath']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['imagePath'] != null}" th:text="${fieldErrors['imagePath']}"></small>
 
         <div class="image-preview-container"
              th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}">

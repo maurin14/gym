@@ -159,10 +159,10 @@ public class ReportService implements CRUD<Report>{
         }
 
         if(isEmpty(r.getReportType())){
-            errors.put("reportType", "Seleccione una opcion.");
+            errors.put("reportType", "Seleccione una opción.");
         }else if(!r.getReportType().equals("users") && !r.getReportType().equals("payments")
                 && !r.getReportType().equals("attendances")){
-            errors.put("reportType", "Seleccione una opcion.");
+            errors.put("reportType", "Seleccione una opción.");
         }
 
         if(r.getGeneratedBy() == null){
@@ -181,13 +181,13 @@ public class ReportService implements CRUD<Report>{
         if(isEmpty(r.getStartDate())){
             errors.put("startDate", "La fecha es obligatoria.");
         }else if(startDate == null){
-            errors.put("startDate", "Ingrese una fecha valida.");
+            errors.put("startDate", "Ingrese una fecha válida.");
         }
 
         if(isEmpty(r.getEndDate())){
             errors.put("endDate", "La fecha es obligatoria.");
         }else if(endDate == null){
-            errors.put("endDate", "Ingrese una fecha valida.");
+            errors.put("endDate", "Ingrese una fecha válida.");
         }
 
         if(startDate != null && endDate != null && startDate.isAfter(endDate)){
@@ -195,17 +195,17 @@ public class ReportService implements CRUD<Report>{
         }
 
         if(isEmpty(r.getFormat())){
-            errors.put("format", "Seleccione una opcion.");
+            errors.put("format", "Seleccione una opción.");
         }else if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel")
                 && !r.getFormat().equals("csv")){
-            errors.put("format", "Seleccione una opcion.");
+            errors.put("format", "Seleccione una opción.");
         }
 
         if(isEmpty(r.getReportStatus())){
-            errors.put("reportStatus", "Seleccione una opcion.");
+            errors.put("reportStatus", "Seleccione una opción.");
         }else if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending")
                 && !r.getReportStatus().equals("error")){
-            errors.put("reportStatus", "Seleccione una opcion.");
+            errors.put("reportStatus", "Seleccione una opción.");
         }
 
         if(r.getFilePath() != null && r.getFilePath().length() > 255){
@@ -335,7 +335,7 @@ public class ReportService implements CRUD<Report>{
 
     public String validateAdministratorAccess(HttpSession session){
         if(!isAdministrator(session)){
-            return "Solo los administradores pueden gestionar reportes";
+            return "Solo los administradores pueden gestiónar reportes";
         }
         return null;
     }

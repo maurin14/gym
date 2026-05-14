@@ -33,13 +33,38 @@ public class GymClassController {
         return "trainer/classes/list";
     }
 
+    @GetMapping("/admin/classes")
+    public String adminClassesList() {
+        return "trainer/classes/list";
+    }
+
     @GetMapping("/trainer/classes/form")
     public String trainerClassesForm() {
         return "trainer/classes/form";
     }
 
+    @GetMapping("/admin/classes/form")
+    public String adminClassesForm() {
+        return "trainer/classes/form";
+    }
+
     @GetMapping("/trainer/classes/form/{idClass}")
     public String trainerClassesEdit(@PathVariable int idClass) {
+        return "trainer/classes/form";
+    }
+
+    @GetMapping("/trainer/classes/edit/{idClass}")
+    public String trainerClassesEditAlias(@PathVariable int idClass) {
+        return "trainer/classes/form";
+    }
+
+    @GetMapping("/admin/classes/form/{idClass}")
+    public String adminClassesEdit(@PathVariable int idClass) {
+        return "trainer/classes/form";
+    }
+
+    @GetMapping("/admin/classes/edit/{idClass}")
+    public String adminClassesEditAlias(@PathVariable int idClass) {
         return "trainer/classes/form";
     }
 
@@ -65,26 +90,7 @@ public class GymClassController {
                 .stream()
                 .map(gymClass -> {
 
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idClass", gymClass.getIdClass());
-                    map.put("classType", gymClass.getClassType());
-                    map.put("classDate", gymClass.getClassDate());
-                    map.put("startTime", gymClass.getStartTime());
-                    map.put("endTime", gymClass.getEndTime());
-                    map.put("maxCapacity", gymClass.getMaxCapacity());
-                    map.put("enrolledCount", gymClass.getEnrolledCount());
-                    map.put("difficultyLevel", gymClass.getDifficultyLevel());
-                    map.put("description", gymClass.getDescription());
-                    map.put("duration", gymClass.getDuration());
-                    map.put("status", gymClass.isStatus());
-
-                    map.put("trainerName",
-                            gymClass.getTrainer() != null
-                            ? gymClass.getTrainer().getFullName()
-                            : "Sin entrenador");
-
-                    return map;
+                    return toClassMap(gymClass);
                 })
                 .toList());
 
@@ -99,43 +105,36 @@ public class GymClassController {
                 .stream()
                 .map(gymClass -> {
 
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idClass", gymClass.getIdClass());
-                    map.put("classType", gymClass.getClassType());
-                    map.put("classDate", gymClass.getClassDate());
-                    map.put("startTime", gymClass.getStartTime());
-                    map.put("endTime", gymClass.getEndTime());
-                    map.put("maxCapacity", gymClass.getMaxCapacity());
-                    map.put("enrolledCount", gymClass.getEnrolledCount());
-                    map.put("difficultyLevel", gymClass.getDifficultyLevel());
-                    map.put("description", gymClass.getDescription());
-                    map.put("duration", gymClass.getDuration());
-                    map.put("status", gymClass.isStatus());
-
-                    map.put("trainerName",
-                            gymClass.getTrainer() != null
-                            ? gymClass.getTrainer().getFullName()
-                            : "Sin entrenador");
-
-                    return map;
+                    return toClassMap(gymClass);
                 })
                 .toList();
     }
 
     @ResponseBody
     @GetMapping("/classes/{idClass}")
-    public GymClass getClassById(@PathVariable int idClass) {
-        return gymClassService.getClassById(idClass);
+    public Map<String, Object> getClassById(@PathVariable int idClass) {
+        GymClass gymClass = gymClassService.getClassById(idClass);
+
+        if (gymClass == null) {
+            return Map.of("success", false, "message", "Clase no encontrada.");
+        }
+
+        Map<String, Object> response = toClassMap(gymClass);
+        response.put("success", true);
+        return response;
     }
 
     @ResponseBody
     @PostMapping("/classes")
     public Map<String, Object> saveClass(@RequestBody GymClass gymClass) {
-        Map<String, String> errors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
 
-        if (!errors.isEmpty()) {
-            return Map.of("success", false, "errors", errors);
+        if (!fieldErrors.isEmpty()) {
+            return Map.of(
+                    "success", false,
+                    "fieldErrors", fieldErrors,
+                    "message", "No se pudo guardar. Revise los campos marcados."
+            );
         }
 
         GymClass savedClass = gymClassService.saveClass(gymClass);
@@ -147,10 +146,14 @@ public class GymClassController {
     public Map<String, Object> updateClass(@PathVariable int idClass,
             @RequestBody GymClass gymClass) {
 
-        Map<String, String> errors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
 
-        if (!errors.isEmpty()) {
-            return Map.of("success", false, "errors", errors);
+        if (!fieldErrors.isEmpty()) {
+            return Map.of(
+                    "success", false,
+                    "fieldErrors", fieldErrors,
+                    "message", "No se pudo guardar. Revise los campos marcados."
+            );
         }
 
         GymClass savedClass = gymClassService.updateClass(idClass, gymClass);
@@ -167,5 +170,25 @@ public class GymClassController {
     @GetMapping("/classes/trainers")
     public List<User> getTrainers() {
         return userService.filterUsers(null, "trainer");
+    }
+
+    private Map<String, Object> toClassMap(GymClass gymClass) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idClass", gymClass.getIdClass());
+        map.put("classType", gymClass.getClassType());
+        map.put("classDate", gymClass.getClassDate());
+        map.put("startTime", gymClass.getStartTime());
+        map.put("endTime", gymClass.getEndTime());
+        map.put("maxCapacity", gymClass.getMaxCapacity());
+        map.put("enrolledCount", gymClass.getEnrolledCount());
+        map.put("difficultyLevel", gymClass.getDifficultyLevel());
+        map.put("description", gymClass.getDescription());
+        map.put("duration", gymClass.getDuration());
+        map.put("status", gymClass.isStatus());
+        map.put("trainerId", gymClass.getTrainer() != null ? gymClass.getTrainer().getUserId() : null);
+        map.put("trainerName", gymClass.getTrainer() != null ? gymClass.getTrainer().getFullName() : "Sin entrenador");
+
+        return map;
     }
 }

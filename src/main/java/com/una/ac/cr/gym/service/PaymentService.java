@@ -121,35 +121,35 @@ public class PaymentService implements CRUD<Payment> {
         if (payment.getPaymentDate() == null) {
             errors.put("paymentDate", "La fecha es obligatoria.");
         } else if (payment.getPaymentDate().isAfter(LocalDate.now())) {
-            errors.put("paymentDate", "Ingrese una fecha valida.");
+            errors.put("paymentDate", "Ingrese una fecha válida.");
         }
 
         if (payment.getIdUser() == null) {
             errors.put("idUser", "Este campo es obligatorio.");
         } else if (payment.getIdUser() < 1) {
-            errors.put("idUser", "Ingrese un valor valido.");
+            errors.put("idUser", "Ingrese un valor válido.");
         }
 
         if (payment.getBranch() == null || payment.getBranch().getId() <= 0) {
-            errors.put("branch", "Seleccione una opcion.");
+            errors.put("branch", "Seleccione una opción.");
         }
 
         if (payment.getAmount() == null) {
             errors.put("amount", "Este campo es obligatorio.");
         } else if (payment.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            errors.put("amount", "Ingrese un valor valido.");
+            errors.put("amount", "Ingrese un valor válido.");
         }
 
         if (isBlank(payment.getPaymentMethod())) {
-            errors.put("paymentMethod", "Seleccione una opcion.");
+            errors.put("paymentMethod", "Seleccione una opción.");
         } else if (!isAllowed(payment.getPaymentMethod(), "Efectivo", "Tarjeta", "SINPE", "Transferencia")) {
-            errors.put("paymentMethod", "Seleccione una opcion.");
+            errors.put("paymentMethod", "Seleccione una opción.");
         }
 
         if (isBlank(payment.getStatus())) {
-            errors.put("status", "Seleccione una opcion.");
+            errors.put("status", "Seleccione una opción.");
         } else if (!isAllowed(payment.getStatus(), "Pagado", "Pendiente", "Anulado")) {
-            errors.put("status", "Seleccione una opcion.");
+            errors.put("status", "Seleccione una opción.");
         }
 
         if (payment.getDescription() != null && payment.getDescription().length() > 255) {

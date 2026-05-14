@@ -50,7 +50,7 @@ public class RoutineServices {
     @Transactional
     public String deleteRoutine(int idRoutine) {
         if (idRoutine <= 0) {
-            return "ID de rutina invalido";
+            return "ID de rutina inválido";
         }
 
         if (!routineRepository.existsById(idRoutine)) {
@@ -82,27 +82,27 @@ public class RoutineServices {
         }
 
         if (isBlank(routine.getDifficultyLevel())) {
-            errors.put("difficultyLevel", "Seleccione una opcion.");
+            errors.put("difficultyLevel", "Seleccione una opción.");
         }
 
         if (isBlank(routine.getRoutineType())) {
-            errors.put("routineType", "Seleccione una opcion.");
+            errors.put("routineType", "Seleccione una opción.");
         }
 
         if (routine.getEstimatedDuration() == null) {
             errors.put("estimatedDuration", "Este campo es obligatorio.");
         } else if (routine.getEstimatedDuration() <= 0) {
-            errors.put("estimatedDuration", "Ingrese un valor valido.");
+            errors.put("estimatedDuration", "Ingrese un valor válido.");
         }
 
         if (routine.getQuantityExercises() == null) {
             errors.put("quantityExercises", "Este campo es obligatorio.");
         } else if (routine.getQuantityExercises() <= 0) {
-            errors.put("quantityExercises", "Ingrese un valor valido.");
+            errors.put("quantityExercises", "Ingrese un valor válido.");
         }
 
         if (isBlank(routine.getTrainingObjective())) {
-            errors.put("trainingObjective", "Seleccione una opcion.");
+            errors.put("trainingObjective", "Seleccione una opción.");
         }
 
         if (isBlank(routine.getDescription())) {

@@ -85,6 +85,7 @@ public class PaymentController {
 
         Map<String, String> fieldErrors = paymentService.validateFields(payment);
         if (!fieldErrors.isEmpty()) {
+            model.addAttribute("payment", payment);
             model.addAttribute("branches", branchService.getActiveBranches());
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");

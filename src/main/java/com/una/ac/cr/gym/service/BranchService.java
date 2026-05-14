@@ -13,6 +13,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 
@@ -34,7 +35,27 @@ public class BranchService implements CRUD<Branch> {
 
     @Override
     public void delete(int id) {
+        if (hasEquipments(id)) {
+            throw new DataIntegrityViolationException("La sucursal tiene equipos asociados.");
+        }
+
         branchRepository.deleteById(id);
+    }
+
+    public boolean hasEquipments(int id) {
+        return branchRepository.existsEquipmentByBranchId(id);
+    }
+
+    public boolean toggleStatus(int id) {
+        Branch branch = getById(id);
+
+        if (branch == null) {
+            return false;
+        }
+
+        branch.setActive(!branch.isActive());
+        save(branch);
+        return true;
     }
 
     @Override
@@ -88,7 +109,7 @@ public class BranchService implements CRUD<Branch> {
         if (branch.getOpeningDate() == null) {
             errors.put("openingDate", "La fecha es obligatoria.");
         } else if (branch.getOpeningDate().isAfter(LocalDate.now())) {
-            errors.put("openingDate", "Ingrese una fecha valida.");
+            errors.put("openingDate", "Ingrese una fecha válida.");
         }
 
         if (isBlank(branch.getName())) {
@@ -106,17 +127,17 @@ public class BranchService implements CRUD<Branch> {
         if (isBlank(branch.getPhone())) {
             errors.put("phone", "Este campo es obligatorio.");
         } else if (!branch.getPhone().matches("^[0-9]{8}$")) {
-            errors.put("phone", "Ingrese un valor valido.");
+            errors.put("phone", "Ingrese un valor válido.");
         }
 
         if (branch.getCapacity() == null) {
             errors.put("capacity", "Este campo es obligatorio.");
         } else if (branch.getCapacity() < 1) {
-            errors.put("capacity", "Ingrese un valor valido.");
+            errors.put("capacity", "Ingrese un valor válido.");
         }
 
         if (branch.getActive() == null) {
-            errors.put("active", "Seleccione una opcion.");
+            errors.put("active", "Seleccione una opción.");
         }
 
         return errors;

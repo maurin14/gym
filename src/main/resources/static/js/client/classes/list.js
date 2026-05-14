@@ -55,7 +55,7 @@ function showClasses(classes) {
 
 function showPagination() {
     document.getElementById("pageInfo").innerText =
-            "Pagina " + currentPage + " de " + totalPages;
+            "Página " + currentPage + " de " + totalPages;
 
     document.getElementById("prevBtn").style.display =
             currentPage === 1 ? "none" : "inline-flex";
