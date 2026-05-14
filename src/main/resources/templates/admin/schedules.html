@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="page-portal">
+
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('schedules')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
+        <h1>Horarios</h1>
+        <p class="hero-text">Administre los horarios de atencion, clases y disponibilidad por sucursal.</p>
+    </div>
+</section>
+
+<main class="container portal-card admin-page-card">
+    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+
+    <div class="admin-title-row">
+        <div>
+            <h2 class="section-title">Listado de horarios</h2>
+            <p class="admin-description">Consulte, filtre y gestione los horarios registrados.</p>
+        </div>
+        <div class="buttons">
+            <a th:href="@{/admin/schedules/new}" class="btn-primary">Nuevo horario</a>
+        </div>
+    </div>
+
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/schedules}" method="get">
+        <select name="branchId" aria-label="Filtrar por sucursal">
+            <option value="">Todas las sucursales</option>
+            <option th:each="branch : ${branches}"
+                    th:value="${branch.id}"
+                    th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
+                    th:text="${branch.name}">
+                Sucursal
+            </option>
+        </select>
+        <input type="time" name="start" th:value="${start}" aria-label="Hora inicial">
+        <input type="time" name="end" th:value="${end}" aria-label="Hora final">
+        <input type="hidden" name="size" th:value="${pageSize}">
+        <button type="submit" class="btn-primary">Filtrar</button>
+        <a th:href="@{/admin/schedules}" class="btn-secondary">Limpiar filtros</a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Sucursal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${schedules == null or #lists.isEmpty(schedules)}">
+                    <td colspan="7" class="empty-message">No hay horarios registrados.</td>
+                </tr>
+                <tr th:each="scheduleItem : ${schedules}">
+                    <td th:text="${scheduleItem.dayOfWeek}">Dia</td>
+                    <td th:text="${scheduleItem.startTime != null ? #temporals.format(scheduleItem.startTime, 'HH:mm') : 'Sin hora'}">00:00</td>
+                    <td th:text="${scheduleItem.endTime != null ? #temporals.format(scheduleItem.endTime, 'HH:mm') : 'Sin hora'}">00:00</td>
+                    <td th:text="${scheduleItem.scheduleType}">Tipo</td>
+                    <td>
+                        <span th:class="${scheduleItem.active} ? 'status-active' : 'status-inactive'"
+                              th:text="${scheduleItem.active} ? 'Activo' : 'Inactivo'">Activo</span>
+                    </td>
+                    <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : 'Sin sucursal'}">Sucursal</td>
+                    <td class="actions">
+                        <a th:href="@{/admin/schedules/edit/{id}(id=${scheduleItem.id})}" class="btn-primary">Editar</a>
+                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary">Cambiar estado</a>
+                        <a th:href="@{/admin/schedules/delete/{id}(id=${scheduleItem.id})}"
+                           class="btn-danger"
+                           onclick="return confirm('¿Eliminar este horario?');">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <a class="btn-secondary"
+           th:if="${currentPage > 0}"
+           th:href="@{/admin/schedules(page=${currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
+            Anterior
+        </a>
+        <button type="button" disabled>
+            Pagina <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages > 0 ? totalPages : 1}">1</span>
+        </button>
+        <a class="btn-primary"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/admin/schedules(page=${currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
+            Siguiente
+        </a>
+    </div>
+</main>
+
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+<script th:inline="javascript">
+    const successMessage = [[${successMessage != null ? successMessage : null}]];
+    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+    if (successMessage != null) {
+        Swal.fire({ icon: "success", title: successMessage, confirmButtonText: "OK" });
+    }
+    if (errorMessage != null) {
+        Swal.fire({ icon: "error", title: errorMessage, confirmButtonText: "OK" });
+    }
+</script>
+
+</body>
+</html>

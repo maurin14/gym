@@ -29,21 +29,6 @@ public class HomeController {
         return "admin/index";
     }
 
-    @GetMapping("/admin/schedules")
-    public String adminSchedules(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        if (!"administrator".equals(user.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "redirect:/admin/home";
-    }
-
     @GetMapping("/client/home")
     public String clientHome(HttpSession session) {
 

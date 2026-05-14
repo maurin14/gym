@@ -3,8 +3,8 @@ let pageSize = 10;
 
 function loadPageSchedule(page) {
     currentPage = parseInt(page);
-     window.history.pushState({}, '', `/schedule?page=${currentPage}&size=${pageSize}`);
-    fetch(`/schedule?page=${currentPage}&size=${pageSize}`, {
+     window.history.pushState({}, '', `/admin/schedules?page=${currentPage}&size=${pageSize}`);
+    fetch(`/admin/schedules?page=${currentPage}&size=${pageSize}`, {
         headers: {
             "X-Requested-With": "XMLHttpRequest"
         }
@@ -23,7 +23,7 @@ function changeSizeSchedule(size) {
 }
 
 function loadFormSchedule() {
-    fetch('/schedule/add')
+    fetch('/admin/schedules/new')
         .then(res => res.text())
         .then(html => {
             document.getElementById("formContainer").innerHTML = html;
@@ -73,7 +73,7 @@ function safeFormSchedule(form) {
         return false;
     }
 
-    fetch('/schedule/save', {
+    fetch('/admin/schedules/save', {
         method: 'POST',
         body: formData
     })
@@ -87,7 +87,7 @@ function safeFormSchedule(form) {
 
 function loadEditSchedule(btn) {
     let id = btn.getAttribute("data-id");
-    fetch(`/schedule/edit/${id}`)
+    fetch(`/admin/schedules/edit/${id}`)
         .then(res => res.text())
         .then(html => {
             document.getElementById("formContainer").innerHTML = html;
@@ -105,7 +105,7 @@ function confirmDeleteSchedule(btn) {
         showCancelButton: true 
     }).then(r => {
         if (r.isConfirmed) {
-            fetch(`/schedule/delete/${id}`)
+            fetch(`/admin/schedules/delete/${id}`)
                 .then(() => {
                     Swal.fire('Eliminado', '', 'success');
             
@@ -131,7 +131,7 @@ function changeSearch() {
 function searchForBranch() {
     let id = document.getElementById("branchFilter").value;
 
-    fetch(`/schedule?page=0&size=${pageSize}&branchId=${id}`, {
+    fetch(`/admin/schedules?page=0&size=${pageSize}&branchId=${id}`, {
         headers: { "X-Requested-With": "XMLHttpRequest" }
     })
     .then(res => res.text())
@@ -144,7 +144,7 @@ function searchForHour() {
     let start = document.getElementById("startFilter").value;
     let end = document.getElementById("endFilter").value;
 
-    fetch(`/schedule?page=0&size=${pageSize}&start=${start}&end=${end}`, {
+    fetch(`/admin/schedules?page=0&size=${pageSize}&start=${start}&end=${end}`, {
         headers: { "X-Requested-With": "XMLHttpRequest" }
     })
     .then(res => res.text())
