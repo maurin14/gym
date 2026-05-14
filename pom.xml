@@ -18,9 +18,10 @@
     <name>gym</name>
     <description>Proyecto Progra IV</description>
 
-    <properties>
-        <java.version>25</java.version>
-    </properties>
+        <properties>
+            <java.version>25</java.version>
+            <start-class>com.una.ac.cr.gym.GymApplication</start-class>
+        </properties>
 
     <dependencies>
         
