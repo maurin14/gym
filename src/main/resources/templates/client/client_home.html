@@ -28,6 +28,7 @@
 
     <section class="home-service-section dark-section">
         <div class="home-service-visual training-visual"></div>
+
         <div class="home-service-content">
             <span class="section-kicker">Entrenamiento</span>
             <h2>Entrena con más claridad, orden y seguimiento</h2>
@@ -35,7 +36,9 @@
                 Consulta rutinas por objetivo, revisa clases y horarios, conoce el equipamiento disponible y deja preparada
                 la integración con asistencia para dar seguimiento a tu actividad dentro del gimnasio.
             </p>
+
             <div class="service-list">
+
                 <a th:if="${session.user != null and session.user.role == 'client'}"
                    th:href="@{/client/classes}">
                     Clases
@@ -45,32 +48,28 @@
                    th:href="@{/trainer/classes}">
                     Clases
                 </a>
+
                 <a th:if="${session.user != null and session.user.role == 'client'}"
                    th:href="@{/client/attendances}">
-
                     <span class="module-icon">A</span>
-
                     <div>
                         <h3>Asistencia</h3>
                         <p>Seguimiento de visitas.</p>
                     </div>
-
                 </a>
 
                 <a th:if="${session.user != null and (session.user.role == 'trainer' or session.user.role == 'administrator')}"
                    th:href="@{/trainer/attendances}">
-
                     <span class="module-icon">A</span>
-
                     <div>
                         <h3>Asistencia</h3>
                         <p>Seguimiento de visitas.</p>
                     </div>
-
                 </a>
+
                 <button type="button" data-placeholder-module="Horarios">Horarios</button>
                 <button type="button" data-placeholder-module="Equipamiento">Equipamiento</button>
-                
+
             </div>
         </div>
     </section>
@@ -83,12 +82,14 @@
                 Además de entrenar, el sistema te permite consultar productos disponibles, revisar información de pagos
                 y conocer las sucursales del gimnasio desde una experiencia organizada.
             </p>
+
             <div class="category-actions">
                 <a th:href="@{/client/products}" class="btn-primary">Ver productos</a>
-                <button type="button" class="btn-secondary" data-placeholder-module="Pagos">Consultar pagos</button>
-                <button type="button" class="btn-secondary" data-placeholder-module="Sucursales">Ver sucursales</button>
+                <a th:href="@{/payments(userId=1)}" class="btn-secondary">Consultar pagos</a>
+                <a th:href="@{/branches}" class="btn-secondary">Ver sucursales</a>
             </div>
         </div>
+
         <div class="home-service-visual shop-visual"></div>
     </section>
 
@@ -99,8 +100,10 @@
             Con SAM GYM FITNESS podrás acceder de forma organizada a las principales áreas del gimnasio, consultar
             información importante y prepararte para una experiencia más clara, cómoda y conectada.
         </p>
+
         <div class="home-actions centered-actions">
             <button type="button" class="btn-primary" data-menu-toggle>Explorar sistema</button>
+            <a th:href="@{/logout}" class="btn-secondary">Cerrar sesión</a>
         </div>
     </section>
 </main>

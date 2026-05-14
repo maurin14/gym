@@ -6,13 +6,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Sucursales - SAM GYM FITNESS</title>
-    <link rel="stylesheet" th:href="@{/css/branch.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
 
 <header class="portal-header">
     <div class="portal-brand">
-        <a th:href="@{/user/home}">
+        <a th:href="@{/client/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="portal-logo">
         </a>
         <div>
@@ -22,7 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </div>
 
     <nav class="portal-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments(userId=1)}">Mis pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
@@ -63,12 +63,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="branch-card-body">
                     <h3 th:text="${b.name}"></h3>
 
-
                     <p>
                         <strong>Dirección:</strong>
                         <span th:text="${b.address}"></span>
                     </p>
-
 
                     <p>
                         <strong>Estado:</strong>
@@ -84,28 +82,29 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </div>
 
         <div th:if="${branches.content.size() == 0}">
-            <p>No hay sucursales disponibles.</p>
+            <p class="empty-message">No hay sucursales disponibles.</p>
         </div>
 
         <div class="pagination" th:if="${branches.totalPages > 1}">
+
             <a class="btn-secondary"
                th:if="${branches.hasPrevious()}"
                th:href="@{/branches(page=${branches.number - 1}, name=${name})}">
                 Anterior
             </a>
 
-            <span th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}">
-                <a th:text="${i + 1}"
-                   th:href="@{/branches(page=${i}, name=${name})}"
-                   th:class="${i == branches.number ? 'btn-primary' : 'btn-secondary'}">
-                </a>
-            </span>
+            <a th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}"
+               th:text="${i + 1}"
+               th:href="@{/branches(page=${i}, name=${name})}"
+               th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}">
+            </a>
 
             <a class="btn-secondary"
                th:if="${branches.hasNext()}"
                th:href="@{/branches(page=${branches.number + 1}, name=${name})}">
                 Siguiente
             </a>
+
         </div>
 
     </section>
