@@ -1,13 +1,9 @@
 package com.una.ac.cr.gym.service;
 
-/**
- *
- * @author Amanda
- */
-
-
 import com.una.ac.cr.gym.domain.Attendance;
+import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.repository.AttendanceRepository;
+import com.una.ac.cr.gym.repository.GymClassRepository;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -18,9 +14,13 @@ import org.springframework.stereotype.Service;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
+    private final GymClassRepository gymClassRepository;
 
-    public AttendanceService(AttendanceRepository attendanceRepository) {
+    public AttendanceService(AttendanceRepository attendanceRepository,
+            GymClassRepository gymClassRepository) {
+
         this.attendanceRepository = attendanceRepository;
+        this.gymClassRepository = gymClassRepository;
     }
 
     public List<Attendance> getAllAttendances() {
@@ -36,8 +36,28 @@ public class AttendanceService {
     }
 
     public Attendance saveAttendance(Attendance attendance) {
+
         attendance.setRegisterDate(LocalDate.now());
         attendance.setStatus(true);
+
+        if (attendance.getGymClass() != null) {
+
+            GymClass gymClass = gymClassRepository
+                    .findById(attendance.getGymClass().getIdClass())
+                    .orElse(null);
+
+            if (gymClass != null) {
+
+                gymClass.setEnrolledCount(
+                        gymClass.getEnrolledCount() + 1
+                );
+
+                gymClassRepository.save(gymClass);
+
+                attendance.setGymClass(gymClass);
+            }
+        }
+
         return attendanceRepository.save(attendance);
     }
 
