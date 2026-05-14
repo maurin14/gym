@@ -42,7 +42,7 @@ public class HomeController {
             return "redirect:/admin/home";
         }
 
-        return "client/cliente_home";
+        return "cliente/cliente_home";
     }
 
     @GetMapping("/user/home")
