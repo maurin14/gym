@@ -2,13 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
     <title>Listado de Asistencias</title>
 
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
-<body>
+<body class="dashboard-page">
 
 <header class="main-header">
 
@@ -46,13 +45,13 @@
 
 </header>
 
-<div class="container">
+<section class="hero-branches">
 
-    <h1 class="page-title">
+    <h1>
         Listado de Asistencias
     </h1>
 
-    <p class="admin-description">
+    <p>
         Administración de asistencias registradas por los clientes.
     </p>
 
@@ -67,6 +66,10 @@
 
     </div>
 
+</section>
+
+<div class="public-container">
+
     <table>
 
         <thead>
@@ -74,17 +77,11 @@
             <tr>
 
                 <th>Cliente</th>
-
                 <th>Clase</th>
-
                 <th>Fecha</th>
-
                 <th>Estado</th>
-
                 <th>Observación</th>
-
                 <th>Registro</th>
-
                 <th>Acciones</th>
 
             </tr>
@@ -94,6 +91,28 @@
         <tbody id="attendancesTableBody"></tbody>
 
     </table>
+
+    <div class="pagination">
+
+        <button id="pageInfo" disabled>
+            Página 1 de 1
+        </button>
+
+        <button id="prevBtn"
+                onclick="previousPage()">
+
+            Anterior
+
+        </button>
+
+        <button id="nextBtn"
+                onclick="nextPage()">
+
+            Siguiente
+
+        </button>
+
+    </div>
 
 </div>
 
