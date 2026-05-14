@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Mis Pagos - SAM GYM FITNESS</title>
@@ -24,10 +20,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <nav class="portal-nav">
         <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
-        <a th:href="@{/payments(userId=1)}">Mis pagos</a>
-        <a th:href="@{/routines}">Rutinas</a>
-        <a th:href="@{/classes}">Clases</a>
-        <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/payments}">Mis pagos</a>
+        <a th:href="@{/client/routines}">Rutinas</a>
+        <a th:href="@{/client/classes}">Clases</a>
+        <a th:href="@{/client/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
@@ -61,11 +57,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <button type="button"
                     class="btn-primary"
-                    th:onclick="'window.location.href=\'/payments?userId=' + ${userId} + '&status=\' + encodeURIComponent(document.getElementById(\'filterStatus\').value) + \'&paymentMethod=\' + encodeURIComponent(document.getElementById(\'filterPaymentMethod\').value)'">
+                    th:onclick="'window.location.href=\'/payments?status=\' + encodeURIComponent(document.getElementById(\'filterStatus\').value) + \'&paymentMethod=\' + encodeURIComponent(document.getElementById(\'filterPaymentMethod\').value)'">
                 Buscar
             </button>
 
-            <a th:href="@{/payments(userId=${userId})}" class="btn-secondary">Limpiar filtros</a>
+            <a th:href="@{/payments}" class="btn-secondary">Limpiar filtros</a>
         </div>
 
         <table class="portal-table">
@@ -78,12 +74,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <th>Método</th>
                 <th>Estado</th>
                 <th>Descripción</th>
+                <th>Detalle</th>
             </tr>
             </thead>
 
             <tbody>
             <tr th:if="${payments.content.size() == 0}">
-                <td colspan="7">No se encontraron pagos.</td>
+                <td colspan="8" class="empty-message">No se encontraron pagos.</td>
             </tr>
 
             <tr th:each="p : ${payments.content}">
@@ -101,6 +98,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </td>
 
                 <td th:text="${p.description}"></td>
+
+                <td>
+                    <a th:href="@{/payments/{id}(id=${p.id})}" class="btn-primary">Ver detalle</a>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -108,20 +109,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="pagination" th:if="${payments.totalPages > 1}">
             <a class="btn-secondary"
                th:if="${payments.hasPrevious()}"
-               th:href="@{/payments(userId=${userId}, page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}">
+               th:href="@{/payments(page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}">
                 Anterior
             </a>
 
             <span th:each="i : ${#numbers.sequence(0, payments.totalPages - 1)}">
                 <a th:text="${i + 1}"
-                   th:href="@{/payments(userId=${userId}, page=${i}, status=${status}, paymentMethod=${paymentMethod})}"
+                   th:href="@{/payments(page=${i}, status=${status}, paymentMethod=${paymentMethod})}"
                    th:class="${i == payments.number ? 'btn-primary' : 'btn-secondary'}">
                 </a>
             </span>
 
             <a class="btn-secondary"
                th:if="${payments.hasNext()}"
-               th:href="@{/payments(userId=${userId}, page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}">
+               th:href="@{/payments(page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}">
                 Siguiente
             </a>
         </div>

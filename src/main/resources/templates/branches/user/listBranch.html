@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Sucursales - SAM GYM FITNESS</title>
@@ -24,10 +20,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <nav class="portal-nav">
         <a th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
-        <a th:href="@{/payments(userId=1)}">Mis pagos</a>
-        <a th:href="@{/routines}">Rutinas</a>
-        <a th:href="@{/classes}">Clases</a>
-        <a th:href="@{/products}">Productos</a>
+        <a th:href="@{/payments}">Mis pagos</a>
+        <a th:href="@{/client/routines}">Rutinas</a>
+        <a th:href="@{/client/classes}">Clases</a>
+        <a th:href="@{/client/products}">Productos</a>
         <a th:href="@{/schedules}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>

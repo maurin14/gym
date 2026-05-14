@@ -1,10 +1,7 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
+
 <div th:fragment="tableBranch">
 
     <table class="portal-table">
@@ -23,14 +20,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <tbody>
         <tr th:if="${branches.content.size() == 0}">
-            <td colspan="8">No se encontraron sucursales registradas.</td>
+            <td colspan="8" class="empty-message">No se encontraron sucursales registradas.</td>
         </tr>
 
         <tr th:each="b : ${branches.content}">
             <td>
                 <img th:src="@{'/images/branches/' + ${b.imageUrl}}"
                      alt="Sucursal"
-                     style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
+                     class="branch-image-preview">
             </td>
 
             <td th:text="${#temporals.format(b.openingDate, 'dd/MM/yyyy')}"></td>
@@ -45,7 +42,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </td>
 
             <td class="actions">
-                <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">Editar</a>
+                <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">
+                    Editar
+                </a>
 
                 <a href="#"
                    th:data-id="${b.id}"
@@ -66,6 +65,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </table>
 
     <div class="pagination" th:if="${branches.totalPages > 1}">
+
         <button type="button"
                 class="btn-secondary"
                 th:if="${branches.hasPrevious()}"
@@ -74,14 +74,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             Anterior
         </button>
 
-        <span th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}">
-            <button type="button"
-                    th:text="${i + 1}"
-                    th:data-page="${i}"
-                    th:class="${i == branches.number ? 'btn-primary' : 'btn-secondary'}"
-                    onclick="changeBranchPage(this)">
-            </button>
-        </span>
+        <button type="button"
+                th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}"
+                th:text="${i + 1}"
+                th:data-page="${i}"
+                th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}"
+                onclick="changeBranchPage(this)">
+        </button>
 
         <button type="button"
                 class="btn-secondary"
@@ -90,8 +89,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 onclick="changeBranchPage(this)">
             Siguiente
         </button>
+
     </div>
 
 </div>
+
 </body>
 </html>

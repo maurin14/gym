@@ -6,8 +6,10 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Payment;
+import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -139,35 +141,52 @@ public class PaymentController {
     }
 
     @GetMapping("/payments")
-    public String userPayments(@RequestParam(defaultValue = "1") Integer userId,
-                               @RequestParam(defaultValue = "0") int page,
+    public String userPayments(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(required = false) String status,
                                @RequestParam(required = false) String paymentMethod,
+                               HttpSession session,
                                Model model) {
 
-        Page<Payment> payments = paymentService.getUserPayments(userId, status, paymentMethod, PageRequest.of(page, 5));
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Page<Payment> payments = paymentService.getUserPayments(
+                user.getUserId(),
+                status,
+                paymentMethod,
+                PageRequest.of(page, 5)
+        );
 
         model.addAttribute("payments", payments);
         model.addAttribute("status", status);
         model.addAttribute("paymentMethod", paymentMethod);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", user.getUserId());
 
         return "payments/user/listPayment";
     }
 
     @GetMapping("/payments/{id}")
     public String userPaymentDetail(@PathVariable int id,
-                                    @RequestParam(defaultValue = "1") Integer userId,
+                                    HttpSession session,
                                     Model model) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         Payment payment = paymentService.getById(id);
 
-        if (payment == null || !payment.getIdUser().equals(userId)) {
-            return "redirect:/payments?userId=" + userId;
+        if (payment == null || !payment.getIdUser().equals(user.getUserId())) {
+            return "redirect:/payments";
         }
 
         model.addAttribute("payment", payment);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", user.getUserId());
 
         return "payments/user/detailPayment";
     }

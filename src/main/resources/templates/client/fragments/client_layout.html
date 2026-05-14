@@ -96,13 +96,15 @@
             <div class="drawer-section">
                 <span class="drawer-section-title">Mi cuenta</span>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Pagos">
+                <a th:href="@{/payments}"
+                   class="drawer-link"
+                   th:classappend="${active == 'payments'} ? ' active'">
                     <span class="drawer-icon">P</span>
                     <span>
                         <strong>Pagos</strong>
                         <small>Historial y control de pagos.</small>
                     </span>
-                </button>
+                </a>
 
                 <a th:href="@{/client/attendances}"
                    class="drawer-link"
@@ -114,20 +116,34 @@
                         <strong>Asistencia</strong>
                         <small>Seguimiento de visitas.</small>
                     </span>
-
                 </a>
+                
+                <a th:href="@{/profile/password}"
+                   class="drawer-link"
+                   th:classappend="${active == 'password'} ? ' active'">
+
+                    <span class="drawer-icon">C</span>
+
+                    <span>
+                        <strong>Cambiar contraseña</strong>
+                        <small>Actualiza la contraseña de tu cuenta.</small>
+                    </span>
+                </a>
+                
             </div>
 
             <div class="drawer-section">
                 <span class="drawer-section-title">Sedes</span>
 
-                <button type="button" class="drawer-link" data-placeholder-module="Sucursales">
+                <a th:href="@{/branches}"
+                   class="drawer-link"
+                   th:classappend="${active == 'branches'} ? ' active'">
                     <span class="drawer-icon">S</span>
                     <span>
                         <strong>Sucursales</strong>
                         <small>Ubicación y datos generales.</small>
                     </span>
-                </button>
+                </a>
             </div>
         </nav>
     </aside>
