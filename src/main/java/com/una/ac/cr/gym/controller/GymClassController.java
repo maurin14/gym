@@ -131,16 +131,30 @@ public class GymClassController {
 
     @ResponseBody
     @PostMapping("/classes")
-    public GymClass saveClass(@RequestBody GymClass gymClass) {
-        return gymClassService.saveClass(gymClass);
+    public Map<String, Object> saveClass(@RequestBody GymClass gymClass) {
+        Map<String, String> errors = gymClassService.validateFields(gymClass);
+
+        if (!errors.isEmpty()) {
+            return Map.of("success", false, "errors", errors);
+        }
+
+        GymClass savedClass = gymClassService.saveClass(gymClass);
+        return Map.of("success", true, "classId", savedClass.getIdClass());
     }
 
     @ResponseBody
     @PutMapping("/classes/{idClass}")
-    public GymClass updateClass(@PathVariable int idClass,
+    public Map<String, Object> updateClass(@PathVariable int idClass,
             @RequestBody GymClass gymClass) {
 
-        return gymClassService.updateClass(idClass, gymClass);
+        Map<String, String> errors = gymClassService.validateFields(gymClass);
+
+        if (!errors.isEmpty()) {
+            return Map.of("success", false, "errors", errors);
+        }
+
+        GymClass savedClass = gymClassService.updateClass(idClass, gymClass);
+        return Map.of("success", true, "classId", savedClass.getIdClass());
     }
 
     @ResponseBody

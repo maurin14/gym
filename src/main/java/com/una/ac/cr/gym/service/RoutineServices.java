@@ -3,7 +3,9 @@ package com.una.ac.cr.gym.service;
 import com.una.ac.cr.gym.domain.Routine;
 import com.una.ac.cr.gym.repository.RoutineRepository;
 import com.una.ac.cr.gym.repository.RoutineUserRepository;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -35,10 +37,10 @@ public class RoutineServices {
     }
 
     public String saveRoutine(Routine routine) {
-        String validation = validateRoutine(routine);
+        Map<String, String> errors = validateFields(routine);
 
-        if (!validation.isEmpty()) {
-            return validation;
+        if (!errors.isEmpty()) {
+            return firstError(errors);
         }
 
         routineRepository.save(routine);
@@ -67,36 +69,59 @@ public class RoutineServices {
         return "";
     }
 
-    private String validateRoutine(Routine routine) {
+    public Map<String, String> validateFields(Routine routine) {
+        Map<String, String> errors = new LinkedHashMap<>();
+
         if (routine == null) {
-            return "La rutina es nula";
+            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            return errors;
         }
 
-        if (routine.getNameRoutine() == null || routine.getNameRoutine().isEmpty()) {
-            return "El nombre de la rutina es obligatorio";
+        if (isBlank(routine.getNameRoutine())) {
+            errors.put("nameRoutine", "Este campo es obligatorio.");
         }
 
-        if (routine.getDifficultyLevel() == null || routine.getDifficultyLevel().isEmpty()) {
-            return "Debe seleccionar un nivel de dificultad";
+        if (isBlank(routine.getDifficultyLevel())) {
+            errors.put("difficultyLevel", "Seleccione una opcion.");
         }
 
-        if (routine.getRoutineType() == null || routine.getRoutineType().isEmpty()) {
-            return "Debe seleccionar un tipo de rutina";
+        if (isBlank(routine.getRoutineType())) {
+            errors.put("routineType", "Seleccione una opcion.");
         }
 
-        if (routine.getEstimatedDuration() <= 0) {
-            return "La duracion estimada debe ser mayor a 0";
+        if (routine.getEstimatedDuration() == null) {
+            errors.put("estimatedDuration", "Este campo es obligatorio.");
+        } else if (routine.getEstimatedDuration() <= 0) {
+            errors.put("estimatedDuration", "Ingrese un valor valido.");
         }
 
-        if (routine.getQuantityExercises() <= 0) {
-            return "La cantidad de ejercicios debe ser mayor a 0";
+        if (routine.getQuantityExercises() == null) {
+            errors.put("quantityExercises", "Este campo es obligatorio.");
+        } else if (routine.getQuantityExercises() <= 0) {
+            errors.put("quantityExercises", "Ingrese un valor valido.");
         }
 
-        if (routine.getExercises() == null || routine.getExercises().isEmpty()) {
-            return "Debe ingresar la descripcion de los ejercicios";
+        if (isBlank(routine.getTrainingObjective())) {
+            errors.put("trainingObjective", "Seleccione una opcion.");
         }
 
-        return "";
+        if (isBlank(routine.getDescription())) {
+            errors.put("description", "Este campo es obligatorio.");
+        }
+
+        if (isBlank(routine.getExercises())) {
+            errors.put("exercises", "Este campo es obligatorio.");
+        }
+
+        return errors;
+    }
+
+    private String firstError(Map<String, String> errors) {
+        return errors.values().iterator().next();
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     public Page<Routine> getFilteredRoutines(String difficultyLevel, String routineType, int page) {

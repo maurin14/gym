@@ -27,6 +27,7 @@
 
         <label>Nombre</label>
         <input type="text" th:field="*{nameRoutine}" required />
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['nameRoutine'] != null}" th:text="${fieldErrors['nameRoutine']}"></small>
 
         <label>Dificultad</label>
         <select th:field="*{difficultyLevel}" required>
@@ -35,12 +36,15 @@
             <option value="Intermedio">Intermedio</option>
             <option value="Avanzado">Avanzado</option>
         </select>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['difficultyLevel'] != null}" th:text="${fieldErrors['difficultyLevel']}"></small>
 
         <label>Duraci&oacute;n (minutos)</label>
         <input type="number" th:field="*{estimatedDuration}" min="1" required />
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['estimatedDuration'] != null}" th:text="${fieldErrors['estimatedDuration']}"></small>
 
         <label>Cantidad de ejercicios</label>
         <input type="number" th:field="*{quantityExercises}" min="1" required />
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['quantityExercises'] != null}" th:text="${fieldErrors['quantityExercises']}"></small>
 
         <label>Objetivo</label>
         <select th:field="*{trainingObjective}" required>
@@ -50,6 +54,7 @@
             <option value="Pérdida de peso">Pérdida de peso</option>
             <option value="Hipertrofia">Hipertrofia</option>
         </select>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['trainingObjective'] != null}" th:text="${fieldErrors['trainingObjective']}"></small>
 
         <label>Tipo de rutina</label>
         <select th:field="*{routineType}" required>
@@ -58,12 +63,15 @@
             <option value="Fuerza">Fuerza</option>
             <option value="Funcional">Funcional</option>
         </select>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['routineType'] != null}" th:text="${fieldErrors['routineType']}"></small>
 
         <label>Descripci&oacute;n</label>
         <textarea th:field="*{description}" required></textarea>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
 
         <label>Ejercicios</label>
         <textarea rows="6" th:field="*{exercises}" required></textarea>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['exercises'] != null}" th:text="${fieldErrors['exercises']}"></small>
 
         <label>Estado</label>
         <select th:field="*{state}">

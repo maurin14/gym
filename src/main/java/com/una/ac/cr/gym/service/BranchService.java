@@ -6,7 +6,10 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.repository.BranchRepository;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,5 +69,60 @@ public class BranchService implements CRUD<Branch> {
         }
 
         return branchRepository.findAll(pageable);
+    }
+
+    public Map<String, String> validateFields(Branch branch) {
+        Map<String, String> errors = new LinkedHashMap<>();
+
+        if (branch == null) {
+            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            return errors;
+        }
+
+        if (isBlank(branch.getImageUrl())) {
+            errors.put("imageUrl", "Este campo es obligatorio.");
+        } else if (branch.getImageUrl().trim().length() > 255) {
+            errors.put("imageUrl", "Ingrese 255 caracteres o menos.");
+        }
+
+        if (branch.getOpeningDate() == null) {
+            errors.put("openingDate", "La fecha es obligatoria.");
+        } else if (branch.getOpeningDate().isAfter(LocalDate.now())) {
+            errors.put("openingDate", "Ingrese una fecha valida.");
+        }
+
+        if (isBlank(branch.getName())) {
+            errors.put("name", "Este campo es obligatorio.");
+        } else if (branch.getName().trim().length() > 100) {
+            errors.put("name", "Ingrese 100 caracteres o menos.");
+        }
+
+        if (isBlank(branch.getAddress())) {
+            errors.put("address", "Este campo es obligatorio.");
+        } else if (branch.getAddress().trim().length() > 150) {
+            errors.put("address", "Ingrese 150 caracteres o menos.");
+        }
+
+        if (isBlank(branch.getPhone())) {
+            errors.put("phone", "Este campo es obligatorio.");
+        } else if (!branch.getPhone().matches("^[0-9]{8}$")) {
+            errors.put("phone", "Ingrese un valor valido.");
+        }
+
+        if (branch.getCapacity() == null) {
+            errors.put("capacity", "Este campo es obligatorio.");
+        } else if (branch.getCapacity() < 1) {
+            errors.put("capacity", "Ingrese un valor valido.");
+        }
+
+        if (branch.getActive() == null) {
+            errors.put("active", "Seleccione una opcion.");
+        }
+
+        return errors;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }

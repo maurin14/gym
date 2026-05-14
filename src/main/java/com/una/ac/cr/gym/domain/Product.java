@@ -27,10 +27,10 @@ public class Product {
     private String category;
 
     @Column(name = "price")
-    private double price;
+    private Double price;
 
     @Column(name = "quantity_stock")
-    private int quantityStock;
+    private Integer quantityStock;
 
     @Column(name = "register_date")
     private LocalDate registerDate;
@@ -45,7 +45,7 @@ public class Product {
     }
 
     public Product(int idProduct, String nameProduct, String description, String category,
-                   double price, int quantityStock, LocalDate registerDate,
+                   Double price, Integer quantityStock, LocalDate registerDate,
                    boolean state, String imagePath) {
         this.idProduct = idProduct;
         this.nameProduct = nameProduct;
@@ -90,19 +90,19 @@ public class Product {
         this.category = category;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public int getQuantityStock() {
+    public Integer getQuantityStock() {
         return quantityStock;
     }
 
-    public void setQuantityStock(int quantityStock) {
+    public void setQuantityStock(Integer quantityStock) {
         this.quantityStock = quantityStock;
     }
 

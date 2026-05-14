@@ -41,17 +41,19 @@ function showClasses(classes) {
                 <td>${gymClass.difficultyLevel}</td>
                 <td>${gymClass.description}</td>
 
-                <td class="actions">
-                    <a class="btn-primary"
-                       href="/trainer/classes/form/${gymClass.idClass}">
-                        Editar
-                    </a>
+                <td>
+                    <div class="actions">
+                        <a class="btn-primary"
+                           href="/trainer/classes/form/${gymClass.idClass}">
+                            Editar
+                        </a>
 
-                    <button type="button"
-                            class="btn-danger"
-                            onclick="deleteClass(${gymClass.idClass})">
-                        Eliminar
-                    </button>
+                        <button type="button"
+                                class="btn-danger"
+                                onclick="deleteClass(${gymClass.idClass})">
+                            Eliminar
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;

@@ -32,6 +32,7 @@
         <input type="text" th:field="*{fullName}" required
                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+"
                title="El nombre solo debe contener letras">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['fullName'] != null}" th:text="${fieldErrors['fullName']}"></small>
 
         <label>Cédula</label>
         <input type="text" th:field="*{idCard}" required
@@ -40,11 +41,13 @@
                title="Solo se permiten números"
                maxlength="9"
                onblur="checkField('idCard', this.value, 'idCardMessage')">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['idCard'] != null}" th:text="${fieldErrors['idCard']}"></small>
         <span id="idCardMessage" class="error-message"></span>
 
         <label>Correo electrónico</label>
         <input type="email" th:field="*{email}" required
                onblur="checkField('email', this.value, 'emailMessage')">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['email'] != null}" th:text="${fieldErrors['email']}"></small>
         <span id="emailMessage" class="error-message"></span>
 
         <label>Teléfono</label>
@@ -52,15 +55,18 @@
                pattern="[0-9]{4}-[0-9]{4}"
                title="Debe tener el formato 8888-8888"
                maxlength="9">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['phone'] != null}" th:text="${fieldErrors['phone']}"></small>
 
         <label>Nombre de usuario</label>
         <input type="text" th:field="*{username}" required
                autocomplete="new-username"
                onblur="checkField('username', this.value, 'usernameMessage')">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['username'] != null}" th:text="${fieldErrors['username']}"></small>
         <span id="usernameMessage" class="error-message"></span>
 
         <label>Contraseña</label>
         <input type="password" th:field="*{password}" required autocomplete="new-password">
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['password'] != null}" th:text="${fieldErrors['password']}"></small>
 
         <label>Rol</label>
         <select th:field="*{role}" required>
@@ -69,6 +75,7 @@
             <option value="trainer">Entrenador</option>
             <option value="administrator">Administrador</option>
         </select>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['role'] != null}" th:text="${fieldErrors['role']}"></small>
 
         <label>Estado</label>
         <select th:field="*{status}" required>
@@ -76,9 +83,11 @@
             <option value="active">Activo</option>
             <option value="inactive">Inactivo</option>
         </select>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="${fieldErrors['status']}"></small>
 
         <label>Fecha de registro</label>
         <input type="date" th:field="*{recordDate}" required>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['recordDate'] != null}" th:text="${fieldErrors['recordDate']}"></small>
 
         <div class="buttons">
             <button type="submit" class="btn-primary">Guardar usuario</button>

@@ -6,13 +6,12 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.service.BranchService;
-import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,10 +64,13 @@ public class BranchController {
     }
 
     @PostMapping("/admin/branches/save")
-    public String saveBranch(@Valid @ModelAttribute("branch") Branch branch,
-                             BindingResult result) {
+    public String saveBranch(@ModelAttribute("branch") Branch branch,
+                             Model model) {
 
-        if (result.hasErrors()) {
+        Map<String, String> fieldErrors = branchService.validateFields(branch);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "branches/admin/formBranch";
         }
 

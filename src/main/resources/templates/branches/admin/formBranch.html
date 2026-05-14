@@ -20,6 +20,8 @@
 </section>
 
 <main class="container form-container portal-card admin-page-card">
+    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+
     <form id="branchForm"
           class="portal-form"
           th:action="@{/admin/branches/save}"
@@ -35,11 +37,11 @@
                required
                maxlength="255"
                placeholder="Ejemplo: central.jpg">
-        <small class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['imageUrl'] != null}" th:text="${fieldErrors['imageUrl']}"></small>
 
         <label>Fecha de apertura</label>
         <input type="date" th:field="*{openingDate}" required>
-        <small class="error-message" th:if="${#fields.hasErrors('openingDate')}" th:errors="*{openingDate}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['openingDate'] != null}" th:text="${fieldErrors['openingDate']}"></small>
 
         <label>Nombre de la sucursal</label>
         <input type="text"
@@ -47,7 +49,7 @@
                required
                maxlength="100"
                placeholder="Ejemplo: SAM Gym Central">
-        <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['name'] != null}" th:text="${fieldErrors['name']}"></small>
 
         <label>Direccion</label>
         <input type="text"
@@ -55,7 +57,7 @@
                required
                maxlength="150"
                placeholder="Ejemplo: San Jose centro">
-        <small class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['address'] != null}" th:text="${fieldErrors['address']}"></small>
 
         <label>Telefono</label>
         <input type="text"
@@ -65,7 +67,7 @@
                pattern="[0-9]{8}"
                placeholder="Ejemplo: 88887777"
                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-        <small class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['phone'] != null}" th:text="${fieldErrors['phone']}"></small>
 
         <label>Capacidad maxima</label>
         <input type="number"
@@ -73,7 +75,7 @@
                required
                min="1"
                placeholder="Ejemplo: 150">
-        <small class="error-message" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['capacity'] != null}" th:text="${fieldErrors['capacity']}"></small>
 
         <label>Estado</label>
         <select th:field="*{active}" required>
@@ -81,7 +83,7 @@
             <option th:value="true">Activa</option>
             <option th:value="false">Inactiva</option>
         </select>
-        <small class="error-message" th:if="${#fields.hasErrors('active')}" th:errors="*{active}"></small>
+        <small class="error-message" th:if="${fieldErrors != null and fieldErrors['active'] != null}" th:text="${fieldErrors['active']}"></small>
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="confirmSaveBranch()">Guardar</button>
