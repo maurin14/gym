@@ -38,15 +38,7 @@ public class LoginController {
             return "redirect:/admin/home";
         }
 
-        if ("client".equals(user.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        if ("trainer".equals(user.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "redirect:/login";
+        return "redirect:/client/home";
     }
 
     @GetMapping("/logout")

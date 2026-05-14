@@ -38,6 +38,10 @@ public class HomeController {
             return "redirect:/login";
         }
 
+        if ("administrator".equals(user.getRole())) {
+            return "redirect:/admin/home";
+        }
+
         return "client/cliente_home";
     }
 
