@@ -3,7 +3,12 @@ const attendanceBasePath = window.location.pathname.startsWith("/admin/attendanc
         : "/trainer/attendances";
 
 document.addEventListener("DOMContentLoaded", function () {
-    Promise.all([loadClients(), loadClasses()]).then(loadAttendanceForEdit);
+    Promise.all([
+        loadClients(),
+        loadClasses()
+    ]).then(() => {
+        loadAttendanceForEdit();
+    });
 });
 
 function loadClients() {
@@ -16,7 +21,10 @@ function loadClients() {
                     '<option value="">Seleccione un cliente</option>';
 
             data
-                .filter(client => client.status === "active")
+                .filter(client =>
+                    client.status &&
+                    client.status.toLowerCase() === "active"
+                )
                 .forEach(client => {
                     clientSelect.innerHTML += `
                         <option value="${client.userId}">
@@ -38,7 +46,8 @@ function loadClasses() {
 
             data.forEach(gymClass => {
                 classSelect.innerHTML += `
-                    <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
+                    <option value="${gymClass.idClass}"
+                            data-date="${gymClass.classDate}">
                         ${gymClass.classType} - ${gymClass.classDate}
                     </option>
                 `;
@@ -49,31 +58,33 @@ function loadClasses() {
 function loadAttendanceForEdit() {
     const idAttendance = getAttendanceIdFromPath();
 
-    if (!idAttendance) {
+    if (idAttendance === "") {
         return;
     }
 
-    fetch("/attendances/" + idAttendance)
+    fetch("/attendances/edit/" + idAttendance)
         .then(response => response.json())
         .then(attendance => {
-            document.getElementById("idAttendance").value = attendance.idAttendance || "";
+            document.getElementById("idAttendance").value =
+                    attendance.idAttendance;
 
-            const title = document.getElementById("formTitle");
-            if (title) {
-                title.textContent = "Editar asistencia";
-            }
+            document.getElementById("formTitle").textContent =
+                    "Editar Asistencia";
 
-            if (attendance.client) {
-                document.getElementById("clientId").value = attendance.client.userId;
-            }
+            document.getElementById("clientId").value =
+                    attendance.clientId;
 
-            if (attendance.gymClass) {
-                document.getElementById("classId").value = attendance.gymClass.idClass;
-            }
+            document.getElementById("classId").value =
+                    attendance.classId;
 
-            document.getElementById("attendanceDate").value = attendance.attendanceDate || "";
-            document.getElementById("attendanceStatus").value = attendance.attendanceStatus || "Presente";
-            document.getElementById("observation").value = attendance.observation || "";
+            document.getElementById("attendanceDate").value =
+                    attendance.attendanceDate || "";
+
+            document.getElementById("attendanceStatus").value =
+                    attendance.attendanceStatus || "Presente";
+
+            document.getElementById("observation").value =
+                    attendance.observation || "";
         });
 }
 
@@ -87,8 +98,11 @@ function setAttendanceDate() {
     const selectedOption = classSelect.options[classSelect.selectedIndex];
 
     if (selectedOption) {
-        document.getElementById("attendanceDate").value =
-                selectedOption.getAttribute("data-date");
+        const date = selectedOption.getAttribute("data-date");
+
+        if (date) {
+            document.getElementById("attendanceDate").value = date;
+        }
     }
 }
 
@@ -100,7 +114,8 @@ function saveAttendance() {
     const attendanceStatus = document.getElementById("attendanceStatus").value;
     const observation = document.getElementById("observation").value.trim();
 
-    if (clientId === "" || classId === "" || attendanceDate === "" || attendanceStatus === "") {
+    if (clientId === "" || classId === "" ||
+            attendanceDate === "" || attendanceStatus === "") {
         alert("Debe completar todos los campos obligatorios.");
         return;
     }
@@ -117,8 +132,13 @@ function saveAttendance() {
         observation: observation
     };
 
-    const url = idAttendance ? "/attendances/" + idAttendance : "/attendances";
-    const method = idAttendance ? "PUT" : "POST";
+    let url = "/attendances";
+    let method = "POST";
+
+    if (idAttendance !== "") {
+        url = "/attendances/" + idAttendance;
+        method = "PUT";
+    }
 
     fetch(url, {
         method: method,

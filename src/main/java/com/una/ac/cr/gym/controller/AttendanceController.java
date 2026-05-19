@@ -19,7 +19,6 @@ public class AttendanceController {
 
     public AttendanceController(AttendanceService attendanceService,
             UserService userService) {
-
         this.attendanceService = attendanceService;
         this.userService = userService;
     }
@@ -96,80 +95,24 @@ public class AttendanceController {
     }
 
     @ResponseBody
-    @GetMapping("/attendances")
-    public List<Map<String, Object>> getAllAttendances() {
-
-        return attendanceService.getAllAttendances()
-                .stream()
-                .map(attendance -> {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idAttendance", attendance.getIdAttendance());
-                    map.put("attendanceDate", attendance.getAttendanceDate());
-                    map.put("attendanceStatus", attendance.getAttendanceStatus());
-                    map.put("observation", attendance.getObservation());
-                    map.put("registerDate", attendance.getRegisterDate());
-
-                    map.put("clientName",
-                            attendance.getClient() != null
-                            ? attendance.getClient().getFullName()
-                            : "Sin cliente");
-
-                    map.put("classType",
-                            attendance.getGymClass() != null
-                            ? attendance.getGymClass().getClassType()
-                            : "Sin clase");
-
-                    return map;
-                })
-                .toList();
-    }
-
-    @ResponseBody
     @GetMapping("/attendances/page")
     public Map<String, Object> getAttendancesPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        List<Map<String, Object>> attendances =
-                attendanceService.getAllAttendances()
-                        .stream()
-                        .map(attendance -> {
-
-                            Map<String, Object> map = new HashMap<>();
-
-                            map.put("idAttendance", attendance.getIdAttendance());
-                            map.put("attendanceDate", attendance.getAttendanceDate());
-                            map.put("attendanceStatus", attendance.getAttendanceStatus());
-                            map.put("observation", attendance.getObservation());
-                            map.put("registerDate", attendance.getRegisterDate());
-
-                            map.put("clientName",
-                                    attendance.getClient() != null
-                                    ? attendance.getClient().getFullName()
-                                    : "Sin cliente");
-
-                            map.put("classType",
-                                    attendance.getGymClass() != null
-                                    ? attendance.getGymClass().getClassType()
-                                    : "Sin clase");
-
-                            return map;
-                        })
-                        .toList();
+        List<Map<String, Object>> attendances = attendanceService.getAllAttendances()
+                .stream()
+                .map(this::convertAttendanceToMap)
+                .toList();
 
         int start = page * size;
         int end = Math.min(start + size, attendances.size());
 
-        List<Map<String, Object>> pageContent =
-                attendances.subList(start, end);
+        List<Map<String, Object>> pageContent = attendances.subList(start, end);
 
-        int totalPages =
-                (int) Math.ceil((double) attendances.size() / size);
+        int totalPages = (int) Math.ceil((double) attendances.size() / size);
 
         Map<String, Object> response = new HashMap<>();
-
         response.put("currentPage", page + 1);
         response.put("totalPages", totalPages);
         response.put("attendances", pageContent);
@@ -178,12 +121,18 @@ public class AttendanceController {
     }
 
     @ResponseBody
-    @GetMapping("/client/attendances/data")
-    public List<Map<String, Object>> getClientAttendances(
-            HttpSession session) {
+    @GetMapping("/attendances")
+    public List<Map<String, Object>> getAllAttendances() {
+        return attendanceService.getAllAttendances()
+                .stream()
+                .map(this::convertAttendanceToMap)
+                .toList();
+    }
 
-        User userSession =
-                (User) session.getAttribute("user");
+    @ResponseBody
+    @GetMapping("/client/attendances/data")
+    public List<Map<String, Object>> getClientAttendances(HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
 
         if (userSession == null) {
             return List.of();
@@ -193,49 +142,50 @@ public class AttendanceController {
                 .stream()
                 .filter(attendance ->
                         attendance.getClient() != null
-                        && attendance.getClient().getUserId()
-                        == userSession.getUserId()
+                        && attendance.getClient().getUserId() == userSession.getUserId()
                 )
-                .map(attendance -> {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idAttendance", attendance.getIdAttendance());
-                    map.put("attendanceDate", attendance.getAttendanceDate());
-                    map.put("attendanceStatus", attendance.getAttendanceStatus());
-                    map.put("observation", attendance.getObservation());
-                    map.put("registerDate", attendance.getRegisterDate());
-
-                    map.put("classType",
-                            attendance.getGymClass() != null
-                            ? attendance.getGymClass().getClassType()
-                            : "Sin clase");
-
-                    return map;
-                })
+                .map(this::convertClientAttendanceToMap)
                 .toList();
     }
 
     @ResponseBody
-    @GetMapping("/attendances/{idAttendance}")
-    public Attendance getAttendanceById(
-            @PathVariable int idAttendance) {
+    @GetMapping("/attendances/edit/{idAttendance}")
+    public Map<String, Object> getAttendanceForEdit(@PathVariable int idAttendance) {
+        Attendance attendance = attendanceService.getAttendanceById(idAttendance);
 
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idAttendance", attendance.getIdAttendance());
+        map.put("attendanceDate", attendance.getAttendanceDate());
+        map.put("attendanceStatus", attendance.getAttendanceStatus());
+        map.put("observation", attendance.getObservation());
+
+        map.put("clientId",
+                attendance.getClient() != null
+                ? attendance.getClient().getUserId()
+                : "");
+
+        map.put("classId",
+                attendance.getGymClass() != null
+                ? attendance.getGymClass().getIdClass()
+                : "");
+
+        return map;
+    }
+
+    @ResponseBody
+    @GetMapping("/attendances/{idAttendance}")
+    public Attendance getAttendanceById(@PathVariable int idAttendance) {
         return attendanceService.getAttendanceById(idAttendance);
     }
 
     @ResponseBody
     @PostMapping("/attendances")
-    public Attendance saveAttendance(
-            @RequestBody Attendance attendance,
+    public Attendance saveAttendance(@RequestBody Attendance attendance,
             HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
 
-        User userSession =
-                (User) session.getAttribute("user");
-
-        if (userSession != null
-                && "client".equals(userSession.getRole())) {
-
+        if (userSession != null && "client".equals(userSession.getRole())) {
             attendance.setClient(userSession);
         }
 
@@ -244,21 +194,14 @@ public class AttendanceController {
 
     @ResponseBody
     @PutMapping("/attendances/{idAttendance}")
-    public Attendance updateAttendance(
-            @PathVariable int idAttendance,
+    public Attendance updateAttendance(@PathVariable int idAttendance,
             @RequestBody Attendance attendance) {
-
-        return attendanceService.updateAttendance(
-                idAttendance,
-                attendance
-        );
+        return attendanceService.updateAttendance(idAttendance, attendance);
     }
 
     @ResponseBody
     @DeleteMapping("/attendances/{idAttendance}")
-    public void deleteAttendance(
-            @PathVariable int idAttendance) {
-
+    public void deleteAttendance(@PathVariable int idAttendance) {
         attendanceService.deleteAttendance(idAttendance);
     }
 
@@ -266,5 +209,44 @@ public class AttendanceController {
     @GetMapping("/attendances/clients")
     public List<User> getClients() {
         return userService.filterUsers(null, "client");
+    }
+
+    private Map<String, Object> convertAttendanceToMap(Attendance attendance) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idAttendance", attendance.getIdAttendance());
+        map.put("attendanceDate", attendance.getAttendanceDate());
+        map.put("attendanceStatus", attendance.getAttendanceStatus());
+        map.put("observation", attendance.getObservation());
+        map.put("registerDate", attendance.getRegisterDate());
+
+        map.put("clientName",
+                attendance.getClient() != null
+                ? attendance.getClient().getFullName()
+                : "Sin cliente");
+
+        map.put("classType",
+                attendance.getGymClass() != null
+                ? attendance.getGymClass().getClassType()
+                : "Sin clase");
+
+        return map;
+    }
+
+    private Map<String, Object> convertClientAttendanceToMap(Attendance attendance) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idAttendance", attendance.getIdAttendance());
+        map.put("attendanceDate", attendance.getAttendanceDate());
+        map.put("attendanceStatus", attendance.getAttendanceStatus());
+        map.put("observation", attendance.getObservation());
+        map.put("registerDate", attendance.getRegisterDate());
+
+        map.put("classType",
+                attendance.getGymClass() != null
+                ? attendance.getGymClass().getClassType()
+                : "Sin clase");
+
+        return map;
     }
 }
