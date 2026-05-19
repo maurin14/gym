@@ -65,6 +65,9 @@
 
         </select>
 
+        <small id="clientError"
+               class="error-message"></small>
+
         <label>Clase</label>
 
         <select id="classId"
@@ -76,15 +79,25 @@
 
         </select>
 
+        <small id="classError"
+               class="error-message"></small>
+
         <label>Fecha de Asistencia</label>
 
         <input type="date"
                id="attendanceDate"
                readonly>
 
+        <small id="dateError"
+               class="error-message"></small>
+
         <label>Estado de Asistencia</label>
 
         <select id="attendanceStatus">
+
+            <option value="">
+                Seleccione un estado
+            </option>
 
             <option value="Presente">
                 Presente
@@ -99,6 +112,9 @@
             </option>
 
         </select>
+
+        <small id="statusError"
+               class="error-message"></small>
 
         <label>Observación</label>
 

@@ -16,7 +16,8 @@ function loadClasses() {
             data.forEach(gymClass => {
 
                 classSelect.innerHTML += `
-                    <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
+                    <option value="${gymClass.idClass}"
+                            data-date="${gymClass.classDate}">
                         ${gymClass.classType} - ${gymClass.classDate}
                     </option>
                 `;
@@ -38,8 +39,12 @@ function setAttendanceDate() {
     const selectedOption = classSelect.options[classSelect.selectedIndex];
 
     if (selectedOption) {
-        document.getElementById("attendanceDate").value =
-                selectedOption.getAttribute("data-date");
+
+        const date = selectedOption.getAttribute("data-date");
+
+        if (date) {
+            document.getElementById("attendanceDate").value = date;
+        }
     }
 }
 
@@ -63,7 +68,7 @@ function saveClientAttendance() {
         Swal.fire({
             icon: "warning",
             title: "Fecha requerida",
-            text: "La fecha de asistencia no puede estar vacia.",
+            text: "La fecha de asistencia no puede estar vacía.",
             confirmButtonColor: "#d97818"
         });
         return;
@@ -84,14 +89,31 @@ function saveClientAttendance() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(attendance)
-    }).then(() => {
+    })
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error("No se pudo registrar la asistencia.");
+        }
+
+        return response.json();
+    })
+    .then(() => {
         Swal.fire({
             icon: "success",
             title: "Asistencia registrada",
-            text: "Tu asistencia se registro correctamente.",
+            text: "Tu asistencia se registró correctamente.",
             confirmButtonColor: "#d97818"
         }).then(() => {
             window.location.href = "/client/attendances";
+        });
+    })
+    .catch(() => {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo registrar la asistencia.",
+            confirmButtonColor: "#d97818"
         });
     });
 }

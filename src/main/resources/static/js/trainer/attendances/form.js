@@ -107,6 +107,9 @@ function setAttendanceDate() {
 }
 
 function saveAttendance() {
+
+    clearErrors();
+
     const idAttendance = document.getElementById("idAttendance").value;
     const clientId = document.getElementById("clientId").value;
     const classId = document.getElementById("classId").value;
@@ -114,9 +117,33 @@ function saveAttendance() {
     const attendanceStatus = document.getElementById("attendanceStatus").value;
     const observation = document.getElementById("observation").value.trim();
 
-    if (clientId === "" || classId === "" ||
-            attendanceDate === "" || attendanceStatus === "") {
-        alert("Debe completar todos los campos obligatorios.");
+    let valid = true;
+
+    if (clientId === "") {
+        document.getElementById("clientError").innerText =
+                "Seleccione un cliente";
+        valid = false;
+    }
+
+    if (classId === "") {
+        document.getElementById("classError").innerText =
+                "Seleccione una clase";
+        valid = false;
+    }
+
+    if (attendanceDate === "") {
+        document.getElementById("dateError").innerText =
+                "Seleccione una fecha";
+        valid = false;
+    }
+
+    if (attendanceStatus === "") {
+        document.getElementById("statusError").innerText =
+                "Seleccione un estado";
+        valid = false;
+    }
+
+    if (!valid) {
         return;
     }
 
@@ -147,7 +174,13 @@ function saveAttendance() {
         },
         body: JSON.stringify(attendance)
     }).then(() => {
-        alert("Asistencia guardada correctamente");
         window.location.href = attendanceBasePath;
     });
+}
+
+function clearErrors() {
+    document.getElementById("clientError").innerText = "";
+    document.getElementById("classError").innerText = "";
+    document.getElementById("dateError").innerText = "";
+    document.getElementById("statusError").innerText = "";
 }
