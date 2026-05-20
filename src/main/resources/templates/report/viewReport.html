@@ -31,7 +31,7 @@
         </div>
     </section>
 
-    <table class="portal-table" th:if="${reportData != null and !#lists.isEmpty(reportData)}">
+    <table class="portal-table admin-table" th:if="${reportData != null and !#lists.isEmpty(reportData)}">
         <thead>
         <tr>
             <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>

@@ -3,9 +3,16 @@ let classSaving = false;
 document.addEventListener("DOMContentLoaded", function () {
     const idClass = getClassIdFromPath();
 
-    loadTrainers().then(() => {
+    loadBranches().then(() => {
+        const branchSelect = document.getElementById("branchId");
+        if (branchSelect) {
+            branchSelect.addEventListener("change", loadTrainers);
+        }
+
         if (idClass !== null) {
             loadClass(idClass);
+        } else {
+            loadTrainers();
         }
     });
 });
@@ -22,7 +29,12 @@ function getClassesListPath() {
 }
 
 function loadTrainers() {
-    return fetch("/classes/trainers")
+    const branchId = document.getElementById("branchId")
+            ? document.getElementById("branchId").value
+            : "";
+    const url = branchId ? "/classes/trainers?branchId=" + encodeURIComponent(branchId) : "/classes/trainers";
+
+    return fetch(url)
         .then(response => response.json())
         .then(data => {
             const trainerSelect = document.getElementById("trainerId");
@@ -33,6 +45,24 @@ function loadTrainers() {
                 trainerSelect.innerHTML += `
                     <option value="${trainer.userId}">
                         ${trainer.fullName}
+                    </option>
+                `;
+            });
+        });
+}
+
+function loadBranches() {
+    return fetch("/classes/branches")
+        .then(response => response.json())
+        .then(data => {
+            const branchSelect = document.getElementById("branchId");
+
+            branchSelect.innerHTML = '<option value="">Seleccione una sucursal</option>';
+
+            data.forEach(branch => {
+                branchSelect.innerHTML += `
+                    <option value="${branch.id}">
+                        ${branch.name}
                     </option>
                 `;
             });
@@ -56,9 +86,15 @@ function loadClass(idClass) {
             document.getElementById("endTime").value = normalizeTime(gymClass.endTime);
             document.getElementById("maxCapacity").value = gymClass.maxCapacity || "";
 
-            if (gymClass.trainerId !== null && gymClass.trainerId !== undefined) {
-                document.getElementById("trainerId").value = gymClass.trainerId;
+            if (gymClass.branchId !== null && gymClass.branchId !== undefined) {
+                document.getElementById("branchId").value = gymClass.branchId;
             }
+
+            loadTrainers().then(() => {
+                if (gymClass.trainerId !== null && gymClass.trainerId !== undefined) {
+                    document.getElementById("trainerId").value = gymClass.trainerId;
+                }
+            });
 
             document.getElementById("enrolledCount").value = gymClass.enrolledCount || 0;
             setSelectValue("difficultyLevel", gymClass.difficultyLevel);
@@ -104,6 +140,7 @@ function saveClass() {
     const endTime = document.getElementById("endTime").value;
     const maxCapacity = document.getElementById("maxCapacity").value;
     const trainerId = document.getElementById("trainerId").value;
+    const branchId = document.getElementById("branchId").value;
     const enrolledCount = document.getElementById("enrolledCount").value;
     const difficultyLevel = document.getElementById("difficultyLevel").value;
     const description = document.getElementById("description").value.trim();
@@ -116,6 +153,7 @@ function saveClass() {
     if (maxCapacity === "") clientErrors.maxCapacity = "Este campo es obligatorio.";
     if (trainerId === "") clientErrors.trainerId = "Seleccione una opción.";
     if (difficultyLevel === "") clientErrors.difficultyLevel = "Seleccione una opción.";
+    if (branchId === "") clientErrors.branchId = "Seleccione una sucursal.";
     if (description === "") clientErrors.description = "Este campo es obligatorio.";
 
     if (Object.keys(clientErrors).length > 0) {
@@ -132,6 +170,9 @@ function saveClass() {
         maxCapacity: parseInt(maxCapacity),
         trainer: trainerId === "" ? null : {
             userId: parseInt(trainerId)
+        },
+        branch: branchId === "" ? null : {
+            id: parseInt(branchId)
         },
         enrolledCount: enrolledCount === "" ? 0 : parseInt(enrolledCount),
         difficultyLevel: difficultyLevel,

@@ -19,7 +19,7 @@ function loadClasses() {
 
                 classSelect.innerHTML += `
                     <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
-                        ${gymClass.classType} - ${gymClass.classDate}
+                        ${gymClass.classType} - ${gymClass.branchName || "Sin sucursal"} - ${gymClass.classDate}
                     </option>
                 `;
             });

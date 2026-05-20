@@ -24,6 +24,11 @@
                 <span th:text="${userView.fullName}"></span>
             </p>
 
+            <p th:if="${userView.role == 'trainer'}">
+                <strong>Sucursal:</strong>
+                <span th:text="${userView.branch != null ? userView.branch.name : 'Sin sucursal asignada'}"></span>
+            </p>
+
             <p>
                 <strong>Cédula:</strong>
                 <span th:text="${userView.idCard}"></span>

@@ -56,7 +56,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         if (path.startsWith("/trainer/")) {
-            return "trainer".equals(role) || "administrator".equals(role);
+            return "trainer".equals(role);
         }
 
         if (path.startsWith("/client/") || path.startsWith("/user/")

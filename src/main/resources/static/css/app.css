@@ -498,6 +498,11 @@ textarea:focus {
 .admin-page-card {
     max-width: 1180px;
     margin: 24px auto;
+    overflow-x: auto;
+}
+
+.admin-page-card.wide-table-card {
+    max-width: 1500px;
 }
 
 /* FORMULARIO PORTAL CORREGIDO */
@@ -517,19 +522,26 @@ textarea:focus {
     min-width: 0;
 }
 
+.portal-form > .portal-form-field {
+    display: contents;
+}
+
 .portal-form > small,
 .portal-form > span,
-.portal-form > .image-preview-container {
+.portal-form > .image-preview-container,
+.portal-form > .portal-form-field > small {
     grid-column: 1 / -1;
 }
 
 .portal-form > input,
 .portal-form > select,
-.portal-form > textarea {
+.portal-form > textarea,
+.portal-form > .portal-form-field > select {
     grid-column: 2;
 }
 
-.portal-form > label {
+.portal-form > label,
+.portal-form > .portal-form-field > label {
     grid-column: 1;
     align-self: center;
 }
@@ -596,6 +608,15 @@ select.valid {
 
 /* TABLAS */
 
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 18px;
+}
+
 table,
 .portal-table {
     width: 100%;
@@ -606,6 +627,18 @@ table,
     overflow: hidden;
     background: white;
     box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+.admin-table,
+.portal-table {
+    table-layout: auto;
+}
+
+.admin-table.is-wide,
+.portal-table.is-wide,
+.admin-table.admin-table-wide,
+.portal-table.admin-table-wide {
+    min-width: 1100px;
 }
 
 th,
@@ -625,6 +658,19 @@ td,
     vertical-align: middle;
     border-bottom: 1px solid var(--border);
     font-size: 14px;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
+
+.portal-table th,
+.portal-table td {
+    max-width: 280px;
+}
+
+.portal-table .actions,
+.portal-table td.actions {
+    min-width: 150px;
 }
 
 tr:nth-child(even),
@@ -1336,7 +1382,10 @@ tr:hover,
     .portal-form > select,
     .portal-form > textarea,
     .portal-form > small,
-    .portal-form > span {
+    .portal-form > span,
+    .portal-form > .portal-form-field > label,
+    .portal-form > .portal-form-field > select,
+    .portal-form > .portal-form-field > small {
         grid-column: 1 / -1;
     }
 
@@ -1357,11 +1406,8 @@ tr:hover,
         padding: 20px;
     }
 
-    .portal-table,
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
+    .table-responsive {
+        border-radius: 14px;
     }
 
     td,

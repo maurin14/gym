@@ -50,6 +50,8 @@ public class RoutineController {
         model.addAttribute("totalPages", routinePage.getTotalPages());
         model.addAttribute("difficultyLevel", difficultyLevel);
         model.addAttribute("routineType", routineType);
+        model.addAttribute("routineBasePath", "/admin/routines");
+        model.addAttribute("canManageRoutines", true);
 
         return "routine/routine_list";
     }
@@ -115,6 +117,8 @@ public class RoutineController {
 
         model.addAttribute("title", "Detalle de la rutina");
         model.addAttribute("routine", routine);
+        model.addAttribute("routineBasePath", "/admin/routines");
+        model.addAttribute("canManageRoutines", true);
         return "routine/routine_details";
     }
 

@@ -35,16 +35,24 @@
         <details class="module-menu">
             <summary>Men&uacute;</summary>
             <div class="module-menu-panel">
-                <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
-                <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
-                <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
-                <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
-                <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
-                <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
-                <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
-                <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
-                <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'">Equipamiento</a>
-                <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
+                <th:block th:if="${session.user != null and session.user.role == 'administrator'}">
+                    <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
+                    <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
+                    <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
+                    <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
+                    <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
+                    <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
+                    <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
+                    <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
+                    <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'">Equipamiento</a>
+                    <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
+                </th:block>
+                <th:block th:if="${session.user != null and session.user.role == 'trainer'}">
+                    <a th:href="@{/trainer/classes}" th:classappend="${active == 'classes'} ? ' active'">Mis clases</a>
+                    <a th:href="@{/trainer/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Mis horarios</a>
+                    <a th:href="@{/trainer/attendances}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
+                    <a th:href="@{/trainer/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
+                </th:block>
             </div>
         </details>
 
@@ -63,7 +71,7 @@
 </header>
 
 <footer th:fragment="adminFooter" class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administraci&oacute;n</p>
+    <p>SAM GYM FITNESS</p>
 </footer>
 
 </body>

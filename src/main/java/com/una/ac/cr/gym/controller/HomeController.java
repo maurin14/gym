@@ -2,6 +2,7 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.User;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -46,7 +47,7 @@ public class HomeController {
     }
     
     @GetMapping("/trainer/home")
-        public String trainerHome(HttpSession session) {
+        public String trainerHome(HttpSession session, Model model) {
 
             User user = (User) session.getAttribute("user");
 
@@ -58,6 +59,8 @@ public class HomeController {
                 return "redirect:/client/home";
             }
 
+            model.addAttribute("trainerBranch",
+                    user.getBranch() != null ? user.getBranch().getName() : "Sin sucursal asignada");
             return "trainer/index";
         }
 

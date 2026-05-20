@@ -1291,6 +1291,10 @@ body.menu-open .menu-backdrop {
     padding: 24px;
 }
 
+.client-table-card {
+    overflow-x: auto;
+}
+
 .table-heading {
     margin-bottom: 20px;
 }
@@ -1315,6 +1319,9 @@ body.menu-open .menu-backdrop {
     border-bottom: 1px solid var(--border);
     text-align: left;
     vertical-align: middle;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
 
 .client-table th {

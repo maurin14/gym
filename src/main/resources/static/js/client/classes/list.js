@@ -25,7 +25,7 @@ function showClasses(classes) {
     if (!classes || classes.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="10" class="empty-message">No hay clases disponibles.</td>
+                <td colspan="11" class="empty-message">No hay clases disponibles.</td>
             </tr>
         `;
         return;
@@ -36,6 +36,7 @@ function showClasses(classes) {
             <tr>
                 <td>${gymClass.classType || ""}</td>
                 <td>${gymClass.trainerName || ""}</td>
+                <td>${gymClass.branchName || "Sin sucursal"}</td>
                 <td>${gymClass.classDate || ""}</td>
                 <td>${gymClass.startTime || ""}</td>
                 <td>${gymClass.endTime || ""}</td>

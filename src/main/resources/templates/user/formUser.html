@@ -65,13 +65,26 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['password'] != null}" th:text="${fieldErrors['password']}"></small>
 
         <label>Rol</label>
-        <select th:field="*{role}" required>
+        <select th:field="*{role}" id="role" required onchange="toggleTrainerBranch()">
             <option value="">Seleccione</option>
             <option value="client">Cliente</option>
             <option value="trainer">Entrenador</option>
             <option value="administrator">Administrador</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['role'] != null}" th:text="${fieldErrors['role']}"></small>
+
+        <div id="trainerBranchField" class="portal-form-field">
+            <label>Sucursal del entrenador</label>
+            <select th:field="*{branch.id}">
+                <option value="0">Seleccione una sucursal</option>
+                <option th:each="branch : ${branches}"
+                        th:value="${branch.id}"
+                        th:text="${branch.name}">
+                    Sucursal
+                </option>
+            </select>
+            <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="${fieldErrors['branch.id']}"></small>
+        </div>
 
         <label>Estado</label>
         <select th:field="*{status}" required>
@@ -95,6 +108,19 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script>
+    function toggleTrainerBranch() {
+        const role = document.getElementById("role");
+        const branchField = document.getElementById("trainerBranchField");
+
+        if (!role || !branchField) {
+            return;
+        }
+
+        branchField.style.display = role.value === "trainer" ? "" : "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", toggleTrainerBranch);
+
     function checkField(field, value, messageId){
         let message = document.getElementById(messageId);
 

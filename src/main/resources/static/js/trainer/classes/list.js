@@ -5,6 +5,7 @@ const rowsPerPage = 5;
 const classBasePath = window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
         ? "/admin/classes"
         : "/trainer/classes");
+const canManageClasses = Boolean(window.canManageClasses);
 
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
@@ -36,15 +37,18 @@ function showClasses(classes) {
             <tr>
                 <td>${gymClass.classType}</td>
                 <td>${gymClass.trainerName}</td>
+                <td>${gymClass.branchName || "Sin sucursal"}</td>
                 <td>${gymClass.classDate}</td>
                 <td>${gymClass.startTime}</td>
                 <td>${gymClass.endTime}</td>
                 <td>${gymClass.duration} min</td>
                 <td>${gymClass.maxCapacity}</td>
                 <td>${gymClass.enrolledCount}</td>
+                <td>${gymClass.status ? "Activa" : "Inactiva"}</td>
                 <td>${gymClass.difficultyLevel}</td>
                 <td>${gymClass.description}</td>
 
+                ${canManageClasses ? `
                 <td>
                     <div class="actions">
                         <a class="btn-primary"
@@ -59,6 +63,7 @@ function showClasses(classes) {
                         </button>
                     </div>
                 </td>
+                ` : ""}
             </tr>
         `;
     });
@@ -116,6 +121,9 @@ function changeClassPage(element) {
 }
 
 function deleteClass(idClass) {
+    if (!canManageClasses) {
+        return;
+    }
 
     confirmAdminAction({
         title: "Eliminar clase?",

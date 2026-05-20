@@ -27,19 +27,19 @@
             <strong>Sucursales</strong>
         </nav>
 
-        <form class="catalog-toolbar branch-toolbar" method="get" th:action="@{/branches}">
+        <form class="catalog-toolbar branch-toolbar" method="get" th:action="@{/client/branches}">
             <div class="toolbar-field search-field">
                 <label for="filterName">Buscar</label>
                 <input type="search" id="filterName" name="name" placeholder="Buscar por nombre" th:value="${name}">
             </div>
 
             <button type="submit" class="btn-primary">Buscar</button>
-            <a th:href="@{/branches}" class="btn-secondary">Limpiar</a>
+            <a th:href="@{/client/branches}" class="btn-secondary">Limpiar</a>
         </form>
 
         <div class="branch-grid" th:if="${branches.content.size() > 0}">
             <article class="branch-card" th:each="b : ${branches.content}">
-                <a th:href="@{/branches/{id}(id=${b.id})}" class="branch-image-link">
+                <a th:href="@{/client/branches/{id}(id=${b.id})}" class="branch-image-link">
                     <img th:src="@{'/images/branches/' + ${b.imageUrl}}" th:alt="${b.name}">
                 </a>
 
@@ -50,7 +50,7 @@
 
                     <div class="card-footer">
                         <span class="muted-text" th:text="${'Capacidad: ' + b.capacity}">Capacidad</span>
-                        <a th:href="@{/branches/{id}(id=${b.id})}" class="btn-primary">Ver detalle</a>
+                        <a th:href="@{/client/branches/{id}(id=${b.id})}" class="btn-primary">Ver clases</a>
                     </div>
                 </div>
             </article>
@@ -61,19 +61,19 @@
         <div class="client-pagination" th:if="${branches.totalPages > 1}">
             <a class="pagination-link"
                th:if="${branches.hasPrevious()}"
-               th:href="@{/branches(page=${branches.number - 1}, name=${name})}">
+               th:href="@{/client/branches(page=${branches.number - 1}, name=${name})}">
                 Anterior
             </a>
 
             <a th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}"
                th:text="${i + 1}"
-               th:href="@{/branches(page=${i}, name=${name})}"
+               th:href="@{/client/branches(page=${i}, name=${name})}"
                th:class="${i == branches.number ? 'pagination-link active' : 'pagination-link'}">
             </a>
 
             <a class="pagination-link"
                th:if="${branches.hasNext()}"
-               th:href="@{/branches(page=${branches.number + 1}, name=${name})}">
+               th:href="@{/client/branches(page=${branches.number + 1}, name=${name})}">
                 Siguiente
             </a>
         </div>

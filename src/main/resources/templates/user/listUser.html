@@ -35,13 +35,14 @@
         <a th:href="@{/users}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table class="portal-table">
+    <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Cédula</th>
             <th>Usuario</th>
             <th>Rol</th>
+            <th>Sucursal</th>
             <th>Estado</th>
             <th>Registro</th>
             <th>Acciones</th>
@@ -59,6 +60,8 @@
                 <span th:if="${u.role == 'trainer'}" class="badge badge-pending">Entrenador</span>
                 <span th:if="${u.role == 'client'}" class="badge badge-inactive">Cliente</span>
             </td>
+
+            <td th:text="${u.role == 'trainer' ? (u.branch != null ? u.branch.name : 'Sin sucursal asignada') : '-'}"></td>
 
             <td>
                 <span th:if="${u.status == 'active'}" class="status-active">Activo</span>
@@ -84,7 +87,7 @@
         </tr>
 
         <tr th:if="${#lists.isEmpty(users)}">
-            <td colspan="7" class="empty-message">No hay usuarios registrados.</td>
+            <td colspan="8" class="empty-message">No hay usuarios registrados.</td>
         </tr>
         </tbody>
     </table>

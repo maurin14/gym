@@ -13,7 +13,7 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
 
-<main class="container portal-card admin-page-card">
+<main class="container portal-card admin-page-card wide-table-card">
     <div class="buttons admin-action-row">
         <a class="btn-primary" th:href="@{/admin/attendance/form}">Nueva asistencia</a>
     </div>
@@ -28,11 +28,12 @@
     </div>
 
     <div class="table-responsive">
-        <table class="portal-table">
+        <table class="portal-table admin-table is-wide">
             <thead>
                 <tr>
                     <th>Cliente</th>
                     <th>Clase</th>
+                    <th>Sucursal</th>
                     <th>Fecha</th>
                     <th>Estado</th>
                     <th>Observacion</th>
@@ -49,6 +50,10 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/admin/attendance";
+    window.canDeleteAttendances = /*[[${session.user != null and session.user.role == 'administrator'}]]*/ false;
+</script>
 <script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>

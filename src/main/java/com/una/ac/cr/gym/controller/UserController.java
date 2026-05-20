@@ -1,7 +1,9 @@
 package com.una.ac.cr.gym.controller;
 
 import org.springframework.ui.Model;
+import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
@@ -21,6 +23,9 @@ public class UserController {
     
     @Autowired
     private UserService uService;
+
+    @Autowired
+    private BranchService branchService;
     
     @GetMapping({"", "/"})
     public String index(@RequestParam(defaultValue = "0") int page,
@@ -66,8 +71,10 @@ public class UserController {
         
         User u = new User();
         u.setStatus("active");
+        u.setBranch(new Branch());
 
         model.addAttribute("userNew", u);
+        addFormAttributes(model);
         return "user/formUser";
     }
     
@@ -88,9 +95,13 @@ public class UserController {
         }
 
         if(!fieldErrors.isEmpty()){
+            if (userNew.getBranch() == null) {
+                userNew.setBranch(new Branch());
+            }
             model.addAttribute("userNew", userNew);
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("messageError", "Revise los datos.");
+            addFormAttributes(model);
             return "user/formUser";
         }
 
@@ -126,6 +137,10 @@ public class UserController {
         }
 
         model.addAttribute("userNew", u);
+        if (u.getBranch() == null) {
+            u.setBranch(new Branch());
+        }
+        addFormAttributes(model);
         return "user/formUser";
     }
     
@@ -189,5 +204,9 @@ public class UserController {
         }
 
         return "available";
+    }
+
+    private void addFormAttributes(Model model) {
+        model.addAttribute("branches", branchService.getActiveBranches());
     }
 }

@@ -5,6 +5,7 @@ const rowsPerPage = 5;
 const attendanceBasePath = window.attendanceBasePath || (window.location.pathname.startsWith("/admin/attendance")
         ? "/admin/attendance"
         : "/trainer/attendances");
+const canDeleteAttendances = Boolean(window.canDeleteAttendances);
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -33,7 +34,7 @@ function showAttendances(attendances) {
     if (!attendances || attendances.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="empty-message">
+                <td colspan="8" class="empty-message">
                     No hay asistencias registradas.
                 </td>
             </tr>
@@ -47,6 +48,7 @@ function showAttendances(attendances) {
             <tr>
                 <td>${attendance.clientName}</td>
                 <td>${attendance.classType}</td>
+                <td>${attendance.branchName || "Sin sucursal"}</td>
                 <td>${attendance.attendanceDate}</td>
                 <td>
                     <span class="badge status-active">
@@ -55,17 +57,21 @@ function showAttendances(attendances) {
                 </td>
                 <td>${attendance.observation}</td>
                 <td>${attendance.registerDate}</td>
-                <td class="actions">
-                    <a class="btn-primary"
-                       href="${attendanceBasePath}/form/${attendance.idAttendance}">
-                        Editar
-                    </a>
+                <td>
+                    <div class="actions">
+                        <a class="btn-primary"
+                           href="${attendanceBasePath}/form/${attendance.idAttendance}">
+                            Editar
+                        </a>
 
-                    <button type="button"
-                            class="btn-danger"
-                            onclick="deleteAttendance(${attendance.idAttendance})">
-                        Eliminar
-                    </button>
+                        ${canDeleteAttendances ? `
+                        <button type="button"
+                                class="btn-danger"
+                                onclick="deleteAttendance(${attendance.idAttendance})">
+                            Eliminar
+                        </button>
+                        ` : ""}
+                    </div>
                 </td>
             </tr>
         `;
@@ -124,6 +130,9 @@ function changeAttendancePage(element) {
 }
 
 function deleteAttendance(idAttendance) {
+    if (!canDeleteAttendances) {
+        return;
+    }
 
     confirmAdminAction({
         title: "Eliminar asistencia?",

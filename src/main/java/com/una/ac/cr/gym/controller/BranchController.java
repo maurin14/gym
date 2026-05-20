@@ -5,7 +5,12 @@
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
+import com.una.ac.cr.gym.domain.GymClass;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.service.BranchService;
+import com.una.ac.cr.gym.service.GymClassService;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +36,12 @@ public class BranchController {
 
     @Autowired
     private BranchService branchService;
+
+    @Autowired
+    private GymClassService gymClassService;
+
+    @Autowired
+    private AttendanceService attendanceService;
 
     @GetMapping("/admin/branches")
     public String adminList(@RequestParam(defaultValue = "0") int page,
@@ -145,7 +156,7 @@ public class BranchController {
         return "redirect:/admin/branches";
     }
 
-    @GetMapping("/branches")
+    @GetMapping({"/branches", "/client/branches"})
     public String userList(@RequestParam(defaultValue = "0") int page,
                            @RequestParam(required = false) String name,
                            Model model) {
@@ -158,15 +169,62 @@ public class BranchController {
         return "branches/user/listBranch";
     }
 
-    @GetMapping("/branches/{id}")
+    @GetMapping({"/branches/{id}", "/client/branches/{id}"})
     public String userDetail(@PathVariable int id, Model model) {
         Branch branch = branchService.getById(id);
 
         if (branch == null || !branch.isActive()) {
-            return "redirect:/branches";
+            return "redirect:/client/branches";
         }
 
         model.addAttribute("branch", branch);
+        model.addAttribute("classes", gymClassService.getActiveClassesByBranch(id));
         return "branches/user/detailBranch";
+    }
+
+    @PostMapping("/client/branches/{branchId}/classes/{classId}/enroll")
+    public String enrollInBranchClass(@PathVariable int branchId,
+                                      @PathVariable int classId,
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        GymClass gymClass = gymClassService.getClassById(classId);
+
+        if (gymClass == null) {
+            redirectAttributes.addFlashAttribute("messageError", "No se pudo completar la inscripcion.");
+            return "redirect:/client/branches/" + branchId;
+        }
+
+        if (!classBelongsToBranch(gymClass, branchId)) {
+            redirectAttributes.addFlashAttribute("messageError", "La clase no pertenece a esta sucursal.");
+            return "redirect:/client/branches/" + branchId;
+        }
+
+        String result = attendanceService.enrollClientInClass(user, classId);
+
+        if (result.isEmpty()) {
+            redirectAttributes.addFlashAttribute("messageSuccess", "Inscripcion realizada.");
+        } else {
+            redirectAttributes.addFlashAttribute("messageError", result);
+        }
+
+        return "redirect:/client/branches/" + branchId;
+    }
+
+    private boolean classBelongsToBranch(GymClass gymClass, int branchId) {
+        if (gymClass.getBranch() != null && gymClass.getBranch().getId() == branchId) {
+            return true;
+        }
+
+        return gymClass.getBranch() == null
+                && gymClass.getTrainer() != null
+                && gymClass.getTrainer().getBranch() != null
+                && gymClass.getTrainer().getBranch().getId() == branchId;
     }
 }

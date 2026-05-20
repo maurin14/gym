@@ -1,7 +1,10 @@
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.GymClass;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.GymClassRepository;
+import com.una.ac.cr.gym.repository.UserRepository;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,17 +17,67 @@ import org.springframework.stereotype.Service;
 public class GymClassService {
 
     private final GymClassRepository gymClassRepository;
+    private final BranchRepository branchRepository;
+    private final UserRepository userRepository;
 
-    public GymClassService(GymClassRepository gymClassRepository) {
+    public GymClassService(GymClassRepository gymClassRepository,
+            BranchRepository branchRepository,
+            UserRepository userRepository) {
         this.gymClassRepository = gymClassRepository;
+        this.branchRepository = branchRepository;
+        this.userRepository = userRepository;
     }
 
     public List<GymClass> getAllClasses() {
         return gymClassRepository.findAll();
     }
 
+    public List<GymClass> getActiveClasses() {
+        return gymClassRepository.findByStatusTrue();
+    }
+
+    public List<GymClass> getActiveClassesByBranch(int branchId) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(branchId);
+    }
+
+    public List<GymClass> getClassesByTrainer(Integer trainerId) {
+        return gymClassRepository.findByTrainer_UserId(trainerId);
+    }
+
+    public List<GymClass> getClassesByTrainerAndBranch(Integer trainerId, Integer branchId) {
+        if (branchId == null || branchId <= 0) {
+            return List.of();
+        }
+
+        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId);
+    }
+
     public Page<GymClass> getClassesPage(int page, int size) {
         return gymClassRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getActiveClassesPage(int page, int size) {
+        return gymClassRepository.findByStatusTrue(PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getTrainerClassesPage(Integer trainerId, int page, int size) {
+        return gymClassRepository.findByTrainer_UserId(trainerId, PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getTrainerClassesPage(Integer trainerId, Integer branchId, int page, int size) {
+        if (branchId == null || branchId <= 0) {
+            return Page.empty(PageRequest.of(page, size));
+        }
+
+        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(page, size));
+    }
+
+    public boolean classBelongsToTrainerAndBranch(int classId, Integer trainerId, Integer branchId) {
+        if (branchId == null || branchId <= 0) {
+            return false;
+        }
+
+        return gymClassRepository.existsByIdClassAndTrainerAndBranch(classId, trainerId, branchId);
     }
 
     public GymClass getClassById(int idClass) {
@@ -38,6 +91,7 @@ public class GymClassService {
         }
 
         calculateDuration(gymClass);
+        normalizeBranch(gymClass);
 
         gymClass.setStatus(true);
         gymClass.setEnrolledCount(0);
@@ -61,6 +115,7 @@ public class GymClassService {
         }
 
         calculateDuration(gymClass);
+        normalizeBranch(gymClass);
 
         gymClass.setEnrolledCount(currentClass.getEnrolledCount());
         gymClass.setStatus(true);
@@ -105,9 +160,30 @@ public class GymClassService {
             errors.put("maxCapacity", "Ingrese un valor válido.");
         }
 
+        if (gymClass.getBranch() == null || gymClass.getBranch().getId() <= 0) {
+            errors.put("branchId", "Seleccione una sucursal.");
+        } else if (branchRepository.findById(gymClass.getBranch().getId()).isEmpty()) {
+            errors.put("branchId", "La sucursal seleccionada no existe.");
+        }
+
         if (gymClass.getTrainer() == null || gymClass.getTrainer().getUserId() == null
                 || gymClass.getTrainer().getUserId() <= 0) {
             errors.put("trainerId", "Seleccione una opción.");
+        }
+
+        if (gymClass.getTrainer() != null
+                && gymClass.getTrainer().getUserId() != null
+                && gymClass.getTrainer().getUserId() > 0
+                && gymClass.getBranch() != null
+                && gymClass.getBranch().getId() > 0) {
+            User trainer = userRepository.findById(gymClass.getTrainer().getUserId()).orElse(null);
+
+            if (trainer == null || !"trainer".equals(trainer.getRole())) {
+                errors.put("trainerId", "Seleccione un entrenador valido.");
+            } else if (trainer.getBranch() != null
+                    && trainer.getBranch().getId() != gymClass.getBranch().getId()) {
+                errors.put("trainerId", "El entrenador pertenece a otra sucursal.");
+            }
         }
 
         if (gymClass.getEnrolledCount() < 0) {
@@ -141,5 +217,14 @@ public class GymClassService {
         ).toMinutes();
 
         gymClass.setDuration(duration);
+    }
+
+    private void normalizeBranch(GymClass gymClass) {
+        if (gymClass.getBranch() == null || gymClass.getBranch().getId() <= 0) {
+            gymClass.setBranch(null);
+            return;
+        }
+
+        gymClass.setBranch(branchRepository.findById(gymClass.getBranch().getId()).orElse(null));
     }
 }

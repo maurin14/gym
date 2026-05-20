@@ -13,25 +13,27 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
 
-<main class="container portal-card admin-page-card">
-    <div class="buttons admin-action-row">
+<main class="container portal-card admin-page-card wide-table-card">
+    <div class="buttons admin-action-row" th:if="${canManageClasses}">
         <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
     </div>
 
-    <table class="portal-table">
+    <table class="portal-table admin-table is-wide">
         <thead>
             <tr>
                 <th>Tipo</th>
                 <th>Entrenador</th>
+                <th>Sucursal</th>
                 <th>Fecha</th>
                 <th>Inicio</th>
                 <th>Final</th>
                 <th>Duración</th>
                 <th>Capacidad</th>
                 <th>Inscritos</th>
+                <th>Estado</th>
                 <th>Dificultad</th>
                 <th>Descripción</th>
-                <th>Acciones</th>
+                <th th:if="${canManageClasses}">Acciones</th>
             </tr>
         </thead>
 
@@ -46,6 +48,7 @@
 
 <script th:inline="javascript">
     window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+    window.canManageClasses = /*[[${canManageClasses}]]*/ false;
 </script>
 <script th:src="@{/js/trainer/classes/list.js}"></script>
 
