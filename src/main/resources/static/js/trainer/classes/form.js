@@ -16,9 +16,9 @@ function getClassIdFromPath() {
 }
 
 function getClassesListPath() {
-    return window.location.pathname.startsWith("/admin/classes")
+    return window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
             ? "/admin/classes"
-            : "/trainer/classes";
+            : "/trainer/classes");
 }
 
 function loadTrainers() {
@@ -167,13 +167,14 @@ function saveClass() {
             return;
         }
 
-        showAdminSuccess("Clase guardada.").then(() => {
+        showAdminSuccess(idClass !== "" ? "Actualizado." : "Guardado.").then(() => {
             window.location.href = getClassesListPath();
         });
     })
     .catch(() => {
         classSaving = false;
-        showClassError("form", "No se pudo guardar. Intente nuevamente.");
+        showAdminError("No se pudo guardar.", "Revise los datos.");
+        showClassError("form", "No se pudo guardar.");
     });
 }
 

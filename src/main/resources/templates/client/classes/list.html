@@ -57,11 +57,7 @@
                 </table>
             </div>
 
-            <div class="client-pagination ajax-pagination">
-                <button id="prevBtn" type="button" class="pagination-link" onclick="previousPage()">Anterior</button>
-                <button id="pageInfo" type="button" class="pagination-link active" disabled>P&aacute;gina 1 de 1</button>
-                <button id="nextBtn" type="button" class="pagination-link" onclick="nextPage()">Siguiente</button>
-            </div>
+            <nav id="classesPagination" class="client-pagination" aria-label="Paginacion de clases"></nav>
         </div>
     </section>
 </main>
@@ -69,6 +65,7 @@
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/classes/list.js}" defer></script>
 

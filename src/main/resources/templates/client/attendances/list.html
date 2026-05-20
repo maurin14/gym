@@ -52,6 +52,8 @@
                     <tbody id="attendancesTableBody"></tbody>
                 </table>
             </div>
+
+            <nav id="attendancesPagination" class="client-pagination" aria-label="Paginacion de asistencias"></nav>
         </div>
     </section>
 </main>
@@ -59,6 +61,7 @@
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/attendances/list.js}" defer></script>
 

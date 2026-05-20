@@ -116,12 +116,12 @@
             event.preventDefault();
             confirmAdminAction({
                 title: link.dataset.deleteTitle || 'Eliminar registro?',
-                text: 'Esta accion no se puede deshacer.',
+                text: '',
                 confirmText: 'Eliminar',
                 icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Eliminando...');
+                    showAdminLoading('Procesando...');
                     window.location.href = link.href;
                 }
             });

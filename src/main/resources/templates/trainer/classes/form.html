@@ -14,6 +14,7 @@
 
 
 <main class="container form-container portal-card admin-page-card">
+    <h1 class="page-title" id="formTitle">Agregar clase</h1>
     <input type="hidden" id="idClass">
     <small id="formError" class="field-error"></small>
 
@@ -62,13 +63,16 @@
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
-            <a class="btn-secondary" th:href="@{/admin/classes}">Volver</a>
+            <a class="btn-secondary" th:href="${classBasePath}">Volver</a>
         </div>
     </form>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+</script>
 <script th:src="@{/js/trainer/classes/form.js}"></script>
 
 </body>

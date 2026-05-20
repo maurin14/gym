@@ -1,4 +1,4 @@
-function adminSwalOptions(options) {
+function systemSwalOptions(options) {
     return Object.assign({
         width: "360px",
         padding: "1rem",
@@ -7,9 +7,9 @@ function adminSwalOptions(options) {
     }, options || {});
 }
 
-function confirmAdminAction(options) {
-    return Swal.fire(adminSwalOptions({
-        title: options.title || "Confirmar accion",
+function confirmSystemAction(options) {
+    return Swal.fire(systemSwalOptions({
+        title: options.title || "Guardar cambios?",
         text: options.text || "",
         icon: options.icon || "question",
         showCancelButton: true,
@@ -18,11 +18,10 @@ function confirmAdminAction(options) {
     }));
 }
 
-function showAdminLoading(title, text) {
-    return Swal.fire(adminSwalOptions({
+function showSystemLoading(title, text) {
+    return Swal.fire(systemSwalOptions({
         title: title || "Procesando...",
         text: text || "Espere un momento.",
-        icon: "info",
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: function () {
@@ -31,26 +30,32 @@ function showAdminLoading(title, text) {
     }));
 }
 
-function showAdminSuccess(title, text) {
-    return Swal.fire(adminSwalOptions({
-        title: title || "Listo.",
+function showSystemSuccess(title, text) {
+    return Swal.fire(systemSwalOptions({
+        title: title || "Guardado.",
         text: text || "",
         icon: "success",
         confirmButtonText: "OK"
     }));
 }
 
-function showAdminError(title, text) {
-    return Swal.fire(adminSwalOptions({
-        title: title || "No se pudo completar.",
+function showSystemError(title, text) {
+    return Swal.fire(systemSwalOptions({
+        title: title || "No se pudo guardar.",
         text: text || "",
         icon: "error",
         confirmButtonText: "OK"
     }));
 }
 
+const adminSwalOptions = systemSwalOptions;
+const confirmAdminAction = confirmSystemAction;
+const showAdminLoading = showSystemLoading;
+const showAdminSuccess = showSystemSuccess;
+const showAdminError = showSystemError;
+
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("form[data-admin-confirm]").forEach(function (form) {
+    document.querySelectorAll("form[data-admin-confirm], form[data-system-confirm]").forEach(function (form) {
         let submitting = false;
 
         form.addEventListener("submit", function (event) {
@@ -60,17 +65,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             event.preventDefault();
 
-            confirmAdminAction({
-                title: form.dataset.adminConfirm,
-                text: form.dataset.adminText || "",
-                confirmText: form.dataset.adminConfirmText || "Guardar"
+            confirmSystemAction({
+                title: form.dataset.adminConfirm || form.dataset.systemConfirm,
+                text: form.dataset.adminText || form.dataset.systemText || "",
+                confirmText: form.dataset.adminConfirmText || form.dataset.systemConfirmText || "Guardar"
             }).then(function (result) {
                 if (!result.isConfirmed || submitting) {
                     return;
                 }
 
                 submitting = true;
-                showAdminLoading(form.dataset.adminLoading || "Guardando...");
+                showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || "Procesando...");
                 form.submit();
             });
         });

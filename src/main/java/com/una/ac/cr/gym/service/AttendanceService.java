@@ -31,6 +31,10 @@ public class AttendanceService {
         return attendanceRepository.findAll(PageRequest.of(page, size));
     }
 
+    public Page<Attendance> getClientAttendancesPage(Integer userId, int page, int size) {
+        return attendanceRepository.findByClient_UserId(userId, PageRequest.of(page, size));
+    }
+
     public Attendance getAttendanceById(int idAttendance) {
         return attendanceRepository.findById(idAttendance).orElse(null);
     }

@@ -2,131 +2,61 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de Asistencia</title>
-
+    <title>Formulario de asistencia</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 
-<body>
+<body class="page-portal">
 
-<header class="main-header">
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
-    <div class="header-left">
+<main class="container form-container portal-card admin-page-card">
+    <h1 class="page-title" id="formTitle">Agregar asistencia</h1>
+    <input type="hidden" id="idAttendance">
+    <small id="formError" class="field-error"></small>
 
-        <div class="brand-text">
-
-            <span class="system-name">
-                Gimnasio
-            </span>
-
-            <span class="brand-subtitle">
-                Gestión de asistencias
-            </span>
-
-        </div>
-
-    </div>
-
-    <nav class="header-nav">
-
-        <a th:href="@{/admin/home}">
-            Inicio
-        </a>
-
-        <a th:href="@{/trainer/attendances}">
-            Asistencias
-        </a>
-
-    </nav>
-
-</header>
-
-<div class="container form-container">
-
-    <h1 class="page-title"
-        id="formTitle">
-
-        Agregar Asistencia
-
-    </h1>
-
-    <input type="hidden"
-           id="idAttendance">
-
-    <form>
-
-        <label>Cliente</label>
-
+    <form class="portal-form" novalidate>
+        <label for="clientId">Cliente</label>
         <select id="clientId">
-
-            <option value="">
-                Seleccione un cliente
-            </option>
-
+            <option value="">Seleccione un cliente</option>
         </select>
+        <small id="clientIdError" class="field-error"></small>
 
-        <label>Clase</label>
-
-        <select id="classId"
-                onchange="setAttendanceDate()">
-
-            <option value="">
-                Seleccione una clase
-            </option>
-
+        <label for="classId">Clase</label>
+        <select id="classId" onchange="setAttendanceDate()">
+            <option value="">Seleccione una clase</option>
         </select>
+        <small id="classIdError" class="field-error"></small>
 
-        <label>Fecha de Asistencia</label>
+        <label for="attendanceDate">Fecha de asistencia</label>
+        <input type="date" id="attendanceDate" readonly>
+        <small id="attendanceDateError" class="field-error"></small>
 
-        <input type="date"
-               id="attendanceDate"
-               readonly>
-
-        <label>Estado de Asistencia</label>
-
+        <label for="attendanceStatus">Estado de asistencia</label>
         <select id="attendanceStatus">
-
-            <option value="Presente">
-                Presente
-            </option>
-
-            <option value="Ausente">
-                Ausente
-            </option>
-
-            <option value="Tarde">
-                Tarde
-            </option>
-
+            <option value="Presente">Presente</option>
+            <option value="Ausente">Ausente</option>
+            <option value="Tarde">Tarde</option>
         </select>
+        <small id="attendanceStatusError" class="field-error"></small>
 
-        <label>Observación</label>
-
+        <label for="observation">Observaci&oacute;n</label>
         <textarea id="observation"></textarea>
 
         <div class="buttons">
-
-            <button type="button"
-                    class="btn-primary"
-                    onclick="saveAttendance()">
-
-                Guardar
-
-            </button>
-
-            <a class="btn-secondary"
-               th:href="@{/trainer/attendances}">
-
-                Volver
-
-            </a>
-
+            <button type="button" class="btn-primary" onclick="saveAttendance()">Guardar</button>
+            <a class="btn-secondary" th:href="${attendanceBasePath}">Volver</a>
         </div>
-
     </form>
+</main>
 
-</div>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/trainer/attendances";
+</script>
 <script th:src="@{/js/trainer/attendances/form.js}"></script>
 
 </body>

@@ -21,7 +21,7 @@
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <form class="portal-form" th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off" novalidate
-          th:attr="data-admin-confirm=${userNew.userId != null ? 'Guardar cambios?' : 'Registrar usuario?'},data-admin-loading='Guardando...'">
+          th:attr="data-system-confirm='Guardar cambios?',data-system-loading='Procesando...'">
         <input type="hidden" th:field="*{userId}">
 
         <label>Nombre completo</label>
@@ -107,7 +107,7 @@
             let emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
 
             if(!emailRegex.test(value)){
-                message.innerHTML = "Formato de correo inválido";
+                message.innerHTML = "Correo invalido.";
                 message.style.color = "#dc2626";
                 return;
             }
@@ -119,10 +119,10 @@
             .then(response => response.text())
             .then(data => {
                 if(data === "exists"){
-                    message.innerHTML = "Ya está registrado";
+                    message.innerHTML = "Ya registrado.";
                     message.style.color = "#dc2626";
                 }else{
-                    message.innerHTML = "Disponible";
+                    message.innerHTML = "Disponible.";
                     message.style.color = "#15803d";
                 }
             });

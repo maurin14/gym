@@ -1,6 +1,6 @@
-const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
+const attendanceBasePath = window.attendanceBasePath || (window.location.pathname.startsWith("/admin/attendance")
         ? "/admin/attendance"
-        : "/trainer/attendances";
+        : "/trainer/attendances");
 
 let attendanceSaving = false;
 
@@ -107,7 +107,12 @@ function saveAttendance() {
     const observation = document.getElementById("observation").value.trim();
 
     if (clientId === "" || classId === "" || attendanceDate === "" || attendanceStatus === "") {
-        showAdminError("Revise los datos.", "Debe completar todos los campos obligatorios.");
+        clearAttendanceErrors();
+        if (clientId === "") showAttendanceError("clientId", "Seleccione una opcion.");
+        if (classId === "") showAttendanceError("classId", "Seleccione una opcion.");
+        if (attendanceDate === "") showAttendanceError("attendanceDate", "La fecha es obligatoria.");
+        if (attendanceStatus === "") showAttendanceError("attendanceStatus", "Seleccione una opcion.");
+        showAdminError("Revise los datos.");
         return;
     }
 
@@ -141,11 +146,33 @@ function saveAttendance() {
             throw new Error("No se pudo guardar la asistencia.");
         }
 
-        showAdminSuccess("Asistencia guardada.").then(() => {
+        showAdminSuccess(idAttendance ? "Actualizado." : "Guardado.").then(() => {
             window.location.href = attendanceBasePath;
         });
     }).catch(error => {
         attendanceSaving = false;
-        showAdminError(error.message || "No se pudo guardar la asistencia.");
+        showAdminError("No se pudo guardar.", error.message || "Revise los datos.");
     });
+}
+
+function clearAttendanceErrors() {
+    document.querySelectorAll(".field-error").forEach(error => {
+        error.textContent = "";
+    });
+    document.querySelectorAll(".invalid").forEach(field => {
+        field.classList.remove("invalid");
+    });
+}
+
+function showAttendanceError(field, message) {
+    const error = document.getElementById(field + "Error");
+    const fieldElement = document.getElementById(field);
+
+    if (error) {
+        error.textContent = message;
+    }
+
+    if (fieldElement) {
+        fieldElement.classList.add("invalid");
+    }
 }

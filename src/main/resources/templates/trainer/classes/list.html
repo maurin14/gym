@@ -15,7 +15,7 @@
 
 <main class="container portal-card admin-page-card">
     <div class="buttons admin-action-row">
-        <a class="btn-primary" th:href="@{/admin/classes/form}">Nueva clase</a>
+        <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
     </div>
 
     <table class="portal-table">
@@ -44,6 +44,9 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+</script>
 <script th:src="@{/js/trainer/classes/list.js}"></script>
 
 </body>

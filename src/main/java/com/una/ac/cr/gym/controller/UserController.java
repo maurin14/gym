@@ -90,7 +90,7 @@ public class UserController {
         if(!fieldErrors.isEmpty()){
             model.addAttribute("userNew", userNew);
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("messageError", "Revise los datos.");
             return "user/formUser";
         }
 
@@ -98,12 +98,12 @@ public class UserController {
         
         if(result){
             if(isNew){
-                redirect.addFlashAttribute("messageSuccess", "Usuario guardado correctamente");
+                redirect.addFlashAttribute("messageSuccess", "Guardado.");
             }else{
-                redirect.addFlashAttribute("messageSuccess", "Usuario actualizado correctamente");
+                redirect.addFlashAttribute("messageSuccess", "Actualizado.");
             }
         }else{
-            redirect.addFlashAttribute("messageError", "No se pudo guardar el usuario");
+            redirect.addFlashAttribute("messageError", "No se pudo guardar.");
         }
 
         return "redirect:/users";
@@ -121,7 +121,7 @@ public class UserController {
         User u = uService.getUserById(id);
 
         if(u == null){
-            redirect.addFlashAttribute("messageError", "Usuario no encontrado");
+            redirect.addFlashAttribute("messageError", "No encontrado.");
             return "redirect:/users";
         }
 
@@ -141,7 +141,7 @@ public class UserController {
         User u = uService.getUserById(id);
      
         if(u == null){
-            redirect.addFlashAttribute("messageError", "Usuario no encontrado");
+            redirect.addFlashAttribute("messageError", "No encontrado.");
             return "redirect:/users";
         }
 
@@ -159,9 +159,9 @@ public class UserController {
         }
 
         if(uService.delete(id)){
-            redirect.addFlashAttribute("messageSuccess", "Usuario eliminado correctamente");
+            redirect.addFlashAttribute("messageSuccess", "Eliminado.");
         }else{
-            redirect.addFlashAttribute("messageError", "No se pudo eliminar el usuario");
+            redirect.addFlashAttribute("messageError", "No se pudo eliminar.");
         }
 
         return "redirect:/users";

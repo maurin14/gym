@@ -2,9 +2,9 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
-const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
+const attendanceBasePath = window.attendanceBasePath || (window.location.pathname.startsWith("/admin/attendance")
         ? "/admin/attendance"
-        : "/trainer/attendances";
+        : "/trainer/attendances");
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -140,8 +140,14 @@ function deleteAttendance(idAttendance) {
         fetch("/attendances/" + idAttendance, {
             method: "DELETE"
         })
-        .then(() => {
-            showAdminSuccess("Asistencia eliminada.").then(loadAttendances);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo eliminar.");
+            }
+            showAdminSuccess("Eliminado.").then(loadAttendances);
+        })
+        .catch(error => {
+            showAdminError(error.message || "No se pudo eliminar.");
         });
     });
 }

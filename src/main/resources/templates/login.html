@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Iniciar sesión</title>
+    <title>Iniciar sesion</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="login-page">
 
-<div class="container form-container">
-    <h1>Iniciar sesión</h1>
-
-    <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
-
-    <div class="login-logo">
-        <img th:src="@{/images/logo.jpeg}" alt="Sam Gym Fitness" class="hero-logo">
-    </div>
-
-    <form th:action="@{/login}" method="post">
-
-        <label>Nombre de usuario</label>
-        <input type="text" name="username" required placeholder="Ingrese su usuario">
-
-        <label>Contraseña</label>
-        <input type="password" name="password" required placeholder="Ingrese su contraseña">
-
-        <button type="submit" class="btn-primary">Ingresar</button>
-
-        <div class="buttons">
-            <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
+<main class="login-shell">
+    <div class="login-card">
+        <div class="login-logo">
+            <img th:src="@{/images/logo.jpeg}" alt="Sam Gym Fitness" class="hero-logo">
         </div>
-    </form>
-</div>
+
+        <h1>Iniciar sesion</h1>
+
+        <div th:if="${messageError}" class="alert error-box" th:text="${messageError}"></div>
+        <div th:if="${param.logout}" class="status-active">Sesion cerrada.</div>
+
+        <form th:action="@{/login}" method="post" autocomplete="off">
+            <label for="username">Nombre de usuario</label>
+            <input id="username" type="text" name="username" required placeholder="Ingrese su usuario">
+
+            <label for="password">Contrasena</label>
+            <input id="password" type="password" name="password" required placeholder="Ingrese su contrasena">
+
+            <button type="submit" class="btn-primary">Ingresar</button>
+
+            <div class="buttons">
+                <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
+            </div>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>

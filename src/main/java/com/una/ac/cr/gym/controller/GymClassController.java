@@ -12,6 +12,7 @@ import com.una.ac.cr.gym.service.UserService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,42 +30,50 @@ public class GymClassController {
     }
 
     @GetMapping("/trainer/classes")
-    public String trainerClassesList() {
+    public String trainerClassesList(Model model) {
+        model.addAttribute("classBasePath", "/trainer/classes");
         return "trainer/classes/list";
     }
 
     @GetMapping("/admin/classes")
-    public String adminClassesList() {
+    public String adminClassesList(Model model) {
+        model.addAttribute("classBasePath", "/admin/classes");
         return "trainer/classes/list";
     }
 
     @GetMapping("/trainer/classes/form")
-    public String trainerClassesForm() {
+    public String trainerClassesForm(Model model) {
+        model.addAttribute("classBasePath", "/trainer/classes");
         return "trainer/classes/form";
     }
 
     @GetMapping("/admin/classes/form")
-    public String adminClassesForm() {
+    public String adminClassesForm(Model model) {
+        model.addAttribute("classBasePath", "/admin/classes");
         return "trainer/classes/form";
     }
 
     @GetMapping("/trainer/classes/form/{idClass}")
-    public String trainerClassesEdit(@PathVariable int idClass) {
+    public String trainerClassesEdit(@PathVariable int idClass, Model model) {
+        model.addAttribute("classBasePath", "/trainer/classes");
         return "trainer/classes/form";
     }
 
     @GetMapping("/trainer/classes/edit/{idClass}")
-    public String trainerClassesEditAlias(@PathVariable int idClass) {
+    public String trainerClassesEditAlias(@PathVariable int idClass, Model model) {
+        model.addAttribute("classBasePath", "/trainer/classes");
         return "trainer/classes/form";
     }
 
     @GetMapping("/admin/classes/form/{idClass}")
-    public String adminClassesEdit(@PathVariable int idClass) {
+    public String adminClassesEdit(@PathVariable int idClass, Model model) {
+        model.addAttribute("classBasePath", "/admin/classes");
         return "trainer/classes/form";
     }
 
     @GetMapping("/admin/classes/edit/{idClass}")
-    public String adminClassesEditAlias(@PathVariable int idClass) {
+    public String adminClassesEditAlias(@PathVariable int idClass, Model model) {
+        model.addAttribute("classBasePath", "/admin/classes");
         return "trainer/classes/form";
     }
 

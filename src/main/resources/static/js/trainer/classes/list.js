@@ -2,9 +2,9 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
-const classBasePath = window.location.pathname.startsWith("/admin/classes")
+const classBasePath = window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
         ? "/admin/classes"
-        : "/trainer/classes";
+        : "/trainer/classes");
 
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
@@ -132,8 +132,14 @@ function deleteClass(idClass) {
         fetch("/classes/" + idClass, {
             method: "DELETE"
         })
-        .then(() => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo eliminar.");
+            }
             showAdminSuccess("Clase eliminada.").then(loadClasses);
+        })
+        .catch(error => {
+            showAdminError(error.message || "No se pudo eliminar.");
         });
     });
 }

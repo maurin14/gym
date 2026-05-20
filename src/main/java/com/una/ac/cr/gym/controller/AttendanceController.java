@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -27,22 +28,25 @@ public class AttendanceController {
     }
 
     @GetMapping("/trainer/attendances")
-    public String trainerAttendancesList() {
+    public String trainerAttendancesList(Model model) {
+        model.addAttribute("attendanceBasePath", "/trainer/attendances");
         return "trainer/attendances/list";
     }
 
     @GetMapping("/trainer/attendances/form")
-    public String trainerAttendancesForm() {
+    public String trainerAttendancesForm(Model model) {
+        model.addAttribute("attendanceBasePath", "/trainer/attendances");
         return "trainer/attendances/form";
     }
 
     @GetMapping("/trainer/attendances/form/{idAttendance}")
-    public String trainerAttendancesEdit(@PathVariable int idAttendance) {
+    public String trainerAttendancesEdit(@PathVariable int idAttendance, Model model) {
+        model.addAttribute("attendanceBasePath", "/trainer/attendances");
         return "trainer/attendances/form";
     }
 
     @GetMapping("/admin/attendance")
-    public String adminAttendanceList(HttpSession session) {
+    public String adminAttendanceList(HttpSession session, Model model) {
         User userSession = (User) session.getAttribute("user");
 
         if (userSession == null) {
@@ -53,6 +57,7 @@ public class AttendanceController {
             return "redirect:/client/home";
         }
 
+        model.addAttribute("attendanceBasePath", "/admin/attendance");
         return "admin/attendance";
     }
 
@@ -217,6 +222,46 @@ public class AttendanceController {
     }
 
     @ResponseBody
+    @GetMapping("/client/attendances/page")
+    public Map<String, Object> getClientAttendancesPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            HttpSession session) {
+
+        User userSession = (User) session.getAttribute("user");
+
+        if (userSession == null) {
+            return Map.of("currentPage", 1, "totalPages", 0, "attendances", List.of());
+        }
+
+        int currentPage = Math.max(page, 0);
+        Page<Attendance> attendancePage = attendanceService.getClientAttendancesPage(
+                userSession.getUserId(),
+                currentPage,
+                size
+        );
+
+        if (currentPage >= attendancePage.getTotalPages() && attendancePage.getTotalPages() > 0) {
+            currentPage = attendancePage.getTotalPages() - 1;
+            attendancePage = attendanceService.getClientAttendancesPage(
+                    userSession.getUserId(),
+                    currentPage,
+                    size
+            );
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("currentPage", currentPage + 1);
+        response.put("totalPages", attendancePage.getTotalPages());
+        response.put("attendances", attendancePage.getContent()
+                .stream()
+                .map(this::toAttendanceMap)
+                .toList());
+
+        return response;
+    }
+
+    @ResponseBody
     @GetMapping("/attendances/{idAttendance}")
     public Attendance getAttendanceById(
             @PathVariable int idAttendance) {
@@ -272,5 +317,27 @@ public class AttendanceController {
     @GetMapping("/attendances/clients")
     public List<User> getClients() {
         return userService.filterUsers(null, "client");
+    }
+
+    private Map<String, Object> toAttendanceMap(Attendance attendance) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idAttendance", attendance.getIdAttendance());
+        map.put("attendanceDate", attendance.getAttendanceDate());
+        map.put("attendanceStatus", attendance.getAttendanceStatus());
+        map.put("observation", attendance.getObservation());
+        map.put("registerDate", attendance.getRegisterDate());
+
+        map.put("clientName",
+                attendance.getClient() != null
+                ? attendance.getClient().getFullName()
+                : "Sin cliente");
+
+        map.put("classType",
+                attendance.getGymClass() != null
+                ? attendance.getGymClass().getClassType()
+                : "Sin clase");
+
+        return map;
     }
 }

@@ -2,92 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Asistencias</title>
-
+    <title>Listado de asistencias</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 
-<body class="dashboard-page">
+<body class="page-portal">
 
-<header class="main-header">
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
-    <div class="header-left">
-
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-
-            <span class="brand-subtitle">
-                Panel de entrenador / administrador
-            </span>
-        </div>
-
+<main class="container portal-card admin-page-card">
+    <div class="buttons admin-action-row">
+        <a class="btn-primary" th:href="${attendanceBasePath + '/form'}">Nueva asistencia</a>
     </div>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/trainer/classes}">Clases</a>
-        <a th:href="@{/trainer/attendances}">Asistencias</a>
-    </nav>
-
-</header>
-
-<section class="hero-branches">
-
-    <h1>Listado de Asistencias</h1>
-
-    <p>
-        Administración de asistencias registradas por los clientes.
-    </p>
-
-    <div style="display:flex; justify-content:center; margin-top:30px;">
-
-        <a class="btn-primary"
-           th:href="@{/trainer/attendances/form}">
-            Agregar Asistencia
-        </a>
-
-    </div>
-
-</section>
-
-<div class="public-container">
-
-    <table>
+    <table class="portal-table">
         <thead>
-            <tr>
-                <th>Cliente</th>
-                <th>Clase</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Observación</th>
-                <th>Registro</th>
-                <th>Acciones</th>
-            </tr>
+        <tr>
+            <th>Cliente</th>
+            <th>Clase</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Observaci&oacute;n</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+        </tr>
         </thead>
 
         <tbody id="attendancesTableBody"></tbody>
     </table>
 
-    <div class="pagination">
+    <div id="attendancesPagination" class="pagination"></div>
+</main>
 
-        <button id="pageInfo" disabled>
-            Página 1 de 1
-        </button>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
-        <button id="prevBtn"
-                onclick="previousPage()">
-            Anterior
-        </button>
-
-        <button id="nextBtn"
-                onclick="nextPage()">
-            Siguiente
-        </button>
-
-    </div>
-
-</div>
-
+<script th:inline="javascript">
+    window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/trainer/attendances";
+</script>
 <script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>

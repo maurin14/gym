@@ -16,9 +16,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,12 +87,7 @@ public class ReportService implements CRUD<Report>{
     public List<Report> getReports(){
         List<Report> reports = rData.findAll();
 
-        for(Report r : reports){
-            User u = uData.findById(r.getGeneratedBy()).orElse(null);
-            if(u != null){
-                r.setUserName(u.getFullName());
-            }
-        }
+        populateReportUserNames(reports);
 
         return reports;
     }
@@ -110,12 +108,7 @@ public class ReportService implements CRUD<Report>{
             reports = rData.findAll();
         }
 
-        for(Report r : reports){
-            User u = uData.findById(r.getGeneratedBy()).orElse(null);
-            if(u != null){
-                r.setUserName(u.getFullName());
-            }
-        }
+        populateReportUserNames(reports);
 
         return reports;
     }
@@ -151,11 +144,32 @@ public class ReportService implements CRUD<Report>{
     }
 
     private void populateReportUserNames(Page<Report> reportPage){
-        for(Report r : reportPage.getContent()){
-            User u = uData.findById(r.getGeneratedBy()).orElse(null);
-            if(u != null){
-                r.setUserName(u.getFullName());
+        populateReportUserNames(reportPage.getContent());
+    }
+
+    private void populateReportUserNames(List<Report> reports){
+        if(reports == null || reports.isEmpty()){
+            return;
+        }
+
+        Set<Integer> userIds = new HashSet<>();
+
+        for(Report report : reports){
+            if(report != null && report.getGeneratedBy() != null){
+                userIds.add(report.getGeneratedBy());
             }
+        }
+
+        Map<Integer, User> usersById = new HashMap<>();
+        uData.findAllById(userIds).forEach(user -> usersById.put(user.getUserId(), user));
+
+        for(Report report : reports){
+            if(report == null || report.getGeneratedBy() == null){
+                continue;
+            }
+
+            User user = usersById.get(report.getGeneratedBy());
+            report.setUserName(user != null ? user.getFullName() : "Usuario no encontrado");
         }
     }
 

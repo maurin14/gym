@@ -34,11 +34,13 @@
                 <div class="toolbar-field">
                     <label for="classId">Clase</label>
                     <select id="classId" onchange="setAttendanceDate()"></select>
+                    <small id="classIdError" class="field-error"></small>
                 </div>
 
                 <div class="toolbar-field">
                     <label for="attendanceDate">Fecha de asistencia</label>
                     <input type="date" id="attendanceDate" readonly>
+                    <small id="attendanceDateError" class="field-error"></small>
                 </div>
 
                 <div class="toolbar-field full-span">
@@ -58,6 +60,7 @@
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/attendances/form.js}" defer></script>
 
