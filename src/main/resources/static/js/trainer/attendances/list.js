@@ -2,6 +2,7 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
+
 const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
         ? "/admin/attendance"
         : "/trainer/attendances";
@@ -52,7 +53,7 @@ function showAttendances(attendances) {
                         ${attendance.attendanceStatus}
                     </span>
                 </td>
-                <td>${attendance.observation}</td>
+                <td>${attendance.observation || ""}</td>
                 <td>${attendance.registerDate}</td>
                 <td class="actions">
                     <a class="btn-primary"
@@ -105,11 +106,34 @@ function previousPage() {
 
 function deleteAttendance(idAttendance) {
 
-    fetch("/attendances/" + idAttendance, {
-        method: "DELETE"
-    })
-    .then(() => {
-        alert("Asistencia eliminada correctamente");
-        loadAttendances();
+    Swal.fire({
+        title: "¿Eliminar asistencia?",
+        text: "Esta acción eliminará el registro seleccionado.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d97818",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            fetch("/attendances/" + idAttendance, {
+                method: "DELETE"
+            })
+            .then(() => {
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Asistencia eliminada",
+                    text: "La asistencia se eliminó correctamente.",
+                    confirmButtonColor: "#d97818"
+                }).then(() => {
+                    loadAttendances();
+                });
+
+            });
+        }
     });
 }
