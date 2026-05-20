@@ -9,6 +9,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -18,7 +20,8 @@
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form class="portal-form" th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off" novalidate>
+    <form class="portal-form" th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off" novalidate
+          th:attr="data-admin-confirm=${userNew.userId != null ? 'Guardar cambios?' : 'Registrar usuario?'},data-admin-loading='Guardando...'">
         <input type="hidden" th:field="*{userId}">
 
         <label>Nombre completo</label>

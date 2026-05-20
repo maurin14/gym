@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Formulario rutina</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -15,7 +17,8 @@
         <span th:text="${error}"></span>
     </div>
 
-    <form class="portal-form" th:action="@{/admin/routines/save}" th:object="${routine}" method="post" novalidate>
+    <form class="portal-form" th:action="@{/admin/routines/save}" th:object="${routine}" method="post" novalidate
+          th:attr="data-admin-confirm=${routine.idRoutine > 0 ? 'Guardar cambios?' : 'Registrar rutina?'},data-admin-loading='Guardando...'">
         <input type="hidden" th:field="*{idRoutine}" />
 
         <label>Nombre</label>

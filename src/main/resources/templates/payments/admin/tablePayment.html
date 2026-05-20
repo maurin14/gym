@@ -66,30 +66,29 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </table>
 
     <div class="pagination" th:with="visualTotalPages=${payments.totalPages > 0 ? payments.totalPages : 1}">
-        <button type="button"
-                th:class="${payments.hasPrevious() ? 'btn-secondary' : 'btn-secondary disabled'}"
-                th:disabled="${!payments.hasPrevious()}"
-                th:data-page="${payments.hasPrevious() ? payments.number - 1 : payments.number}"
-                onclick="changePaymentPage(this)">
+        <a th:if="${payments.hasPrevious()}"
+           class="btn-secondary"
+           th:href="@{/admin/payments(page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod}, branchId=${branchId})}">
             Anterior
-        </button>
+        </a>
+        <a th:if="${!payments.hasPrevious()}" class="btn-secondary disabled" href="#">
+            Anterior
+        </a>
 
-        <span th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}">
-            <button type="button"
-                    th:text="${i + 1}"
-                    th:data-page="${i}"
-                    th:class="${i == payments.number ? 'btn-primary page-active' : 'btn-secondary'}"
-                    onclick="changePaymentPage(this)">
-            </button>
-        </span>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:text="${i + 1}"
+           th:href="@{/admin/payments(page=${i}, status=${status}, paymentMethod=${paymentMethod}, branchId=${branchId})}"
+           th:class="${i == payments.number ? 'btn-primary page-active' : 'btn-secondary'}">
+        </a>
 
-        <button type="button"
-                th:class="${payments.hasNext() ? 'btn-secondary' : 'btn-secondary disabled'}"
-                th:disabled="${!payments.hasNext()}"
-                th:data-page="${payments.hasNext() ? payments.number + 1 : payments.number}"
-                onclick="changePaymentPage(this)">
+        <a th:if="${payments.hasNext()}"
+           class="btn-secondary"
+           th:href="@{/admin/payments(page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod}, branchId=${branchId})}">
             Siguiente
-        </button>
+        </a>
+        <a th:if="${!payments.hasNext()}" class="btn-secondary disabled" href="#">
+            Siguiente
+        </a>
     </div>
 
 </div>

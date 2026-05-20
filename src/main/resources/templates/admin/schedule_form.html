@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}">Formulario de horario</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -14,7 +16,8 @@
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form class="portal-form" th:action="@{/admin/schedules/save}" th:object="${schedule}" method="post" novalidate>
+    <form class="portal-form" th:action="@{/admin/schedules/save}" th:object="${schedule}" method="post" novalidate
+          th:attr="data-admin-confirm=${schedule.id > 0 ? 'Guardar cambios?' : 'Registrar horario?'},data-admin-loading='Guardando...'">
         <input type="hidden" th:field="*{id}">
 
         <label>Sucursal</label>

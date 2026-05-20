@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -78,7 +80,8 @@
                     <a th:href="@{/reports/edit(id=${r.reportId})}" class="btn-secondary">Editar</a>
                     <a th:href="@{/reports/delete(id=${r.reportId})}"
                        class="btn-danger"
-                       onclick="return confirm('Desea eliminar este reporte?')">Eliminar</a>
+                       data-delete-link
+                       data-delete-title="Eliminar reporte?">Eliminar</a>
                 </div>
             </td>
         </tr>
@@ -109,6 +112,25 @@
         </a>
     </nav>
 </main>
+
+<script>
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({
+                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                text: 'Esta accion no se puede deshacer.',
+                confirmText: 'Eliminar',
+                icon: 'warning'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 

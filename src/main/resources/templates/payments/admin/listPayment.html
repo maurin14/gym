@@ -5,6 +5,7 @@
     <title>Administración de Pagos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
     <script th:src="@{/js/payment.js}"></script>
 </head>
 <body class="page-portal">
@@ -17,15 +18,15 @@
         <a th:href="@{/admin/payments/new}" class="btn-primary">Nuevo pago</a>
     </div>
 
-    <form class="admin-filter-row portal-filters" onsubmit="filterPayments(); return false;">
-        <select id="filterStatus">
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/payments}" method="get">
+        <select id="filterStatus" name="status">
             <option value="">Todos los estados</option>
             <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
             <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
             <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
         </select>
 
-        <select id="filterPaymentMethod">
+        <select id="filterPaymentMethod" name="paymentMethod">
             <option value="">Todos los métodos</option>
             <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
             <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
@@ -33,7 +34,7 @@
             <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
         </select>
 
-        <select id="filterBranch">
+        <select id="filterBranch" name="branchId">
             <option value="">Todas las sucursales</option>
             <option th:each="b : ${branches}"
                     th:value="${b.id}"
@@ -64,11 +65,7 @@
         if (success[0] === "delete") message = "Pago eliminado correctamente.";
         if (success[0] === "status") message = "Estado del pago actualizado correctamente.";
 
-        Swal.fire({
-            icon: "success",
-            title: message,
-            confirmButtonText: "OK"
-        });
+        showAdminSuccess(message);
     }
 </script>
 

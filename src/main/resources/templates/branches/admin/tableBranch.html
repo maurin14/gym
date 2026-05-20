@@ -66,33 +66,28 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:with="visualTotalPages=${branches.totalPages > 0 ? branches.totalPages : 1}">
+    <nav class="pagination" aria-label="Paginacion de sucursales"
+         th:with="visualTotalPages=${branches.totalPages > 0 ? branches.totalPages : 1}">
 
-        <button type="button"
-                th:class="${branches.hasPrevious() ? 'btn-secondary' : 'btn-secondary disabled'}"
-                th:disabled="${!branches.hasPrevious()}"
-                th:data-page="${branches.hasPrevious() ? branches.number - 1 : branches.number}"
-                onclick="changeBranchPage(this)">
+        <a class="btn-secondary"
+           th:classappend="${!branches.hasPrevious()} ? ' disabled'"
+           th:href="@{/admin/branches(page=${branches.hasPrevious() ? branches.number - 1 : branches.number}, name=${name}, active=${active})}">
             Anterior
-        </button>
+        </a>
 
-        <button type="button"
-                th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
-                th:text="${i + 1}"
-                th:data-page="${i}"
-                th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}"
-                onclick="changeBranchPage(this)">
-        </button>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:text="${i + 1}"
+           th:href="@{/admin/branches(page=${i}, name=${name}, active=${active})}"
+           th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}">
+        </a>
 
-        <button type="button"
-                th:class="${branches.hasNext() ? 'btn-secondary' : 'btn-secondary disabled'}"
-                th:disabled="${!branches.hasNext()}"
-                th:data-page="${branches.hasNext() ? branches.number + 1 : branches.number}"
-                onclick="changeBranchPage(this)">
+        <a class="btn-secondary"
+           th:classappend="${!branches.hasNext()} ? ' disabled'"
+           th:href="@{/admin/branches(page=${branches.hasNext() ? branches.number + 1 : branches.number}, name=${name}, active=${active})}">
             Siguiente
-        </button>
+        </a>
 
-    </div>
+    </nav>
 
 </div>
 

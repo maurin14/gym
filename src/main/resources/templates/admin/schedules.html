@@ -6,6 +6,7 @@
     <title>Horarios - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -73,10 +74,11 @@
                     <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : 'Sin sucursal'}">Sucursal</td>
                     <td class="actions">
                         <a th:href="@{/admin/schedules/edit/{id}(id=${scheduleItem.id})}" class="btn-primary">Editar</a>
-                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary">Cambiar estado</a>
+                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary" data-status-link>Cambiar estado</a>
                         <a th:href="@{/admin/schedules/delete/{id}(id=${scheduleItem.id})}"
                            class="btn-danger"
-                           onclick="return confirm('¿Eliminar este horario?');">Eliminar</a>
+                           data-delete-link
+                           data-delete-title="Eliminar horario?">Eliminar</a>
                     </td>
                 </tr>
             </tbody>
@@ -108,11 +110,41 @@
     const successMessage = [[${successMessage != null ? successMessage : null}]];
     const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
     if (successMessage != null) {
-        Swal.fire({ icon: "success", title: successMessage, confirmButtonText: "OK" });
+        showAdminSuccess(successMessage);
     }
     if (errorMessage != null) {
-        Swal.fire({ icon: "error", title: errorMessage, confirmButtonText: "OK" });
+        showAdminError(errorMessage);
     }
+</script>
+
+<script>
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({
+                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                text: 'Esta accion no se puede deshacer.',
+                confirmText: 'Eliminar',
+                icon: 'warning'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+    document.querySelectorAll('[data-status-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({ title: 'Cambiar estado?', confirmText: 'Si' }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Procesando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
 </script>
 
 </body>

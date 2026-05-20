@@ -245,7 +245,7 @@ h1, h2, h3 {
 }
 
 .form-container {
-    max-width: 650px;
+    max-width: 980px;
 }
 
 .public-container {
@@ -428,30 +428,45 @@ textarea:focus {
 
 .admin-page-card {
     max-width: 1180px;
-    margin: 35px auto;
+    margin: 24px auto;
 }
 
 /* FORMULARIO PORTAL CORREGIDO */
 
 .portal-form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 24px;
+    grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+    gap: 8px 16px;
     align-items: start;
 }
 
-.portal-form > label,
-.portal-form > input,
-.portal-form > select,
-.portal-form > textarea,
+.portal-form:has(> .form-group) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.portal-form > .form-group {
+    min-width: 0;
+}
+
 .portal-form > small,
 .portal-form > span,
 .portal-form > .image-preview-container {
     grid-column: 1 / -1;
 }
 
+.portal-form > input,
+.portal-form > select,
+.portal-form > textarea {
+    grid-column: 2;
+}
+
+.portal-form > label {
+    grid-column: 1;
+    align-self: center;
+}
+
 .portal-form > label:not(:first-of-type) {
-    margin-top: 14px;
+    margin-top: 0;
 }
 
 .form-group {
@@ -463,19 +478,23 @@ textarea:focus {
 .portal-form label {
     color: #111827;
     font-weight: 900;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .portal-form input,
 .portal-form select,
 .portal-form textarea {
     width: 100%;
-    min-height: 56px;
-    padding: 14px 16px;
+    min-height: 42px;
+    padding: 9px 12px;
     border: 1px solid #d1d5db;
-    border-radius: 16px;
-    font-size: 16px;
+    border-radius: 10px;
+    font-size: 14px;
     background: #f9fafb;
+}
+
+.portal-form textarea {
+    min-height: 84px;
 }
 
 .field-error,
@@ -491,8 +510,8 @@ textarea:focus {
 
 .portal-form .buttons {
     grid-column: 1 / -1;
-    justify-content: center;
-    margin-top: 24px;
+    justify-content: flex-end;
+    margin-top: 14px;
 }
 
 input.invalid,
@@ -1241,6 +1260,15 @@ tr:hover,
     .roles-grid,
     .triple-section {
         grid-template-columns: 1fr;
+    }
+
+    .portal-form > label,
+    .portal-form > input,
+    .portal-form > select,
+    .portal-form > textarea,
+    .portal-form > small,
+    .portal-form > span {
+        grid-column: 1 / -1;
     }
 
     .landing-hero {

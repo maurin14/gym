@@ -117,12 +117,23 @@ function changeClassPage(element) {
 
 function deleteClass(idClass) {
 
-    fetch("/classes/" + idClass, {
-        method: "DELETE"
-    })
-    .then(() => {
-        alert("Clase eliminada correctamente");
+    confirmAdminAction({
+        title: "Eliminar clase?",
+        text: "Esta accion no se puede deshacer.",
+        confirmText: "Eliminar",
+        icon: "warning"
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
 
-        loadClasses();
+        showAdminLoading("Eliminando...");
+
+        fetch("/classes/" + idClass, {
+            method: "DELETE"
+        })
+        .then(() => {
+            showAdminSuccess("Clase eliminada.").then(loadClasses);
+        });
     });
 }

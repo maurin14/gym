@@ -5,6 +5,7 @@
     <title th:text="${title}">Lista de productos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -132,28 +133,21 @@
     const successMessage = /*[[${successMessage}]]*/ null;
 
     if (successMessage) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Operacion realizada',
-            text: successMessage,
-            confirmButtonText: 'Aceptar'
-        });
+        showAdminSuccess(successMessage);
     }
 
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Desea eliminar este elemento?',
-                text: 'Esta acción no se puede deshacer.',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#dc2626'
+            confirmAdminAction({
+                title: 'Eliminar producto?',
+                text: 'Esta accion no se puede deshacer.',
+                confirmText: 'Eliminar',
+                icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
                     window.location.href = link.href;
                 }
             });

@@ -149,6 +149,8 @@ function saveClass() {
 
     classSaving = true;
 
+    showAdminLoading("Guardando...");
+
     fetch(url, {
         method: method,
         headers: {
@@ -165,8 +167,9 @@ function saveClass() {
             return;
         }
 
-        alert("Clase guardada correctamente");
-        window.location.href = getClassesListPath();
+        showAdminSuccess("Clase guardada.").then(() => {
+            window.location.href = getClassesListPath();
+        });
     })
     .catch(() => {
         classSaving = false;
@@ -201,5 +204,5 @@ function showClassError(field, message) {
         return;
     }
 
-    alert(message);
+    showAdminError(message);
 }

@@ -125,11 +125,23 @@ function changeAttendancePage(element) {
 
 function deleteAttendance(idAttendance) {
 
-    fetch("/attendances/" + idAttendance, {
-        method: "DELETE"
-    })
-    .then(() => {
-        alert("Asistencia eliminada correctamente");
-        loadAttendances();
+    confirmAdminAction({
+        title: "Eliminar asistencia?",
+        text: "Esta accion no se puede deshacer.",
+        confirmText: "Eliminar",
+        icon: "warning"
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        showAdminLoading("Eliminando...");
+
+        fetch("/attendances/" + idAttendance, {
+            method: "DELETE"
+        })
+        .then(() => {
+            showAdminSuccess("Asistencia eliminada.").then(loadAttendances);
+        });
     });
 }

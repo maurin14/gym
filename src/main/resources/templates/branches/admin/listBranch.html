@@ -5,6 +5,7 @@
     <title>Administración de sucursales</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
     <script th:src="@{/js/branch.js}"></script>
 </head>
 <body class="page-portal">
@@ -20,10 +21,10 @@
         <a th:href="@{/admin/branches/new}" class="btn-primary">Nueva sucursal</a>
     </div>
 
-    <form class="admin-filter-row portal-filters" onsubmit="filterBranches(); return false;">
-        <input type="text" id="filterName" placeholder="Buscar por nombre" th:value="${name}">
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/branches}" method="get">
+        <input type="text" id="filterName" name="name" placeholder="Buscar por nombre" th:value="${name}">
 
-        <select id="filterActive">
+        <select id="filterActive" name="active">
             <option value="">Todos los estados</option>
             <option value="true" th:selected="${active == 'true'}">Activa</option>
             <option value="false" th:selected="${active == 'false'}">Inactiva</option>
@@ -51,30 +52,18 @@
         if (success[0] === "delete") message = "Sucursal eliminada correctamente.";
         if (success[0] === "status") message = "Estado de la sucursal actualizado correctamente.";
 
-        Swal.fire({
-            icon: "success",
-            title: message,
-            confirmButtonText: "OK"
-        });
+        showAdminSuccess(message);
     }
 
     const successMessage = [[${successMessage != null ? successMessage : null}]];
     const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
 
     if (successMessage != null) {
-        Swal.fire({
-            icon: "success",
-            title: successMessage,
-            confirmButtonText: "OK"
-        });
+        showAdminSuccess(successMessage);
     }
 
     if (errorMessage != null) {
-        Swal.fire({
-            icon: "error",
-            title: errorMessage,
-            confirmButtonText: "OK"
-        });
+        showAdminError(errorMessage);
     }
 </script>
 

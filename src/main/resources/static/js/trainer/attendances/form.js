@@ -107,7 +107,7 @@ function saveAttendance() {
     const observation = document.getElementById("observation").value.trim();
 
     if (clientId === "" || classId === "" || attendanceDate === "" || attendanceStatus === "") {
-        alert("Debe completar todos los campos obligatorios.");
+        showAdminError("Revise los datos.", "Debe completar todos los campos obligatorios.");
         return;
     }
 
@@ -128,6 +128,8 @@ function saveAttendance() {
 
     attendanceSaving = true;
 
+    showAdminLoading("Guardando...");
+
     fetch(url, {
         method: method,
         headers: {
@@ -139,10 +141,11 @@ function saveAttendance() {
             throw new Error("No se pudo guardar la asistencia.");
         }
 
-        alert("Asistencia guardada correctamente");
-        window.location.href = attendanceBasePath;
+        showAdminSuccess("Asistencia guardada.").then(() => {
+            window.location.href = attendanceBasePath;
+        });
     }).catch(error => {
         attendanceSaving = false;
-        alert(error.message || "No se pudo guardar la asistencia.");
+        showAdminError(error.message || "No se pudo guardar la asistencia.");
     });
 }

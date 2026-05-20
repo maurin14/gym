@@ -81,6 +81,9 @@ public class PaymentController {
         }
 
         model.addAttribute("payments", payments);
+        model.addAttribute("status", status);
+        model.addAttribute("paymentMethod", paymentMethod);
+        model.addAttribute("branchId", branchId);
 
         return "payments/admin/tablePayment :: tablePayment";
     }

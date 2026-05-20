@@ -5,6 +5,7 @@
     <title th:text="${title}">Lista de rutinas</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
@@ -103,28 +104,18 @@
     const errorMessage = /*[[${errorMessage}]]*/ null;
 
     if (successMessage) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Operacion realizada',
-            text: successMessage,
-            confirmButtonText: 'Aceptar'
-        });
+        showAdminSuccess(successMessage);
     }
 
     if (errorMessage) {
-        Swal.fire({
-            icon: 'error',
-            title: 'No se pudo eliminar',
-            text: errorMessage,
-            confirmButtonText: 'Aceptar'
-        });
+        showAdminError('No se pudo eliminar', errorMessage);
     }
 
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
 
-            Swal.fire({
+            confirmAdminAction({
                 icon: 'warning',
                 title: 'Desea eliminar este elemento?',
                 text: 'Esta acción no se puede deshacer.',
@@ -134,6 +125,7 @@
                 confirmButtonColor: '#dc2626'
             }).then(function (result) {
                 if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
                     window.location.href = link.href;
                 }
             });

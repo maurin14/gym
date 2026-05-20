@@ -10,9 +10,12 @@ import com.una.ac.cr.gym.repository.PaymentRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -187,11 +190,30 @@ public class PaymentService implements CRUD<Payment> {
     }
 
     private void populateClientNames(List<Payment> payments) {
-        if (payments == null) {
+        if (payments == null || payments.isEmpty()) {
             return;
         }
 
-        payments.forEach(this::populateClientName);
+        Set<Integer> userIds = new HashSet<>();
+
+        for (Payment payment : payments) {
+            if (payment != null && payment.getIdUser() != null) {
+                userIds.add(payment.getIdUser());
+            }
+        }
+
+        Map<Integer, User> usersById = new HashMap<>();
+        userRepository.findAllById(userIds)
+                .forEach(user -> usersById.put(user.getUserId(), user));
+
+        for (Payment payment : payments) {
+            if (payment == null || payment.getIdUser() == null) {
+                continue;
+            }
+
+            User user = usersById.get(payment.getIdUser());
+            payment.setClientName(user != null ? user.getFullName() : "Cliente no encontrado");
+        }
     }
 
     private void populateClientName(Payment payment) {
