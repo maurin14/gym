@@ -23,7 +23,7 @@ public class UserController {
     private UserService uService;
     
     @GetMapping({"", "/"})
-    public String index(@RequestParam(defaultValue = "1") int page,
+    public String index(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(required = false) String fullName,
                         @RequestParam(required = false) String role,
                         Model model,
@@ -37,22 +37,17 @@ public class UserController {
             return "redirect:/";
         }
 
-        if((fullName != null && !fullName.trim().isEmpty()) 
-                || (role != null && !role.trim().isEmpty())){
+        int size = 5;
+        int currentPage = Math.max(page, 0);
+        Page<User> userPage = uService.filterUsersByPage(fullName, role, currentPage, size);
 
-            model.addAttribute("users", uService.filterUsers(fullName, role));
-            model.addAttribute("fullName", fullName);
-            model.addAttribute("role", role);
-            model.addAttribute("currentPage", 1);
-            model.addAttribute("totalPages", 1);
-            return "user/listUser";
+        if (currentPage >= userPage.getTotalPages() && userPage.getTotalPages() > 0) {
+            currentPage = userPage.getTotalPages() - 1;
+            userPage = uService.filterUsersByPage(fullName, role, currentPage, size);
         }
 
-        int size = 5;
-        Page<User> userPage = uService.getUsersByPage(page, size);
-
         model.addAttribute("users", userPage.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("fullName", fullName);
         model.addAttribute("role", role);
@@ -86,6 +81,11 @@ public class UserController {
         }
         
         Map<String, String> fieldErrors = uService.validateFields(userNew);
+        boolean isNew = userNew.getUserId() == null;
+
+        if (!isNew && uService.getUserById(userNew.getUserId()) == null) {
+            fieldErrors.put("form", "El usuario que intenta editar no existe.");
+        }
 
         if(!fieldErrors.isEmpty()){
             model.addAttribute("userNew", userNew);
@@ -93,8 +93,7 @@ public class UserController {
             model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "user/formUser";
         }
-        
-        boolean isNew = userNew.getUserId() == null;
+
         boolean result = uService.save(userNew);
         
         if(result){

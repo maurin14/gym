@@ -10,21 +10,11 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de clases</h1>
-        <p class="hero-text">
-            Administra clases, entrenadores, horarios, cupos y niveles de dificultad desde un panel unificado.
-        </p>
-
-        <div class="hero-buttons centered">
-            <a class="btn-primary" th:href="@{/admin/classes/form}">Agregar clase</a>
-        </div>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
+    <div class="buttons admin-action-row">
+        <a class="btn-primary" th:href="@{/admin/classes/form}">Nueva clase</a>
+    </div>
 
     <table class="portal-table">
         <thead>
@@ -46,11 +36,7 @@
         <tbody id="classesTableBody"></tbody>
     </table>
 
-    <div class="pagination">
-        <button id="pageInfo" disabled>Página 1 de 1</button>
-        <button id="prevBtn" onclick="previousPage()">Anterior</button>
-        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
-    </div>
+    <div id="classesPagination" class="pagination"></div>
 
 </main>
 

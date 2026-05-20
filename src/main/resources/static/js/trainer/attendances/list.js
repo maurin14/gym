@@ -17,6 +17,7 @@ function loadAttendances() {
         .then(data => {
 
             totalPages = data.totalPages;
+            currentPage = data.currentPage;
 
             showAttendances(data.attendances);
             showPagination();
@@ -73,32 +74,51 @@ function showAttendances(attendances) {
 
 function showPagination() {
 
-    if (totalPages === 0) {
-        totalPages = 1;
+    const pagination = document.getElementById("attendancesPagination");
+    pagination.innerHTML = "";
+
+    const visualTotalPages = Math.max(totalPages, 1);
+
+    pagination.appendChild(createPageButton(
+            "Anterior",
+            Math.max(currentPage - 1, 1),
+            currentPage === 1 ? "btn-secondary disabled" : "btn-secondary",
+            currentPage === 1
+    ));
+
+    for (let page = 1; page <= visualTotalPages; page++) {
+        pagination.appendChild(createPageButton(
+                page,
+                page,
+                page === currentPage ? "btn-primary page-active" : "btn-secondary"
+        ));
     }
 
-    document.getElementById("pageInfo").innerText =
-            "Página " + currentPage + " de " + totalPages;
-
-    document.getElementById("prevBtn").style.display =
-            currentPage === 1 ? "none" : "inline-block";
-
-    document.getElementById("nextBtn").style.display =
-            currentPage === totalPages ? "none" : "inline-block";
+    pagination.appendChild(createPageButton(
+            "Siguiente",
+            Math.min(currentPage + 1, visualTotalPages),
+            currentPage >= visualTotalPages ? "btn-secondary disabled" : "btn-secondary",
+            currentPage >= visualTotalPages
+    ));
 }
 
-function nextPage() {
-
-    if (currentPage < totalPages) {
-        currentPage++;
-        loadAttendances();
-    }
+function createPageButton(text, page, className, disabled) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = text;
+    button.dataset.page = page;
+    button.disabled = Boolean(disabled);
+    button.addEventListener("click", function () {
+        changeAttendancePage(this);
+    });
+    return button;
 }
 
-function previousPage() {
-
-    if (currentPage > 1) {
-        currentPage--;
+function changeAttendancePage(element) {
+    const page = parseInt(element.dataset.page, 10);
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+        currentPage = page;
         loadAttendances();
     }
 }

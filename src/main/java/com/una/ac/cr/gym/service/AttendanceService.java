@@ -60,7 +60,40 @@ public class AttendanceService {
     }
 
     public Attendance updateAttendance(int idAttendance, Attendance attendance) {
+        Attendance currentAttendance = attendanceRepository.findById(idAttendance).orElse(null);
+
+        if (currentAttendance == null) {
+            return null;
+        }
+
         attendance.setIdAttendance(idAttendance);
+        attendance.setRegisterDate(currentAttendance.getRegisterDate());
+        attendance.setStatus(currentAttendance.isStatus());
+
+        GymClass currentClass = currentAttendance.getGymClass();
+        GymClass newClass = null;
+
+        if (attendance.getGymClass() != null) {
+            newClass = gymClassRepository
+                    .findById(attendance.getGymClass().getIdClass())
+                    .orElse(null);
+            attendance.setGymClass(newClass);
+        }
+
+        Integer currentClassId = currentClass != null ? currentClass.getIdClass() : null;
+        Integer newClassId = newClass != null ? newClass.getIdClass() : null;
+
+        if (currentClassId != null && !currentClassId.equals(newClassId)
+                && currentClass.getEnrolledCount() > 0) {
+            currentClass.setEnrolledCount(currentClass.getEnrolledCount() - 1);
+            gymClassRepository.save(currentClass);
+        }
+
+        if (newClassId != null && !newClassId.equals(currentClassId)) {
+            newClass.setEnrolledCount(newClass.getEnrolledCount() + 1);
+            gymClassRepository.save(newClass);
+        }
+
         return attendanceRepository.save(attendance);
     }
 

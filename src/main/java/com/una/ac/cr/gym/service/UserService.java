@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,8 +42,32 @@ public class UserService {
         return uData.findAll();
     }
 
+    public List<User> getClients(){
+        return uData.findByRole("client");
+    }
+
     public Page<User> getUsersByPage(int page, int size){
-        return uData.findAll(PageRequest.of(page - 1, size));
+        return uData.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<User> filterUsersByPage(String fullName, String role, int page, int size){
+        boolean hasName = fullName != null && !fullName.trim().isEmpty();
+        boolean hasRole = role != null && !role.trim().isEmpty();
+        Pageable pageable = PageRequest.of(page, size);
+
+        if(hasName && hasRole){
+            return uData.findByFullNameContainingIgnoreCaseAndRole(fullName, role, pageable);
+        }
+
+        if(hasName){
+            return uData.findByFullNameContainingIgnoreCase(fullName, pageable);
+        }
+
+        if(hasRole){
+            return uData.findByRole(role, pageable);
+        }
+
+        return uData.findAll(pageable);
     }
 
     public User getUserById(int id){

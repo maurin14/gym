@@ -2,6 +2,8 @@ const attendanceBasePath = window.location.pathname.startsWith("/admin/attendanc
         ? "/admin/attendance"
         : "/trainer/attendances";
 
+let attendanceSaving = false;
+
 document.addEventListener("DOMContentLoaded", function () {
     Promise.all([loadClients(), loadClasses()]).then(loadAttendanceForEdit);
 });
@@ -93,6 +95,10 @@ function setAttendanceDate() {
 }
 
 function saveAttendance() {
+    if (attendanceSaving) {
+        return;
+    }
+
     const idAttendance = document.getElementById("idAttendance").value;
     const clientId = document.getElementById("clientId").value;
     const classId = document.getElementById("classId").value;
@@ -120,14 +126,23 @@ function saveAttendance() {
     const url = idAttendance ? "/attendances/" + idAttendance : "/attendances";
     const method = idAttendance ? "PUT" : "POST";
 
+    attendanceSaving = true;
+
     fetch(url, {
         method: method,
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(attendance)
-    }).then(() => {
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("No se pudo guardar la asistencia.");
+        }
+
         alert("Asistencia guardada correctamente");
         window.location.href = attendanceBasePath;
+    }).catch(error => {
+        attendanceSaving = false;
+        alert(error.message || "No se pudo guardar la asistencia.");
     });
 }

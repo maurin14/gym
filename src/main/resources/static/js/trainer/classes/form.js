@@ -1,3 +1,5 @@
+let classSaving = false;
+
 document.addEventListener("DOMContentLoaded", function () {
     const idClass = getClassIdFromPath();
 
@@ -90,6 +92,10 @@ function setSelectValue(selectId, value) {
 }
 
 function saveClass() {
+    if (classSaving) {
+        return;
+    }
+
     clearClassErrors();
 
     const classType = document.getElementById("classType").value.trim();
@@ -141,6 +147,8 @@ function saveClass() {
         method = "PUT";
     }
 
+    classSaving = true;
+
     fetch(url, {
         method: method,
         headers: {
@@ -153,13 +161,17 @@ function saveClass() {
         if (!data.success) {
             showClassErrors(data.fieldErrors || data.errors || {});
             showClassError("form", data.message || "Revise los campos marcados.");
+            classSaving = false;
             return;
         }
 
         alert("Clase guardada correctamente");
         window.location.href = getClassesListPath();
     })
-    .catch(() => showClassError("form", "No se pudo guardar. Intente nuevamente."));
+    .catch(() => {
+        classSaving = false;
+        showClassError("form", "No se pudo guardar. Intente nuevamente.");
+    });
 }
 
 function clearClassErrors() {

@@ -9,13 +9,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">RUTINA</span>
-        <h1 th:text="${title}">Formulario rutina</h1>
-        <p class="hero-text">Completa la informaci&oacute;n de la rutina.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${error != null}" class="field-error">

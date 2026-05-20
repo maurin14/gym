@@ -10,13 +10,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('schedules')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">HORARIO</span>
-        <h1 th:text="${title}">Formulario de horario</h1>
-        <p class="hero-text">Complete la informacion administrativa del horario.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>

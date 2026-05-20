@@ -14,13 +14,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">USUARIO</span>
-        <h1>Formulario de usuario</h1>
-        <p class="hero-text">Registre o actualice la información personal y de acceso del usuario.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>

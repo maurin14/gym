@@ -10,22 +10,13 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de usuarios</h1>
-        <p class="hero-text">
-            Administra usuarios registrados, roles, estados y datos principales desde el mismo panel visual.
-        </p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/users/add}" class="btn-primary">Agregar usuario</a>
+        <a th:href="@{/users/add}" class="btn-primary">Nuevo usuario</a>
     </div>
 
     <form th:action="@{/users}" method="get" class="admin-filter-row portal-filters">
@@ -95,23 +86,25 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 1}"
-           th:href="@{/users(page=${currentPage - 1}, fullName=${fullName}, role=${role})}">
+    <nav class="pagination" aria-label="Paginacion de usuarios"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/users(page=${currentPage == 0 ? currentPage : currentPage - 1}, fullName=${fullName}, role=${role})}">
             Anterior
         </a>
 
-        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <a th:href="@{/users(page=${i}, fullName=${fullName}, role=${role})}"
-               th:text="${i}"
-               th:classappend="${i == currentPage} ? 'page-active'"></a>
-        </span>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/users(page=${i}, fullName=${fullName}, role=${role})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
-        <a th:if="${currentPage < totalPages}"
-           th:href="@{/users(page=${currentPage + 1}, fullName=${fullName}, role=${role})}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/users(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, fullName=${fullName}, role=${role})}">
             Siguiente
         </a>
-    </div>
+    </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -120,16 +121,42 @@ public class ReportService implements CRUD<Report>{
     }
     
     public Page<Report> getReportsByPage(int page, int size){
-        Page<Report> reportPage = rData.findAll(PageRequest.of(page - 1, size));
+        Page<Report> reportPage = rData.findAll(PageRequest.of(page, size));
 
+        populateReportUserNames(reportPage);
+
+        return reportPage;
+    }
+
+    public Page<Report> filterReportsByPage(String reportType, String reportStatus, int page, int size){
+        boolean hasType = reportType != null && !reportType.trim().isEmpty();
+        boolean hasStatus = reportStatus != null && !reportStatus.trim().isEmpty();
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Report> reportPage;
+
+        if(hasType && hasStatus){
+            reportPage = rData.findByReportTypeAndReportStatus(reportType, reportStatus, pageable);
+        }else if(hasType){
+            reportPage = rData.findByReportType(reportType, pageable);
+        }else if(hasStatus){
+            reportPage = rData.findByReportStatus(reportStatus, pageable);
+        }else{
+            reportPage = rData.findAll(pageable);
+        }
+
+        populateReportUserNames(reportPage);
+
+        return reportPage;
+    }
+
+    private void populateReportUserNames(Page<Report> reportPage){
         for(Report r : reportPage.getContent()){
             User u = uData.findById(r.getGeneratedBy()).orElse(null);
             if(u != null){
                 r.setUserName(u.getFullName());
             }
         }
-
-        return reportPage;
     }
 
     public Report getReportById(int id){
@@ -249,7 +276,7 @@ public class ReportService implements CRUD<Report>{
                 Map<String, String> map = new LinkedHashMap<>();
 
                 map.put("ID Pago", String.valueOf(p.getId()));
-                map.put("Usuario ID", String.valueOf(p.getIdUser()));
+                map.put("Cliente", p.getClientName() != null ? p.getClientName() : "Cliente no encontrado");
                 map.put("Monto", "₡" + p.getAmount());
                 map.put("Fecha de pago", String.valueOf(p.getPaymentDate()));
                 map.put("Método de pago", p.getPaymentMethod());
@@ -257,13 +284,13 @@ public class ReportService implements CRUD<Report>{
                 map.put("Descripción", p.getDescription());
 
                 if(p.getBranch() != null){
-                    map.put("Sucursal", String.valueOf(p.getBranch().getId()));
+                    map.put("Sucursal", p.getBranch().getName());
                 }else{
                     map.put("Sucursal", "Sin sucursal");
                 }
 
                 list.add(map);
-            }   list.add(row("Cliente", "María Solano", "Monto", "₡15 000", "Estado", "Pagado"));
+            }
 
         }else if("attendances".equalsIgnoreCase(reportType)){
 

@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,46 +134,44 @@ public class AttendanceController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        List<Map<String, Object>> attendances =
-                attendanceService.getAllAttendances()
-                        .stream()
-                        .map(attendance -> {
+        int currentPage = Math.max(page, 0);
+        Page<Attendance> attendancePage = attendanceService.getAttendancesPage(currentPage, size);
 
-                            Map<String, Object> map = new HashMap<>();
+        if (currentPage >= attendancePage.getTotalPages() && attendancePage.getTotalPages() > 0) {
+            currentPage = attendancePage.getTotalPages() - 1;
+            attendancePage = attendanceService.getAttendancesPage(currentPage, size);
+        }
 
-                            map.put("idAttendance", attendance.getIdAttendance());
-                            map.put("attendanceDate", attendance.getAttendanceDate());
-                            map.put("attendanceStatus", attendance.getAttendanceStatus());
-                            map.put("observation", attendance.getObservation());
-                            map.put("registerDate", attendance.getRegisterDate());
+        List<Map<String, Object>> pageContent = attendancePage.getContent()
+                .stream()
+                .map(attendance -> {
 
-                            map.put("clientName",
-                                    attendance.getClient() != null
-                                    ? attendance.getClient().getFullName()
-                                    : "Sin cliente");
+                    Map<String, Object> map = new HashMap<>();
 
-                            map.put("classType",
-                                    attendance.getGymClass() != null
-                                    ? attendance.getGymClass().getClassType()
-                                    : "Sin clase");
+                    map.put("idAttendance", attendance.getIdAttendance());
+                    map.put("attendanceDate", attendance.getAttendanceDate());
+                    map.put("attendanceStatus", attendance.getAttendanceStatus());
+                    map.put("observation", attendance.getObservation());
+                    map.put("registerDate", attendance.getRegisterDate());
 
-                            return map;
-                        })
-                        .toList();
+                    map.put("clientName",
+                            attendance.getClient() != null
+                            ? attendance.getClient().getFullName()
+                            : "Sin cliente");
 
-        int start = page * size;
-        int end = Math.min(start + size, attendances.size());
+                    map.put("classType",
+                            attendance.getGymClass() != null
+                            ? attendance.getGymClass().getClassType()
+                            : "Sin clase");
 
-        List<Map<String, Object>> pageContent =
-                attendances.subList(start, end);
-
-        int totalPages =
-                (int) Math.ceil((double) attendances.size() / size);
+                    return map;
+                })
+                .toList();
 
         Map<String, Object> response = new HashMap<>();
 
-        response.put("currentPage", page + 1);
-        response.put("totalPages", totalPages);
+        response.put("currentPage", currentPage + 1);
+        response.put("totalPages", attendancePage.getTotalPages());
         response.put("attendances", pageContent);
 
         return response;
@@ -244,14 +244,20 @@ public class AttendanceController {
 
     @ResponseBody
     @PutMapping("/attendances/{idAttendance}")
-    public Attendance updateAttendance(
+    public ResponseEntity<Attendance> updateAttendance(
             @PathVariable int idAttendance,
             @RequestBody Attendance attendance) {
 
-        return attendanceService.updateAttendance(
+        Attendance updatedAttendance = attendanceService.updateAttendance(
                 idAttendance,
                 attendance
         );
+
+        if (updatedAttendance == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedAttendance);
     }
 
     @ResponseBody

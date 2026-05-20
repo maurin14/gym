@@ -9,6 +9,7 @@ import com.una.ac.cr.gym.domain.Payment;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
+import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class PaymentController {
     @Autowired
     private BranchService branchService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/admin/payments")
     public String adminList(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(required = false) String status,
@@ -44,7 +48,13 @@ public class PaymentController {
                             @RequestParam(required = false) Integer branchId,
                             Model model) {
 
-        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= payments.getTotalPages() && payments.getTotalPages() > 0) {
+            currentPage = payments.getTotalPages() - 1;
+            payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(currentPage, 5));
+        }
 
         model.addAttribute("payments", payments);
         model.addAttribute("status", status);
@@ -62,7 +72,14 @@ public class PaymentController {
                                 @RequestParam(required = false) Integer branchId,
                                 Model model) {
 
-        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Payment> payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= payments.getTotalPages() && payments.getTotalPages() > 0) {
+            currentPage = payments.getTotalPages() - 1;
+            payments = paymentService.getPage(status, paymentMethod, branchId, PageRequest.of(currentPage, 5));
+        }
+
         model.addAttribute("payments", payments);
 
         return "payments/admin/tablePayment :: tablePayment";
@@ -72,6 +89,7 @@ public class PaymentController {
     public String newPayment(Model model) {
         model.addAttribute("payment", new Payment());
         model.addAttribute("branches", branchService.getActiveBranches());
+        model.addAttribute("clients", userService.getClients());
         return "payments/admin/formPayment";
     }
 
@@ -84,9 +102,20 @@ public class PaymentController {
         payment.setBranch(branch);
 
         Map<String, String> fieldErrors = paymentService.validateFields(payment);
+
+        User client = payment.getIdUser() != null ? userService.getUserById(payment.getIdUser()) : null;
+        if (client == null || !"client".equals(client.getRole())) {
+            fieldErrors.put("idUser", "Seleccione un cliente.");
+        }
+
+        if (payment.getId() > 0 && paymentService.getById(payment.getId()) == null) {
+            fieldErrors.put("form", "El pago que intenta editar no existe.");
+        }
+
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("payment", payment);
             model.addAttribute("branches", branchService.getActiveBranches());
+            model.addAttribute("clients", userService.getClients());
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "payments/admin/formPayment";
@@ -108,6 +137,7 @@ public class PaymentController {
 
         model.addAttribute("payment", payment);
         model.addAttribute("branches", branchService.getActiveBranches());
+        model.addAttribute("clients", userService.getClients());
 
         return "payments/admin/formPayment";
     }

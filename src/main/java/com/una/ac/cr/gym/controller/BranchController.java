@@ -38,7 +38,13 @@ public class BranchController {
                             @RequestParam(required = false) String active,
                             Model model) {
 
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
+            currentPage = branches.getTotalPages() - 1;
+            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        }
 
         model.addAttribute("branches", branches);
         model.addAttribute("name", name);
@@ -53,7 +59,14 @@ public class BranchController {
                                 @RequestParam(required = false) String active,
                                 Model model) {
 
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
+            currentPage = branches.getTotalPages() - 1;
+            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        }
+
         model.addAttribute("branches", branches);
 
         return "branches/admin/tableBranch :: tableBranch";
@@ -70,6 +83,10 @@ public class BranchController {
                              Model model) {
 
         Map<String, String> fieldErrors = branchService.validateFields(branch);
+        if (branch.getId() > 0 && branchService.getById(branch.getId()) == null) {
+            fieldErrors.put("form", "La sucursal que intenta editar no existe.");
+        }
+
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("branch", branch);
             model.addAttribute("fieldErrors", fieldErrors);

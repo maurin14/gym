@@ -29,7 +29,13 @@ function changeBranchPage(element) {
     loadBranches(element.dataset.page);
 }
 
+let branchSubmitting = false;
+
 function confirmSave() {
+    if (branchSubmitting) {
+        return;
+    }
+
     Swal.fire({
         title: "¿Desea guardar la sucursal?",
         icon: "question",
@@ -38,6 +44,7 @@ function confirmSave() {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
+            branchSubmitting = true;
             document.getElementById("branchForm").submit();
         }
     });

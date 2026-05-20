@@ -11,13 +11,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('payments')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">PAGO</span>
-        <h1 th:text="${payment.id == 0 ? 'Agregar pago' : 'Editar pago'}">Formulario de pago</h1>
-        <p class="hero-text">Completa la información del pago.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
@@ -36,7 +29,13 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['paymentDate'] != null}" th:text="${fieldErrors['paymentDate']}"></small>
 
         <label>Cliente</label>
-        <input type="number" th:field="*{idUser}" required min="1" placeholder="Ejemplo: 1">
+        <select th:field="*{idUser}" required>
+            <option value="">Seleccione un cliente</option>
+            <option th:each="client : ${clients}"
+                    th:value="${client.userId}"
+                    th:text="${client.fullName}">
+            </option>
+        </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idUser'] != null}" th:text="${fieldErrors['idUser']}"></small>
 
         <label>Sucursal</label>

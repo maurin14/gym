@@ -1,3 +1,5 @@
+let paymentSubmitting = false;
+
 function loadPayments(page) {
     const status = document.getElementById("filterStatus") ? document.getElementById("filterStatus").value : "";
     const paymentMethod = document.getElementById("filterPaymentMethod") ? document.getElementById("filterPaymentMethod").value : "";
@@ -29,6 +31,10 @@ function changePaymentPage(element) {
 }
 
 function confirmSavePayment() {
+    if (paymentSubmitting) {
+        return;
+    }
+
     Swal.fire({
         title: "¿Desea guardar el pago?",
         icon: "question",
@@ -37,6 +43,7 @@ function confirmSavePayment() {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
+            paymentSubmitting = true;
             document.getElementById("paymentForm").submit();
         }
     });

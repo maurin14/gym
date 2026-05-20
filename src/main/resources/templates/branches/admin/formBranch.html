@@ -11,13 +11,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('branches')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">SUCURSAL</span>
-        <h1 th:text="${branch.id == 0 ? 'Agregar sucursal' : 'Editar sucursal'}">Formulario de sucursal</h1>
-        <p class="hero-text">Completa la información de la sucursal.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>

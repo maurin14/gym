@@ -28,7 +28,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
         <tr th:each="p : ${payments.content}">
             <td th:text="${#temporals.format(p.paymentDate, 'dd/MM/yyyy')}"></td>
-            <td th:text="${p.idUser}"></td>
+            <td th:text="${p.clientName != null ? p.clientName : 'Cliente no encontrado'}"></td>
             <td th:text="${p.branch != null ? p.branch.name : 'Sin sucursal'}"></td>
             <td th:text="${'₡' + p.amount}"></td>
             <td th:text="${p.paymentMethod}"></td>
@@ -65,28 +65,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${payments.totalPages > 1}">
+    <div class="pagination" th:with="visualTotalPages=${payments.totalPages > 0 ? payments.totalPages : 1}">
         <button type="button"
-                class="btn-secondary"
-                th:if="${payments.hasPrevious()}"
-                th:data-page="${payments.number - 1}"
+                th:class="${payments.hasPrevious() ? 'btn-secondary' : 'btn-secondary disabled'}"
+                th:disabled="${!payments.hasPrevious()}"
+                th:data-page="${payments.hasPrevious() ? payments.number - 1 : payments.number}"
                 onclick="changePaymentPage(this)">
             Anterior
         </button>
 
-        <span th:each="i : ${#numbers.sequence(0, payments.totalPages - 1)}">
+        <span th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}">
             <button type="button"
                     th:text="${i + 1}"
                     th:data-page="${i}"
-                    th:class="${i == payments.number ? 'btn-primary' : 'btn-secondary'}"
+                    th:class="${i == payments.number ? 'btn-primary page-active' : 'btn-secondary'}"
                     onclick="changePaymentPage(this)">
             </button>
         </span>
 
         <button type="button"
-                class="btn-secondary"
-                th:if="${payments.hasNext()}"
-                th:data-page="${payments.number + 1}"
+                th:class="${payments.hasNext() ? 'btn-secondary' : 'btn-secondary disabled'}"
+                th:disabled="${!payments.hasNext()}"
+                th:data-page="${payments.hasNext() ? payments.number + 1 : payments.number}"
                 onclick="changePaymentPage(this)">
             Siguiente
         </button>

@@ -66,18 +66,18 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${branches.totalPages > 1}">
+    <div class="pagination" th:with="visualTotalPages=${branches.totalPages > 0 ? branches.totalPages : 1}">
 
         <button type="button"
-                class="btn-secondary"
-                th:if="${branches.hasPrevious()}"
-                th:data-page="${branches.number - 1}"
+                th:class="${branches.hasPrevious() ? 'btn-secondary' : 'btn-secondary disabled'}"
+                th:disabled="${!branches.hasPrevious()}"
+                th:data-page="${branches.hasPrevious() ? branches.number - 1 : branches.number}"
                 onclick="changeBranchPage(this)">
             Anterior
         </button>
 
         <button type="button"
-                th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}"
+                th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
                 th:text="${i + 1}"
                 th:data-page="${i}"
                 th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}"
@@ -85,9 +85,9 @@
         </button>
 
         <button type="button"
-                class="btn-secondary"
-                th:if="${branches.hasNext()}"
-                th:data-page="${branches.number + 1}"
+                th:class="${branches.hasNext() ? 'btn-secondary' : 'btn-secondary disabled'}"
+                th:disabled="${!branches.hasNext()}"
+                th:data-page="${branches.hasNext() ? branches.number + 1 : branches.number}"
                 onclick="changeBranchPage(this)">
             Siguiente
         </button>

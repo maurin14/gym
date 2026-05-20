@@ -79,7 +79,13 @@ public class GymClassController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        var classPage = gymClassService.getClassesPage(page, size);
+        int currentPage = Math.max(page, 0);
+        var classPage = gymClassService.getClassesPage(currentPage, size);
+
+        if (currentPage >= classPage.getTotalPages() && classPage.getTotalPages() > 0) {
+            currentPage = classPage.getTotalPages() - 1;
+            classPage = gymClassService.getClassesPage(currentPage, size);
+        }
 
         Map<String, Object> response = new HashMap<>();
 
@@ -145,6 +151,13 @@ public class GymClassController {
     @PutMapping("/classes/{idClass}")
     public Map<String, Object> updateClass(@PathVariable int idClass,
             @RequestBody GymClass gymClass) {
+
+        if (gymClassService.getClassById(idClass) == null) {
+            return Map.of(
+                    "success", false,
+                    "message", "La clase que intenta editar no existe."
+            );
+        }
 
         Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
 

@@ -11,25 +11,19 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('schedules')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTION ADMINISTRATIVA</span>
-        <h1>Horarios</h1>
-        <p class="hero-text">Administre los horarios de atencion, clases y disponibilidad por sucursal.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
 
+    <div class="buttons admin-action-row">
+        <a th:href="@{/admin/schedules/new}" class="btn-primary">Nuevo horario</a>
+    </div>
+
     <div class="admin-title-row">
         <div>
             <h2 class="section-title">Listado de horarios</h2>
             <p class="admin-description">Consulte, filtre y gestione los horarios registrados.</p>
-        </div>
-        <div class="buttons">
-            <a th:href="@{/admin/schedules/new}" class="btn-primary">Nuevo horario</a>
         </div>
     </div>
 
@@ -89,21 +83,23 @@
         </table>
     </div>
 
-    <div class="pagination">
+    <nav class="pagination" aria-label="Paginacion de horarios"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary"
-           th:if="${currentPage > 0}"
-           th:href="@{/admin/schedules(page=${currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/admin/schedules(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
             Anterior
         </a>
-        <button type="button" disabled>
-            Pagina <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages > 0 ? totalPages : 1}">1</span>
-        </button>
-        <a class="btn-primary"
-           th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/admin/schedules(page=${currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/admin/schedules(page=${i}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
+        <a class="btn-secondary"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/admin/schedules(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
             Siguiente
         </a>
-    </div>
+    </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>

@@ -34,7 +34,7 @@ public class ScheduleController {
     @GetMapping("/admin/schedules")
     public String adminSchedules(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) Integer branchId,
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
@@ -46,8 +46,16 @@ public class ScheduleController {
             return redirect;
         }
 
-        Page<Schedule> data = getSchedulesPage(page, size, branchId, start, end);
-        addListAttributes(model, data, page, size, branchId, start, end);
+        int pageSize = 5;
+        int currentPage = Math.max(page, 0);
+        Page<Schedule> data = getSchedulesPage(currentPage, pageSize, branchId, start, end);
+
+        if (currentPage >= data.getTotalPages() && data.getTotalPages() > 0) {
+            currentPage = data.getTotalPages() - 1;
+            data = getSchedulesPage(currentPage, pageSize, branchId, start, end);
+        }
+
+        addListAttributes(model, data, currentPage, pageSize, branchId, start, end);
 
         return "admin/schedules";
     }
@@ -102,6 +110,10 @@ public class ScheduleController {
         }
 
         Map<String, String> fieldErrors = scheduleService.validate(schedule);
+
+        if (schedule.getId() > 0 && scheduleService.getById(schedule.getId()) == null) {
+            fieldErrors.put("form", "El horario que intenta editar no existe.");
+        }
 
         if (!fieldErrors.isEmpty()) {
             if (schedule.getBranch() == null) {

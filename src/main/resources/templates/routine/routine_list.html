@@ -10,15 +10,11 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTI&Oacute;N ADMINISTRATIVA</span>
-        <h1>Administraci&oacute;n de rutinas</h1>
-        <p class="hero-text">Consulta, registra, modifica y cambia el estado de las rutinas del gimnasio.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
+    <div class="buttons admin-action-row">
+        <a th:href="@{/admin/routines/form}" class="btn-primary">Nueva rutina</a>
+    </div>
 
     <form class="admin-filter-row portal-filters" method="get" th:action="@{/admin/routines}">
         <select name="difficultyLevel">
@@ -79,29 +75,25 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${totalPages > 1}">
+    <nav class="pagination" aria-label="Paginacion de rutinas"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary"
-           th:if="${currentPage > 0}"
-           th:href="@{/admin/routines(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/admin/routines(page=${currentPage == 0 ? currentPage : currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
             Anterior
         </a>
 
-        <button type="button"
-                class="page-active"
-                disabled
-                th:text="${'Página ' + (currentPage + 1) + ' de ' + totalPages}">
-        </button>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/admin/routines(page=${i}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
         <a class="btn-secondary"
-           th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/admin/routines(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/admin/routines(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
             Siguiente
         </a>
-    </div>
-
-    <div class="buttons">
-        <a th:href="@{/admin/routines/form}" class="btn-primary">Nueva rutina</a>
-    </div>
+    </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>

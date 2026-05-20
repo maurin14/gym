@@ -49,6 +49,10 @@ public class GymClassService {
 
         GymClass currentClass = gymClassRepository.findById(idClass).orElse(null);
 
+        if (currentClass == null) {
+            throw new IllegalArgumentException("La clase que intenta editar no existe.");
+        }
+
         gymClass.setIdClass(idClass);
 
         Map<String, String> errors = validateFields(gymClass);
@@ -58,12 +62,7 @@ public class GymClassService {
 
         calculateDuration(gymClass);
 
-        if (currentClass != null) {
-            gymClass.setEnrolledCount(currentClass.getEnrolledCount());
-        } else {
-            gymClass.setEnrolledCount(0);
-        }
-
+        gymClass.setEnrolledCount(currentClass.getEnrolledCount());
         gymClass.setStatus(true);
 
         return gymClassRepository.save(gymClass);

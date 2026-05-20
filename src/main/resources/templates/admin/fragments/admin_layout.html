@@ -2,7 +2,17 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<header th:fragment="adminHeader(active)" class="main-header portal-header">
+<header th:fragment="adminHeader(active)" class="main-header portal-header"
+        th:with="moduleName=${active == 'branches' ? 'Sucursales' :
+            (active == 'payments' ? 'Pagos' :
+            (active == 'routines' ? 'Rutinas' :
+            (active == 'products' ? 'Productos' :
+            (active == 'classes' ? 'Clases' :
+            (active == 'users' ? 'Usuarios' :
+            (active == 'schedules' ? 'Horarios' :
+            (active == 'reports' ? 'Reportes' :
+            (active == 'equipment' ? 'Equipamiento' :
+            (active == 'attendance' ? 'Asistencia' : 'Inicio')))))))))}">
     <div class="header-left portal-brand">
         <a th:if="${session.user != null and session.user.role == 'administrator'}" th:href="@{/admin/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
@@ -20,24 +30,35 @@
     </div>
 
     <nav class="header-nav portal-nav" aria-label="Navegaci&oacute;n administrativa">
-        <a th:if="${session.user != null and session.user.role == 'administrator'}"
-            th:href="@{/admin/home}"
-            th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+        <span class="current-module" th:if="${active != 'home'}" th:text="${moduleName}">M&oacute;dulo</span>
 
-         <a th:if="${session.user != null and session.user.role == 'trainer'}"
-            th:href="@{/trainer/home}"
-            th:classappend="${active == 'home'} ? ' active'">Inicio</a>
-        <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
-        <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
-        <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
-        <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
-        <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'">Equipamiento</a>
-        <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
-        <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
-        <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
-        <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
-        <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
-        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+        <details class="module-menu">
+            <summary>Men&uacute;</summary>
+            <div class="module-menu-panel">
+                <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
+                <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
+                <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
+                <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
+                <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
+                <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
+                <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
+                <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
+                <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'">Equipamiento</a>
+                <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
+            </div>
+        </details>
+
+        <div class="header-actions">
+            <a th:if="${session.user != null and session.user.role == 'administrator'}"
+                th:href="@{/admin/home}"
+                th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+
+            <a th:if="${session.user != null and session.user.role == 'trainer'}"
+                th:href="@{/trainer/home}"
+                th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+
+            <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+        </div>
     </nav>
 </header>
 

@@ -10,24 +10,18 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">ASISTENCIA</span>
-        <h1>Asistencia</h1>
-        <p class="hero-text">Gestione el control de asistencia de usuarios y clases.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
+    <div class="buttons admin-action-row">
+        <a class="btn-primary" th:href="@{/admin/attendance/form}">Nueva asistencia</a>
+    </div>
+
     <div class="admin-title-row">
         <div>
             <h2 class="section-title">Registro de asistencias</h2>
             <p class="admin-description">
                 Consulte, registre y actualice la asistencia asociada a clientes y clases.
             </p>
-        </div>
-        <div class="buttons">
-            <a class="btn-primary" th:href="@{/admin/attendance/form}">Agregar asistencia</a>
         </div>
     </div>
 
@@ -48,11 +42,7 @@
         </table>
     </div>
 
-    <div class="pagination">
-        <button id="prevBtn" onclick="previousPage()">Anterior</button>
-        <button id="pageInfo" disabled>Pagina 1 de 1</button>
-        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
-    </div>
+    <div id="attendancesPagination" class="pagination"></div>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>

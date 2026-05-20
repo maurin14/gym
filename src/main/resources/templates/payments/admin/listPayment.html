@@ -11,15 +11,12 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('payments')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de pagos</h1>
-        <p class="hero-text">Consulta, registra, modifica y cambia el estado de los pagos del gimnasio.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
+    <div class="buttons admin-action-row">
+        <a th:href="@{/admin/payments/new}" class="btn-primary">Nuevo pago</a>
+    </div>
+
     <form class="admin-filter-row portal-filters" onsubmit="filterPayments(); return false;">
         <select id="filterStatus">
             <option value="">Todos los estados</option>
@@ -51,10 +48,6 @@
 
     <div id="payment-table-container">
         <div th:replace="payments/admin/tablePayment :: tablePayment"></div>
-    </div>
-
-    <div class="buttons">
-        <a th:href="@{/admin/payments/new}" class="btn-primary">Agregar pago</a>
     </div>
 </main>
 

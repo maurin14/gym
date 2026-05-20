@@ -5,7 +5,9 @@
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Payment;
+import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.repository.PaymentRepository;
+import com.una.ac.cr.gym.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -28,6 +30,9 @@ public class PaymentService implements CRUD<Payment> {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void save(Payment payment) {
         paymentRepository.save(payment);
@@ -40,12 +45,16 @@ public class PaymentService implements CRUD<Payment> {
 
     @Override
     public List<Payment> getAll() {
-        return paymentRepository.findAll();
+        List<Payment> payments = paymentRepository.findAll();
+        populateClientNames(payments);
+        return payments;
     }
 
     @Override
     public Payment getById(int id) {
-        return paymentRepository.findById(id).orElse(null);
+        Payment payment = paymentRepository.findById(id).orElse(null);
+        populateClientName(payment);
+        return payment;
     }
 
     public Page<Payment> getPage(String status, String paymentMethod, Integer branchId, Pageable pageable) {
@@ -54,38 +63,38 @@ public class PaymentService implements CRUD<Payment> {
         boolean hasBranch = branchId != null;
 
         if (hasStatus && hasPaymentMethod && hasBranch) {
-            return paymentRepository.findByStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCaseAndBranch_Id(
-                    status.trim(), paymentMethod.trim(), branchId, pageable);
+            return withClientNames(paymentRepository.findByStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCaseAndBranch_Id(
+                    status.trim(), paymentMethod.trim(), branchId, pageable));
         }
 
         if (hasStatus && hasPaymentMethod) {
-            return paymentRepository.findByStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
-                    status.trim(), paymentMethod.trim(), pageable);
+            return withClientNames(paymentRepository.findByStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
+                    status.trim(), paymentMethod.trim(), pageable));
         }
 
         if (hasStatus && hasBranch) {
-            return paymentRepository.findByStatusContainingIgnoreCaseAndBranch_Id(
-                    status.trim(), branchId, pageable);
+            return withClientNames(paymentRepository.findByStatusContainingIgnoreCaseAndBranch_Id(
+                    status.trim(), branchId, pageable));
         }
 
         if (hasPaymentMethod && hasBranch) {
-            return paymentRepository.findByPaymentMethodContainingIgnoreCaseAndBranch_Id(
-                    paymentMethod.trim(), branchId, pageable);
+            return withClientNames(paymentRepository.findByPaymentMethodContainingIgnoreCaseAndBranch_Id(
+                    paymentMethod.trim(), branchId, pageable));
         }
 
         if (hasStatus) {
-            return paymentRepository.findByStatusContainingIgnoreCase(status.trim(), pageable);
+            return withClientNames(paymentRepository.findByStatusContainingIgnoreCase(status.trim(), pageable));
         }
 
         if (hasPaymentMethod) {
-            return paymentRepository.findByPaymentMethodContainingIgnoreCase(paymentMethod.trim(), pageable);
+            return withClientNames(paymentRepository.findByPaymentMethodContainingIgnoreCase(paymentMethod.trim(), pageable));
         }
 
         if (hasBranch) {
-            return paymentRepository.findByBranch_Id(branchId, pageable);
+            return withClientNames(paymentRepository.findByBranch_Id(branchId, pageable));
         }
 
-        return paymentRepository.findAll(pageable);
+        return withClientNames(paymentRepository.findAll(pageable));
     }
 
     public Page<Payment> getUserPayments(Integer idUser, String status, String paymentMethod, Pageable pageable) {
@@ -93,21 +102,21 @@ public class PaymentService implements CRUD<Payment> {
         boolean hasPaymentMethod = paymentMethod != null && !paymentMethod.trim().isEmpty();
 
         if (hasStatus && hasPaymentMethod) {
-            return paymentRepository.findByIdUserAndStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
-                    idUser, status.trim(), paymentMethod.trim(), pageable);
+            return withClientNames(paymentRepository.findByIdUserAndStatusContainingIgnoreCaseAndPaymentMethodContainingIgnoreCase(
+                    idUser, status.trim(), paymentMethod.trim(), pageable));
         }
 
         if (hasStatus) {
-            return paymentRepository.findByIdUserAndStatusContainingIgnoreCase(
-                    idUser, status.trim(), pageable);
+            return withClientNames(paymentRepository.findByIdUserAndStatusContainingIgnoreCase(
+                    idUser, status.trim(), pageable));
         }
 
         if (hasPaymentMethod) {
-            return paymentRepository.findByIdUserAndPaymentMethodContainingIgnoreCase(
-                    idUser, paymentMethod.trim(), pageable);
+            return withClientNames(paymentRepository.findByIdUserAndPaymentMethodContainingIgnoreCase(
+                    idUser, paymentMethod.trim(), pageable));
         }
 
-        return paymentRepository.findByIdUser(idUser, pageable);
+        return withClientNames(paymentRepository.findByIdUser(idUser, pageable));
     }
 
     public Map<String, String> validateFields(Payment payment) {
@@ -125,7 +134,7 @@ public class PaymentService implements CRUD<Payment> {
         }
 
         if (payment.getIdUser() == null) {
-            errors.put("idUser", "Este campo es obligatorio.");
+            errors.put("idUser", "Seleccione un cliente.");
         } else if (payment.getIdUser() < 1) {
             errors.put("idUser", "Ingrese un valor válido.");
         }
@@ -170,5 +179,27 @@ public class PaymentService implements CRUD<Payment> {
             }
         }
         return false;
+    }
+
+    private Page<Payment> withClientNames(Page<Payment> payments) {
+        populateClientNames(payments.getContent());
+        return payments;
+    }
+
+    private void populateClientNames(List<Payment> payments) {
+        if (payments == null) {
+            return;
+        }
+
+        payments.forEach(this::populateClientName);
+    }
+
+    private void populateClientName(Payment payment) {
+        if (payment == null || payment.getIdUser() == null) {
+            return;
+        }
+
+        User user = userRepository.findById(payment.getIdUser()).orElse(null);
+        payment.setClientName(user != null ? user.getFullName() : "Cliente no encontrado");
     }
 }

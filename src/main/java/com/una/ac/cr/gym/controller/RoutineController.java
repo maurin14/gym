@@ -36,11 +36,17 @@ public class RoutineController {
             @RequestParam(defaultValue = "0") int page,
             Model model) {
 
-        Page<Routine> routinePage = routineService.getFilteredRoutines(difficultyLevel, routineType, page);
+        int currentPage = Math.max(page, 0);
+        Page<Routine> routinePage = routineService.getFilteredRoutines(difficultyLevel, routineType, currentPage);
+
+        if (currentPage >= routinePage.getTotalPages() && routinePage.getTotalPages() > 0) {
+            currentPage = routinePage.getTotalPages() - 1;
+            routinePage = routineService.getFilteredRoutines(difficultyLevel, routineType, currentPage);
+        }
 
         model.addAttribute("title", "Lista de rutinas");
         model.addAttribute("routines", routinePage.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", routinePage.getTotalPages());
         model.addAttribute("difficultyLevel", difficultyLevel);
         model.addAttribute("routineType", routineType);
@@ -59,6 +65,10 @@ public class RoutineController {
     public String saveRoutine(Routine routine, Model model, RedirectAttributes redirectAttributes) {
         boolean isUpdate = routine.getIdRoutine() > 0;
         Map<String, String> fieldErrors = routineService.validateFields(routine);
+
+        if (isUpdate && routineService.getRoutine(routine.getIdRoutine()) == null) {
+            fieldErrors.put("form", "La rutina que intenta editar no existe.");
+        }
 
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("title", isUpdate ? "Editar rutina" : "Registrar rutina");
