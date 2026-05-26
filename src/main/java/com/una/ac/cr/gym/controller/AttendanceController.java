@@ -25,63 +25,32 @@ public class AttendanceController {
 
     @GetMapping("/trainer/attendances")
     public String trainerAttendancesList() {
+        return "redirect:/admin/attendances";
+    }
+
+    @GetMapping("/admin/attendances")
+    public String adminAttendancesList() {
         return "trainer/attendances/list";
     }
 
     @GetMapping("/trainer/attendances/form")
     public String trainerAttendancesForm() {
+        return "redirect:/admin/attendances/form";
+    }
+
+    @GetMapping("/admin/attendances/form")
+    public String adminAttendancesForm() {
         return "trainer/attendances/form";
     }
 
     @GetMapping("/trainer/attendances/form/{idAttendance}")
     public String trainerAttendancesEdit(@PathVariable int idAttendance) {
+        return "redirect:/admin/attendances/form/" + idAttendance;
+    }
+
+    @GetMapping("/admin/attendances/form/{idAttendance}")
+    public String adminAttendancesEdit(@PathVariable int idAttendance) {
         return "trainer/attendances/form";
-    }
-
-    @GetMapping("/admin/attendance")
-    public String adminAttendanceList(HttpSession session) {
-        User userSession = (User) session.getAttribute("user");
-
-        if (userSession == null) {
-            return "redirect:/login";
-        }
-
-        if (!"administrator".equals(userSession.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "admin/attendance";
-    }
-
-    @GetMapping("/admin/attendance/form")
-    public String adminAttendanceForm(HttpSession session) {
-        User userSession = (User) session.getAttribute("user");
-
-        if (userSession == null) {
-            return "redirect:/login";
-        }
-
-        if (!"administrator".equals(userSession.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "admin/attendance_form";
-    }
-
-    @GetMapping("/admin/attendance/form/{idAttendance}")
-    public String adminAttendanceEdit(@PathVariable int idAttendance,
-            HttpSession session) {
-        User userSession = (User) session.getAttribute("user");
-
-        if (userSession == null) {
-            return "redirect:/login";
-        }
-
-        if (!"administrator".equals(userSession.getRole())) {
-            return "redirect:/client/home";
-        }
-
-        return "admin/attendance_form";
     }
 
     @GetMapping("/client/attendances")
@@ -108,7 +77,8 @@ public class AttendanceController {
         int start = page * size;
         int end = Math.min(start + size, attendances.size());
 
-        List<Map<String, Object>> pageContent = attendances.subList(start, end);
+        List<Map<String, Object>> pageContent =
+                start < attendances.size() ? attendances.subList(start, end) : List.of();
 
         int totalPages = (int) Math.ceil((double) attendances.size() / size);
 
@@ -160,13 +130,11 @@ public class AttendanceController {
         map.put("attendanceStatus", attendance.getAttendanceStatus());
         map.put("observation", attendance.getObservation());
 
-        map.put("clientId",
-                attendance.getClient() != null
+        map.put("clientId", attendance.getClient() != null
                 ? attendance.getClient().getUserId()
                 : "");
 
-        map.put("classId",
-                attendance.getGymClass() != null
+        map.put("classId", attendance.getGymClass() != null
                 ? attendance.getGymClass().getIdClass()
                 : "");
 
@@ -183,6 +151,7 @@ public class AttendanceController {
     @PostMapping("/attendances")
     public Attendance saveAttendance(@RequestBody Attendance attendance,
             HttpSession session) {
+
         User userSession = (User) session.getAttribute("user");
 
         if (userSession != null && "client".equals(userSession.getRole())) {
@@ -220,13 +189,11 @@ public class AttendanceController {
         map.put("observation", attendance.getObservation());
         map.put("registerDate", attendance.getRegisterDate());
 
-        map.put("clientName",
-                attendance.getClient() != null
+        map.put("clientName", attendance.getClient() != null
                 ? attendance.getClient().getFullName()
                 : "Sin cliente");
 
-        map.put("classType",
-                attendance.getGymClass() != null
+        map.put("classType", attendance.getGymClass() != null
                 ? attendance.getGymClass().getClassType()
                 : "Sin clase");
 
@@ -242,8 +209,7 @@ public class AttendanceController {
         map.put("observation", attendance.getObservation());
         map.put("registerDate", attendance.getRegisterDate());
 
-        map.put("classType",
-                attendance.getGymClass() != null
+        map.put("classType", attendance.getGymClass() != null
                 ? attendance.getGymClass().getClassType()
                 : "Sin clase");
 
