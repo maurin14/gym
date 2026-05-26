@@ -1,10 +1,5 @@
 package com.una.ac.cr.gym.controller;
 
-/**
- *
- * @author Amanda
- */
-
 import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.GymClassService;
@@ -23,14 +18,13 @@ public class GymClassController {
 
     public GymClassController(GymClassService gymClassService,
             UserService userService) {
-
         this.gymClassService = gymClassService;
         this.userService = userService;
     }
 
     @GetMapping("/trainer/classes")
     public String trainerClassesList() {
-        return "trainer/classes/list";
+        return "redirect:/admin/classes";
     }
 
     @GetMapping("/admin/classes")
@@ -40,7 +34,7 @@ public class GymClassController {
 
     @GetMapping("/trainer/classes/form")
     public String trainerClassesForm() {
-        return "trainer/classes/form";
+        return "redirect:/admin/classes/form";
     }
 
     @GetMapping("/admin/classes/form")
@@ -50,12 +44,12 @@ public class GymClassController {
 
     @GetMapping("/trainer/classes/form/{idClass}")
     public String trainerClassesEdit(@PathVariable int idClass) {
-        return "trainer/classes/form";
+        return "redirect:/admin/classes/form/" + idClass;
     }
 
     @GetMapping("/trainer/classes/edit/{idClass}")
     public String trainerClassesEditAlias(@PathVariable int idClass) {
-        return "trainer/classes/form";
+        return "redirect:/admin/classes/form/" + idClass;
     }
 
     @GetMapping("/admin/classes/form/{idClass}")
@@ -65,7 +59,7 @@ public class GymClassController {
 
     @GetMapping("/admin/classes/edit/{idClass}")
     public String adminClassesEditAlias(@PathVariable int idClass) {
-        return "trainer/classes/form";
+        return "redirect:/admin/classes/form/" + idClass;
     }
 
     @GetMapping("/client/classes")
@@ -88,10 +82,7 @@ public class GymClassController {
 
         response.put("classes", classPage.getContent()
                 .stream()
-                .map(gymClass -> {
-
-                    return toClassMap(gymClass);
-                })
+                .map(this::toClassMap)
                 .toList());
 
         return response;
@@ -100,13 +91,9 @@ public class GymClassController {
     @ResponseBody
     @GetMapping("/classes")
     public List<Map<String, Object>> getAllClasses() {
-
         return gymClassService.getAllClasses()
                 .stream()
-                .map(gymClass -> {
-
-                    return toClassMap(gymClass);
-                })
+                .map(this::toClassMap)
                 .toList();
     }
 
@@ -121,13 +108,15 @@ public class GymClassController {
 
         Map<String, Object> response = toClassMap(gymClass);
         response.put("success", true);
+
         return response;
     }
 
     @ResponseBody
     @PostMapping("/classes")
     public Map<String, Object> saveClass(@RequestBody GymClass gymClass) {
-        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors =
+                gymClassService.validateFields(gymClass);
 
         if (!fieldErrors.isEmpty()) {
             return Map.of(
@@ -138,6 +127,7 @@ public class GymClassController {
         }
 
         GymClass savedClass = gymClassService.saveClass(gymClass);
+
         return Map.of("success", true, "classId", savedClass.getIdClass());
     }
 
@@ -146,7 +136,8 @@ public class GymClassController {
     public Map<String, Object> updateClass(@PathVariable int idClass,
             @RequestBody GymClass gymClass) {
 
-        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors =
+                gymClassService.validateFields(gymClass);
 
         if (!fieldErrors.isEmpty()) {
             return Map.of(
@@ -157,6 +148,7 @@ public class GymClassController {
         }
 
         GymClass savedClass = gymClassService.updateClass(idClass, gymClass);
+
         return Map.of("success", true, "classId", savedClass.getIdClass());
     }
 
@@ -186,8 +178,12 @@ public class GymClassController {
         map.put("description", gymClass.getDescription());
         map.put("duration", gymClass.getDuration());
         map.put("status", gymClass.isStatus());
-        map.put("trainerId", gymClass.getTrainer() != null ? gymClass.getTrainer().getUserId() : null);
-        map.put("trainerName", gymClass.getTrainer() != null ? gymClass.getTrainer().getFullName() : "Sin entrenador");
+        map.put("trainerId", gymClass.getTrainer() != null
+                ? gymClass.getTrainer().getUserId()
+                : null);
+        map.put("trainerName", gymClass.getTrainer() != null
+                ? gymClass.getTrainer().getFullName()
+                : "Sin entrenador");
 
         return map;
     }
