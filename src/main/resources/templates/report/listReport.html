@@ -6,38 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/img/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
+        <h1>Administración de reportes</h1>
+        <p class="hero-text">
+            Consulta, filtra, descarga y administra reportes con la misma estructura visual del panel admin.
+        </p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container">
-    <h1 class="page-title">Lista de Reportes</h1>
-    <p class="admin-description">
-        Consulta, filtra, descarga y administra los reportes generados por el sistema.
-    </p>
-
+<main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <div class="buttons">
+    <div class="buttons admin-action-row">
         <a th:href="@{/reports/add}" class="btn-primary">Agregar reporte</a>
     </div>
 
-    <form th:action="@{/reports}" method="get" class="filters">
+    <form th:action="@{/reports}" method="get" class="admin-filter-row portal-filters">
         <select name="reportType">
             <option value="">Todos los tipos</option>
             <option value="users" th:selected="${reportType == 'users'}">Usuarios</option>
@@ -56,11 +47,11 @@
         <a th:href="@{/reports}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table>
+    <table class="portal-table">
         <thead>
         <tr>
             <th>Tipo</th>
-            <th>Generación</th>
+            <th>Generacion</th>
             <th>Generado por</th>
             <th>Inicio</th>
             <th>Final</th>
@@ -96,7 +87,7 @@
                     <a th:href="@{/reports/edit(id=${r.reportId})}" class="btn-secondary">Editar</a>
                     <a th:href="@{/reports/delete(id=${r.reportId})}"
                        class="btn-danger"
-                       onclick="return confirm('¿Desea eliminar este reporte?')">Eliminar</a>
+                       onclick="return confirm('Desea eliminar este reporte?')">Eliminar</a>
                 </div>
             </td>
         </tr>
@@ -126,9 +117,7 @@
     </div>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

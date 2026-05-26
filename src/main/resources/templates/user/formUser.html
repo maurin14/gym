@@ -10,39 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">USUARIO</span>
+        <h1>Formulario de usuario</h1>
+        <p class="hero-text">Registre o actualice la información personal y de acceso del usuario.</p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container form-container">
-    <h1 class="page-title">Formulario de Usuario</h1>
-    <p class="admin-description">
-        Registre o actualice la información personal y de acceso del usuario.
-    </p>
-
+<main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off">
+    <form class="portal-form" th:action="@{/users/save}" th:object="${userNew}" method="post" autocomplete="off" novalidate>
         <input type="hidden" th:field="*{userId}">
 
         <label>Nombre completo</label>
         <input type="text" th:field="*{fullName}" required
                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+"
                title="El nombre solo debe contener letras">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['fullName'] != null}" th:text="${fieldErrors['fullName']}"></small>
 
         <label>Cédula</label>
         <input type="text" th:field="*{idCard}" required
@@ -51,27 +41,32 @@
                title="Solo se permiten números"
                maxlength="9"
                onblur="checkField('idCard', this.value, 'idCardMessage')">
-        <span id="idCardMessage" class="error-message"></span>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idCard'] != null}" th:text="${fieldErrors['idCard']}"></small>
+        <span id="idCardMessage" class="field-error"></span>
 
         <label>Correo electrónico</label>
         <input type="email" th:field="*{email}" required
                onblur="checkField('email', this.value, 'emailMessage')">
-        <span id="emailMessage" class="error-message"></span>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['email'] != null}" th:text="${fieldErrors['email']}"></small>
+        <span id="emailMessage" class="field-error"></span>
 
         <label>Teléfono</label>
         <input type="text" th:field="*{phone}" required
                pattern="[0-9]{4}-[0-9]{4}"
                title="Debe tener el formato 8888-8888"
                maxlength="9">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['phone'] != null}" th:text="${fieldErrors['phone']}"></small>
 
         <label>Nombre de usuario</label>
         <input type="text" th:field="*{username}" required
                autocomplete="new-username"
                onblur="checkField('username', this.value, 'usernameMessage')">
-        <span id="usernameMessage" class="error-message"></span>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['username'] != null}" th:text="${fieldErrors['username']}"></small>
+        <span id="usernameMessage" class="field-error"></span>
 
         <label>Contraseña</label>
         <input type="password" th:field="*{password}" required autocomplete="new-password">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['password'] != null}" th:text="${fieldErrors['password']}"></small>
 
         <label>Rol</label>
         <select th:field="*{role}" required>
@@ -80,6 +75,7 @@
             <option value="trainer">Entrenador</option>
             <option value="administrator">Administrador</option>
         </select>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['role'] != null}" th:text="${fieldErrors['role']}"></small>
 
         <label>Estado</label>
         <select th:field="*{status}" required>
@@ -87,9 +83,11 @@
             <option value="active">Activo</option>
             <option value="inactive">Inactivo</option>
         </select>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="${fieldErrors['status']}"></small>
 
         <label>Fecha de registro</label>
         <input type="date" th:field="*{recordDate}" required>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['recordDate'] != null}" th:text="${fieldErrors['recordDate']}"></small>
 
         <div class="buttons">
             <button type="submit" class="btn-primary">Guardar usuario</button>
@@ -98,9 +96,7 @@
     </form>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script>
     function checkField(field, value, messageId){

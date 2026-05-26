@@ -1,46 +1,34 @@
 <!DOCTYPE html>
-
-
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lista de Usuarios - SAM GYM FITNESS</title>
+    <title>Usuarios - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
+        <h1>Administración de usuarios</h1>
+        <p class="hero-text">
+            Administra usuarios registrados, roles, estados y datos principales desde el mismo panel visual.
+        </p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container">
-    <h1 class="page-title">Lista de Usuarios</h1>
-    <p class="admin-description">
-        Administre los usuarios registrados, sus roles, estados y datos principales.
-    </p>
-
+<main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <div class="buttons">
+    <div class="buttons admin-action-row">
         <a th:href="@{/users/add}" class="btn-primary">Agregar usuario</a>
     </div>
 
-    <form th:action="@{/users}" method="get" class="filters">
+    <form th:action="@{/users}" method="get" class="admin-filter-row portal-filters">
         <input type="text" name="fullName" th:value="${fullName}" placeholder="Buscar por nombre">
 
         <select name="role">
@@ -54,7 +42,7 @@
         <a th:href="@{/users}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table>
+    <table class="portal-table">
         <thead>
         <tr>
             <th>Nombre</th>
@@ -94,7 +82,7 @@
                     <a th:if="${session.user.role == 'administrator'}"
                        th:href="@{/users/delete(id=${u.userId})}"
                        class="btn-danger"
-                       onclick="return confirm('¿Desea eliminar este usuario?')">
+                       onclick="return confirm('Desea eliminar este usuario?')">
                         Eliminar
                     </a>
                 </div>
@@ -126,9 +114,7 @@
     </div>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

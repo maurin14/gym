@@ -1,21 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 
-/**
- *
- * @author alira
- */
 @Entity
 @Table(name = "tb_products")
 public class Product {
@@ -27,14 +19,25 @@ public class Product {
 
     @Column(name = "name_product")
     private String nameProduct;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "category")
     private String category;
-    private double price;
+
+    @Column(name = "price")
+    private Double price;
+
     @Column(name = "quantity_stock")
-    private int quantityStock;
+    private Integer quantityStock;
+
     @Column(name = "register_date")
     private LocalDate registerDate;
+
+    @Column(name = "state")
     private boolean state;
+
     @Column(name = "image_path")
     private String imagePath;
 
@@ -42,7 +45,7 @@ public class Product {
     }
 
     public Product(int idProduct, String nameProduct, String description, String category,
-                   double price, int quantityStock, LocalDate registerDate,
+                   Double price, Integer quantityStock, LocalDate registerDate,
                    boolean state, String imagePath) {
         this.idProduct = idProduct;
         this.nameProduct = nameProduct;
@@ -87,19 +90,19 @@ public class Product {
         this.category = category;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public int getQuantityStock() {
+    public Integer getQuantityStock() {
         return quantityStock;
     }
 
-    public void setQuantityStock(int quantityStock) {
+    public void setQuantityStock(Integer quantityStock) {
         this.quantityStock = quantityStock;
     }
 

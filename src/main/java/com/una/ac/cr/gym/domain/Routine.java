@@ -1,45 +1,55 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- *
- * @author alira
- */
 @Entity
 @Table(name = "tb_routines")
 public class Routine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_routine")
     private int idRoutine;
 
+    @Column(name = "name_routine")
     private String nameRoutine;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "difficulty_level")
     private String difficultyLevel;
-    private int estimatedDuration;
+
+    @Column(name = "estimated_duration")
+    private Integer estimatedDuration;
+
+    @Column(name = "training_objective")
     private String trainingObjective;
-    private int quantityExercises;
+
+    @Column(name = "quantity_exercises")
+    private Integer quantityExercises;
+
+    @Column(name = "routine_type")
     private String routineType;
+
+    @Column(name = "exercises")
     private String exercises;
+
+    @Column(name = "state")
     private boolean state;
 
     public Routine() {
     }
 
     public Routine(int idRoutine, String nameRoutine, String description,
-                   String difficultyLevel, int estimatedDuration,
-                   String trainingObjective,
-                   int quantityExercises, String routineType,
-                   String exercises, boolean state) {
+                   String difficultyLevel, Integer estimatedDuration,
+                   String trainingObjective, Integer quantityExercises,
+                   String routineType, String exercises, boolean state) {
         this.idRoutine = idRoutine;
         this.nameRoutine = nameRoutine;
         this.description = description;
@@ -84,11 +94,11 @@ public class Routine {
         this.difficultyLevel = difficultyLevel;
     }
 
-    public int getEstimatedDuration() {
+    public Integer getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(int estimatedDuration) {
+    public void setEstimatedDuration(Integer estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 
@@ -100,11 +110,11 @@ public class Routine {
         this.trainingObjective = trainingObjective;
     }
 
-    public int getQuantityExercises() {
+    public Integer getQuantityExercises() {
         return quantityExercises;
     }
 
-    public void setQuantityExercises(int quantityExercises) {
+    public void setQuantityExercises(Integer quantityExercises) {
         this.quantityExercises = quantityExercises;
     }
 

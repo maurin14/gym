@@ -9,6 +9,7 @@ import com.una.ac.cr.gym.service.ProductServices;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author alira
  */
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductController {
 
     @Autowired
@@ -85,7 +86,7 @@ public class ProductController {
 
         model.addAttribute("title", "Agregar producto");
         model.addAttribute("product", product);
-        model.addAttribute("action", "/products/save");
+        model.addAttribute("action", "/admin/products/save");
         return "product/product_form";
     }
 
@@ -97,6 +98,16 @@ public class ProductController {
 
         product.setRegisterDate(LocalDate.now());
         product.setState(true);
+
+        Map<String, String> fieldErrors = productService.validateFields(product, false);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("title", "Agregar producto");
+            model.addAttribute("product", product);
+            model.addAttribute("action", "/admin/products/save");
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            return "product/product_form";
+        }
 
         if (!imageFile.isEmpty()) {
             try {
@@ -125,7 +136,7 @@ public class ProductController {
                 e.printStackTrace();
                 model.addAttribute("title", "Agregar producto");
                 model.addAttribute("product", product);
-                model.addAttribute("action", "/products/save");
+                model.addAttribute("action", "/admin/products/save");
                 model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
                 return "product/product_form";
             }
@@ -136,13 +147,13 @@ public class ProductController {
         if (!result.isEmpty()) {
             model.addAttribute("title", "Agregar producto");
             model.addAttribute("product", product);
-            model.addAttribute("action", "/products/save");
+            model.addAttribute("action", "/admin/products/save");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto guardado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -158,7 +169,7 @@ public class ProductController {
 
         model.addAttribute("title", "Editar producto");
         model.addAttribute("product", product);
-        model.addAttribute("action", "/products/update");
+        model.addAttribute("action", "/admin/products/update");
         return "product/product_form";
     }
 
@@ -178,6 +189,16 @@ public class ProductController {
         }
 
         product.setRegisterDate(currentProduct.getRegisterDate());
+
+        Map<String, String> fieldErrors = productService.validateFields(product, true);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("title", "Editar producto");
+            model.addAttribute("product", product);
+            model.addAttribute("action", "/admin/products/update");
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            return "product/product_form";
+        }
 
         if (!imageFile.isEmpty()) {
             try {
@@ -206,7 +227,7 @@ public class ProductController {
                 e.printStackTrace();
                 model.addAttribute("title", "Editar producto");
                 model.addAttribute("product", product);
-                model.addAttribute("action", "/products/update");
+                model.addAttribute("action", "/admin/products/update");
                 model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
                 return "product/product_form";
             }
@@ -217,13 +238,13 @@ public class ProductController {
         if (!result.isEmpty()) {
             model.addAttribute("title", "Editar producto");
             model.addAttribute("product", product);
-            model.addAttribute("action", "/products/update");
+            model.addAttribute("action", "/admin/products/update");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto editado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/delete/{id}")
@@ -238,7 +259,7 @@ public class ProductController {
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/details/{id}")

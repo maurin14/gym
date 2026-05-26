@@ -15,7 +15,12 @@
     </div>
 
     <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
+        <a th:if="${session.user != null and session.user.role == 'administrator'}"
+            th:href="@{/admin/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'trainer'}"
+            th:href="@{/trainer/home}">Inicio</a>
+         <a th:if="${session.user != null and session.user.role == 'client'}"
+            th:href="@{/client/home}">Inicio</a>
         <a th:href="@{/branches}">Sucursales</a>
         <a th:href="@{/payments/listPayment(userId=1)}">Pagos</a>
         <a th:href="@{/routines}">Rutinas</a>
@@ -41,7 +46,7 @@
         </a>
 
         <a th:href="@{/products}">Productos</a>
-        <a th:href="@{/schedules}">Horarios</a>
+        <a th:href="@{/schedule/sche}">Horarios</a>
         <a th:href="@{/logout}">Cerrar sesión</a>
     </nav>
 </header>
@@ -122,7 +127,7 @@
                 <h3>Horarios</h3>
                 <p>Consulta los horarios disponibles de clases y actividades del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/schedules}" class="btn-primary">Ingresar</a>
+                   <a th:href="@{/schedule/sche}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
@@ -135,6 +140,17 @@
             </article>
 
         </div>
+     
+        <article class="module-card">
+            <h3>Equipamiento</h3>
+            <p>Consulta el equipamiento disponible del gimnasio.</p>
+            <div class="buttons">
+                <a th:href="@{/eq}" class="btn-primary">
+           
+                    Ingresar
+                </a>
+            </div>
+        </article>
     </section>
 
 </main>

@@ -6,6 +6,7 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Routine;
 import com.una.ac.cr.gym.service.RoutineServices;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author alira
  */
 @Controller
-@RequestMapping("/routines")
+@RequestMapping("/admin/routines")
 public class RoutineController {
 
     @Autowired
@@ -57,10 +58,20 @@ public class RoutineController {
     @PostMapping("/save")
     public String saveRoutine(Routine routine, Model model, RedirectAttributes redirectAttributes) {
         boolean isUpdate = routine.getIdRoutine() > 0;
+        Map<String, String> fieldErrors = routineService.validateFields(routine);
+
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("title", isUpdate ? "Editar rutina" : "Registrar rutina");
+            model.addAttribute("routine", routine);
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            return "routine/routine_form";
+        }
+
         String result = routineService.saveRoutine(routine);
 
         if (!result.isEmpty()) {
-            model.addAttribute("title", "Registrar rutina");
+            model.addAttribute("title", isUpdate ? "Editar rutina" : "Registrar rutina");
             model.addAttribute("routine", routine);
             model.addAttribute("error", result);
             return "routine/routine_form";
@@ -68,7 +79,7 @@ public class RoutineController {
 
         String message = isUpdate ? "Rutina editada correctamente." : "Rutina guardada correctamente.";
         redirectAttributes.addFlashAttribute("successMessage", message);
-        return "redirect:/routines";
+        return "redirect:/admin/routines";
     }
 
     @GetMapping("/edit/{idRoutine}")
@@ -76,7 +87,7 @@ public class RoutineController {
         Routine routine = routineService.getRoutine(idRoutine);
 
         if (routine == null) {
-            return "redirect:/routines";
+            return "redirect:/admin/routines";
         }
 
         model.addAttribute("title", "Editar rutina");
@@ -89,7 +100,7 @@ public class RoutineController {
         Routine routine = routineService.getRoutine(idRoutine);
 
         if (routine == null) {
-            return "redirect:/routines";
+            return "redirect:/admin/routines";
         }
 
         model.addAttribute("title", "Detalle de la rutina");
@@ -99,8 +110,14 @@ public class RoutineController {
 
     @GetMapping("/delete/{idRoutine}")
     public String deleteRoutine(@PathVariable int idRoutine, RedirectAttributes redirectAttributes) {
-        routineService.deleteRoutine(idRoutine);
+        String result = routineService.deleteRoutine(idRoutine);
+
+        if (!result.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", result);
+            return "redirect:/admin/routines";
+        }
+
         redirectAttributes.addFlashAttribute("successMessage", "Rutina eliminada correctamente.");
-        return "redirect:/routines";
+        return "redirect:/admin/routines";
     }
 }

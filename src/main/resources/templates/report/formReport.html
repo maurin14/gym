@@ -6,33 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/img/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">REPORTE</span>
+        <h1>Formulario de reporte</h1>
+        <p class="hero-text">Complete la información necesaria para generar o actualizar un reporte del sistema.</p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container form-container">
-    <h1 class="page-title">Formulario de Reporte</h1>
-    <p class="admin-description">
-        Complete la información necesaria para generar o actualizar un reporte del sistema.
-    </p>
-
+<main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form th:action="@{/reports/save}" th:object="${reportNew}" method="post">
+    <form class="portal-form" th:action="@{/reports/save}" th:object="${reportNew}" method="post" novalidate>
         <input type="hidden" th:field="*{reportId}">
 
         <label>Tipo de reporte</label>
@@ -42,21 +31,26 @@
             <option value="payments">Pagos</option>
             <option value="attendances">Asistencias</option>
         </select>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportType'] != null}" th:text="${fieldErrors['reportType']}"></small>
 
         <label>Generado por</label>
         <input type="hidden" th:field="*{generatedBy}">
         <input type="text" th:field="*{userName}" readonly>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['generatedBy'] != null}" th:text="${fieldErrors['generatedBy']}"></small>
 
         <label>Descripción</label>
         <textarea th:field="*{description}" rows="3" required></textarea>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
 
         <label>Fecha de inicio</label>
         <input type="date" th:field="*{startDate}" required onchange="checkDates()">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['startDate'] != null}" th:text="${fieldErrors['startDate']}"></small>
 
         <label>Fecha final</label>
         <input type="date" th:field="*{endDate}" required onchange="checkDates()">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['endDate'] != null}" th:text="${fieldErrors['endDate']}"></small>
 
-        <span id="dateMessage" class="error-message"></span>
+        <span id="dateMessage" class="field-error"></span>
 
         <label>Formato</label>
         <select th:field="*{format}" required>
@@ -65,6 +59,7 @@
             <option value="excel">Excel</option>
             <option value="csv">CSV</option>
         </select>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['format'] != null}" th:text="${fieldErrors['format']}"></small>
 
         <label>Estado del reporte</label>
         <select th:field="*{reportStatus}" required>
@@ -73,9 +68,11 @@
             <option value="pending">Pendiente</option>
             <option value="error">Error</option>
         </select>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportStatus'] != null}" th:text="${fieldErrors['reportStatus']}"></small>
 
         <label>Ruta del archivo</label>
         <input type="text" th:field="*{filePath}" placeholder="Se puede dejar vacío">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['filePath'] != null}" th:text="${fieldErrors['filePath']}"></small>
 
         <div class="buttons">
             <button type="submit" class="btn-primary">Guardar reporte</button>
@@ -84,9 +81,7 @@
     </form>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script>
     function checkDates(){

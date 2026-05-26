@@ -1,13 +1,10 @@
 package com.una.ac.cr.gym.controller;
 
-
-
-
-
 import org.springframework.ui.Model;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -80,7 +77,7 @@ public class UserController {
     }
     
     @PostMapping("/save")
-    public String save(User userNew, HttpSession session, RedirectAttributes redirect){
+    public String save(User userNew, Model model, HttpSession session, RedirectAttributes redirect){
         String access = uService.validateUserAccess(session);
 
         if(access != null){
@@ -88,11 +85,13 @@ public class UserController {
             return "redirect:/";
         }
         
-        String validation = uService.validate(userNew);
+        Map<String, String> fieldErrors = uService.validateFields(userNew);
 
-        if(validation != null){
-            redirect.addFlashAttribute("messageError", validation);
-            return userNew.getUserId() == null ? "redirect:/users/add" : "redirect:/users/edit?id=" + userNew.getUserId();
+        if(!fieldErrors.isEmpty()){
+            model.addAttribute("userNew", userNew);
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            return "user/formUser";
         }
         
         boolean isNew = userNew.getUserId() == null;

@@ -1,59 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Asistencia</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar asistencia - SAM GYM FITNESS</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
+<body>
 
-<body class="public-page">
+<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('attendances')}"></div>
 
-<header class="main-header">
-    <div class="header-left">
-        <div class="brand-text">
-            <span class="system-name">Gimnasio</span>
-            <span class="brand-subtitle">Portal del cliente</span>
+<main>
+    <section class="client-hero compact-hero attendances-hero">
+        <div>
+            <span class="section-kicker">Asistencia</span>
+            <h1>Registrar asistencia</h1>
+            <p>Confirma la clase seleccionada y agrega una observaci&oacute;n si lo necesitas.</p>
         </div>
-    </div>
+    </section>
 
-    <nav class="header-nav">
-        <a th:href="@{/user/home}">Inicio</a>
-        <a th:href="@{/client/classes}">Clases</a>
-        <a th:href="@{/client/attendances}">Mis Asistencias</a>
-    </nav>
-</header>
+    <section class="client-section">
+        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
+            <a th:href="@{/client/home}">Inicio</a>
+            <span>/</span>
+            <a th:href="@{/client/classes}">Clases</a>
+            <span>/</span>
+            <strong>Registrar asistencia</strong>
+        </nav>
 
-<div class="container form-container">
+        <div class="client-form-card">
+            <form class="client-form">
+                <div class="toolbar-field">
+                    <label for="classId">Clase</label>
+                    <select id="classId" onchange="setAttendanceDate()"></select>
+                </div>
 
-    <h1 class="page-title">Registrar Asistencia</h1>
+                <div class="toolbar-field">
+                    <label for="attendanceDate">Fecha de asistencia</label>
+                    <input type="date" id="attendanceDate" readonly>
+                </div>
 
-    <form>
-        <label>Clase</label>
-        <select id="classId" onchange="setAttendanceDate()"></select>
+                <div class="toolbar-field full-span">
+                    <label for="observation">Observaci&oacute;n</label>
+                    <textarea id="observation" rows="5"></textarea>
+                </div>
 
-        <label>Fecha de Asistencia</label>
-        <input type="date" id="attendanceDate" readonly>
-
-        <label>Observación</label>
-        <textarea id="observation"></textarea>
-
-        <div class="buttons">
-            <button type="button"
-                    class="btn-primary"
-                    onclick="saveClientAttendance()">
-                Registrar
-            </button>
-
-            <a class="btn-secondary"
-               th:href="@{/client/classes}">
-                Volver
-            </a>
+                <div class="form-actions full-span">
+                    <button type="button" class="btn-primary" onclick="saveClientAttendance()">Registrar</button>
+                    <a class="btn-secondary" th:href="@{/client/classes}">Volver</a>
+                </div>
+            </form>
         </div>
-    </form>
+    </section>
+</main>
 
-</div>
+<div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
-<script th:src="@{/js/client/attendances/form.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/client-home.js}" defer></script>
+<script th:src="@{/js/client/attendances/form.js}" defer></script>
 
 </body>
 </html>

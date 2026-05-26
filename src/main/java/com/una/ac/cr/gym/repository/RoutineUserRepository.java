@@ -12,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author alira
  */
 public interface RoutineUserRepository extends JpaRepository<RoutineUser, Integer> {
+
+    void deleteByIdRoutine(int idRoutine);
 }

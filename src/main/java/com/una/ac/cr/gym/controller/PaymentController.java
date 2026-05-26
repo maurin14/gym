@@ -6,15 +6,16 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.domain.Payment;
+import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,21 +76,19 @@ public class PaymentController {
     }
 
     @PostMapping("/admin/payments/save")
-    public String savePayment(@Valid @ModelAttribute("payment") Payment payment,
-                              BindingResult result,
+    public String savePayment(@ModelAttribute("payment") Payment payment,
                               @RequestParam(required = false) Integer branchId,
                               Model model) {
 
         Branch branch = branchId != null ? branchService.getById(branchId) : null;
+        payment.setBranch(branch);
 
-        if (branch == null) {
-            result.rejectValue("branch", "error.payment", "Debe seleccionar una sucursal.");
-        } else {
-            payment.setBranch(branch);
-        }
-
-        if (result.hasErrors()) {
+        Map<String, String> fieldErrors = paymentService.validateFields(payment);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("payment", payment);
             model.addAttribute("branches", branchService.getActiveBranches());
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "payments/admin/formPayment";
         }
 
@@ -139,35 +138,52 @@ public class PaymentController {
     }
 
     @GetMapping("/payments")
-    public String userPayments(@RequestParam(defaultValue = "1") Integer userId,
-                               @RequestParam(defaultValue = "0") int page,
+    public String userPayments(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(required = false) String status,
                                @RequestParam(required = false) String paymentMethod,
+                               HttpSession session,
                                Model model) {
 
-        Page<Payment> payments = paymentService.getUserPayments(userId, status, paymentMethod, PageRequest.of(page, 5));
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Page<Payment> payments = paymentService.getUserPayments(
+                user.getUserId(),
+                status,
+                paymentMethod,
+                PageRequest.of(page, 5)
+        );
 
         model.addAttribute("payments", payments);
         model.addAttribute("status", status);
         model.addAttribute("paymentMethod", paymentMethod);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", user.getUserId());
 
         return "payments/user/listPayment";
     }
 
     @GetMapping("/payments/{id}")
     public String userPaymentDetail(@PathVariable int id,
-                                    @RequestParam(defaultValue = "1") Integer userId,
+                                    HttpSession session,
                                     Model model) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         Payment payment = paymentService.getById(id);
 
-        if (payment == null || !payment.getIdUser().equals(userId)) {
-            return "redirect:/payments?userId=" + userId;
+        if (payment == null || !payment.getIdUser().equals(user.getUserId())) {
+            return "redirect:/payments";
         }
 
         model.addAttribute("payment", payment);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", user.getUserId());
 
         return "payments/user/detailPayment";
     }

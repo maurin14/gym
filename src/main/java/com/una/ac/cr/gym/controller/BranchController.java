@@ -6,18 +6,19 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.service.BranchService;
-import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 
@@ -65,10 +66,14 @@ public class BranchController {
     }
 
     @PostMapping("/admin/branches/save")
-    public String saveBranch(@Valid @ModelAttribute("branch") Branch branch,
-                             BindingResult result) {
+    public String saveBranch(@ModelAttribute("branch") Branch branch,
+                             Model model) {
 
-        if (result.hasErrors()) {
+        Map<String, String> fieldErrors = branchService.validateFields(branch);
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("branch", branch);
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
             return "branches/admin/formBranch";
         }
 
@@ -91,21 +96,36 @@ public class BranchController {
     }
 
     @GetMapping("/admin/branches/status/{id}")
-    public String changeBranchStatus(@PathVariable int id) {
-        Branch branch = branchService.getById(id);
-
-        if (branch != null) {
-            branch.setActive(!branch.isActive());
-            branchService.save(branch);
+    public String changeBranchStatus(@PathVariable int id,
+                                     RedirectAttributes redirectAttributes) {
+        if (!branchService.toggleStatus(id)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
+            return "redirect:/admin/branches";
         }
 
-        return "redirect:/admin/branches?success=status";
+        redirectAttributes.addFlashAttribute("successMessage", "Estado de la sucursal actualizado correctamente.");
+        return "redirect:/admin/branches";
     }
 
     @GetMapping("/admin/branches/delete/{id}")
-    public String deleteBranch(@PathVariable int id) {
-        branchService.delete(id);
-        return "redirect:/admin/branches?success=delete";
+    public String deleteBranch(@PathVariable int id,
+                               RedirectAttributes redirectAttributes) {
+        Branch branch = branchService.getById(id);
+
+        if (branch == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
+            return "redirect:/admin/branches";
+        }
+
+        try {
+            branchService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Sucursal eliminada correctamente.");
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "No se puede eliminar la sucursal porque tiene equipos asociados.");
+        }
+
+        return "redirect:/admin/branches";
     }
 
     @GetMapping("/branches")

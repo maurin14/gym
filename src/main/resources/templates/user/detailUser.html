@@ -10,31 +10,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">USUARIO</span>
+        <h1>Detalle de usuario</h1>
+        <p class="hero-text">Información completa del usuario registrado en el sistema.</p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container">
-    <h1 class="page-title">Detalle de Usuario</h1>
-
-    <p class="admin-description">
-        Información completa del usuario registrado en el sistema.
-    </p>
-
+<main class="container portal-card admin-page-card">
     <section class="detail-info">
         <div class="info-card">
 
@@ -114,9 +102,7 @@
     </div>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

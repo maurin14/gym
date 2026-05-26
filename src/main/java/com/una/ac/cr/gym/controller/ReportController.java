@@ -3,6 +3,7 @@ package com.una.ac.cr.gym.controller;
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.service.ReportService;
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,7 +78,7 @@ public class ReportController {
     }
 
     @PostMapping("/save")
-    public String save(Report reportNew, RedirectAttributes redirect, HttpSession session) {
+    public String save(Report reportNew, Model model, RedirectAttributes redirect, HttpSession session) {
         String access = rService.validateAdministratorAccess(session);
 
         if(access != null){
@@ -85,16 +86,13 @@ public class ReportController {
             return "redirect:/";
         }
 
-        String message = rService.validate(reportNew);
+        Map<String, String> fieldErrors = rService.validateFields(reportNew);
 
-        if (message != null) {
-            redirect.addFlashAttribute("messageError", message);
-
-            if (reportNew.getReportId() == null) {
-                return "redirect:/reports/add";
-            } else {
-                return "redirect:/reports/edit?id=" + reportNew.getReportId();
-            }
+        if (!fieldErrors.isEmpty()) {
+            model.addAttribute("reportNew", reportNew);
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            return "report/formReport";
         }
 
         boolean isNew = reportNew.getReportId() == null;

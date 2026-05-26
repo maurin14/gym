@@ -6,30 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
 </head>
-<body>
+<body class="page-portal">
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/img/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
+
+<section class="hero-section portal-head">
+    <div class="hero-overlay">
+        <span class="hero-badge">REPORTE</span>
+        <h1>Reporte del sistema</h1>
+        <p class="hero-text">Vista previa del reporte generado con los datos disponibles en el sistema.</p>
     </div>
+</section>
 
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/reports}">Reportes</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
-
-<main class="container">
-    <h1 class="page-title">Reporte del Sistema</h1>
-    <p class="admin-description">
-        Vista previa del reporte generado con los datos disponibles en el sistema.
-    </p>
-
+<main class="container portal-card admin-page-card">
     <section class="detail-info">
         <div class="info-card">
             <h3>Información del reporte</h3>
@@ -49,7 +38,7 @@
         </div>
     </section>
 
-    <table th:if="${reportData != null and !#lists.isEmpty(reportData)}">
+    <table class="portal-table" th:if="${reportData != null and !#lists.isEmpty(reportData)}">
         <thead>
         <tr>
             <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>
@@ -74,9 +63,7 @@
     </div>
 </main>
 
-<footer class="main-footer">
-    <p>SAM GYM FITNESS - Panel de Administración</p>
-</footer>
+<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
 </html>

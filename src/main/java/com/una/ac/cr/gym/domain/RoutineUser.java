@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.una.ac.cr.gym.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,31 +8,40 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 
-/**
- *
- * @author alira
- */
 @Entity
 @Table(name = "tb_routine_users")
 public class RoutineUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_routine_user")
     private int idRoutineUser;
 
+    @Column(name = "id_routine")
     private int idRoutine;
+
+    @Column(name = "id_user")
     private int idUser;
+
+    @Column(name = "assign_date")
     private LocalDate assignDate;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Column(name = "state")
     private boolean state;
 
     public RoutineUser() {
     }
 
     public RoutineUser(int idRoutineUser, int idRoutine, int idUser,
-                       LocalDate assignDate, LocalDate startDate,
-                       LocalDate endDate, boolean state) {
+            LocalDate assignDate, LocalDate startDate,
+            LocalDate endDate, boolean state) {
+
         this.idRoutineUser = idRoutineUser;
         this.idRoutine = idRoutine;
         this.idUser = idUser;
@@ -101,5 +107,3 @@ public class RoutineUser {
         this.state = state;
     }
 }
-
-
