@@ -1,14 +1,11 @@
-const attendanceBasePath = window.location.pathname.startsWith("/admin/attendance")
+const attendanceBasePath = window.attendanceBasePath || (window.location.pathname.startsWith("/admin/attendance")
         ? "/admin/attendance"
-        : "/trainer/attendances";
+        : "/trainer/attendances");
+
+let attendanceSaving = false;
 
 document.addEventListener("DOMContentLoaded", function () {
-    Promise.all([
-        loadClients(),
-        loadClasses()
-    ]).then(() => {
-        loadAttendanceForEdit();
-    });
+    Promise.all([loadClients(), loadClasses()]).then(loadAttendanceForEdit);
 });
 
 function loadClients() {
@@ -21,10 +18,7 @@ function loadClients() {
                     '<option value="">Seleccione un cliente</option>';
 
             data
-                .filter(client =>
-                    client.status &&
-                    client.status.toLowerCase() === "active"
-                )
+                .filter(client => client.status === "active")
                 .forEach(client => {
                     clientSelect.innerHTML += `
                         <option value="${client.userId}">
@@ -46,9 +40,8 @@ function loadClasses() {
 
             data.forEach(gymClass => {
                 classSelect.innerHTML += `
-                    <option value="${gymClass.idClass}"
-                            data-date="${gymClass.classDate}">
-                        ${gymClass.classType} - ${gymClass.classDate}
+                    <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
+                        ${gymClass.classType} - ${gymClass.branchName || "Sin sucursal"} - ${gymClass.classDate}
                     </option>
                 `;
             });
@@ -58,33 +51,31 @@ function loadClasses() {
 function loadAttendanceForEdit() {
     const idAttendance = getAttendanceIdFromPath();
 
-    if (idAttendance === "") {
+    if (!idAttendance) {
         return;
     }
 
-    fetch("/attendances/edit/" + idAttendance)
+    fetch("/attendances/" + idAttendance)
         .then(response => response.json())
         .then(attendance => {
-            document.getElementById("idAttendance").value =
-                    attendance.idAttendance;
+            document.getElementById("idAttendance").value = attendance.idAttendance || "";
 
-            document.getElementById("formTitle").textContent =
-                    "Editar Asistencia";
+            const title = document.getElementById("formTitle");
+            if (title) {
+                title.textContent = "Editar asistencia";
+            }
 
-            document.getElementById("clientId").value =
-                    attendance.clientId;
+            if (attendance.client) {
+                document.getElementById("clientId").value = attendance.client.userId;
+            }
 
-            document.getElementById("classId").value =
-                    attendance.classId;
+            if (attendance.gymClass) {
+                document.getElementById("classId").value = attendance.gymClass.idClass;
+            }
 
-            document.getElementById("attendanceDate").value =
-                    attendance.attendanceDate || "";
-
-            document.getElementById("attendanceStatus").value =
-                    attendance.attendanceStatus || "Presente";
-
-            document.getElementById("observation").value =
-                    attendance.observation || "";
+            document.getElementById("attendanceDate").value = attendance.attendanceDate || "";
+            document.getElementById("attendanceStatus").value = attendance.attendanceStatus || "Presente";
+            document.getElementById("observation").value = attendance.observation || "";
         });
 }
 
@@ -98,17 +89,15 @@ function setAttendanceDate() {
     const selectedOption = classSelect.options[classSelect.selectedIndex];
 
     if (selectedOption) {
-        const date = selectedOption.getAttribute("data-date");
-
-        if (date) {
-            document.getElementById("attendanceDate").value = date;
-        }
+        document.getElementById("attendanceDate").value =
+                selectedOption.getAttribute("data-date");
     }
 }
 
 function saveAttendance() {
-
-    clearErrors();
+    if (attendanceSaving) {
+        return;
+    }
 
     const idAttendance = document.getElementById("idAttendance").value;
     const clientId = document.getElementById("clientId").value;
@@ -117,33 +106,13 @@ function saveAttendance() {
     const attendanceStatus = document.getElementById("attendanceStatus").value;
     const observation = document.getElementById("observation").value.trim();
 
-    let valid = true;
-
-    if (clientId === "") {
-        document.getElementById("clientError").innerText =
-                "Seleccione un cliente";
-        valid = false;
-    }
-
-    if (classId === "") {
-        document.getElementById("classError").innerText =
-                "Seleccione una clase";
-        valid = false;
-    }
-
-    if (attendanceDate === "") {
-        document.getElementById("dateError").innerText =
-                "Seleccione una fecha";
-        valid = false;
-    }
-
-    if (attendanceStatus === "") {
-        document.getElementById("statusError").innerText =
-                "Seleccione un estado";
-        valid = false;
-    }
-
-    if (!valid) {
+    if (clientId === "" || classId === "" || attendanceDate === "" || attendanceStatus === "") {
+        clearAttendanceErrors();
+        if (clientId === "") showAttendanceError("clientId", "Seleccione una opcion.");
+        if (classId === "") showAttendanceError("classId", "Seleccione una opcion.");
+        if (attendanceDate === "") showAttendanceError("attendanceDate", "La fecha es obligatoria.");
+        if (attendanceStatus === "") showAttendanceError("attendanceStatus", "Seleccione una opcion.");
+        showAdminError("Revise los datos.");
         return;
     }
 
@@ -159,13 +128,12 @@ function saveAttendance() {
         observation: observation
     };
 
-    let url = "/attendances";
-    let method = "POST";
+    const url = idAttendance ? "/attendances/" + idAttendance : "/attendances";
+    const method = idAttendance ? "PUT" : "POST";
 
-    if (idAttendance !== "") {
-        url = "/attendances/" + idAttendance;
-        method = "PUT";
-    }
+    attendanceSaving = true;
+
+    showAdminLoading("Guardando...");
 
     fetch(url, {
         method: method,
@@ -173,14 +141,38 @@ function saveAttendance() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(attendance)
-    }).then(() => {
-        window.location.href = attendanceBasePath;
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("No se pudo guardar la asistencia.");
+        }
+
+        showAdminSuccess(idAttendance ? "Actualizado." : "Guardado.").then(() => {
+            window.location.href = attendanceBasePath;
+        });
+    }).catch(error => {
+        attendanceSaving = false;
+        showAdminError("No se pudo guardar.", error.message || "Revise los datos.");
     });
 }
 
-function clearErrors() {
-    document.getElementById("clientError").innerText = "";
-    document.getElementById("classError").innerText = "";
-    document.getElementById("dateError").innerText = "";
-    document.getElementById("statusError").innerText = "";
+function clearAttendanceErrors() {
+    document.querySelectorAll(".field-error").forEach(error => {
+        error.textContent = "";
+    });
+    document.querySelectorAll(".invalid").forEach(field => {
+        field.classList.remove("invalid");
+    });
+}
+
+function showAttendanceError(field, message) {
+    const error = document.getElementById(field + "Error");
+    const fieldElement = document.getElementById(field);
+
+    if (error) {
+        error.textContent = message;
+    }
+
+    if (fieldElement) {
+        fieldElement.classList.add("invalid");
+    }
 }

@@ -5,27 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de reportes</h1>
-        <p class="hero-text">
-            Consulta, filtra, descarga y administra reportes con la misma estructura visual del panel admin.
-        </p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/reports/add}" class="btn-primary">Agregar reporte</a>
+        <a th:href="@{/reports/add}" class="btn-primary">Nuevo reporte</a>
     </div>
 
     <form th:action="@{/reports}" method="get" class="admin-filter-row portal-filters">
@@ -47,7 +40,7 @@
         <a th:href="@{/reports}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table class="portal-table">
+    <table class="portal-table admin-table">
         <thead>
         <tr>
             <th>Tipo</th>
@@ -87,7 +80,8 @@
                     <a th:href="@{/reports/edit(id=${r.reportId})}" class="btn-secondary">Editar</a>
                     <a th:href="@{/reports/delete(id=${r.reportId})}"
                        class="btn-danger"
-                       onclick="return confirm('Desea eliminar este reporte?')">Eliminar</a>
+                       data-delete-link
+                       data-delete-title="Eliminar reporte?">Eliminar</a>
                 </div>
             </td>
         </tr>
@@ -98,24 +92,45 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 1}"
-           th:href="@{/reports(page=${currentPage - 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
+    <nav class="pagination" aria-label="Paginacion de reportes"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/reports(page=${currentPage == 0 ? currentPage : currentPage - 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
             Anterior
         </a>
 
-        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <a th:href="@{/reports(page=${i}, reportType=${reportType}, reportStatus=${reportStatus})}"
-               th:text="${i}"
-               th:classappend="${i == currentPage} ? 'page-active'"></a>
-        </span>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/reports(page=${i}, reportType=${reportType}, reportStatus=${reportStatus})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
-        <a th:if="${currentPage < totalPages}"
-           th:href="@{/reports(page=${currentPage + 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/reports(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, reportType=${reportType}, reportStatus=${reportStatus})}">
             Siguiente
         </a>
-    </div>
+    </nav>
 </main>
+
+<script>
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({
+                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                text: 'Esta accion no se puede deshacer.',
+                confirmText: 'Eliminar',
+                icon: 'warning'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 

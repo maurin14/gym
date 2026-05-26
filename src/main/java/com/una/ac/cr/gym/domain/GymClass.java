@@ -33,6 +33,10 @@ public class GymClass {
     @JoinColumn(name = "trainer_id", referencedColumnName = "userId")
     private User trainer;
 
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
     @Column(name = "duration")
     private int duration;
 
@@ -110,6 +114,14 @@ public class GymClass {
 
     public void setTrainer(User trainer) {
         this.trainer = trainer;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     public int getDuration() {

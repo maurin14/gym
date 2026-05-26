@@ -1,6 +1,7 @@
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +19,9 @@ public class UserService {
 
     @Autowired
     private UserRepository uData;
+
+    @Autowired
+    private BranchRepository branchRepository;
 
     public List<User> getUsers(){
         return uData.findAll();
@@ -41,8 +46,36 @@ public class UserService {
         return uData.findAll();
     }
 
+    public List<User> getClients(){
+        return uData.findByRole("client");
+    }
+
+    public List<User> getTrainersByBranch(int branchId) {
+        return uData.findByRoleAndBranch_Id("trainer", branchId);
+    }
+
     public Page<User> getUsersByPage(int page, int size){
-        return uData.findAll(PageRequest.of(page - 1, size));
+        return uData.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<User> filterUsersByPage(String fullName, String role, int page, int size){
+        boolean hasName = fullName != null && !fullName.trim().isEmpty();
+        boolean hasRole = role != null && !role.trim().isEmpty();
+        Pageable pageable = PageRequest.of(page, size);
+
+        if(hasName && hasRole){
+            return uData.findByFullNameContainingIgnoreCaseAndRole(fullName, role, pageable);
+        }
+
+        if(hasName){
+            return uData.findByFullNameContainingIgnoreCase(fullName, pageable);
+        }
+
+        if(hasRole){
+            return uData.findByRole(role, pageable);
+        }
+
+        return uData.findAll(pageable);
     }
 
     public User getUserById(int id){
@@ -123,6 +156,14 @@ public class UserService {
             errors.put("role", "Seleccione una opción.");
         }
 
+        if ("trainer".equals(u.getRole())) {
+            if (u.getBranch() == null || u.getBranch().getId() <= 0) {
+                errors.put("branch.id", "Seleccione una sucursal para el entrenador.");
+            } else if (branchRepository.findById(u.getBranch().getId()).isEmpty()) {
+                errors.put("branch.id", "La sucursal seleccionada no existe.");
+            }
+        }
+
         if(isEmpty(u.getStatus())){
             errors.put("status", "Seleccione una opción.");
         }else if(!u.getStatus().equals("active") && !u.getStatus().equals("inactive")){
@@ -147,6 +188,7 @@ public class UserService {
         if(validation != null){
             return false;
         }
+        normalizeBranch(u);
         uData.save(u);
         return true;
     }
@@ -171,18 +213,29 @@ public class UserService {
 
     public boolean canManageUsers(HttpSession session){
         User u = (User) session.getAttribute("user");
-        return u != null && ("administrator".equals(u.getRole()) || "trainer".equals(u.getRole()));
+        return u != null && "administrator".equals(u.getRole());
     }
 
     public String validateUserAccess(HttpSession session){
         if(!canManageUsers(session)){
-            return "Solo administradores y entrenadores pueden administrar usuarios";
+            return "Solo administradores pueden administrar usuarios";
         }
         return null;
     }
 
     private boolean isEmpty(String text){
         return text == null || text.trim().isEmpty();
+    }
+
+    private void normalizeBranch(User user) {
+        if (!"trainer".equals(user.getRole())
+                || user.getBranch() == null
+                || user.getBranch().getId() <= 0) {
+            user.setBranch(null);
+            return;
+        }
+
+        user.setBranch(branchRepository.findById(user.getBranch().getId()).orElse(null));
     }
 
     public boolean existsIdCard(String idCard){

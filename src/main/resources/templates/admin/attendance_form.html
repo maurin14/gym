@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de asistencia - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">ASISTENCIA</span>
-        <h1 id="formTitle">Agregar asistencia</h1>
-        <p class="hero-text">Registre la asistencia de clientes a las clases programadas.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <input type="hidden" id="idAttendance">

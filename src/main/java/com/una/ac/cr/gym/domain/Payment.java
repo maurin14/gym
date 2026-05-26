@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,6 +43,9 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "id_branch", nullable = false)
     private Branch branch;
+
+    @Transient
+    private String clientName;
 
     public Payment() {
     }
@@ -120,5 +124,13 @@ public class Payment {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

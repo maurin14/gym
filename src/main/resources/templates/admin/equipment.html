@@ -5,31 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipamiento - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('equipment')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">EQUIPAMIENTO</span>
-        <h1>Equipamiento</h1>
-        <p class="hero-text">Gestione el equipamiento asociado a las sucursales del gimnasio.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
+    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+
+    <div class="buttons admin-action-row">
+        <a th:href="@{/admin/equipment/new}" class="btn-primary">Nuevo equipamiento</a>
+    </div>
+
     <div class="admin-title-row">
         <div>
             <h2 class="section-title">Inventario de equipamiento</h2>
             <p class="admin-description">
-                Consulte maquinas, implementos, costos, disponibilidad y sucursal asignada.
+                Administre maquinas, implementos, costos, disponibilidad y sucursal asignada.
             </p>
         </div>
     </div>
 
-    <form class="admin-filter-row" th:action="@{/admin/equipment}" method="get">
-        <select name="id" aria-label="Filtrar por sucursal">
+    <form class="admin-filter-row portal-filters" th:action="@{/admin/equipment}" method="get">
+        <select name="branchId" aria-label="Filtrar por sucursal">
             <option value="">Todas las sucursales</option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
@@ -56,11 +58,11 @@
         <input type="hidden" name="size" th:value="${pageSize}">
 
         <button type="submit" class="btn-primary">Filtrar</button>
-        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar</a>
+        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar filtros</a>
     </form>
 
     <div class="table-responsive">
-        <table class="portal-table">
+        <table class="portal-table admin-table is-wide">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -70,11 +72,12 @@
                     <th>Costo</th>
                     <th>Disponibilidad</th>
                     <th>Sucursal</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${equipment == null or #lists.isEmpty(equipment)}">
-                    <td colspan="7" class="empty-message">
+                    <td colspan="8" class="empty-message">
                         No hay equipamiento registrado.
                     </td>
                 </tr>
@@ -85,40 +88,94 @@
                     <td th:text="${item.purchaseDate != null ? #temporals.format(item.purchaseDate, 'dd/MM/yyyy') : 'Sin fecha'}">
                         Fecha
                     </td>
-                    <td th:text="${#numbers.formatDecimal(item.cost, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                    <td th:text="'₡ ' + ${#numbers.formatDecimal(item.cost, 1, 2)}">₡ 0.00</td>
                     <td>
                         <span th:class="${item.available == 'true'} ? 'status-active' : 'status-inactive'"
-                              th:text="${item.available == 'true'} ? 'Si' : 'No'">
-                            Si
+                              th:text="${item.available == 'true'} ? 'Disponible' : 'No disponible'">
+                            Disponible
                         </span>
                     </td>
                     <td th:text="${item.branch != null ? item.branch.name : 'Sin sucursal'}">Sucursal</td>
+                    <td class="actions">
+                        <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}" class="btn-primary">Editar</a>
+                        <a th:href="@{/admin/equipment/status/{id}(id=${item.id})}" class="btn-secondary" data-status-link>Cambiar estado</a>
+                        <a th:href="@{/admin/equipment/delete/{id}(id=${item.id})}"
+                           class="btn-danger"
+                           data-delete-link
+                           data-delete-title="Eliminar equipamiento?">
+                            Eliminar
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="pagination">
+    <nav class="pagination" aria-label="Paginacion de equipamiento"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary"
-           th:if="${currentPage > 0}"
-           th:href="@{/admin/equipment(page=${currentPage - 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/admin/equipment(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
             Anterior
         </a>
 
-        <button type="button" disabled>
-            Pagina <span th:text="${currentPage + 1}">1</span>
-            de <span th:text="${totalPages > 0 ? totalPages : 1}">1</span>
-        </button>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/admin/equipment(page=${i}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
-        <a class="btn-primary"
-           th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/admin/equipment(page=${currentPage + 1}, size=${pageSize}, id=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/admin/equipment(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
             Siguiente
         </a>
-    </div>
+    </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+<script th:inline="javascript">
+    const successMessage = [[${successMessage != null ? successMessage : null}]];
+    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+
+    if (successMessage != null) {
+        showAdminSuccess(successMessage);
+    }
+
+    if (errorMessage != null) {
+        showAdminError(errorMessage);
+    }
+</script>
+
+<script>
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({
+                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                text: 'Esta accion no se puede deshacer.',
+                confirmText: 'Eliminar',
+                icon: 'warning'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+    document.querySelectorAll('[data-status-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({ title: 'Cambiar estado?', confirmText: 'Si' }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Procesando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

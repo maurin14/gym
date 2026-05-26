@@ -48,6 +48,10 @@
                 <strong th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy')}">Fecha</strong>
             </div>
             <div class="meta-item">
+                <span>Cliente</span>
+                <strong th:text="${payment.clientName != null ? payment.clientName : 'Cliente no encontrado'}">Cliente</strong>
+            </div>
+            <div class="meta-item">
                 <span>M&eacute;todo</span>
                 <strong th:text="${payment.paymentMethod}">Método</strong>
             </div>

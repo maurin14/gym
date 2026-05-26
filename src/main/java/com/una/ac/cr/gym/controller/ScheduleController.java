@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/Controller.java to edit this template
- */
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
@@ -10,147 +6,285 @@ import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.ScheduleService;
 import jakarta.servlet.http.HttpSession;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- *
- * @author PC
- */
 @Controller
- @RequestMapping("/schedule")
 public class ScheduleController {
-  
-    @GetMapping("/sche")
-    public String page(Model model) {
-      
-        return "schedule/indexSchedule";
-    }
- @Autowired
-    private ScheduleService scheduleServices;
 
-    @Autowired
-    private BranchService branchServices;
+    private final ScheduleService scheduleService;
+    private final BranchService branchService;
 
-   
-
- @GetMapping
-   public String listSchedules(
-        @RequestParam(required = false) Integer branchId,
-        @RequestParam(required = false) String start,
-        @RequestParam(required = false) String end,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        Model model, HttpSession session,
-        @RequestHeader(value = "X-Requested-With", required = false) String ajax) {
-
-    Page<Schedule> data;
-
-    if (branchId != null) {
-       
- data = scheduleServices.getbyId(branchId, PageRequest.of(page, size));
-    } else if (start != null && end != null) {
-     data = scheduleServices.findByBranchIdAndStartTimeBetween(
-    LocalTime.parse(start),
-    LocalTime.parse(end),
-    PageRequest.of(page, size)
-);
-
-    } else {
-       data = scheduleServices.getAll(PageRequest.of(page, size));
-    } 
-
-    model.addAttribute("schedules", data.getContent());
-    model.addAttribute("currentPage", page);
-    model.addAttribute("totalPages", data.getTotalPages());
-    User user = (User) session.getAttribute("user");
-
-boolean isAdmin = false;
-
-if (user != null) {
-    isAdmin = "administrator".equals(user.getRole());
-}
-
-model.addAttribute("isAdmin", isAdmin);
-
-    if ("XMLHttpRequest".equals(ajax)) {
-      return "schedule/listSchedule :: tableContainer";
+    public ScheduleController(ScheduleService scheduleService,
+            BranchService branchService) {
+        this.scheduleService = scheduleService;
+        this.branchService = branchService;
     }
 
-    return "schedule/listSchedule";
-}
+    @GetMapping("/admin/schedules")
+    public String adminSchedules(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Integer branchId,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            Model model,
+            HttpSession session) {
 
-
-    @GetMapping("/add")
-    public String addForm(Model model) {
-       
-        Schedule schedule = new Schedule();
-
-        schedule.setBranch(new Branch());
-
-        var branches = branchServices.getAll();
-        if (branches == null) {
-            branches = new ArrayList<>();
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
         }
 
-        model.addAttribute("schedule", schedule);
-        model.addAttribute("branches", branches);
+        int pageSize = 5;
+        int currentPage = Math.max(page, 0);
+        Page<Schedule> data = getSchedulesPage(currentPage, pageSize, branchId, start, end);
 
-        return "schedule/formSchedule";
+        if (currentPage >= data.getTotalPages() && data.getTotalPages() > 0) {
+            currentPage = data.getTotalPages() - 1;
+            data = getSchedulesPage(currentPage, pageSize, branchId, start, end);
+        }
+
+        addListAttributes(model, data, currentPage, pageSize, branchId, start, end);
+
+        return "admin/schedules";
     }
 
+    @GetMapping("/admin/schedules/new")
+    public String newSchedule(Model model, HttpSession session) {
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
 
-    @PostMapping("/save")
-    @ResponseBody
-    public String save(@ModelAttribute Schedule schedule) {
+        Schedule schedule = new Schedule();
+        schedule.setBranch(new Branch());
+        schedule.setActive(true);
 
-   
-        if (schedule.getEndTime().isBefore(schedule.getStartTime())) {
-            return "error";
+        prepareForm(model, schedule, "Nuevo horario", null);
+        return "admin/schedule_form";
+    }
+
+    @GetMapping("/admin/schedules/edit/{id}")
+    public String editSchedule(@PathVariable int id, Model model,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Schedule schedule = scheduleService.getById(id);
+
+        if (schedule == null) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "El horario solicitado no existe.");
+            return "redirect:/admin/schedules";
+        }
+
+        if (schedule.getBranch() == null) {
+            schedule.setBranch(new Branch());
+        }
+
+        prepareForm(model, schedule, "Editar horario", null);
+        return "admin/schedule_form";
+    }
+
+    @PostMapping("/admin/schedules/save")
+    public String saveSchedule(Schedule schedule, Model model,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Map<String, String> fieldErrors = scheduleService.validate(schedule);
+
+        if (schedule.getId() > 0 && scheduleService.getById(schedule.getId()) == null) {
+            fieldErrors.put("form", "El horario que intenta editar no existe.");
+        }
+
+        if (!fieldErrors.isEmpty()) {
+            if (schedule.getBranch() == null) {
+                schedule.setBranch(new Branch());
+            }
+
+            String title = schedule.getId() == 0 ? "Nuevo horario" : "Editar horario";
+            prepareForm(model, schedule, title, fieldErrors);
+            model.addAttribute("messageError", "Revise los campos marcados.");
+            return "admin/schedule_form";
         }
 
         if (schedule.getId() == 0) {
-            scheduleServices.save(schedule);
+            scheduleService.save(schedule);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Horario registrado correctamente.");
         } else {
-            scheduleServices.update(schedule.getId(), schedule);
+            scheduleService.update(schedule.getId(), schedule);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Horario actualizado correctamente.");
         }
 
-        return "ok";
+        return "redirect:/admin/schedules";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") int id, Model model) {
+    @GetMapping("/admin/schedules/delete/{id}")
+    public String deleteSchedule(@PathVariable int id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
-        Schedule schedule = scheduleServices.getById(id);
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Schedule schedule = scheduleService.getById(id);
 
         if (schedule == null) {
-            return "redirect:/listSchedule";
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "El horario solicitado no existe.");
+            return "redirect:/admin/schedules";
         }
 
-        model.addAttribute("schedule", schedule);
-        model.addAttribute("branches", branchServices.getAll());
-
-        return "schedule/formSchedule";
+        scheduleService.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Horario eliminado correctamente.");
+        return "redirect:/admin/schedules";
     }
 
-    @GetMapping("/delete/{id}")
-    @ResponseBody
-    
-    public String delete(@PathVariable("id") int id) {
-        scheduleServices.delete(id);
-        return "ok";
+    @GetMapping("/admin/schedules/status/{id}")
+    public String changeScheduleStatus(@PathVariable int id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        scheduleService.toggleStatus(id);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Estado del horario actualizado correctamente.");
+        return "redirect:/admin/schedules";
+    }
+
+    @GetMapping("/client/schedules")
+    public String clientSchedules(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer branchId,
+            Model model,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if ("administrator".equals(user.getRole())) {
+            return "redirect:/admin/schedules";
+        }
+
+        Page<Schedule> data = branchId != null
+                ? scheduleService.getbyId(branchId, PageRequest.of(page, size))
+                : scheduleService.getAll(PageRequest.of(page, size));
+
+        addListAttributes(model, data, page, size, branchId, null, null);
+        return "client/schedules";
+    }
+
+    @GetMapping("/schedules")
+    public String publicSchedulesRedirect() {
+        return "redirect:/client/schedules";
+    }
+
+    @GetMapping("/schedule")
+    public String oldScheduleListRedirect() {
+        return "redirect:/client/schedules";
+    }
+
+    @GetMapping("/schedule/sche")
+    public String oldScheduleIndexRedirect() {
+        return "redirect:/client/schedules";
+    }
+
+    @GetMapping("/schedule/add")
+    public String oldScheduleAddRedirect() {
+        return "redirect:/admin/schedules/new";
+    }
+
+    @GetMapping("/schedule/edit/{id}")
+    public String oldScheduleEditRedirect(@PathVariable int id) {
+        return "redirect:/admin/schedules/edit/" + id;
+    }
+
+    @GetMapping("/schedule/delete/{id}")
+    public String oldScheduleDeleteRedirect(@PathVariable int id) {
+        return "redirect:/admin/schedules/delete/" + id;
+    }
+
+    private Page<Schedule> getSchedulesPage(int page, int size,
+            Integer branchId, String start, String end) {
+
+        if (branchId != null) {
+            return scheduleService.getbyId(branchId, PageRequest.of(page, size));
+        }
+
+        if (start != null && !start.isBlank()
+                && end != null && !end.isBlank()) {
+            return scheduleService.findByBranchIdAndStartTimeBetween(
+                    LocalTime.parse(start),
+                    LocalTime.parse(end),
+                    PageRequest.of(page, size));
+        }
+
+        return scheduleService.getAll(PageRequest.of(page, size));
+    }
+
+    private void addListAttributes(Model model, Page<Schedule> data,
+            int page, int size, Integer branchId, String start, String end) {
+
+        model.addAttribute("schedules", data.getContent());
+        model.addAttribute("branches", branchService.getAll());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", data.getTotalPages());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("selectedBranchId", branchId);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+    }
+
+    private void prepareForm(Model model, Schedule schedule, String title,
+            Map<String, String> fieldErrors) {
+
+        model.addAttribute("schedule", schedule);
+        model.addAttribute("branches", branchService.getAll());
+        model.addAttribute("days", DayOfWeek.values());
+        model.addAttribute("title", title);
+        model.addAttribute("fieldErrors", fieldErrors);
+    }
+
+    private String requireAdmin(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if (!"administrator".equals(user.getRole())) {
+            return "redirect:/client/home";
+        }
+
+        return null;
     }
 }

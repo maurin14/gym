@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Inicio Entrenador - SAM GYM FITNESS</title>
@@ -22,12 +17,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
     <nav class="header-nav">
         <a th:href="@{/trainer/home}">Inicio</a>
-        <a th:href="@{/users}">Usuarios</a>
-        <a th:href="@{/admin/classes}">Clases</a>
-        <a th:href="@{/admin/routines}">Rutinas</a>
-        <a th:href="@{/users/add}">Registrar cliente</a>
-        <a th:href="@{/profile/password}">Cambiar contraseña</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
+        <a th:href="@{/trainer/classes}">Mis clases</a>
+        <a th:href="@{/trainer/schedules}">Mis horarios</a>
+        <a th:href="@{/trainer/attendances}">Asistencia</a>
+        <a th:href="@{/trainer/routines}">Rutinas</a>
+        <a th:href="@{/profile/password}">Cambiar contrase&ntilde;a</a>
+        <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
     </nav>
 </header>
 
@@ -36,9 +31,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="hero-overlay">
             <img th:src="@{/images/logo.jpeg}" alt="Logo SAM GYM FITNESS" class="hero-logo">
             <h1>Panel de Entrenador</h1>
-            <p class="hero-slogan">Seguimiento de usuarios, clases y rutinas</p>
+            <p class="hero-slogan">Seguimiento de clases, asistencia y rutinas</p>
             <p class="hero-text">
-                Desde este espacio puedes consultar usuarios, revisar clases y dar seguimiento a rutinas de entrenamiento.
+                Desde este espacio puedes consultar tus clases asignadas, registrar asistencia relacionada y revisar rutinas de entrenamiento.
+            </p>
+            <p class="hero-text">
+                Sucursal asignada: <strong th:text="${trainerBranch}">Sin sucursal asignada</strong>
             </p>
         </div>
     </section>
@@ -47,33 +45,37 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <h2 class="section-title">Opciones disponibles</h2>
 
         <div class="modules-grid">
-
-        <article class="module-card">
-            <h3>Usuarios</h3>
-            <p>Consulta clientes registrados, revisa información y registra nuevos usuarios del gimnasio.</p>
-            <div class="buttons">
-                <a th:href="@{/users}" class="btn-primary">Ver usuarios</a>
-                <a th:href="@{/users/add}" class="btn-secondary">Registrar cliente</a>
-            </div>
-
-        </article>
+            <article class="module-card">
+                <h3>Mis clases</h3>
+                <p>Consulta las clases que tienes asignadas y sus horarios.</p>
+                <div class="buttons">
+                    <a th:href="@{/trainer/classes}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
 
             <article class="module-card">
-                <h3>Clases</h3>
-                <p>Consulta las clases disponibles, horarios y datos relacionados.</p>
+                <h3>Asistencia</h3>
+                <p>Registra y consulta asistencia relacionada con tus clases.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/classes}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/trainer/attendances}" class="btn-primary">Ingresar</a>
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h3>Mis horarios</h3>
+                <p>Consulta fechas, horas y sucursales de tus clases asignadas.</p>
+                <div class="buttons">
+                    <a th:href="@{/trainer/schedules}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
                 <h3>Rutinas</h3>
-                <p>Revisa rutinas asignadas y la información de entrenamiento.</p>
+                <p>Consulta rutinas activas para apoyar el seguimiento operativo de clientes.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/routines}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/trainer/routines}" class="btn-primary">Ingresar</a>
                 </div>
             </article>
-
         </div>
     </section>
 </main>

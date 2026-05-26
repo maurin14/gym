@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/Controller.java to edit this template
- */
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
@@ -10,6 +6,7 @@ import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.EquipmentService;
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -17,39 +14,262 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- *
- * @author PC
- */
 @Controller
 public class ControllerEquipment {
-    @org.springframework.beans.factory.annotation.Autowired
-    private EquipmentService equipmentService;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private BranchService branchServices;
+    private final EquipmentService equipmentService;
+    private final BranchService branchService;
 
-    @GetMapping("/eq")
-    public String page(Model model) {
-      
-        return "equipment/indexEquipment";
+    public ControllerEquipment(EquipmentService equipmentService,
+            BranchService branchService) {
+        this.equipmentService = equipmentService;
+        this.branchService = branchService;
     }
 
     @GetMapping("/admin/equipment")
     public String adminEquipment(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
-            @RequestParam(required = false) Integer id,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Integer branchId,
             @RequestParam(required = false) Double min,
             @RequestParam(required = false) Double max,
             Model model,
             HttpSession session) {
 
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        int pageSize = 5;
+        int currentPage = Math.max(page, 0);
+        Page<Equipment> data = getEquipmentPage(currentPage, pageSize, branchId, min, max);
+
+        if (currentPage >= data.getTotalPages() && data.getTotalPages() > 0) {
+            currentPage = data.getTotalPages() - 1;
+            data = getEquipmentPage(currentPage, pageSize, branchId, min, max);
+        }
+
+        model.addAttribute("equipment", data.getContent());
+        model.addAttribute("branches", branchService.getAll());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", data.getTotalPages());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("selectedBranchId", branchId);
+        model.addAttribute("minCost", min);
+        model.addAttribute("maxCost", max);
+
+        return "admin/equipment";
+    }
+
+    @GetMapping("/admin/equipment/new")
+    public String newEquipment(Model model, HttpSession session) {
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Equipment equipment = new Equipment();
+        equipment.setBranch(new Branch());
+        equipment.setAvailable("true");
+
+        prepareForm(model, equipment, "Nuevo equipamiento", null);
+        return "admin/equipment_form";
+    }
+
+    @GetMapping("/admin/equipment/edit/{id}")
+    public String editEquipment(@PathVariable int id, Model model,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Equipment equipment = equipmentService.getById(id);
+
+        if (equipment == null) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "El equipamiento solicitado no existe.");
+            return "redirect:/admin/equipment";
+        }
+
+        if (equipment.getBranch() == null) {
+            equipment.setBranch(new Branch());
+        }
+
+        prepareForm(model, equipment, "Editar equipamiento", null);
+        return "admin/equipment_form";
+    }
+
+    @PostMapping("/admin/equipment/save")
+    public String saveEquipment(Equipment equipment, Model model,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Map<String, String> fieldErrors = equipmentService.validate(equipment);
+
+        if (equipment.getId() > 0 && equipmentService.getById(equipment.getId()) == null) {
+            fieldErrors.put("form", "El equipamiento que intenta editar no existe.");
+        }
+
+        if (!fieldErrors.isEmpty()) {
+            if (equipment.getBranch() == null) {
+                equipment.setBranch(new Branch());
+            }
+
+            String title = equipment.getId() == 0
+                    ? "Nuevo equipamiento"
+                    : "Editar equipamiento";
+            prepareForm(model, equipment, title, fieldErrors);
+            model.addAttribute("messageError", "Revise los campos marcados.");
+            return "admin/equipment_form";
+        }
+
+        if (equipment.getId() == 0) {
+            equipmentService.save(equipment);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Equipamiento registrado correctamente.");
+        } else {
+            equipmentService.update(equipment.getId(), equipment);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Equipamiento actualizado correctamente.");
+        }
+
+        return "redirect:/admin/equipment";
+    }
+
+    @GetMapping("/admin/equipment/delete/{id}")
+    public String deleteEquipment(@PathVariable int id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        Equipment equipment = equipmentService.getById(id);
+
+        if (equipment == null) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "El equipamiento solicitado no existe.");
+            return "redirect:/admin/equipment";
+        }
+
+        equipmentService.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Equipamiento eliminado correctamente.");
+        return "redirect:/admin/equipment";
+    }
+
+    @GetMapping("/admin/equipment/status/{id}")
+    public String changeEquipmentStatus(@PathVariable int id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        String redirect = requireAdmin(session);
+        if (redirect != null) {
+            return redirect;
+        }
+
+        equipmentService.toggleAvailability(id);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Estado del equipamiento actualizado correctamente.");
+        return "redirect:/admin/equipment";
+    }
+
+    @GetMapping("/client/equipment")
+    public String clientEquipment(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(required = false) Integer branchId,
+            Model model,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if ("administrator".equals(user.getRole())) {
+            return "redirect:/admin/equipment";
+        }
+
+        Page<Equipment> data = branchId != null
+                ? equipmentService.findByBranchId(branchId, PageRequest.of(page, size))
+                : equipmentService.getAll(PageRequest.of(page, size));
+
+        model.addAttribute("equipment", data.getContent());
+        model.addAttribute("branches", branchService.getAll());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", data.getTotalPages());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("selectedBranchId", branchId);
+
+        return "client/equipment";
+    }
+
+    @GetMapping("/equipment")
+    public String publicEquipmentRedirect() {
+        return "redirect:/client/equipment";
+    }
+
+    @GetMapping("/eq")
+    public String oldEquipmentIndexRedirect() {
+        return "redirect:/client/equipment";
+    }
+
+    @GetMapping("/equip")
+    public String oldEquipmentListRedirect() {
+        return "redirect:/client/equipment";
+    }
+
+    @GetMapping("/add")
+    public String oldAddRedirect() {
+        return "redirect:/admin/equipment/new";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String oldEditRedirect(@PathVariable int id) {
+        return "redirect:/admin/equipment/edit/" + id;
+    }
+
+    @GetMapping("/delete/{id}")
+    public String oldDeleteRedirect(@PathVariable int id) {
+        return "redirect:/admin/equipment/delete/" + id;
+    }
+
+    private Page<Equipment> getEquipmentPage(int page, int size,
+            Integer branchId, Double min, Double max) {
+
+        if (branchId != null) {
+            return equipmentService.findByBranchId(branchId, PageRequest.of(page, size));
+        }
+
+        if (min != null && max != null) {
+            return equipmentService.findByCostBetween(min, max, PageRequest.of(page, size));
+        }
+
+        return equipmentService.getAll(PageRequest.of(page, size));
+    }
+
+    private void prepareForm(Model model, Equipment equipment, String title,
+            Map<String, String> fieldErrors) {
+
+        model.addAttribute("equipmentItem", equipment);
+        model.addAttribute("branches", branchService.getAll());
+        model.addAttribute("title", title);
+        model.addAttribute("fieldErrors", fieldErrors);
+    }
+
+    private String requireAdmin(HttpSession session) {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
@@ -60,112 +280,6 @@ public class ControllerEquipment {
             return "redirect:/client/home";
         }
 
-        Page<Equipment> data;
-
-        if (id != null) {
-            data = equipmentService.findByBranchId(id, PageRequest.of(page, size));
-        } else if (min != null && max != null) {
-            data = equipmentService.findByCostBetween(min, max, PageRequest.of(page, size));
-        } else {
-            data = equipmentService.getAll(PageRequest.of(page, size));
-        }
-
-        model.addAttribute("equipment", data.getContent());
-        model.addAttribute("branches", branchServices.getAll());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", data.getTotalPages());
-        model.addAttribute("pageSize", size);
-        model.addAttribute("selectedBranchId", id);
-        model.addAttribute("minCost", min);
-        model.addAttribute("maxCost", max);
-
-        return "admin/equipment";
+        return null;
     }
-
-   @GetMapping("/equip")
-public String equipment(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size,
-        @RequestParam(required = false) Integer id,
-        @RequestParam(required = false) Double min,
-        @RequestParam(required = false) Double max,
-        Model model, HttpSession session,
-        @RequestHeader(value = "X-Requested-With", required = false) String ajax) {
-
-    Page<Equipment> data;
-
-    if (id != null) {
-        data = equipmentService.findByBranchId(id, PageRequest.of(page, size));
-    } else if (min != null && max != null) {
-        data = equipmentService.findByCostBetween(min, max, PageRequest.of(page, size));
-    } else {
-        data = equipmentService.getAll(PageRequest.of(page, size));
-    }
-
-    model.addAttribute("equipment", data.getContent());
-    model.addAttribute("currentPage", page);
-    model.addAttribute("totalPages", data.getTotalPages());
-    
-    User user = (User) session.getAttribute("user");
-
-boolean isAdmin = false;
-
-if (user != null) {
-    isAdmin = "administrator".equals(user.getRole());
-}
-
-model.addAttribute("isAdmin", isAdmin);
-
-    if ("XMLHttpRequest".equals(ajax)) {
-       return "equipment/listEquipment :: tableContent";
-    }
-
-    return "equipment/listEquipment";
-}
-
-     @GetMapping("/add")
-    public String fromEquipment(Model model){
-        Equipment e = new Equipment();
-        e.setBranch(new Branch());
-        model.addAttribute("newEquipment", e);
-        model.addAttribute("branches", branchServices.getAll()); 
-        
-        return("equipment/formEquipment");
-    }
-     
-     @PostMapping("/save")
-@ResponseBody
-public String save(Equipment newEquipment){
-
-    if (newEquipment.getId() == 0) {
-        equipmentService.save(newEquipment);
-    } else {
-        equipmentService.update(newEquipment.getId(), newEquipment);
-    }
-
-    return "ok";
-}
-    
-  @GetMapping("/edit/{id}")
-public String editEquipment(@PathVariable("id") int id, Model model) {
-
-    Equipment e = equipmentService.getById(id);
-
-    if (e.getBranch() == null) {
-        e.setBranch(new Branch());
-    }
-
-    model.addAttribute("newEquipment", e);
-    model.addAttribute("branches", branchServices.getAll());
-
-    return "equipment/formEquipment";
-}
-  @GetMapping("/delete/{id}")
-public String delete(@PathVariable("id") int id){
-
-    equipmentService.delete(id);
-
-    return "ok";
-}
-    
 }

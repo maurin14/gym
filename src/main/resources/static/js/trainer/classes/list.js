@@ -2,10 +2,10 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
-
-const classBasePath = window.location.pathname.startsWith("/admin/classes")
+const classBasePath = window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
         ? "/admin/classes"
-        : "/trainer/classes";
+        : "/trainer/classes");
+const canManageClasses = Boolean(window.canManageClasses);
 
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
@@ -17,19 +17,12 @@ function loadClasses() {
         .then(response => response.json())
         .then(data => {
 
-            totalPages = data.totalPages || 1;
+            totalPages = data.totalPages;
+            currentPage = data.currentPage;
 
             showClasses(data.classes);
             showPagination();
 
-        })
-        .catch(() => {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "No se pudieron cargar las clases.",
-                confirmButtonColor: "#d97818"
-            });
         });
 }
 
@@ -38,32 +31,24 @@ function showClasses(classes) {
     const tbody = document.getElementById("classesTableBody");
     tbody.innerHTML = "";
 
-    if (!classes || classes.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="11" class="empty-message">
-                    No hay clases registradas.
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
     classes.forEach(gymClass => {
 
         tbody.innerHTML += `
             <tr>
-                <td>${gymClass.classType || ""}</td>
-                <td>${gymClass.trainerName || "Sin entrenador"}</td>
-                <td>${gymClass.classDate || ""}</td>
-                <td>${gymClass.startTime || ""}</td>
-                <td>${gymClass.endTime || ""}</td>
-                <td>${gymClass.duration || 0} min</td>
-                <td>${gymClass.maxCapacity || 0}</td>
-                <td>${gymClass.enrolledCount || 0}</td>
-                <td>${gymClass.difficultyLevel || ""}</td>
-                <td>${gymClass.description || ""}</td>
+                <td>${gymClass.classType}</td>
+                <td>${gymClass.trainerName}</td>
+                <td>${gymClass.branchName || "Sin sucursal"}</td>
+                <td>${gymClass.classDate}</td>
+                <td>${gymClass.startTime}</td>
+                <td>${gymClass.endTime}</td>
+                <td>${gymClass.duration} min</td>
+                <td>${gymClass.maxCapacity}</td>
+                <td>${gymClass.enrolledCount}</td>
+                <td>${gymClass.status ? "Activa" : "Inactiva"}</td>
+                <td>${gymClass.difficultyLevel}</td>
+                <td>${gymClass.description}</td>
 
+                ${canManageClasses ? `
                 <td>
                     <div class="actions">
                         <a class="btn-primary"
@@ -78,6 +63,7 @@ function showClasses(classes) {
                         </button>
                     </div>
                 </td>
+                ` : ""}
             </tr>
         `;
     });
@@ -85,82 +71,83 @@ function showClasses(classes) {
 
 function showPagination() {
 
-    if (totalPages === 0) {
-        totalPages = 1;
+    const pagination = document.getElementById("classesPagination");
+    pagination.innerHTML = "";
+
+    const visualTotalPages = Math.max(totalPages, 1);
+
+    pagination.appendChild(createPageButton(
+            "Anterior",
+            Math.max(currentPage - 1, 1),
+            currentPage === 1 ? "btn-secondary disabled" : "btn-secondary",
+            currentPage === 1
+    ));
+
+    for (let page = 1; page <= visualTotalPages; page++) {
+        pagination.appendChild(createPageButton(
+                page,
+                page,
+                page === currentPage ? "btn-primary page-active" : "btn-secondary"
+        ));
     }
 
-    document.getElementById("pageInfo").innerText =
-            "Página " + currentPage + " de " + totalPages;
-
-    document.getElementById("prevBtn").style.display =
-            currentPage === 1 ? "none" : "inline-block";
-
-    document.getElementById("nextBtn").style.display =
-            currentPage === totalPages ? "none" : "inline-block";
+    pagination.appendChild(createPageButton(
+            "Siguiente",
+            Math.min(currentPage + 1, visualTotalPages),
+            currentPage >= visualTotalPages ? "btn-secondary disabled" : "btn-secondary",
+            currentPage >= visualTotalPages
+    ));
 }
 
-function nextPage() {
-
-    if (currentPage < totalPages) {
-        currentPage++;
-        loadClasses();
-    }
+function createPageButton(text, page, className, disabled) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = text;
+    button.dataset.page = page;
+    button.disabled = Boolean(disabled);
+    button.addEventListener("click", function () {
+        changeClassPage(this);
+    });
+    return button;
 }
 
-function previousPage() {
-
-    if (currentPage > 1) {
-        currentPage--;
+function changeClassPage(element) {
+    const page = parseInt(element.dataset.page, 10);
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+        currentPage = page;
         loadClasses();
     }
 }
 
 function deleteClass(idClass) {
+    if (!canManageClasses) {
+        return;
+    }
 
-    Swal.fire({
-        title: "¿Eliminar clase?",
-        text: "Esta acción eliminará la clase seleccionada.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d97818",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar"
+    confirmAdminAction({
+        title: "Eliminar clase?",
+        text: "Esta accion no se puede deshacer.",
+        confirmText: "Eliminar",
+        icon: "warning"
     }).then((result) => {
-
-        if (result.isConfirmed) {
-
-            fetch("/classes/" + idClass, {
-                method: "DELETE"
-            })
-            .then(response => {
-
-                if (!response.ok) {
-                    throw new Error("No se pudo eliminar la clase.");
-                }
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Clase eliminada",
-                    text: "La clase se eliminó correctamente.",
-                    confirmButtonColor: "#d97818"
-                }).then(() => {
-
-                    if (currentPage > 1) {
-                        currentPage--;
-                    }
-
-                    loadClasses();
-                });
-            })
-            .catch(() => {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "No se pudo eliminar la clase.",
-                    confirmButtonColor: "#d97818"
-                });
-            });
+        if (!result.isConfirmed) {
+            return;
         }
+
+        showAdminLoading("Eliminando...");
+
+        fetch("/classes/" + idClass, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo eliminar.");
+            }
+            showAdminSuccess("Clase eliminada.").then(loadClasses);
+        })
+        .catch(error => {
+            showAdminError(error.message || "No se pudo eliminar.");
+        });
     });
 }

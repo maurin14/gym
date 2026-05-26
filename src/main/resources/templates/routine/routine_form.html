@@ -4,25 +4,21 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Formulario rutina</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">RUTINA</span>
-        <h1 th:text="${title}">Formulario rutina</h1>
-        <p class="hero-text">Completa la informaci&oacute;n de la rutina.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${error != null}" class="field-error">
         <span th:text="${error}"></span>
     </div>
 
-    <form class="portal-form" th:action="@{/admin/routines/save}" th:object="${routine}" method="post" novalidate>
+    <form class="portal-form" th:action="@{/admin/routines/save}" th:object="${routine}" method="post" novalidate
+          th:attr="data-admin-confirm=${routine.idRoutine > 0 ? 'Guardar cambios?' : 'Registrar rutina?'},data-admin-loading='Guardando...'">
         <input type="hidden" th:field="*{idRoutine}" />
 
         <label>Nombre</label>

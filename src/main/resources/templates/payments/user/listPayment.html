@@ -76,7 +76,7 @@
 
                     <tr th:each="p : ${payments.content}">
                         <td th:text="${#temporals.format(p.paymentDate, 'dd/MM/yyyy')}"></td>
-                        <td th:text="${p.idUser}"></td>
+                        <td th:text="${p.clientName != null ? p.clientName : 'Cliente no encontrado'}"></td>
                         <td th:text="${p.branch != null ? p.branch.name : 'Sin sucursal'}"></td>
                         <td th:text="${'CRC ' + p.amount}"></td>
                         <td th:text="${p.paymentMethod}"></td>

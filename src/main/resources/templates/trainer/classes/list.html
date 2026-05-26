@@ -4,58 +4,52 @@
     <meta charset="UTF-8">
     <title>Administración de clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de clases</h1>
-        <p class="hero-text">
-            Administra clases, entrenadores, horarios, cupos y niveles de dificultad desde un panel unificado.
-        </p>
 
-        <div class="hero-buttons centered">
-            <a class="btn-primary" th:href="@{/admin/classes/form}">Agregar clase</a>
-        </div>
+<main class="container portal-card admin-page-card wide-table-card">
+    <div class="buttons admin-action-row" th:if="${canManageClasses}">
+        <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
     </div>
-</section>
 
-<main class="container portal-card admin-page-card">
-
-    <table class="portal-table">
+    <table class="portal-table admin-table is-wide">
         <thead>
             <tr>
                 <th>Tipo</th>
                 <th>Entrenador</th>
+                <th>Sucursal</th>
                 <th>Fecha</th>
                 <th>Inicio</th>
                 <th>Final</th>
                 <th>Duración</th>
                 <th>Capacidad</th>
                 <th>Inscritos</th>
+                <th>Estado</th>
                 <th>Dificultad</th>
                 <th>Descripción</th>
-                <th>Acciones</th>
+                <th th:if="${canManageClasses}">Acciones</th>
             </tr>
         </thead>
 
         <tbody id="classesTableBody"></tbody>
     </table>
 
-    <div class="pagination">
-        <button id="pageInfo" disabled>Página 1 de 1</button>
-        <button id="prevBtn" onclick="previousPage()">Anterior</button>
-        <button id="nextBtn" onclick="nextPage()">Siguiente</button>
-    </div>
+    <div id="classesPagination" class="pagination"></div>
 
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+    window.canManageClasses = /*[[${canManageClasses}]]*/ false;
+</script>
 <script th:src="@{/js/trainer/classes/list.js}"></script>
 
 </body>
