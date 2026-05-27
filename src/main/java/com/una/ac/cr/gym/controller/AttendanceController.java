@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class AttendanceController {
-
+//Amanda
     private final AttendanceService attendanceService;
     private final UserService userService;
 
