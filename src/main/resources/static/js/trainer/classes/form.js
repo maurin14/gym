@@ -4,10 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const idClass = getClassIdFromPath();
 
-    if (idClass !== null) {
-        loadClass(idClass);
-    }
-
     loadBranches().then(() => {
 
         const branchSelect = document.getElementById("branchId");
@@ -16,12 +12,11 @@ document.addEventListener("DOMContentLoaded", function () {
             branchSelect.addEventListener("change", loadTrainers);
         }
 
-        loadTrainers().then(() => {
-
-            if (idClass !== null) {
-                loadClass(idClass);
-            }
-        });
+        if (idClass !== null) {
+            loadClass(idClass);
+        } else {
+            loadTrainers();
+        }
     });
 });
 
@@ -98,7 +93,7 @@ function loadClass(idClass) {
                     showClassError(
                             "form",
                             gymClass.message || "No se pudo cargar la clase."
-                            );
+                    );
                     return;
                 }
 
@@ -113,8 +108,8 @@ function loadClass(idClass) {
                 setInputValue("maxCapacity", gymClass.maxCapacity || "");
                 setInputValue("enrolledCount", gymClass.enrolledCount || 0);
                 setInputValue("description", gymClass.description || "");
-
                 setInputValue("branchId", gymClass.branchId || "");
+
                 setSelectValue("difficultyLevel", gymClass.difficultyLevel);
 
                 loadTrainers().then(() => {
@@ -125,7 +120,7 @@ function loadClass(idClass) {
                 showClassError(
                         "form",
                         "No se pudo cargar la clase."
-                        );
+                );
             });
 }
 
@@ -278,7 +273,7 @@ function saveClass() {
                     showClassError(
                             "form",
                             data.message || "Revise los campos marcados."
-                            );
+                    );
                     classSaving = false;
                     return;
                 }
@@ -287,7 +282,7 @@ function saveClass() {
                         idClass !== ""
                         ? "Actualizado."
                         : "Guardado."
-                        ).then(() => {
+                ).then(() => {
                     window.location.href = getClassesListPath();
                 });
             })

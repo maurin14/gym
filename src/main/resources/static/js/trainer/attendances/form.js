@@ -7,16 +7,13 @@ let attendanceSaving = false;
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const idAttendance = getAttendanceIdFromPath();
-
-    if (idAttendance) {
-        loadAttendanceForEdit(idAttendance);
-    }
-
     Promise.all([
         loadClients(),
         loadClasses()
     ]).then(() => {
+
+        const idAttendance = getAttendanceIdFromPath();
+
         if (idAttendance) {
             loadAttendanceForEdit(idAttendance);
         }
