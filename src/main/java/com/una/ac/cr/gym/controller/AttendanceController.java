@@ -24,7 +24,6 @@ public class AttendanceController {
 
     public AttendanceController(AttendanceService attendanceService,
             UserService userService) {
-
         this.attendanceService = attendanceService;
         this.userService = userService;
     }
@@ -108,7 +107,6 @@ public class AttendanceController {
     @ResponseBody
     @GetMapping("/attendances")
     public List<Map<String, Object>> getAllAttendances(HttpSession session) {
-
         return getAttendancesForSession(session)
                 .stream()
                 .map(this::toAttendanceMap)
@@ -131,7 +129,6 @@ public class AttendanceController {
                 && attendancePage.getTotalPages() > 0) {
 
             currentPage = attendancePage.getTotalPages() - 1;
-
             attendancePage =
                     getAttendancesPageForSession(session, currentPage, size);
         }
@@ -158,13 +155,10 @@ public class AttendanceController {
             return List.of();
         }
 
-        return attendanceService.getAllAttendances()
+        return attendanceService
+                .getClientAttendancesPage(userSession.getUserId(), 0, 100)
+                .getContent()
                 .stream()
-                .filter(attendance ->
-                        attendance.getClient() != null
-                        && attendance.getClient().getUserId()
-                        == userSession.getUserId()
-                )
                 .map(this::toAttendanceMap)
                 .toList();
     }
@@ -321,7 +315,6 @@ public class AttendanceController {
 
         if (!canAccessAttendance(session, currentAttendance)
                 || !canSaveAttendance(session, attendance)) {
-
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -389,14 +382,9 @@ public class AttendanceController {
         }
 
         if ("client".equals(user.getRole())) {
-            return attendanceService.getAllAttendances()
-                    .stream()
-                    .filter(attendance ->
-                            attendance.getClient() != null
-                            && attendance.getClient().getUserId()
-                            .equals(user.getUserId())
-                    )
-                    .toList();
+            return attendanceService
+                    .getClientAttendancesPage(user.getUserId(), 0, 100)
+                    .getContent();
         }
 
         return attendanceService.getAllAttendances();
@@ -462,13 +450,11 @@ public class AttendanceController {
 
         if ("administrator".equals(user.getRole())
                 || "client".equals(user.getRole())) {
-
             return true;
         }
 
         if (!"trainer".equals(user.getRole())
                 || attendance.getGymClass() == null) {
-
             return false;
         }
 
