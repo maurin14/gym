@@ -1,19 +1,27 @@
 let classSaving = false;
 
 document.addEventListener("DOMContentLoaded", function () {
+
     const idClass = getClassIdFromPath();
 
+    if (idClass !== null) {
+        loadClass(idClass);
+    }
+
     loadBranches().then(() => {
+
         const branchSelect = document.getElementById("branchId");
+
         if (branchSelect) {
             branchSelect.addEventListener("change", loadTrainers);
         }
 
-        if (idClass !== null) {
-            loadClass(idClass);
-        } else {
-            loadTrainers();
-        }
+        loadTrainers().then(() => {
+
+            if (idClass !== null) {
+                loadClass(idClass);
+            }
+        });
     });
 });
 
@@ -29,78 +37,105 @@ function getClassesListPath() {
 }
 
 function loadTrainers() {
+
     const branchId = document.getElementById("branchId")
             ? document.getElementById("branchId").value
             : "";
-    const url = branchId ? "/classes/trainers?branchId=" + encodeURIComponent(branchId) : "/classes/trainers";
+
+    const url = branchId
+            ? "/classes/trainers?branchId=" + encodeURIComponent(branchId)
+            : "/classes/trainers";
 
     return fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const trainerSelect = document.getElementById("trainerId");
+            .then(response => response.json())
+            .then(data => {
 
-            trainerSelect.innerHTML = '<option value="">Seleccione un entrenador</option>';
+                const trainerSelect = document.getElementById("trainerId");
 
-            data.forEach(trainer => {
-                trainerSelect.innerHTML += `
+                trainerSelect.innerHTML =
+                        '<option value="">Seleccione un entrenador</option>';
+
+                data.forEach(trainer => {
+
+                    trainerSelect.innerHTML += `
                     <option value="${trainer.userId}">
                         ${trainer.fullName}
                     </option>
                 `;
+                });
             });
-        });
 }
 
 function loadBranches() {
+
     return fetch("/classes/branches")
-        .then(response => response.json())
-        .then(data => {
-            const branchSelect = document.getElementById("branchId");
+            .then(response => response.json())
+            .then(data => {
 
-            branchSelect.innerHTML = '<option value="">Seleccione una sucursal</option>';
+                const branchSelect = document.getElementById("branchId");
 
-            data.forEach(branch => {
-                branchSelect.innerHTML += `
+                branchSelect.innerHTML =
+                        '<option value="">Seleccione una sucursal</option>';
+
+                data.forEach(branch => {
+
+                    branchSelect.innerHTML += `
                     <option value="${branch.id}">
                         ${branch.name}
                     </option>
                 `;
+                });
             });
-        });
 }
 
 function loadClass(idClass) {
+
     fetch("/classes/" + idClass)
-        .then(response => response.json())
-        .then(gymClass => {
-            if (gymClass.success === false) {
-                showClassError("form", gymClass.message || "No se pudo cargar la clase.");
-                return;
-            }
+            .then(response => response.json())
+            .then(gymClass => {
 
-            document.getElementById("formTitle").innerText = "Editar clase";
-            document.getElementById("idClass").value = gymClass.idClass;
-            document.getElementById("classType").value = gymClass.classType || "";
-            document.getElementById("classDate").value = normalizeDate(gymClass.classDate);
-            document.getElementById("startTime").value = normalizeTime(gymClass.startTime);
-            document.getElementById("endTime").value = normalizeTime(gymClass.endTime);
-            document.getElementById("maxCapacity").value = gymClass.maxCapacity || "";
-
-            if (gymClass.branchId !== null && gymClass.branchId !== undefined) {
-                document.getElementById("branchId").value = gymClass.branchId;
-            }
-
-            loadTrainers().then(() => {
-                if (gymClass.trainerId !== null && gymClass.trainerId !== undefined) {
-                    document.getElementById("trainerId").value = gymClass.trainerId;
+                if (gymClass.success === false) {
+                    showClassError(
+                            "form",
+                            gymClass.message || "No se pudo cargar la clase."
+                            );
+                    return;
                 }
-            });
 
-            document.getElementById("enrolledCount").value = gymClass.enrolledCount || 0;
-            setSelectValue("difficultyLevel", gymClass.difficultyLevel);
-            document.getElementById("description").value = gymClass.description || "";
-        })
-        .catch(() => showClassError("form", "No se pudo cargar la clase."));
+                document.getElementById("formTitle").innerText =
+                        "Editar clase";
+
+                setInputValue("idClass", gymClass.idClass);
+                setInputValue("classType", gymClass.classType || "");
+                setInputValue("classDate", normalizeDate(gymClass.classDate));
+                setInputValue("startTime", normalizeTime(gymClass.startTime));
+                setInputValue("endTime", normalizeTime(gymClass.endTime));
+                setInputValue("maxCapacity", gymClass.maxCapacity || "");
+                setInputValue("enrolledCount", gymClass.enrolledCount || 0);
+                setInputValue("description", gymClass.description || "");
+
+                setInputValue("branchId", gymClass.branchId || "");
+                setSelectValue("difficultyLevel", gymClass.difficultyLevel);
+
+                loadTrainers().then(() => {
+                    setInputValue("trainerId", gymClass.trainerId || "");
+                });
+            })
+            .catch(() => {
+                showClassError(
+                        "form",
+                        "No se pudo cargar la clase."
+                        );
+            });
+}
+
+function setInputValue(id, value) {
+
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.value = value;
+    }
 }
 
 function normalizeDate(value) {
@@ -112,14 +147,21 @@ function normalizeTime(value) {
 }
 
 function setSelectValue(selectId, value) {
+
     const select = document.getElementById(selectId);
+
+    if (!select) {
+        return;
+    }
 
     if (value === null || value === undefined || value === "") {
         select.value = "";
         return;
     }
 
-    const exists = Array.from(select.options).some(option => option.value === value);
+    const exists = Array.from(select.options)
+            .some(option => option.value === value);
+
     if (!exists) {
         select.add(new Option(value, value));
     }
@@ -128,6 +170,7 @@ function setSelectValue(selectId, value) {
 }
 
 function saveClass() {
+
     if (classSaving) {
         return;
     }
@@ -144,17 +187,44 @@ function saveClass() {
     const enrolledCount = document.getElementById("enrolledCount").value;
     const difficultyLevel = document.getElementById("difficultyLevel").value;
     const description = document.getElementById("description").value.trim();
+
     const clientErrors = {};
 
-    if (classType === "") clientErrors.classType = "Este campo es obligatorio.";
-    if (classDate === "") clientErrors.classDate = "La fecha es obligatoria.";
-    if (startTime === "") clientErrors.startTime = "Este campo es obligatorio.";
-    if (endTime === "") clientErrors.endTime = "Este campo es obligatorio.";
-    if (maxCapacity === "") clientErrors.maxCapacity = "Este campo es obligatorio.";
-    if (trainerId === "") clientErrors.trainerId = "Seleccione una opción.";
-    if (difficultyLevel === "") clientErrors.difficultyLevel = "Seleccione una opción.";
-    if (branchId === "") clientErrors.branchId = "Seleccione una sucursal.";
-    if (description === "") clientErrors.description = "Este campo es obligatorio.";
+    if (classType === "") {
+        clientErrors.classType = "Este campo es obligatorio.";
+    }
+
+    if (classDate === "") {
+        clientErrors.classDate = "La fecha es obligatoria.";
+    }
+
+    if (startTime === "") {
+        clientErrors.startTime = "Este campo es obligatorio.";
+    }
+
+    if (endTime === "") {
+        clientErrors.endTime = "Este campo es obligatorio.";
+    }
+
+    if (maxCapacity === "") {
+        clientErrors.maxCapacity = "Este campo es obligatorio.";
+    }
+
+    if (trainerId === "") {
+        clientErrors.trainerId = "Seleccione una opción.";
+    }
+
+    if (difficultyLevel === "") {
+        clientErrors.difficultyLevel = "Seleccione una opción.";
+    }
+
+    if (branchId === "") {
+        clientErrors.branchId = "Seleccione una sucursal.";
+    }
+
+    if (description === "") {
+        clientErrors.description = "Este campo es obligatorio.";
+    }
 
     if (Object.keys(clientErrors).length > 0) {
         showClassErrors(clientErrors);
@@ -181,6 +251,7 @@ function saveClass() {
 
     let url = "/classes";
     let method = "POST";
+
     const idClass = document.getElementById("idClass").value;
 
     if (idClass !== "") {
@@ -199,50 +270,67 @@ function saveClass() {
         },
         body: JSON.stringify(gymClass)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success) {
-            showClassErrors(data.fieldErrors || data.errors || {});
-            showClassError("form", data.message || "Revise los campos marcados.");
-            classSaving = false;
-            return;
-        }
+            .then(response => response.json())
+            .then(data => {
 
-        showAdminSuccess(idClass !== "" ? "Actualizado." : "Guardado.").then(() => {
-            window.location.href = getClassesListPath();
-        });
-    })
-    .catch(() => {
-        classSaving = false;
-        showAdminError("No se pudo guardar.", "Revise los datos.");
-        showClassError("form", "No se pudo guardar.");
-    });
+                if (!data.success) {
+                    showClassErrors(data.fieldErrors || data.errors || {});
+                    showClassError(
+                            "form",
+                            data.message || "Revise los campos marcados."
+                            );
+                    classSaving = false;
+                    return;
+                }
+
+                showAdminSuccess(
+                        idClass !== ""
+                        ? "Actualizado."
+                        : "Guardado."
+                        ).then(() => {
+                    window.location.href = getClassesListPath();
+                });
+            })
+            .catch(() => {
+                classSaving = false;
+                showAdminError("No se pudo guardar.", "Revise los datos.");
+                showClassError("form", "No se pudo guardar.");
+            });
 }
 
 function clearClassErrors() {
-    document.querySelectorAll(".field-error, .error-message").forEach(error => {
-        error.textContent = "";
-    });
-    document.querySelectorAll(".invalid").forEach(field => {
-        field.classList.remove("invalid");
-    });
+
+    document.querySelectorAll(".field-error, .error-message")
+            .forEach(error => {
+                error.textContent = "";
+            });
+
+    document.querySelectorAll(".invalid")
+            .forEach(field => {
+                field.classList.remove("invalid");
+            });
 }
 
 function showClassErrors(errors) {
+
     Object.keys(errors).forEach(field => {
         showClassError(field, errors[field]);
     });
 }
 
 function showClassError(field, message) {
+
     const error = document.getElementById(field + "Error");
 
     if (error) {
         error.textContent = message;
+
         const fieldElement = document.getElementById(field);
+
         if (fieldElement) {
             fieldElement.classList.add("invalid");
         }
+
         return;
     }
 
