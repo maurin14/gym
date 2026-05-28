@@ -59,29 +59,14 @@ function showAttendances(attendances) {
     attendances.forEach(attendance => {
 
         const statusClass =
-                attendance.attendanceStatus
-                && attendance.attendanceStatus.toLowerCase() === "ausente"
-                ? "status-inactive"
-                : "status-active";
+                getAttendanceStatusClass(attendance.attendanceStatus);
 
         tbody.innerHTML += `
             <tr>
-
-                <td>
-                    ${attendance.clientName}
-                </td>
-
-                <td>
-                    ${attendance.classType}
-                </td>
-
-                <td>
-                    ${attendance.branchName || "Sin sucursal"}
-                </td>
-
-                <td>
-                    ${attendance.attendanceDate}
-                </td>
+                <td>${attendance.clientName}</td>
+                <td>${attendance.classType}</td>
+                <td>${attendance.branchName || "Sin sucursal"}</td>
+                <td>${attendance.attendanceDate}</td>
 
                 <td>
                     <span class="badge ${statusClass}">
@@ -89,18 +74,11 @@ function showAttendances(attendances) {
                     </span>
                 </td>
 
-                <td>
-                    ${attendance.observation}
-                </td>
+                <td>${attendance.observation}</td>
+                <td>${attendance.registerDate}</td>
 
                 <td>
-                    ${attendance.registerDate}
-                </td>
-
-                <td>
-
                     <div class="actions">
-
                         <a class="btn-primary"
                            href="${attendanceBasePath}/form/${attendance.idAttendance}">
                             Editar
@@ -110,19 +88,30 @@ function showAttendances(attendances) {
                         <button type="button"
                                 class="btn-danger"
                                 onclick="deleteAttendance(${attendance.idAttendance})">
-
                             Eliminar
-
                         </button>
                         ` : ""}
-
                     </div>
-
                 </td>
-
             </tr>
         `;
     });
+}
+
+function getAttendanceStatusClass(status) {
+
+    const statusText =
+            status ? status.toLowerCase() : "";
+
+    if (statusText === "ausente") {
+        return "status-inactive";
+    }
+
+    if (statusText === "tarde") {
+        return "status-pending";
+    }
+
+    return "status-active";
 }
 
 function showPagination() {
@@ -135,40 +124,28 @@ function showPagination() {
     const visualTotalPages =
             Math.max(totalPages, 1);
 
-    pagination.appendChild(
-            createPageButton(
-                    "Anterior",
-                    Math.max(currentPage - 1, 1),
-                    currentPage === 1
-                    ? "btn-secondary disabled"
-                    : "btn-secondary",
-                    currentPage === 1
-                    )
-            );
+    pagination.appendChild(createPageButton(
+            "Anterior",
+            Math.max(currentPage - 1, 1),
+            currentPage === 1 ? "btn-secondary disabled" : "btn-secondary",
+            currentPage === 1
+    ));
 
     for (let page = 1; page <= visualTotalPages; page++) {
 
-        pagination.appendChild(
-                createPageButton(
-                        page,
-                        page,
-                        page === currentPage
-                        ? "btn-primary page-active"
-                        : "btn-secondary"
-                        )
-                );
+        pagination.appendChild(createPageButton(
+                page,
+                page,
+                page === currentPage ? "btn-primary page-active" : "btn-secondary"
+        ));
     }
 
-    pagination.appendChild(
-            createPageButton(
-                    "Siguiente",
-                    Math.min(currentPage + 1, visualTotalPages),
-                    currentPage >= visualTotalPages
-                    ? "btn-secondary disabled"
-                    : "btn-secondary",
-                    currentPage >= visualTotalPages
-                    )
-            );
+    pagination.appendChild(createPageButton(
+            "Siguiente",
+            Math.min(currentPage + 1, visualTotalPages),
+            currentPage >= visualTotalPages ? "btn-secondary disabled" : "btn-secondary",
+            currentPage >= visualTotalPages
+    ));
 }
 
 function createPageButton(text, page, className, disabled) {
@@ -194,10 +171,7 @@ function changeAttendancePage(element) {
     const page =
             parseInt(element.dataset.page, 10);
 
-    if (page >= 1
-            && page <= totalPages
-            && page !== currentPage) {
-
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
         currentPage = page;
         loadAttendances();
     }
@@ -214,9 +188,7 @@ function deleteAttendance(idAttendance) {
         text: "Esta accion no se puede deshacer.",
         confirmText: "Eliminar",
         icon: "warning"
-    })
-
-    .then((result) => {
+    }).then((result) => {
 
         if (!result.isConfirmed) {
             return;
@@ -227,23 +199,20 @@ function deleteAttendance(idAttendance) {
         fetch("/attendances/" + idAttendance, {
             method: "DELETE"
         })
+                .then(response => {
 
-        .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo eliminar.");
+                    }
 
-            if (!response.ok) {
-                throw new Error("No se pudo eliminar.");
-            }
+                    showAdminSuccess("Eliminado.")
+                            .then(loadAttendances);
+                })
+                .catch(error => {
 
-            showAdminSuccess("Eliminado.")
-                    .then(loadAttendances);
-        })
-
-        .catch(error => {
-
-            showAdminError(
-                    error.message
-                    || "No se pudo eliminar."
+                    showAdminError(
+                            error.message || "No se pudo eliminar."
                     );
-        });
+                });
     });
 }
