@@ -10,22 +10,63 @@ const classBasePath = window.classBasePath || (window.location.pathname.startsWi
 const canManageClasses = Boolean(window.canManageClasses);
 
 document.addEventListener("DOMContentLoaded", function () {
+    loadBranchesFilter();
     loadClasses();
 });
 
+function loadBranchesFilter() {
+
+    const branchFilter = document.getElementById("branchFilter");
+
+    if (!branchFilter) {
+        return;
+    }
+
+    fetch("/classes/branches")
+            .then(response => response.json())
+            .then(data => {
+
+                branchFilter.innerHTML =
+                        '<option value="">Todas las sucursales</option>';
+
+                data.forEach(branch => {
+
+                    branchFilter.innerHTML += `
+                        <option value="${branch.id}">
+                            ${branch.name}
+                        </option>
+                    `;
+                });
+            });
+}
+
+function filterClassesByBranch() {
+    currentPage = 1;
+    loadClasses();
+}
+
 function loadClasses() {
 
-    fetch("/classes/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage)
-        .then(response => response.json())
-        .then(data => {
+    const branchFilter = document.getElementById("branchFilter");
+    const branchId = branchFilter ? branchFilter.value : "";
 
-            totalPages = data.totalPages;
-            currentPage = data.currentPage;
+    let url = "/classes/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage;
 
-            showClasses(data.classes);
-            showPagination();
+    if (branchId !== "") {
+        url += "&branchId=" + encodeURIComponent(branchId);
+    }
 
-        });
+    fetch(url)
+            .then(response => response.json())
+            .then(data => {
+
+                totalPages = data.totalPages;
+                currentPage = data.currentPage;
+
+                showClasses(data.classes);
+                showPagination();
+
+            });
 }
 
 function showClasses(classes) {
