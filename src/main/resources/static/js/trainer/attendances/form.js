@@ -7,11 +7,19 @@ let attendanceSaving = false;
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    const idAttendance = getAttendanceIdFromPath();
+
+    if (idAttendance) {
+        loadAttendanceForEdit(idAttendance);
+    }
+
     Promise.all([
         loadClients(),
         loadClasses()
     ]).then(() => {
-        loadAttendanceForEdit();
+        if (idAttendance) {
+            loadAttendanceForEdit(idAttendance);
+        }
     });
 
 });
@@ -43,11 +51,10 @@ function loadClients() {
                         });
             })
             .catch(() => {
-
                 showAdminError(
                         "Error",
                         "No se pudieron cargar los clientes."
-                        );
+                );
             });
 }
 
@@ -76,22 +83,14 @@ function loadClasses() {
                 });
             })
             .catch(() => {
-
                 showAdminError(
                         "Error",
                         "No se pudieron cargar las clases."
-                        );
+                );
             });
 }
 
-function loadAttendanceForEdit() {
-
-    const idAttendance =
-            getAttendanceIdFromPath();
-
-    if (!idAttendance) {
-        return;
-    }
+function loadAttendanceForEdit(idAttendance) {
 
     fetch("/attendances/edit/" + idAttendance)
             .then(response => {
@@ -115,29 +114,29 @@ function loadAttendanceForEdit() {
                             "Editar asistencia";
                 }
 
-                document.getElementById("clientId").value =
-                        attendance.clientId || "";
-
-                document.getElementById("classId").value =
-                        attendance.classId || "";
-
-                document.getElementById("attendanceDate").value =
-                        attendance.attendanceDate || "";
-
-                document.getElementById("attendanceStatus").value =
-                        attendance.attendanceStatus || "Presente";
-
-                document.getElementById("observation").value =
-                        attendance.observation || "";
+                setInputValue("clientId", attendance.clientId || "");
+                setInputValue("classId", attendance.classId || "");
+                setInputValue("attendanceDate", attendance.attendanceDate || "");
+                setInputValue("attendanceStatus", attendance.attendanceStatus || "Presente");
+                setInputValue("observation", attendance.observation || "");
 
             })
             .catch(() => {
-
                 showAdminError(
                         "Error",
                         "No se pudo cargar la asistencia."
-                        );
+                );
             });
+}
+
+function setInputValue(id, value) {
+
+    const element =
+            document.getElementById(id);
+
+    if (element) {
+        element.value = value;
+    }
 }
 
 function getAttendanceIdFromPath() {
@@ -162,7 +161,6 @@ function setAttendanceDate() {
                 selectedOption.getAttribute("data-date");
 
         if (date) {
-
             document.getElementById("attendanceDate").value =
                     date;
         }
@@ -198,63 +196,41 @@ function saveAttendance() {
     let hasErrors = false;
 
     if (clientId === "") {
-
-        showAttendanceError(
-                "clientId",
-                "Seleccione un cliente."
-                );
-
+        showAttendanceError("clientId", "Seleccione un cliente.");
         hasErrors = true;
     }
 
     if (classId === "") {
-
-        showAttendanceError(
-                "classId",
-                "Seleccione una clase."
-                );
-
+        showAttendanceError("classId", "Seleccione una clase.");
         hasErrors = true;
     }
 
     if (attendanceDate === "") {
-
-        showAttendanceError(
-                "attendanceDate",
-                "La fecha es obligatoria."
-                );
-
+        showAttendanceError("attendanceDate", "La fecha es obligatoria.");
         hasErrors = true;
     }
 
     if (attendanceStatus === "") {
-
-        showAttendanceError(
-                "attendanceStatus",
-                "Seleccione un estado."
-                );
-
+        showAttendanceError("attendanceStatus", "Seleccione un estado.");
         hasErrors = true;
     }
 
     if (hasErrors) {
-
         showAdminError(
                 "Datos incompletos",
                 "Debe completar los campos obligatorios."
-                );
-
+        );
         return;
     }
 
     const attendance = {
 
         client: {
-            userId: clientId
+            userId: parseInt(clientId)
         },
 
         gymClass: {
-            idClass: classId
+            idClass: parseInt(classId)
         },
 
         attendanceDate: attendanceDate,
@@ -299,9 +275,8 @@ function saveAttendance() {
                         idAttendance !== ""
                         ? "Asistencia actualizada correctamente."
                         : "Asistencia registrada correctamente."
-                        )
+                )
                         .then(() => {
-
                             window.location.href =
                                     attendanceBasePath;
                         });
@@ -313,7 +288,7 @@ function saveAttendance() {
                 showAdminError(
                         "Error",
                         "No se pudo guardar la asistencia."
-                        );
+                );
             });
 }
 

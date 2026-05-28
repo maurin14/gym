@@ -2,7 +2,6 @@ package com.una.ac.cr.gym.repository;
 
 import com.una.ac.cr.gym.domain.GymClass;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -12,37 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
 
-    @Override
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
-    List<GymClass> findAll();
-
-    @Override
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
-    Page<GymClass> findAll(Pageable pageable);
-
-    @Override
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
-    Optional<GymClass> findById(Integer id);
-
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
     List<GymClass> findByTrainer_UserId(Integer trainerId);
 
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
     Page<GymClass> findByTrainer_UserId(Integer trainerId, Pageable pageable);
 
     @EntityGraph(attributePaths = {
@@ -82,16 +52,8 @@ public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
                                            @Param("branchId") int branchId,
                                            Pageable pageable);
 
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
     List<GymClass> findByStatusTrue();
 
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
-    })
     Page<GymClass> findByStatusTrue(Pageable pageable);
 
     @EntityGraph(attributePaths = {

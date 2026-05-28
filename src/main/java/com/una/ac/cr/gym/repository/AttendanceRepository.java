@@ -3,7 +3,6 @@ package com.una.ac.cr.gym.repository;
 import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.domain.User;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -13,38 +12,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
 
-    @Override
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
-    })
-    List<Attendance> findAll();
-
-    @Override
-    @EntityGraph(attributePaths = {
-        "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
-    })
-    Page<Attendance> findAll(Pageable pageable);
-
-    @Override
-    @EntityGraph(attributePaths = {
-        "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
-    })
-    Optional<Attendance> findById(Integer id);
-
-    @EntityGraph(attributePaths = {
-        "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
+        "gymClass"
     })
     Page<Attendance> findByClient_UserId(Integer userId, Pageable pageable);
 
@@ -52,25 +22,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
+        "gymClass"
     })
     List<Attendance> findByGymClass_Trainer_UserId(Integer trainerId);
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
+        "gymClass"
     })
     Page<Attendance> findByGymClass_Trainer_UserId(Integer trainerId, Pageable pageable);
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
+        "gymClass"
     })
     @Query("""
            SELECT a FROM Attendance a
@@ -89,9 +53,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass",
-        "gymClass.trainer",
-        "gymClass.branch"
+        "gymClass"
     })
     @Query("""
            SELECT a FROM Attendance a
