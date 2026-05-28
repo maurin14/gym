@@ -40,6 +40,20 @@ public class GymClassService {
         return gymClassRepository.findActiveByBranchOrTrainerBranch(branchId, PageRequest.of(0, 100)).getContent();
     }
 
+    public Page<GymClass> getClassesByBranchPage(Integer branchId, int page, int size) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(
+                branchId,
+                PageRequest.of(page, size)
+        );
+    }
+
+    public Page<GymClass> getActiveClassesByBranchPage(Integer branchId, int page, int size) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(
+                branchId,
+                PageRequest.of(page, size)
+        );
+    }
+
     public List<GymClass> getClassesByTrainer(Integer trainerId) {
         return gymClassRepository.findByTrainer_UserId(trainerId, PageRequest.of(0, 100)).getContent();
     }

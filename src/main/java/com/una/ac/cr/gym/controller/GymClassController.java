@@ -27,7 +27,6 @@ public class GymClassController {
     public GymClassController(GymClassService gymClassService,
             UserService userService,
             BranchService branchService) {
-
         this.gymClassService = gymClassService;
         this.userService = userService;
         this.branchService = branchService;
@@ -90,12 +89,13 @@ public class GymClassController {
     public Map<String, Object> getClassesPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Integer branchId,
             HttpSession session) {
 
         int currentPage = Math.max(page, 0);
 
         Page<GymClass> classPage =
-                getClassesPageForSession(session, currentPage, size);
+                getClassesPageForSession(session, currentPage, size, branchId);
 
         if (currentPage >= classPage.getTotalPages()
                 && classPage.getTotalPages() > 0) {
@@ -103,7 +103,7 @@ public class GymClassController {
             currentPage = classPage.getTotalPages() - 1;
 
             classPage =
-                    getClassesPageForSession(session, currentPage, size);
+                    getClassesPageForSession(session, currentPage, size, branchId);
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -301,11 +301,22 @@ public class GymClassController {
     private Page<GymClass> getClassesPageForSession(
             HttpSession session,
             int page,
-            int size) {
+            int size,
+            Integer branchId) {
 
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
+
+            if (branchId != null && branchId > 0) {
+                return gymClassService.getTrainerClassesPage(
+                        user.getUserId(),
+                        branchId,
+                        page,
+                        size
+                );
+            }
+
             return gymClassService.getTrainerClassesPage(
                     user.getUserId(),
                     getCurrentBranchId(user),
@@ -315,7 +326,24 @@ public class GymClassController {
         }
 
         if ("client".equals(user.getRole())) {
+
+            if (branchId != null && branchId > 0) {
+                return gymClassService.getActiveClassesByBranchPage(
+                        branchId,
+                        page,
+                        size
+                );
+            }
+
             return gymClassService.getActiveClassesPage(page, size);
+        }
+
+        if (branchId != null && branchId > 0) {
+            return gymClassService.getClassesByBranchPage(
+                    branchId,
+                    page,
+                    size
+            );
         }
 
         return gymClassService.getClassesPage(page, size);
