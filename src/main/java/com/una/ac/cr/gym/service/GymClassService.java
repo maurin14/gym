@@ -29,19 +29,19 @@ public class GymClassService {
     }
 
     public List<GymClass> getAllClasses() {
-        return gymClassRepository.findAll();
+        return gymClassRepository.findAllWithRelations(PageRequest.of(0, 100)).getContent();
     }
 
     public List<GymClass> getActiveClasses() {
-        return gymClassRepository.findByStatusTrue();
+        return gymClassRepository.findByStatusTrue(PageRequest.of(0, 100)).getContent();
     }
 
     public List<GymClass> getActiveClassesByBranch(int branchId) {
-        return gymClassRepository.findActiveByBranchOrTrainerBranch(branchId);
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(branchId, PageRequest.of(0, 100)).getContent();
     }
 
     public List<GymClass> getClassesByTrainer(Integer trainerId) {
-        return gymClassRepository.findByTrainer_UserId(trainerId);
+        return gymClassRepository.findByTrainer_UserId(trainerId, PageRequest.of(0, 100)).getContent();
     }
 
     public List<GymClass> getClassesByTrainerAndBranch(Integer trainerId, Integer branchId) {
@@ -49,11 +49,11 @@ public class GymClassService {
             return List.of();
         }
 
-        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId);
+        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(0, 100)).getContent();
     }
 
     public Page<GymClass> getClassesPage(int page, int size) {
-        return gymClassRepository.findAll(PageRequest.of(page, size));
+        return gymClassRepository.findAllWithRelations(PageRequest.of(page, size));
     }
 
     public Page<GymClass> getActiveClassesPage(int page, int size) {
@@ -81,11 +81,12 @@ public class GymClassService {
     }
 
     public GymClass getClassById(int idClass) {
-        return gymClassRepository.findById(idClass).orElse(null);
+        return gymClassRepository.findByIdWithRelations(idClass).orElse(null);
     }
 
     public GymClass saveClass(GymClass gymClass) {
         Map<String, String> errors = validateFields(gymClass);
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(errors.values().iterator().next());
         }
@@ -110,6 +111,7 @@ public class GymClassService {
         gymClass.setIdClass(idClass);
 
         Map<String, String> errors = validateFields(gymClass);
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(errors.values().iterator().next());
         }
@@ -151,7 +153,8 @@ public class GymClassService {
             errors.put("endTime", "Este campo es obligatorio.");
         }
 
-        if (gymClass.getStartTime() != null && gymClass.getEndTime() != null
+        if (gymClass.getStartTime() != null
+                && gymClass.getEndTime() != null
                 && !gymClass.getEndTime().isAfter(gymClass.getStartTime())) {
             errors.put("endTime", "La hora final debe ser mayor que la hora de inicio.");
         }
@@ -166,7 +169,8 @@ public class GymClassService {
             errors.put("branchId", "La sucursal seleccionada no existe.");
         }
 
-        if (gymClass.getTrainer() == null || gymClass.getTrainer().getUserId() == null
+        if (gymClass.getTrainer() == null
+                || gymClass.getTrainer().getUserId() == null
                 || gymClass.getTrainer().getUserId() <= 0) {
             errors.put("trainerId", "Seleccione una opción.");
         }
@@ -176,6 +180,7 @@ public class GymClassService {
                 && gymClass.getTrainer().getUserId() > 0
                 && gymClass.getBranch() != null
                 && gymClass.getBranch().getId() > 0) {
+
             User trainer = userRepository.findById(gymClass.getTrainer().getUserId()).orElse(null);
 
             if (trainer == null || !"trainer".equals(trainer.getRole())) {
@@ -188,7 +193,8 @@ public class GymClassService {
 
         if (gymClass.getEnrolledCount() < 0) {
             errors.put("enrolledCount", "Ingrese un valor válido.");
-        } else if (gymClass.getMaxCapacity() > 0 && gymClass.getEnrolledCount() > gymClass.getMaxCapacity()) {
+        } else if (gymClass.getMaxCapacity() > 0
+                && gymClass.getEnrolledCount() > gymClass.getMaxCapacity()) {
             errors.put("enrolledCount", "La cantidad de inscritos no puede superar la capacidad.");
         }
 
@@ -210,7 +216,6 @@ public class GymClassService {
     }
 
     private void calculateDuration(GymClass gymClass) {
-
         int duration = (int) Duration.between(
                 gymClass.getStartTime(),
                 gymClass.getEndTime()

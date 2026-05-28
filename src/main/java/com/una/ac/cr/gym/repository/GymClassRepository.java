@@ -1,7 +1,7 @@
 package com.una.ac.cr.gym.repository;
 
 import com.una.ac.cr.gym.domain.GymClass;
-import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -11,31 +11,33 @@ import org.springframework.data.repository.query.Param;
 
 public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
 
-    List<GymClass> findByTrainer_UserId(Integer trainerId);
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
+    @Query("SELECT gc FROM GymClass gc")
+    Page<GymClass> findAllWithRelations(Pageable pageable);
 
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
+    @Query("SELECT gc FROM GymClass gc WHERE gc.idClass = :idClass")
+    Optional<GymClass> findByIdWithRelations(@Param("idClass") int idClass);
+
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
     Page<GymClass> findByTrainer_UserId(Integer trainerId, Pageable pageable);
 
     @EntityGraph(attributePaths = {
         "trainer",
-        "branch"
-    })
-    @Query("""
-           SELECT gc FROM GymClass gc
-           WHERE gc.trainer IS NOT NULL
-           AND gc.trainer.userId = :trainerId
-           AND (
-               (gc.branch IS NOT NULL AND gc.branch.id = :branchId)
-               OR (gc.branch IS NULL
-                   AND gc.trainer.branch IS NOT NULL
-                   AND gc.trainer.branch.id = :branchId)
-           )
-           """)
-    List<GymClass> findByTrainerAndBranch(@Param("trainerId") Integer trainerId,
-                                           @Param("branchId") int branchId);
-
-    @EntityGraph(attributePaths = {
-        "trainer",
-        "branch"
+        "branch",
+        "trainer.branch"
     })
     @Query("""
            SELECT gc FROM GymClass gc
@@ -52,13 +54,17 @@ public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
                                            @Param("branchId") int branchId,
                                            Pageable pageable);
 
-    List<GymClass> findByStatusTrue();
-
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
     Page<GymClass> findByStatusTrue(Pageable pageable);
 
     @EntityGraph(attributePaths = {
         "trainer",
-        "branch"
+        "branch",
+        "trainer.branch"
     })
     @Query("""
            SELECT gc FROM GymClass gc
@@ -71,7 +77,8 @@ public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
                    AND gc.trainer.branch.id = :branchId)
            )
            """)
-    List<GymClass> findActiveByBranchOrTrainerBranch(@Param("branchId") int branchId);
+    Page<GymClass> findActiveByBranchOrTrainerBranch(@Param("branchId") int branchId,
+                                                      Pageable pageable);
 
     boolean existsByIdClassAndTrainer_UserId(int idClass, Integer trainerId);
 

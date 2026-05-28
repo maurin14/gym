@@ -3,6 +3,7 @@ package com.una.ac.cr.gym.repository;
 import com.una.ac.cr.gym.domain.Attendance;
 import com.una.ac.cr.gym.domain.User;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -14,7 +15,30 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass"
+        "gymClass",
+        "gymClass.trainer",
+        "gymClass.branch",
+        "gymClass.trainer.branch"
+    })
+    @Query("SELECT a FROM Attendance a")
+    Page<Attendance> findAllWithRelations(Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+        "client",
+        "gymClass",
+        "gymClass.trainer",
+        "gymClass.branch",
+        "gymClass.trainer.branch"
+    })
+    @Query("SELECT a FROM Attendance a WHERE a.idAttendance = :idAttendance")
+    Optional<Attendance> findByIdWithRelations(@Param("idAttendance") int idAttendance);
+
+    @EntityGraph(attributePaths = {
+        "client",
+        "gymClass",
+        "gymClass.trainer",
+        "gymClass.branch",
+        "gymClass.trainer.branch"
     })
     Page<Attendance> findByClient_UserId(Integer userId, Pageable pageable);
 
@@ -22,38 +46,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass"
-    })
-    List<Attendance> findByGymClass_Trainer_UserId(Integer trainerId);
-
-    @EntityGraph(attributePaths = {
-        "client",
-        "gymClass"
+        "gymClass",
+        "gymClass.trainer",
+        "gymClass.branch",
+        "gymClass.trainer.branch"
     })
     Page<Attendance> findByGymClass_Trainer_UserId(Integer trainerId, Pageable pageable);
 
     @EntityGraph(attributePaths = {
         "client",
-        "gymClass"
-    })
-    @Query("""
-           SELECT a FROM Attendance a
-           WHERE a.gymClass IS NOT NULL
-           AND a.gymClass.trainer IS NOT NULL
-           AND a.gymClass.trainer.userId = :trainerId
-           AND (
-               (a.gymClass.branch IS NOT NULL AND a.gymClass.branch.id = :branchId)
-               OR (a.gymClass.branch IS NULL
-                   AND a.gymClass.trainer.branch IS NOT NULL
-                   AND a.gymClass.trainer.branch.id = :branchId)
-           )
-           """)
-    List<Attendance> findByTrainerAndBranch(@Param("trainerId") Integer trainerId,
-                                             @Param("branchId") int branchId);
-
-    @EntityGraph(attributePaths = {
-        "client",
-        "gymClass"
+        "gymClass",
+        "gymClass.trainer",
+        "gymClass.branch",
+        "gymClass.trainer.branch"
     })
     @Query("""
            SELECT a FROM Attendance a
