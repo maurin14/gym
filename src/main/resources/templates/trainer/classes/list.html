@@ -12,10 +12,18 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-
 <main class="container portal-card admin-page-card wide-table-card">
-    <div class="buttons admin-action-row" th:if="${canManageClasses}">
-        <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
+
+    <div class="admin-title-row">
+        <div class="admin-filter-row" style="margin-bottom: 0;">
+            <select id="branchFilter" onchange="filterClassesByBranch()">
+                <option value="">Todas las sucursales</option>
+            </select>
+        </div>
+
+        <div class="buttons admin-action-row" th:if="${canManageClasses}">
+            <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
+        </div>
     </div>
 
     <table class="portal-table admin-table is-wide">
