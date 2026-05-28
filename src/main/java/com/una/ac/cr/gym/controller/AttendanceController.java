@@ -24,7 +24,6 @@ public class AttendanceController {
 
     public AttendanceController(AttendanceService attendanceService,
             UserService userService) {
-
         this.attendanceService = attendanceService;
         this.userService = userService;
     }
@@ -81,6 +80,7 @@ public class AttendanceController {
     @GetMapping("/admin/attendance/form/{idAttendance}")
     public String adminAttendanceEdit(@PathVariable int idAttendance,
             HttpSession session) {
+
         User userSession = (User) session.getAttribute("user");
 
         if (userSession == null) {
@@ -107,33 +107,9 @@ public class AttendanceController {
     @ResponseBody
     @GetMapping("/attendances")
     public List<Map<String, Object>> getAllAttendances(HttpSession session) {
-
         return getAttendancesForSession(session)
                 .stream()
-                .map(attendance -> {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idAttendance", attendance.getIdAttendance());
-                    map.put("attendanceDate", attendance.getAttendanceDate());
-                    map.put("attendanceStatus", attendance.getAttendanceStatus());
-                    map.put("observation", attendance.getObservation());
-                    map.put("registerDate", attendance.getRegisterDate());
-
-                    map.put("clientName",
-                            attendance.getClient() != null
-                            ? attendance.getClient().getFullName()
-                            : "Sin cliente");
-
-                    map.put("classType",
-                            attendance.getGymClass() != null
-                            ? attendance.getGymClass().getClassType()
-                            : "Sin clase");
-
-                    map.put("branchName", getAttendanceBranchName(attendance));
-
-                    return map;
-                })
+                .map(this::toAttendanceMap)
                 .toList();
     }
 
@@ -145,88 +121,45 @@ public class AttendanceController {
             HttpSession session) {
 
         int currentPage = Math.max(page, 0);
-        Page<Attendance> attendancePage = getAttendancesPageForSession(session, currentPage, size);
 
-        if (currentPage >= attendancePage.getTotalPages() && attendancePage.getTotalPages() > 0) {
+        Page<Attendance> attendancePage =
+                getAttendancesPageForSession(session, currentPage, size);
+
+        if (currentPage >= attendancePage.getTotalPages()
+                && attendancePage.getTotalPages() > 0) {
+
             currentPage = attendancePage.getTotalPages() - 1;
-            attendancePage = getAttendancesPageForSession(session, currentPage, size);
+            attendancePage =
+                    getAttendancesPageForSession(session, currentPage, size);
         }
-
-        List<Map<String, Object>> pageContent = attendancePage.getContent()
-                .stream()
-                .map(attendance -> {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idAttendance", attendance.getIdAttendance());
-                    map.put("attendanceDate", attendance.getAttendanceDate());
-                    map.put("attendanceStatus", attendance.getAttendanceStatus());
-                    map.put("observation", attendance.getObservation());
-                    map.put("registerDate", attendance.getRegisterDate());
-
-                    map.put("clientName",
-                            attendance.getClient() != null
-                            ? attendance.getClient().getFullName()
-                            : "Sin cliente");
-
-                    map.put("classType",
-                            attendance.getGymClass() != null
-                            ? attendance.getGymClass().getClassType()
-                            : "Sin clase");
-
-                    map.put("branchName", getAttendanceBranchName(attendance));
-
-                    return map;
-                })
-                .toList();
 
         Map<String, Object> response = new HashMap<>();
 
         response.put("currentPage", currentPage + 1);
         response.put("totalPages", attendancePage.getTotalPages());
-        response.put("attendances", pageContent);
+        response.put("attendances", attendancePage.getContent()
+                .stream()
+                .map(this::toAttendanceMap)
+                .toList());
 
         return response;
     }
 
     @ResponseBody
     @GetMapping("/client/attendances/data")
-    public List<Map<String, Object>> getClientAttendances(
-            HttpSession session) {
+    public List<Map<String, Object>> getClientAttendances(HttpSession session) {
 
-        User userSession =
-                (User) session.getAttribute("user");
+        User userSession = (User) session.getAttribute("user");
 
         if (userSession == null) {
             return List.of();
         }
 
-        return attendanceService.getAllAttendances()
+        return attendanceService
+                .getClientAttendancesPage(userSession.getUserId(), 0, 100)
+                .getContent()
                 .stream()
-                .filter(attendance ->
-                        attendance.getClient() != null
-                        && attendance.getClient().getUserId()
-                        == userSession.getUserId()
-                )
-                .map(attendance -> {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("idAttendance", attendance.getIdAttendance());
-                    map.put("attendanceDate", attendance.getAttendanceDate());
-                    map.put("attendanceStatus", attendance.getAttendanceStatus());
-                    map.put("observation", attendance.getObservation());
-                    map.put("registerDate", attendance.getRegisterDate());
-
-                    map.put("classType",
-                            attendance.getGymClass() != null
-                            ? attendance.getGymClass().getClassType()
-                            : "Sin clase");
-
-                    map.put("branchName", getAttendanceBranchName(attendance));
-
-                    return map;
-                })
+                .map(this::toAttendanceMap)
                 .toList();
     }
 
@@ -240,26 +173,37 @@ public class AttendanceController {
         User userSession = (User) session.getAttribute("user");
 
         if (userSession == null) {
-            return Map.of("currentPage", 1, "totalPages", 0, "attendances", List.of());
-        }
-
-        int currentPage = Math.max(page, 0);
-        Page<Attendance> attendancePage = attendanceService.getClientAttendancesPage(
-                userSession.getUserId(),
-                currentPage,
-                size
-        );
-
-        if (currentPage >= attendancePage.getTotalPages() && attendancePage.getTotalPages() > 0) {
-            currentPage = attendancePage.getTotalPages() - 1;
-            attendancePage = attendanceService.getClientAttendancesPage(
-                    userSession.getUserId(),
-                    currentPage,
-                    size
+            return Map.of(
+                    "currentPage", 1,
+                    "totalPages", 0,
+                    "attendances", List.of()
             );
         }
 
+        int currentPage = Math.max(page, 0);
+
+        Page<Attendance> attendancePage =
+                attendanceService.getClientAttendancesPage(
+                        userSession.getUserId(),
+                        currentPage,
+                        size
+                );
+
+        if (currentPage >= attendancePage.getTotalPages()
+                && attendancePage.getTotalPages() > 0) {
+
+            currentPage = attendancePage.getTotalPages() - 1;
+
+            attendancePage =
+                    attendanceService.getClientAttendancesPage(
+                            userSession.getUserId(),
+                            currentPage,
+                            size
+                    );
+        }
+
         Map<String, Object> response = new HashMap<>();
+
         response.put("currentPage", currentPage + 1);
         response.put("totalPages", attendancePage.getTotalPages());
         response.put("attendances", attendancePage.getContent()
@@ -271,12 +215,50 @@ public class AttendanceController {
     }
 
     @ResponseBody
+    @GetMapping("/attendances/edit/{idAttendance}")
+    public Map<String, Object> getAttendanceForEdit(
+            @PathVariable int idAttendance,
+            HttpSession session) {
+
+        Attendance attendance =
+                attendanceService.getAttendanceById(idAttendance);
+
+        if (attendance == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (!canAccessAttendance(session, attendance)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("idAttendance", attendance.getIdAttendance());
+        map.put("attendanceDate", attendance.getAttendanceDate());
+        map.put("attendanceStatus", attendance.getAttendanceStatus());
+        map.put("observation", attendance.getObservation());
+
+        map.put("clientId",
+                attendance.getClient() != null
+                ? attendance.getClient().getUserId()
+                : "");
+
+        map.put("classId",
+                attendance.getGymClass() != null
+                ? attendance.getGymClass().getIdClass()
+                : "");
+
+        return map;
+    }
+
+    @ResponseBody
     @GetMapping("/attendances/{idAttendance}")
     public Attendance getAttendanceById(
             @PathVariable int idAttendance,
             HttpSession session) {
 
-        Attendance attendance = attendanceService.getAttendanceById(idAttendance);
+        Attendance attendance =
+                attendanceService.getAttendanceById(idAttendance);
 
         if (attendance == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -295,11 +277,9 @@ public class AttendanceController {
             @RequestBody Attendance attendance,
             HttpSession session) {
 
-        User userSession =
-                (User) session.getAttribute("user");
+        User userSession = (User) session.getAttribute("user");
 
-        if (userSession != null
-                && "client".equals(userSession.getRole())) {
+        if (userSession != null && "client".equals(userSession.getRole())) {
 
             attendance.setClient(userSession);
 
@@ -307,6 +287,7 @@ public class AttendanceController {
                     && attendanceService.isClientEnrolled(
                             userSession.getUserId(),
                             attendance.getGymClass().getIdClass())) {
+
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
         }
@@ -325,7 +306,8 @@ public class AttendanceController {
             @RequestBody Attendance attendance,
             HttpSession session) {
 
-        Attendance currentAttendance = attendanceService.getAttendanceById(idAttendance);
+        Attendance currentAttendance =
+                attendanceService.getAttendanceById(idAttendance);
 
         if (currentAttendance == null) {
             return ResponseEntity.notFound().build();
@@ -336,10 +318,8 @@ public class AttendanceController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        Attendance updatedAttendance = attendanceService.updateAttendance(
-                idAttendance,
-                attendance
-        );
+        Attendance updatedAttendance =
+                attendanceService.updateAttendance(idAttendance, attendance);
 
         if (updatedAttendance == null) {
             return ResponseEntity.notFound().build();
@@ -354,7 +334,8 @@ public class AttendanceController {
             @PathVariable int idAttendance,
             HttpSession session) {
 
-        Attendance attendance = attendanceService.getAttendanceById(idAttendance);
+        Attendance attendance =
+                attendanceService.getAttendanceById(idAttendance);
 
         if (attendance == null) {
             return ResponseEntity.notFound().build();
@@ -365,16 +346,21 @@ public class AttendanceController {
         }
 
         attendanceService.deleteAttendance(idAttendance);
+
         return ResponseEntity.noContent().build();
     }
 
     @ResponseBody
     @GetMapping("/attendances/clients")
     public List<User> getClients(HttpSession session) {
+
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
-            return attendanceService.getTrainerClients(user.getUserId(), getCurrentBranchId(user));
+            return attendanceService.getTrainerClients(
+                    user.getUserId(),
+                    getCurrentBranchId(user)
+            );
         }
 
         if (!"administrator".equals(user.getRole())) {
@@ -385,24 +371,30 @@ public class AttendanceController {
     }
 
     private List<Attendance> getAttendancesForSession(HttpSession session) {
+
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
-            return attendanceService.getTrainerAttendances(user.getUserId(), getCurrentBranchId(user));
+            return attendanceService.getTrainerAttendances(
+                    user.getUserId(),
+                    getCurrentBranchId(user)
+            );
         }
 
         if ("client".equals(user.getRole())) {
-            return attendanceService.getAllAttendances()
-                    .stream()
-                    .filter(attendance -> attendance.getClient() != null
-                            && attendance.getClient().getUserId().equals(user.getUserId()))
-                    .toList();
+            return attendanceService
+                    .getClientAttendancesPage(user.getUserId(), 0, 100)
+                    .getContent();
         }
 
         return attendanceService.getAllAttendances();
     }
 
-    private Page<Attendance> getAttendancesPageForSession(HttpSession session, int page, int size) {
+    private Page<Attendance> getAttendancesPageForSession(
+            HttpSession session,
+            int page,
+            int size) {
+
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
@@ -410,17 +402,25 @@ public class AttendanceController {
                     user.getUserId(),
                     getCurrentBranchId(user),
                     page,
-                    size);
+                    size
+            );
         }
 
         if ("client".equals(user.getRole())) {
-            return attendanceService.getClientAttendancesPage(user.getUserId(), page, size);
+            return attendanceService.getClientAttendancesPage(
+                    user.getUserId(),
+                    page,
+                    size
+            );
         }
 
         return attendanceService.getAttendancesPage(page, size);
     }
 
-    private boolean canAccessAttendance(HttpSession session, Attendance attendance) {
+    private boolean canAccessAttendance(
+            HttpSession session,
+            Attendance attendance) {
+
         User user = currentUser(session);
 
         if ("administrator".equals(user.getRole())) {
@@ -429,7 +429,8 @@ public class AttendanceController {
 
         if ("client".equals(user.getRole())) {
             return attendance.getClient() != null
-                    && attendance.getClient().getUserId().equals(user.getUserId());
+                    && attendance.getClient().getUserId()
+                    .equals(user.getUserId());
         }
 
         return "trainer".equals(user.getRole())
@@ -437,17 +438,23 @@ public class AttendanceController {
                 && attendanceService.classBelongsToTrainer(
                         attendance.getGymClass().getIdClass(),
                         user.getUserId(),
-                        getCurrentBranchId(user));
+                        getCurrentBranchId(user)
+                );
     }
 
-    private boolean canSaveAttendance(HttpSession session, Attendance attendance) {
+    private boolean canSaveAttendance(
+            HttpSession session,
+            Attendance attendance) {
+
         User user = currentUser(session);
 
-        if ("administrator".equals(user.getRole()) || "client".equals(user.getRole())) {
+        if ("administrator".equals(user.getRole())
+                || "client".equals(user.getRole())) {
             return true;
         }
 
-        if (!"trainer".equals(user.getRole()) || attendance.getGymClass() == null) {
+        if (!"trainer".equals(user.getRole())
+                || attendance.getGymClass() == null) {
             return false;
         }
 
@@ -459,14 +466,18 @@ public class AttendanceController {
     }
 
     private User currentUser(HttpSession session) {
+
         User user = (User) session.getAttribute("user");
+
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+
         return user;
     }
 
     private Map<String, Object> toAttendanceMap(Attendance attendance) {
+
         Map<String, Object> map = new HashMap<>();
 
         map.put("idAttendance", attendance.getIdAttendance());
@@ -491,10 +502,13 @@ public class AttendanceController {
     }
 
     private Integer getCurrentBranchId(User user) {
-        return user != null && user.getBranch() != null ? user.getBranch().getId() : null;
+        return user != null && user.getBranch() != null
+                ? user.getBranch().getId()
+                : null;
     }
 
     private String getAttendanceBranchName(Attendance attendance) {
+
         if (attendance == null || attendance.getGymClass() == null) {
             return "Sin sucursal";
         }
@@ -505,7 +519,11 @@ public class AttendanceController {
 
         if (attendance.getGymClass().getTrainer() != null
                 && attendance.getGymClass().getTrainer().getBranch() != null) {
-            return attendance.getGymClass().getTrainer().getBranch().getName();
+
+            return attendance.getGymClass()
+                    .getTrainer()
+                    .getBranch()
+                    .getName();
         }
 
         return "Sin sucursal";

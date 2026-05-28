@@ -1,29 +1,72 @@
 let currentPage = 1;
 let totalPages = 1;
 
-const rowsPerPage = 5;
+const rowsPerPage = 4;
+
 const classBasePath = window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
         ? "/admin/classes"
         : "/trainer/classes");
+
 const canManageClasses = Boolean(window.canManageClasses);
 
 document.addEventListener("DOMContentLoaded", function () {
+    loadBranchesFilter();
     loadClasses();
 });
 
+function loadBranchesFilter() {
+
+    const branchFilter = document.getElementById("branchFilter");
+
+    if (!branchFilter) {
+        return;
+    }
+
+    fetch("/classes/branches")
+            .then(response => response.json())
+            .then(data => {
+
+                branchFilter.innerHTML =
+                        '<option value="">Todas las sucursales</option>';
+
+                data.forEach(branch => {
+
+                    branchFilter.innerHTML += `
+                        <option value="${branch.id}">
+                            ${branch.name}
+                        </option>
+                    `;
+                });
+            });
+}
+
+function filterClassesByBranch() {
+    currentPage = 1;
+    loadClasses();
+}
+
 function loadClasses() {
 
-    fetch("/classes/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage)
-        .then(response => response.json())
-        .then(data => {
+    const branchFilter = document.getElementById("branchFilter");
+    const branchId = branchFilter ? branchFilter.value : "";
 
-            totalPages = data.totalPages;
-            currentPage = data.currentPage;
+    let url = "/classes/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage;
 
-            showClasses(data.classes);
-            showPagination();
+    if (branchId !== "") {
+        url += "&branchId=" + encodeURIComponent(branchId);
+    }
 
-        });
+    fetch(url)
+            .then(response => response.json())
+            .then(data => {
+
+                totalPages = data.totalPages;
+                currentPage = data.currentPage;
+
+                showClasses(data.classes);
+                showPagination();
+
+            });
 }
 
 function showClasses(classes) {
@@ -31,7 +74,29 @@ function showClasses(classes) {
     const tbody = document.getElementById("classesTableBody");
     tbody.innerHTML = "";
 
+    if (!classes || classes.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="${canManageClasses ? 13 : 12}" class="empty-message">
+                    No hay clases registradas.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     classes.forEach(gymClass => {
+
+        const statusClass = gymClass.status
+                ? "status-active"
+                : "status-inactive";
+
+        const statusText = gymClass.status
+                ? "Activa"
+                : "Inactiva";
+
+        const difficultyClass =
+                getDifficultyClass(gymClass.difficultyLevel);
 
         tbody.innerHTML += `
             <tr>
@@ -44,8 +109,19 @@ function showClasses(classes) {
                 <td>${gymClass.duration} min</td>
                 <td>${gymClass.maxCapacity}</td>
                 <td>${gymClass.enrolledCount}</td>
-                <td>${gymClass.status ? "Activa" : "Inactiva"}</td>
-                <td>${gymClass.difficultyLevel}</td>
+
+                <td>
+                    <span class="badge ${statusClass}">
+                        ${statusText}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="badge ${difficultyClass}">
+                        ${gymClass.difficultyLevel}
+                    </span>
+                </td>
+
                 <td>${gymClass.description}</td>
 
                 ${canManageClasses ? `
@@ -67,6 +143,23 @@ function showClasses(classes) {
             </tr>
         `;
     });
+}
+
+function getDifficultyClass(difficultyLevel) {
+
+    const difficulty = difficultyLevel
+            ? difficultyLevel.toLowerCase()
+            : "";
+
+    if (difficulty === "alto") {
+        return "status-inactive";
+    }
+
+    if (difficulty === "medio") {
+        return "status-pending";
+    }
+
+    return "status-active";
 }
 
 function showPagination() {

@@ -25,15 +25,15 @@ public class AttendanceService {
     }
 
     public List<Attendance> getAllAttendances() {
-        return attendanceRepository.findAll();
+        return attendanceRepository.findAllWithRelations(PageRequest.of(0, 100)).getContent();
     }
 
     public Page<Attendance> getAttendancesPage(int page, int size) {
-        return attendanceRepository.findAll(PageRequest.of(page, size));
+        return attendanceRepository.findAllWithRelations(PageRequest.of(page, size));
     }
 
     public List<Attendance> getTrainerAttendances(Integer trainerId) {
-        return attendanceRepository.findByGymClass_Trainer_UserId(trainerId);
+        return attendanceRepository.findByGymClass_Trainer_UserId(trainerId, PageRequest.of(0, 100)).getContent();
     }
 
     public List<Attendance> getTrainerAttendances(Integer trainerId, Integer branchId) {
@@ -41,7 +41,7 @@ public class AttendanceService {
             return List.of();
         }
 
-        return attendanceRepository.findByTrainerAndBranch(trainerId, branchId);
+        return attendanceRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(0, 100)).getContent();
     }
 
     public Page<Attendance> getTrainerAttendancesPage(Integer trainerId, int page, int size) {
@@ -85,7 +85,7 @@ public class AttendanceService {
     }
 
     public Attendance getAttendanceById(int idAttendance) {
-        return attendanceRepository.findById(idAttendance).orElse(null);
+        return attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
     }
 
     public boolean isClientEnrolled(Integer clientId, int classId) {
@@ -97,7 +97,7 @@ public class AttendanceService {
             return "Debe iniciar sesion.";
         }
 
-        GymClass gymClass = gymClassRepository.findById(classId).orElse(null);
+        GymClass gymClass = gymClassRepository.findByIdWithRelations(classId).orElse(null);
 
         if (gymClass == null) {
             return "Clase no encontrada.";
@@ -123,6 +123,7 @@ public class AttendanceService {
         attendance.setObservation("Inscripcion desde sucursal");
 
         saveAttendance(attendance);
+
         return "";
     }
 
@@ -138,11 +139,8 @@ public class AttendanceService {
                     .orElse(null);
 
             if (gymClass != null) {
-
                 gymClass.setEnrolledCount(gymClass.getEnrolledCount() + 1);
-
                 gymClassRepository.save(gymClass);
-
                 attendance.setGymClass(gymClass);
             }
         }
@@ -151,7 +149,9 @@ public class AttendanceService {
     }
 
     public Attendance updateAttendance(int idAttendance, Attendance attendance) {
-        Attendance currentAttendance = attendanceRepository.findById(idAttendance).orElse(null);
+
+        Attendance currentAttendance =
+                attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
 
         if (currentAttendance == null) {
             return null;
@@ -168,14 +168,20 @@ public class AttendanceService {
             newClass = gymClassRepository
                     .findById(attendance.getGymClass().getIdClass())
                     .orElse(null);
+
             attendance.setGymClass(newClass);
         }
 
-        Integer currentClassId = currentClass != null ? currentClass.getIdClass() : null;
-        Integer newClassId = newClass != null ? newClass.getIdClass() : null;
+        Integer currentClassId =
+                currentClass != null ? currentClass.getIdClass() : null;
 
-        if (currentClassId != null && !currentClassId.equals(newClassId)
+        Integer newClassId =
+                newClass != null ? newClass.getIdClass() : null;
+
+        if (currentClassId != null
+                && !currentClassId.equals(newClassId)
                 && currentClass.getEnrolledCount() > 0) {
+
             currentClass.setEnrolledCount(currentClass.getEnrolledCount() - 1);
             gymClassRepository.save(currentClass);
         }
@@ -190,7 +196,8 @@ public class AttendanceService {
 
     public void deleteAttendance(int idAttendance) {
 
-        Attendance attendance = attendanceRepository.findById(idAttendance).orElse(null);
+        Attendance attendance =
+                attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
 
         if (attendance != null && attendance.getGymClass() != null) {
 

@@ -2,10 +2,15 @@ let currentPage = 1;
 let totalPages = 1;
 
 const rowsPerPage = 5;
-const attendanceBasePath = window.attendanceBasePath || (window.location.pathname.startsWith("/admin/attendance")
-        ? "/admin/attendance"
-        : "/trainer/attendances");
-const canDeleteAttendances = Boolean(window.canDeleteAttendances);
+
+const attendanceBasePath =
+        window.attendanceBasePath
+        || (window.location.pathname.startsWith("/admin/attendance")
+                ? "/admin/attendance"
+                : "/trainer/attendances");
+
+const canDeleteAttendances =
+        Boolean(window.canDeleteAttendances);
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -13,25 +18,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadAttendances() {
 
-    fetch("/attendances/page?page=" + (currentPage - 1) + "&size=" + rowsPerPage)
-        .then(response => response.json())
-        .then(data => {
+    fetch("/attendances/page?page="
+            + (currentPage - 1)
+            + "&size="
+            + rowsPerPage)
 
-            totalPages = data.totalPages;
-            currentPage = data.currentPage;
+            .then(response => response.json())
 
-            showAttendances(data.attendances);
-            showPagination();
+            .then(data => {
 
-        });
+                totalPages = data.totalPages;
+                currentPage = data.currentPage;
+
+                showAttendances(data.attendances);
+                showPagination();
+
+            });
 }
 
 function showAttendances(attendances) {
 
-    const tbody = document.getElementById("attendancesTableBody");
+    const tbody =
+            document.getElementById("attendancesTableBody");
+
     tbody.innerHTML = "";
 
     if (!attendances || attendances.length === 0) {
+
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="empty-message">
@@ -39,10 +52,14 @@ function showAttendances(attendances) {
                 </td>
             </tr>
         `;
+
         return;
     }
 
     attendances.forEach(attendance => {
+
+        const statusClass =
+                getAttendanceStatusClass(attendance.attendanceStatus);
 
         tbody.innerHTML += `
             <tr>
@@ -50,13 +67,16 @@ function showAttendances(attendances) {
                 <td>${attendance.classType}</td>
                 <td>${attendance.branchName || "Sin sucursal"}</td>
                 <td>${attendance.attendanceDate}</td>
+
                 <td>
-                    <span class="badge status-active">
+                    <span class="badge ${statusClass}">
                         ${attendance.attendanceStatus}
                     </span>
                 </td>
+
                 <td>${attendance.observation}</td>
                 <td>${attendance.registerDate}</td>
+
                 <td>
                     <div class="actions">
                         <a class="btn-primary"
@@ -78,12 +98,31 @@ function showAttendances(attendances) {
     });
 }
 
+function getAttendanceStatusClass(status) {
+
+    const statusText =
+            status ? status.toLowerCase() : "";
+
+    if (statusText === "ausente") {
+        return "status-inactive";
+    }
+
+    if (statusText === "tarde") {
+        return "status-pending";
+    }
+
+    return "status-active";
+}
+
 function showPagination() {
 
-    const pagination = document.getElementById("attendancesPagination");
+    const pagination =
+            document.getElementById("attendancesPagination");
+
     pagination.innerHTML = "";
 
-    const visualTotalPages = Math.max(totalPages, 1);
+    const visualTotalPages =
+            Math.max(totalPages, 1);
 
     pagination.appendChild(createPageButton(
             "Anterior",
@@ -93,6 +132,7 @@ function showPagination() {
     ));
 
     for (let page = 1; page <= visualTotalPages; page++) {
+
         pagination.appendChild(createPageButton(
                 page,
                 page,
@@ -109,20 +149,28 @@ function showPagination() {
 }
 
 function createPageButton(text, page, className, disabled) {
-    const button = document.createElement("button");
+
+    const button =
+            document.createElement("button");
+
     button.type = "button";
     button.className = className;
     button.textContent = text;
     button.dataset.page = page;
     button.disabled = Boolean(disabled);
+
     button.addEventListener("click", function () {
         changeAttendancePage(this);
     });
+
     return button;
 }
 
 function changeAttendancePage(element) {
-    const page = parseInt(element.dataset.page, 10);
+
+    const page =
+            parseInt(element.dataset.page, 10);
+
     if (page >= 1 && page <= totalPages && page !== currentPage) {
         currentPage = page;
         loadAttendances();
@@ -130,6 +178,7 @@ function changeAttendancePage(element) {
 }
 
 function deleteAttendance(idAttendance) {
+
     if (!canDeleteAttendances) {
         return;
     }
@@ -140,6 +189,7 @@ function deleteAttendance(idAttendance) {
         confirmText: "Eliminar",
         icon: "warning"
     }).then((result) => {
+
         if (!result.isConfirmed) {
             return;
         }
@@ -149,14 +199,20 @@ function deleteAttendance(idAttendance) {
         fetch("/attendances/" + idAttendance, {
             method: "DELETE"
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("No se pudo eliminar.");
-            }
-            showAdminSuccess("Eliminado.").then(loadAttendances);
-        })
-        .catch(error => {
-            showAdminError(error.message || "No se pudo eliminar.");
-        });
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error("No se pudo eliminar.");
+                    }
+
+                    showAdminSuccess("Eliminado.")
+                            .then(loadAttendances);
+                })
+                .catch(error => {
+
+                    showAdminError(
+                            error.message || "No se pudo eliminar."
+                    );
+                });
     });
 }
