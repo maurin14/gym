@@ -1,10 +1,5 @@
 package com.una.ac.cr.gym.controller;
 
-/**
- *
- * @author Amanda
- */
-
 import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.BranchService;
@@ -98,11 +93,17 @@ public class GymClassController {
             HttpSession session) {
 
         int currentPage = Math.max(page, 0);
-        Page<GymClass> classPage = getClassesPageForSession(session, currentPage, size);
 
-        if (currentPage >= classPage.getTotalPages() && classPage.getTotalPages() > 0) {
+        Page<GymClass> classPage =
+                getClassesPageForSession(session, currentPage, size);
+
+        if (currentPage >= classPage.getTotalPages()
+                && classPage.getTotalPages() > 0) {
+
             currentPage = classPage.getTotalPages() - 1;
-            classPage = getClassesPageForSession(session, currentPage, size);
+
+            classPage =
+                    getClassesPageForSession(session, currentPage, size);
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -112,10 +113,7 @@ public class GymClassController {
 
         response.put("classes", classPage.getContent()
                 .stream()
-                .map(gymClass -> {
-
-                    return toClassMap(gymClass);
-                })
+                .map(this::toClassMap)
                 .toList());
 
         return response;
@@ -125,12 +123,20 @@ public class GymClassController {
     @GetMapping("/classes")
     public List<Map<String, Object>> getAllClasses(HttpSession session) {
 
+        User user = currentUser(session);
+
+        if ("client".equals(user.getRole())) {
+            return gymClassService
+                    .getActiveClassesPage(0, 100)
+                    .getContent()
+                    .stream()
+                    .map(this::toClassMap)
+                    .toList();
+        }
+
         return getClassesForSession(session)
                 .stream()
-                .map(gymClass -> {
-
-                    return toClassMap(gymClass);
-                })
+                .map(this::toClassMap)
                 .toList();
     }
 
@@ -138,32 +144,45 @@ public class GymClassController {
     @GetMapping("/classes/{idClass}")
     public Map<String, Object> getClassById(@PathVariable int idClass,
             HttpSession session) {
+
         GymClass gymClass = gymClassService.getClassById(idClass);
 
         if (gymClass == null) {
-            return Map.of("success", false, "message", "Clase no encontrada.");
+            return Map.of(
+                    "success", false,
+                    "message", "Clase no encontrada."
+            );
         }
 
         User user = currentUser(session);
-        if ("trainer".equals(user.getRole()) && !isAssignedTrainer(gymClass, user)) {
+
+        if ("trainer".equals(user.getRole())
+                && !isAssignedTrainer(gymClass, user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         Map<String, Object> response = toClassMap(gymClass);
         response.put("success", true);
+
         return response;
     }
 
     @ResponseBody
     @PostMapping("/classes")
-    public ResponseEntity<Map<String, Object>> saveClass(@RequestBody GymClass gymClass,
+    public ResponseEntity<Map<String, Object>> saveClass(
+            @RequestBody GymClass gymClass,
             HttpSession session) {
+
         if (!isAdmin(session)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("success", false, "message", "Solo administradores pueden guardar clases."));
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Solo administradores pueden guardar clases."
+                    ));
         }
 
-        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors =
+                gymClassService.validateFields(gymClass);
 
         if (!fieldErrors.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -174,18 +193,26 @@ public class GymClassController {
         }
 
         GymClass savedClass = gymClassService.saveClass(gymClass);
-        return ResponseEntity.ok(Map.of("success", true, "classId", savedClass.getIdClass()));
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "classId", savedClass.getIdClass()
+        ));
     }
 
     @ResponseBody
     @PutMapping("/classes/{idClass}")
-    public ResponseEntity<Map<String, Object>> updateClass(@PathVariable int idClass,
+    public ResponseEntity<Map<String, Object>> updateClass(
+            @PathVariable int idClass,
             @RequestBody GymClass gymClass,
             HttpSession session) {
 
         if (!isAdmin(session)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("success", false, "message", "Solo administradores pueden editar clases."));
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Solo administradores pueden editar clases."
+                    ));
         }
 
         if (gymClassService.getClassById(idClass) == null) {
@@ -195,7 +222,8 @@ public class GymClassController {
             ));
         }
 
-        Map<String, String> fieldErrors = gymClassService.validateFields(gymClass);
+        Map<String, String> fieldErrors =
+                gymClassService.validateFields(gymClass);
 
         if (!fieldErrors.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -205,40 +233,56 @@ public class GymClassController {
             ));
         }
 
-        GymClass savedClass = gymClassService.updateClass(idClass, gymClass);
-        return ResponseEntity.ok(Map.of("success", true, "classId", savedClass.getIdClass()));
+        GymClass savedClass =
+                gymClassService.updateClass(idClass, gymClass);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "classId", savedClass.getIdClass()
+        ));
     }
 
     @ResponseBody
     @DeleteMapping("/classes/{idClass}")
     public ResponseEntity<Void> deleteClass(@PathVariable int idClass,
             HttpSession session) {
+
         if (!isAdmin(session)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         gymClassService.deleteClass(idClass);
+
         return ResponseEntity.noContent().build();
     }
 
     @ResponseBody
     @GetMapping("/classes/trainers")
-    public List<User> getTrainers(@RequestParam(required = false) Integer branchId,
+    public List<Map<String, Object>> getTrainers(
+            @RequestParam(required = false) Integer branchId,
             HttpSession session) {
+
         if (!isAdmin(session)) {
             return List.of();
         }
 
+        List<User> trainers;
+
         if (branchId != null && branchId > 0) {
-            return userService.getTrainersByBranch(branchId);
+            trainers = userService.getTrainersByBranch(branchId);
+        } else {
+            trainers = userService.filterUsers(null, "trainer");
         }
 
-        return userService.filterUsers(null, "trainer");
+        return trainers.stream()
+                .map(this::toUserSimpleMap)
+                .toList();
     }
 
     @ResponseBody
     @GetMapping("/classes/branches")
     public List<Map<String, Object>> getBranches(HttpSession session) {
+
         if (!isAdmin(session)) {
             return List.of();
         }
@@ -254,7 +298,11 @@ public class GymClassController {
                 .toList();
     }
 
-    private Page<GymClass> getClassesPageForSession(HttpSession session, int page, int size) {
+    private Page<GymClass> getClassesPageForSession(
+            HttpSession session,
+            int page,
+            int size) {
+
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
@@ -262,7 +310,8 @@ public class GymClassController {
                     user.getUserId(),
                     getCurrentBranchId(user),
                     page,
-                    size);
+                    size
+            );
         }
 
         if ("client".equals(user.getRole())) {
@@ -273,16 +322,20 @@ public class GymClassController {
     }
 
     private List<GymClass> getClassesForSession(HttpSession session) {
+
         User user = currentUser(session);
 
         if ("trainer".equals(user.getRole())) {
             return gymClassService.getClassesByTrainerAndBranch(
                     user.getUserId(),
-                    getCurrentBranchId(user));
+                    getCurrentBranchId(user)
+            );
         }
 
         if ("client".equals(user.getRole())) {
-            return gymClassService.getActiveClasses();
+            return gymClassService
+                    .getActiveClassesPage(0, 100)
+                    .getContent();
         }
 
         return gymClassService.getAllClasses();
@@ -294,10 +347,13 @@ public class GymClassController {
     }
 
     private User currentUser(HttpSession session) {
+
         User user = (User) session.getAttribute("user");
+
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+
         return user;
     }
 
@@ -305,14 +361,18 @@ public class GymClassController {
         return gymClassService.classBelongsToTrainerAndBranch(
                 gymClass.getIdClass(),
                 user.getUserId(),
-                getCurrentBranchId(user));
+                getCurrentBranchId(user)
+        );
     }
 
     private Integer getCurrentBranchId(User user) {
-        return user != null && user.getBranch() != null ? user.getBranch().getId() : null;
+        return user != null && user.getBranch() != null
+                ? user.getBranch().getId()
+                : null;
     }
 
     private Map<String, Object> toClassMap(GymClass gymClass) {
+
         Map<String, Object> map = new HashMap<>();
 
         map.put("idClass", gymClass.getIdClass());
@@ -326,20 +386,42 @@ public class GymClassController {
         map.put("description", gymClass.getDescription());
         map.put("duration", gymClass.getDuration());
         map.put("status", gymClass.isStatus());
-        map.put("trainerId", gymClass.getTrainer() != null ? gymClass.getTrainer().getUserId() : null);
-        map.put("trainerName", gymClass.getTrainer() != null ? gymClass.getTrainer().getFullName() : "Sin entrenador");
+
+        map.put("trainerId",
+                gymClass.getTrainer() != null
+                ? gymClass.getTrainer().getUserId()
+                : null);
+
+        map.put("trainerName",
+                gymClass.getTrainer() != null
+                ? gymClass.getTrainer().getFullName()
+                : "Sin entrenador");
+
         map.put("branchId", getClassBranchId(gymClass));
         map.put("branchName", getClassBranchName(gymClass));
 
         return map;
     }
 
+    private Map<String, Object> toUserSimpleMap(User user) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("userId", user.getUserId());
+        map.put("fullName", user.getFullName());
+        map.put("status", user.getStatus());
+
+        return map;
+    }
+
     private Integer getClassBranchId(GymClass gymClass) {
+
         if (gymClass.getBranch() != null) {
             return gymClass.getBranch().getId();
         }
 
-        if (gymClass.getTrainer() != null && gymClass.getTrainer().getBranch() != null) {
+        if (gymClass.getTrainer() != null
+                && gymClass.getTrainer().getBranch() != null) {
             return gymClass.getTrainer().getBranch().getId();
         }
 
@@ -347,11 +429,13 @@ public class GymClassController {
     }
 
     private String getClassBranchName(GymClass gymClass) {
+
         if (gymClass.getBranch() != null) {
             return gymClass.getBranch().getName();
         }
 
-        if (gymClass.getTrainer() != null && gymClass.getTrainer().getBranch() != null) {
+        if (gymClass.getTrainer() != null
+                && gymClass.getTrainer().getBranch() != null) {
             return gymClass.getTrainer().getBranch().getName();
         }
 
