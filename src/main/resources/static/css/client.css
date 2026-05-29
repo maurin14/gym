@@ -1821,4 +1821,14 @@ body.menu-open .menu-backdrop {
     .routine-stats div:last-child {
         border-bottom: 0;
     }
+    
+    .client-table th {
+        white-space: nowrap;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    .client-table {
+        min-width: 1150px;
+    }
 }
