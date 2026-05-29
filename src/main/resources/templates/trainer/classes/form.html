@@ -12,7 +12,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-
 <main class="container form-container portal-card admin-page-card">
     <h1 class="page-title" id="formTitle">Agregar clase</h1>
     <input type="hidden" id="idClass">
@@ -39,17 +38,17 @@
         <input type="number" id="maxCapacity" min="1">
         <small id="maxCapacityError" class="field-error"></small>
 
-        <label>Entrenador</label>
-        <select id="trainerId">
-            <option value="">Seleccione un entrenador</option>
-        </select>
-        <small id="trainerIdError" class="field-error"></small>
-
         <label>Sucursal</label>
         <select id="branchId">
             <option value="">Seleccione una sucursal</option>
         </select>
         <small id="branchIdError" class="field-error"></small>
+
+        <label>Entrenador</label>
+        <select id="trainerId">
+            <option value="">Seleccione un entrenador</option>
+        </select>
+        <small id="trainerIdError" class="field-error"></small>
 
         <label>Cantidad inscritos</label>
         <input type="number" id="enrolledCount" value="0" min="0" readonly>
