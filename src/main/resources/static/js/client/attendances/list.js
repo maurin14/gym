@@ -1,6 +1,6 @@
 let currentPage = 1;
 let totalPages = 1;
-const rowsPerPage = 5;
+const rowsPerPage = 4;
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -32,16 +32,55 @@ function showAttendances(attendances) {
     }
 
     attendances.forEach(attendance => {
+
+        const statusClass = getAttendanceStatusClass(attendance.attendanceStatus);
+
         tbody.innerHTML += `
             <tr>
                 <td>${attendance.classType || ""}</td>
-                <td>${attendance.attendanceDate || ""}</td>
-                <td>${attendance.attendanceStatus || ""}</td>
+                <td>${formatDate(attendance.attendanceDate)}</td>
+
+                <td>
+                    <span class="badge ${statusClass}">
+                        ${attendance.attendanceStatus || ""}
+                    </span>
+                </td>
+
                 <td>${attendance.observation || ""}</td>
-                <td>${attendance.registerDate || ""}</td>
+                <td>${formatDate(attendance.registerDate)}</td>
             </tr>
         `;
     });
+}
+
+function getAttendanceStatusClass(status) {
+
+    const statusText = status ? status.toLowerCase() : "";
+
+    if (statusText === "ausente") {
+        return "status-inactive";
+    }
+
+    if (statusText === "tarde") {
+        return "status-pending";
+    }
+
+    return "status-active";
+}
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+    const parts = String(dateValue).split("-");
+
+    if (parts.length !== 3) {
+        return dateValue;
+    }
+
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
 }
 
 function showPagination() {
