@@ -1042,6 +1042,7 @@ body.menu-open .menu-backdrop {
 }
 
 .status-active,
+.status-pending,
 .status-inactive {
     display: inline-flex;
     align-items: center;
@@ -1057,6 +1058,12 @@ body.menu-open .menu-backdrop {
     background: #dcfce7;
     color: #166534;
     border: 1px solid #22c55e;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
 }
 
 .status-inactive {
