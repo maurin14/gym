@@ -5,6 +5,7 @@ import com.una.ac.cr.gym.domain.GymClass;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.repository.AttendanceRepository;
 import com.una.ac.cr.gym.repository.GymClassRepository;
+import com.una.ac.cr.gym.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -16,12 +17,15 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final GymClassRepository gymClassRepository;
+    private final UserRepository userRepository;
 
     public AttendanceService(AttendanceRepository attendanceRepository,
-            GymClassRepository gymClassRepository) {
+            GymClassRepository gymClassRepository,
+            UserRepository userRepository) {
 
         this.attendanceRepository = attendanceRepository;
         this.gymClassRepository = gymClassRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Attendance> getAllAttendances() {
@@ -132,18 +136,8 @@ public class AttendanceService {
         attendance.setRegisterDate(LocalDate.now());
         attendance.setStatus(true);
 
-        if (attendance.getGymClass() != null) {
-
-            GymClass gymClass = gymClassRepository
-                    .findById(attendance.getGymClass().getIdClass())
-                    .orElse(null);
-
-            if (gymClass != null) {
-                gymClass.setEnrolledCount(gymClass.getEnrolledCount() + 1);
-                gymClassRepository.save(gymClass);
-                attendance.setGymClass(gymClass);
-            }
-        }
+        loadClient(attendance);
+        loadGymClass(attendance, true);
 
         return attendanceRepository.save(attendance);
     }
@@ -160,6 +154,8 @@ public class AttendanceService {
         attendance.setIdAttendance(idAttendance);
         attendance.setRegisterDate(currentAttendance.getRegisterDate());
         attendance.setStatus(currentAttendance.isStatus());
+
+        loadClient(attendance);
 
         GymClass currentClass = currentAttendance.getGymClass();
         GymClass newClass = null;
@@ -212,5 +208,42 @@ public class AttendanceService {
         }
 
         attendanceRepository.deleteById(idAttendance);
+    }
+
+    private void loadClient(Attendance attendance) {
+
+        if (attendance.getClient() == null
+                || attendance.getClient().getUserId() == null) {
+            return;
+        }
+
+        User client = userRepository
+                .findById(attendance.getClient().getUserId())
+                .orElse(null);
+
+        attendance.setClient(client);
+    }
+
+    private void loadGymClass(Attendance attendance, boolean increaseEnrolledCount) {
+
+        if (attendance.getGymClass() == null) {
+            return;
+        }
+
+        GymClass gymClass = gymClassRepository
+                .findById(attendance.getGymClass().getIdClass())
+                .orElse(null);
+
+        if (gymClass == null) {
+            attendance.setGymClass(null);
+            return;
+        }
+
+        if (increaseEnrolledCount) {
+            gymClass.setEnrolledCount(gymClass.getEnrolledCount() + 1);
+            gymClassRepository.save(gymClass);
+        }
+
+        attendance.setGymClass(gymClass);
     }
 }
