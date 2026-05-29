@@ -1,6 +1,6 @@
 let currentPage = 1;
 let totalPages = 1;
-const rowsPerPage = 5;
+const rowsPerPage = 4;
 
 document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
@@ -32,6 +32,9 @@ function showClasses(classes) {
     }
 
     classes.forEach(gymClass => {
+
+        const difficultyClass = getDifficultyClass(gymClass.difficultyLevel);
+
         tbody.innerHTML += `
             <tr>
                 <td>${gymClass.classType || ""}</td>
@@ -42,7 +45,13 @@ function showClasses(classes) {
                 <td>${gymClass.endTime || ""}</td>
                 <td>${gymClass.duration || 0} min</td>
                 <td>${gymClass.maxCapacity || ""}</td>
-                <td>${gymClass.difficultyLevel || ""}</td>
+
+                <td>
+                    <span class="badge ${difficultyClass}">
+                        ${gymClass.difficultyLevel || ""}
+                    </span>
+                </td>
+
                 <td>${gymClass.description || ""}</td>
                 <td>
                     <a class="btn-primary table-action"
@@ -53,6 +62,23 @@ function showClasses(classes) {
             </tr>
         `;
     });
+}
+
+function getDifficultyClass(difficultyLevel) {
+
+    const difficulty = difficultyLevel
+            ? difficultyLevel.toLowerCase()
+            : "";
+
+    if (difficulty === "alto") {
+        return "status-inactive";
+    }
+
+    if (difficulty === "medio") {
+        return "status-pending";
+    }
+
+    return "status-active";
 }
 
 function showPagination() {
