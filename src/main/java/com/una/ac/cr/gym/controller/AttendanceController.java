@@ -253,7 +253,7 @@ public class AttendanceController {
 
     @ResponseBody
     @GetMapping("/attendances/{idAttendance}")
-    public Attendance getAttendanceById(
+    public Map<String, Object> getAttendanceById(
             @PathVariable int idAttendance,
             HttpSession session) {
 
@@ -268,40 +268,49 @@ public class AttendanceController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        return attendance;
+        return toAttendanceMap(attendance);
     }
 
     @ResponseBody
     @PostMapping("/attendances")
-    public ResponseEntity<Attendance> saveAttendance(
+    public ResponseEntity<Map<String, Object>> saveAttendance(
             @RequestBody Attendance attendance,
             HttpSession session) {
 
         User userSession = (User) session.getAttribute("user");
 
         if (userSession != null && "client".equals(userSession.getRole())) {
-
             attendance.setClient(userSession);
-
-            if (attendance.getGymClass() != null
-                    && attendanceService.isClientEnrolled(
-                            userSession.getUserId(),
-                            attendance.getGymClass().getIdClass())) {
-
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
         }
 
         if (!canSaveAttendance(session, attendance)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "success", false,
+                    "message", "No tiene permisos para registrar esta asistencia."
+            ));
         }
 
-        return ResponseEntity.ok(attendanceService.saveAttendance(attendance));
+        try {
+            Attendance savedAttendance =
+                    attendanceService.saveAttendance(attendance);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "idAttendance", savedAttendance.getIdAttendance(),
+                    "message", "Asistencia registrada correctamente."
+            ));
+
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "success", false,
+                    "message", ex.getMessage()
+            ));
+        }
     }
 
     @ResponseBody
     @PutMapping("/attendances/{idAttendance}")
-    public ResponseEntity<Attendance> updateAttendance(
+    public ResponseEntity<Map<String, Object>> updateAttendance(
             @PathVariable int idAttendance,
             @RequestBody Attendance attendance,
             HttpSession session) {
@@ -310,22 +319,43 @@ public class AttendanceController {
                 attendanceService.getAttendanceById(idAttendance);
 
         if (currentAttendance == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "success", false,
+                    "message", "La asistencia que intenta editar no existe."
+            ));
         }
 
         if (!canAccessAttendance(session, currentAttendance)
                 || !canSaveAttendance(session, attendance)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "success", false,
+                    "message", "No tiene permisos para editar esta asistencia."
+            ));
         }
 
-        Attendance updatedAttendance =
-                attendanceService.updateAttendance(idAttendance, attendance);
+        try {
+            Attendance updatedAttendance =
+                    attendanceService.updateAttendance(idAttendance, attendance);
 
-        if (updatedAttendance == null) {
-            return ResponseEntity.notFound().build();
+            if (updatedAttendance == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "success", false,
+                        "message", "La asistencia que intenta editar no existe."
+                ));
+            }
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "idAttendance", updatedAttendance.getIdAttendance(),
+                    "message", "Asistencia actualizada correctamente."
+            ));
+
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "success", false,
+                    "message", ex.getMessage()
+            ));
         }
-
-        return ResponseEntity.ok(updatedAttendance);
     }
 
     @ResponseBody
@@ -352,22 +382,25 @@ public class AttendanceController {
 
     @ResponseBody
     @GetMapping("/attendances/clients")
-    public List<User> getClients(HttpSession session) {
+    public List<Map<String, Object>> getClients(HttpSession session) {
 
         User user = currentUser(session);
+        List<User> clients;
 
         if ("trainer".equals(user.getRole())) {
-            return attendanceService.getTrainerClients(
+            clients = attendanceService.getTrainerClients(
                     user.getUserId(),
                     getCurrentBranchId(user)
             );
+        } else if ("administrator".equals(user.getRole())) {
+            clients = userService.filterUsers(null, "client");
+        } else {
+            clients = List.of();
         }
 
-        if (!"administrator".equals(user.getRole())) {
-            return List.of();
-        }
-
-        return userService.filterUsers(null, "client");
+        return clients.stream()
+                .map(this::toUserSimpleMap)
+                .toList();
     }
 
     private List<Attendance> getAttendancesForSession(HttpSession session) {
@@ -497,6 +530,17 @@ public class AttendanceController {
                 : "Sin clase");
 
         map.put("branchName", getAttendanceBranchName(attendance));
+
+        return map;
+    }
+
+    private Map<String, Object> toUserSimpleMap(User user) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("userId", user.getUserId());
+        map.put("fullName", user.getFullName());
+        map.put("status", user.getStatus());
 
         return map;
     }
