@@ -1,10 +1,10 @@
 <div th:fragment="routineResults" xmlns:th="http://www.thymeleaf.org">
     <div class="section-heading">
-        <h2>Elige una rutina</h2>
-        <p th:text="${totalItems + ' rutinas activas'}">0 rutinas activas</p>
+        <h2 th:text="#{label.routine.choose}">Elige una rutina</h2>
+        <p th:text="${totalItems + ' ' + #messages.msg('label.routine.count')}">0 rutinas activas</p>
     </div>
 
-    <div class="empty-state" th:if="${routines == null or #lists.isEmpty(routines)}">
+    <div class="empty-state" th:if="${routines == null or #lists.isEmpty(routines)}" th:text="#{label.routine.noCatalogRoutines}">
         No hay rutinas disponibles con esos criterios.
     </div>
 
@@ -16,32 +16,32 @@
             </div>
 
             <h3 th:text="${routine.nameRoutine}">Rutina</h3>
-            <p class="muted-text" th:text="${routine.description}">Descripción</p>
+            <p class="muted-text" th:text="${routine.description}">Descripcion</p>
 
             <div class="routine-stats">
                 <div>
-                    <span>Duración</span>
-                    <strong th:text="${routine.estimatedDuration + ' min'}">0 min</strong>
+                    <span th:text="#{label.routine.duration}">Duracion</span>
+                    <strong th:text="${routine.estimatedDuration + ' ' + #messages.msg('label.common.minutes')}">0 min</strong>
                 </div>
                 <div>
-                    <span>Objetivo</span>
+                    <span th:text="#{label.routine.objective}">Objetivo</span>
                     <strong th:text="${routine.trainingObjective}">Objetivo</strong>
                 </div>
                 <div>
-                    <span>Ejercicios</span>
+                    <span th:text="#{label.routine.exercises}">Ejercicios</span>
                     <strong th:text="${routine.quantityExercises}">0</strong>
                 </div>
             </div>
 
-            <a th:href="@{/client/routines/{id}(id=${routine.idRoutine})}" class="btn-primary full-width">Ver rutina</a>
+            <a th:href="@{/client/routines/{id}(id=${routine.idRoutine})}" class="btn-primary full-width" th:text="#{button.viewRoutine}">Ver rutina</a>
         </article>
     </div>
 
-    <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginación de rutinas">
+    <nav class="client-pagination" th:if="${totalPages > 1}" th:aria-label="#{pagination.routine}">
         <a class="pagination-link"
            th:classappend="${currentPage == 0} ? ' disabled'"
            th:href="@{/client/routines(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, difficulty=${difficulty}, type=${type})}">
-            Anterior
+            <span th:text="#{button.previous}">Anterior</span>
         </a>
 
         <a class="pagination-link page-number"
@@ -55,7 +55,7 @@
         <a class="pagination-link"
            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
            th:href="@{/client/routines(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, difficulty=${difficulty}, type=${type})}">
-            Siguiente
+            <span th:text="#{button.next}">Siguiente</span>
         </a>
     </nav>
 </div>

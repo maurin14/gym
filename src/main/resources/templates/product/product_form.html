@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${title}">Formulario de producto</title>
+    <title th:text="#{${title}}">Formulario de producto</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -13,73 +13,73 @@
 
 
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${error != null and !#strings.isEmpty(error)}" class="field-error" th:text="${error}">
+    <div th:if="${error != null and !#strings.isEmpty(error)}" class="field-error" th:text="#{${error}}">
         Error
     </div>
 
     <form class="portal-form" th:action="@{${action}}" th:object="${product}" method="post" enctype="multipart/form-data" novalidate
-          th:attr="data-admin-confirm=${product.idProduct > 0 ? 'Guardar cambios?' : 'Registrar producto?'},data-admin-loading='Guardando...'">
+          th:attr="data-admin-confirm=${product.idProduct > 0 ? #messages.msg('confirm.product.update') : #messages.msg('confirm.product.create')},data-admin-loading=#{confirm.loading.save}">
         <input type="hidden" th:field="*{idProduct}">
         <input type="hidden" th:field="*{registerDate}">
         <input type="hidden" th:field="*{imagePath}">
 
-        <label for="nameProduct">Nombre del producto</label>
+        <label for="nameProduct" th:text="#{label.product.nameFull}">Nombre del producto</label>
         <input type="text"
                id="nameProduct"
                th:field="*{nameProduct}"
-               placeholder="Digite el nombre del producto">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="${fieldErrors['nameProduct']}"></small>
+               th:placeholder="#{placeholder.product.name}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="#{${fieldErrors['nameProduct']}}"></small>
 
-        <label for="category">Categor&iacute;a</label>
+        <label for="category" th:text="#{label.product.category}">Categoria</label>
         <input type="text"
                id="category"
                th:field="*{category}"
-               placeholder="Digite la categoria">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['category'] != null}" th:text="${fieldErrors['category']}"></small>
+               th:placeholder="#{placeholder.product.category}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['category'] != null}" th:text="#{${fieldErrors['category']}}"></small>
 
-        <label for="price">Precio</label>
+        <label for="price" th:text="#{label.product.price}">Precio</label>
         <input type="number"
                step="0.01"
                min="0"
                id="price"
                th:field="*{price}"
-               placeholder="Digite el precio">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['price'] != null}" th:text="${fieldErrors['price']}"></small>
+               th:placeholder="#{placeholder.product.price}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['price'] != null}" th:text="#{${fieldErrors['price']}}"></small>
 
-        <label for="quantityStock">Cantidad en stock</label>
+        <label for="quantityStock" th:text="#{label.product.quantityStock}">Cantidad en stock</label>
         <input type="number"
                min="0"
                id="quantityStock"
                th:field="*{quantityStock}"
-               placeholder="Digite la cantidad en stock">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['quantityStock'] != null}" th:text="${fieldErrors['quantityStock']}"></small>
+               th:placeholder="#{placeholder.product.stock}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['quantityStock'] != null}" th:text="#{${fieldErrors['quantityStock']}}"></small>
 
-        <label for="state">Estado</label>
+        <label for="state" th:text="#{label.product.status}">Estado</label>
         <select id="state" th:field="*{state}">
-            <option th:value="true">Activo</option>
-            <option th:value="false">Inactivo</option>
+            <option th:value="true" th:text="#{label.status.active}">Activo</option>
+            <option th:value="false" th:text="#{label.status.inactive}">Inactivo</option>
         </select>
 
-        <label for="description">Descripci&oacute;n</label>
+        <label for="description" th:text="#{label.product.description}">Descripcion</label>
         <textarea id="description"
                   th:field="*{description}"
-                  placeholder="Digite la descripción del producto"></textarea>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
+                  th:placeholder="#{placeholder.product.description}"></textarea>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="#{${fieldErrors['description']}}"></small>
 
-        <label for="imageFile">Imagen del producto</label>
+        <label for="imageFile" th:text="#{label.product.imageFull}">Imagen del producto</label>
         <input type="file" id="imageFile" name="imageFile" accept="image/*">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['imagePath'] != null}" th:text="${fieldErrors['imagePath']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['imagePath'] != null}" th:text="#{${fieldErrors['imagePath']}}"></small>
 
         <div class="image-preview-container"
              th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}">
-            <label>Vista previa actual</label>
+            <label th:text="#{label.product.currentPreview}">Vista previa actual</label>
             <img th:src="@{/{img}(img=${product.imagePath})}"
-                 alt="Vista previa de la imagen">
+                 th:alt="#{label.product.currentPreview}">
         </div>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar</button>
-            <a th:href="@{/admin/products}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary" th:text="#{button.save}">Guardar</button>
+            <a th:href="@{/admin/products}" class="btn-secondary" th:text="#{button.cancel}">Cancelar</a>
         </div>
     </form>
 </main>

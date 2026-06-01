@@ -53,7 +53,7 @@ public class TrainerRoutineController {
                     clientIds, difficultyLevel, routineType, pageable);
         }
 
-        model.addAttribute("title", "Rutinas");
+        model.addAttribute("title", "title.routine.catalog");
         model.addAttribute("routines", routinePage.getContent());
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", routinePage.getTotalPages());
@@ -84,7 +84,7 @@ public class TrainerRoutineController {
             return "redirect:/trainer/routines";
         }
 
-        model.addAttribute("title", "Detalle de la rutina");
+        model.addAttribute("title", "title.routine.detail");
         model.addAttribute("routine", routine);
         model.addAttribute("routineBasePath", "/trainer/routines");
         model.addAttribute("canManageRoutines", false);
