@@ -5,7 +5,12 @@
 package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Branch;
+import com.una.ac.cr.gym.domain.GymClass;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.service.BranchService;
+import com.una.ac.cr.gym.service.GymClassService;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,13 +37,25 @@ public class BranchController {
     @Autowired
     private BranchService branchService;
 
+    @Autowired
+    private GymClassService gymClassService;
+
+    @Autowired
+    private AttendanceService attendanceService;
+
     @GetMapping("/admin/branches")
     public String adminList(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(required = false) String name,
                             @RequestParam(required = false) String active,
                             Model model) {
 
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
+            currentPage = branches.getTotalPages() - 1;
+            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        }
 
         model.addAttribute("branches", branches);
         model.addAttribute("name", name);
@@ -53,7 +70,14 @@ public class BranchController {
                                 @RequestParam(required = false) String active,
                                 Model model) {
 
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(page, 5));
+        int currentPage = Math.max(page, 0);
+        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+
+        if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
+            currentPage = branches.getTotalPages() - 1;
+            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        }
+
         model.addAttribute("branches", branches);
 
         return "branches/admin/tableBranch :: tableBranch";
@@ -70,6 +94,10 @@ public class BranchController {
                              Model model) {
 
         Map<String, String> fieldErrors = branchService.validateFields(branch);
+        if (branch.getId() > 0 && branchService.getById(branch.getId()) == null) {
+            fieldErrors.put("form", "La sucursal que intenta editar no existe.");
+        }
+
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("branch", branch);
             model.addAttribute("fieldErrors", fieldErrors);
@@ -128,7 +156,7 @@ public class BranchController {
         return "redirect:/admin/branches";
     }
 
-    @GetMapping("/branches")
+    @GetMapping({"/branches", "/client/branches"})
     public String userList(@RequestParam(defaultValue = "0") int page,
                            @RequestParam(required = false) String name,
                            Model model) {
@@ -141,15 +169,62 @@ public class BranchController {
         return "branches/user/listBranch";
     }
 
-    @GetMapping("/branches/{id}")
+    @GetMapping({"/branches/{id}", "/client/branches/{id}"})
     public String userDetail(@PathVariable int id, Model model) {
         Branch branch = branchService.getById(id);
 
         if (branch == null || !branch.isActive()) {
-            return "redirect:/branches";
+            return "redirect:/client/branches";
         }
 
         model.addAttribute("branch", branch);
+        model.addAttribute("classes", gymClassService.getActiveClassesByBranch(id));
         return "branches/user/detailBranch";
+    }
+
+    @PostMapping("/client/branches/{branchId}/classes/{classId}/enroll")
+    public String enrollInBranchClass(@PathVariable int branchId,
+                                      @PathVariable int classId,
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        GymClass gymClass = gymClassService.getClassById(classId);
+
+        if (gymClass == null) {
+            redirectAttributes.addFlashAttribute("messageError", "No se pudo completar la inscripcion.");
+            return "redirect:/client/branches/" + branchId;
+        }
+
+        if (!classBelongsToBranch(gymClass, branchId)) {
+            redirectAttributes.addFlashAttribute("messageError", "La clase no pertenece a esta sucursal.");
+            return "redirect:/client/branches/" + branchId;
+        }
+
+        String result = attendanceService.enrollClientInClass(user, classId);
+
+        if (result.isEmpty()) {
+            redirectAttributes.addFlashAttribute("messageSuccess", "Inscripcion realizada.");
+        } else {
+            redirectAttributes.addFlashAttribute("messageError", result);
+        }
+
+        return "redirect:/client/branches/" + branchId;
+    }
+
+    private boolean classBelongsToBranch(GymClass gymClass, int branchId) {
+        if (gymClass.getBranch() != null && gymClass.getBranch().getId() == branchId) {
+            return true;
+        }
+
+        return gymClass.getBranch() == null
+                && gymClass.getTrainer() != null
+                && gymClass.getTrainer().getBranch() != null
+                && gymClass.getTrainer().getBranch().getId() == branchId;
     }
 }

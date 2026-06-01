@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
     loadClasses();
 });
 
+let clientAttendanceSaving = false;
+
 function loadClasses() {
 
     fetch("/classes")
@@ -17,7 +19,7 @@ function loadClasses() {
 
                 classSelect.innerHTML += `
                     <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
-                        ${gymClass.classType} - ${gymClass.classDate}
+                        ${gymClass.classType} - ${gymClass.branchName || "Sin sucursal"} - ${gymClass.classDate}
                     </option>
                 `;
             });
@@ -44,28 +46,24 @@ function setAttendanceDate() {
 }
 
 function saveClientAttendance() {
+    if (clientAttendanceSaving) {
+        return;
+    }
 
     const classId = document.getElementById("classId").value;
     const attendanceDate = document.getElementById("attendanceDate").value;
     const observation = document.getElementById("observation").value.trim();
+    clearClientAttendanceErrors();
 
     if (classId === "") {
-        Swal.fire({
-            icon: "warning",
-            title: "Seleccione una clase",
-            text: "Debe seleccionar una clase para registrar la asistencia.",
-            confirmButtonColor: "#d97818"
-        });
+        showClientAttendanceError("classId", "Seleccione una clase.");
+        showSystemError("Revise los datos.");
         return;
     }
 
     if (attendanceDate === "") {
-        Swal.fire({
-            icon: "warning",
-            title: "Fecha requerida",
-            text: "La fecha de asistencia no puede estar vacia.",
-            confirmButtonColor: "#d97818"
-        });
+        showClientAttendanceError("attendanceDate", "La fecha es obligatoria.");
+        showSystemError("Revise los datos.");
         return;
     }
 
@@ -78,20 +76,56 @@ function saveClientAttendance() {
         observation: observation
     };
 
-    fetch("/attendances", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(attendance)
-    }).then(() => {
-        Swal.fire({
-            icon: "success",
-            title: "Asistencia registrada",
-            text: "Tu asistencia se registro correctamente.",
-            confirmButtonColor: "#d97818"
-        }).then(() => {
-            window.location.href = "/client/attendances";
+    confirmSystemAction({
+        title: "Guardar cambios?",
+        confirmText: "Guardar"
+    }).then(result => {
+        if (!result.isConfirmed || clientAttendanceSaving) {
+            return;
+        }
+
+        clientAttendanceSaving = true;
+        showSystemLoading("Procesando...");
+
+        fetch("/attendances", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(attendance)
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo guardar.");
+            }
+
+            showSystemSuccess("Guardado.").then(() => {
+                window.location.href = "/client/attendances";
+            });
+        }).catch(error => {
+            clientAttendanceSaving = false;
+            showSystemError(error.message || "No se pudo guardar.");
         });
     });
+}
+
+function clearClientAttendanceErrors() {
+    document.querySelectorAll(".field-error").forEach(error => {
+        error.textContent = "";
+    });
+    document.querySelectorAll(".invalid").forEach(field => {
+        field.classList.remove("invalid");
+    });
+}
+
+function showClientAttendanceError(field, message) {
+    const error = document.getElementById(field + "Error");
+    const fieldElement = document.getElementById(field);
+
+    if (error) {
+        error.textContent = message;
+    }
+
+    if (fieldElement) {
+        fieldElement.classList.add("invalid");
+    }
 }

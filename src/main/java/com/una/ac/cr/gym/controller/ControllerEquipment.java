@@ -32,7 +32,7 @@ public class ControllerEquipment {
     @GetMapping("/admin/equipment")
     public String adminEquipment(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) Integer branchId,
             @RequestParam(required = false) Double min,
             @RequestParam(required = false) Double max,
@@ -44,13 +44,20 @@ public class ControllerEquipment {
             return redirect;
         }
 
-        Page<Equipment> data = getEquipmentPage(page, size, branchId, min, max);
+        int pageSize = 5;
+        int currentPage = Math.max(page, 0);
+        Page<Equipment> data = getEquipmentPage(currentPage, pageSize, branchId, min, max);
+
+        if (currentPage >= data.getTotalPages() && data.getTotalPages() > 0) {
+            currentPage = data.getTotalPages() - 1;
+            data = getEquipmentPage(currentPage, pageSize, branchId, min, max);
+        }
 
         model.addAttribute("equipment", data.getContent());
         model.addAttribute("branches", branchService.getAll());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", data.getTotalPages());
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", pageSize);
         model.addAttribute("selectedBranchId", branchId);
         model.addAttribute("minCost", min);
         model.addAttribute("maxCost", max);
@@ -108,6 +115,10 @@ public class ControllerEquipment {
         }
 
         Map<String, String> fieldErrors = equipmentService.validate(equipment);
+
+        if (equipment.getId() > 0 && equipmentService.getById(equipment.getId()) == null) {
+            fieldErrors.put("form", "El equipamiento que intenta editar no existe.");
+        }
 
         if (!fieldErrors.isEmpty()) {
             if (equipment.getBranch() == null) {

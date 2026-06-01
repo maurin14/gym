@@ -21,11 +21,9 @@ public class ReportController {
 
     @Autowired
     private ReportService rService;
-    
-    private Report report;
 
     @GetMapping({"", "/"})
-    public String index(@RequestParam(defaultValue = "1") int page,
+    public String index(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(required = false) String reportType,
                         @RequestParam(required = false) String reportStatus,
                         Model model,
@@ -39,23 +37,17 @@ public class ReportController {
             return "redirect:/";
         }
 
-        if((reportType != null && !reportType.trim().isEmpty())
-                || (reportStatus != null && !reportStatus.trim().isEmpty())){
+        int size = 5;
+        int currentPage = Math.max(page, 0);
+        Page<Report> reportPage = rService.filterReportsByPage(reportType, reportStatus, currentPage, size);
 
-            model.addAttribute("reports", rService.filterReports(reportType, reportStatus));
-            model.addAttribute("reportType", reportType);
-            model.addAttribute("reportStatus", reportStatus);
-            model.addAttribute("currentPage", 1);
-            model.addAttribute("totalPages", 1);
-
-            return "report/listReport";
+        if (currentPage >= reportPage.getTotalPages() && reportPage.getTotalPages() > 0) {
+            currentPage = reportPage.getTotalPages() - 1;
+            reportPage = rService.filterReportsByPage(reportType, reportStatus, currentPage, size);
         }
 
-        int size = 5;
-        Page<Report> reportPage = rService.getReportsByPage(page, size);
-
         model.addAttribute("reports", reportPage.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", reportPage.getTotalPages());
         model.addAttribute("reportType", reportType);
         model.addAttribute("reportStatus", reportStatus);
@@ -87,6 +79,11 @@ public class ReportController {
         }
 
         Map<String, String> fieldErrors = rService.validateFields(reportNew);
+        boolean isNew = reportNew.getReportId() == null;
+
+        if (!isNew && rService.getReportById(reportNew.getReportId()) == null) {
+            fieldErrors.put("form", "El reporte que intenta editar no existe.");
+        }
 
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("reportNew", reportNew);
@@ -95,7 +92,6 @@ public class ReportController {
             return "report/formReport";
         }
 
-        boolean isNew = reportNew.getReportId() == null;
         rService.save(reportNew);
         boolean saved = true;
 

@@ -25,6 +25,7 @@
 
 html {
     scroll-behavior: smooth;
+    min-height: 100%;
 }
 
 body {
@@ -32,6 +33,19 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     color: var(--text);
     background: var(--light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+body > footer,
+body > .client-footer {
+    flex-shrink: 0;
 }
 
 body.menu-open {
@@ -1277,6 +1291,10 @@ body.menu-open .menu-backdrop {
     padding: 24px;
 }
 
+.client-table-card {
+    overflow-x: auto;
+}
+
 .table-heading {
     margin-bottom: 20px;
 }
@@ -1301,6 +1319,9 @@ body.menu-open .menu-backdrop {
     border-bottom: 1px solid var(--border);
     text-align: left;
     vertical-align: middle;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
 
 .client-table th {

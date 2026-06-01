@@ -9,17 +9,10 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">RUTINA</span>
-        <h1 th:text="${title}">Detalle rutina</h1>
-        <p class="hero-text">Informaci&oacute;n general de la rutina seleccionada.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <div class="breadcrumb">
-        <a th:href="@{/admin/routines}">Rutinas</a>
+        <a th:href="${routineBasePath}">Rutinas</a>
         <span>/</span>
         <span>Detalle</span>
     </div>
@@ -59,8 +52,8 @@
             </article>
 
             <div class="buttons">
-                <a th:href="@{/admin/routines/edit/{id}(id=${routine.idRoutine})}" class="btn-primary">Editar</a>
-                <a th:href="@{/admin/routines}" class="btn-secondary">Volver</a>
+                <a th:if="${canManageRoutines}" th:href="${routineBasePath + '/edit/' + routine.idRoutine}" class="btn-primary">Editar</a>
+                <a th:href="${routineBasePath}" class="btn-secondary">Volver</a>
             </div>
         </div>
     </section>

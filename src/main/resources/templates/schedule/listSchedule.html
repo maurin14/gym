@@ -39,15 +39,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
 
     <div id="tableContent" th:fragment="tableContent">
-        <table border="1">
+        <table class="portal-table admin-table">
             <tr>
-                <th>Día</th>
-                <th>Inicio</th>
-                <th>Fin</th>
-                <th>Tipo</th>
-                <th>Activo</th>
-                <th>Sucursal</th>
-                <th th:if="${isAdmin}">Acciones</th>
+                <th th:text="#{label.gym.day}"></th>
+                <th th:text="#{label.gym.hour}"></th>
+                <th th:text="#{label.gym.end}"></th>
+                <th th:texy="#{label.gym.type}"></th>
+                <th th:text="label.gym.stage"></th>
+                <th th:text="#{label.gym.branch}"></th>
+                <th th:if="${isAdmin}" th:text="#{label.gym.actions}"></th>
             </tr>
 
             <tr th:each="s : ${schedules}">
@@ -60,13 +60,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <td th:text="${s.branch?.name} ?: '—'"></td>
 
                 <td>
-                   <button class="edit-btn"
+                   <button class="edit-btn" th:text="button.edit"
                                 th:attr="data-id=${s.id}" th:if="${isAdmin}"
                                 onclick="loadEditSchedule(this); return false;">
                             Editar
                         </button>
 
-                        <button class="delete-btn"
+                        <button class="delete-btn" th:text="button.delete"
                                 th:attr="data-id=${s.id}" th:if="${isAdmin}"
                                 onclick="confirmDeleteSchedule(this); return false;">
                             Eliminar

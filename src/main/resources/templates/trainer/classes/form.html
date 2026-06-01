@@ -4,21 +4,17 @@
     <meta charset="UTF-8">
     <title>Formulario de clase</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">CLASE</span>
-        <h1 id="formTitle">Agregar clase</h1>
-        <p class="hero-text">Completa la información de la clase.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
+    <h1 class="page-title" id="formTitle">Agregar clase</h1>
     <input type="hidden" id="idClass">
     <small id="formError" class="field-error"></small>
 
@@ -49,6 +45,12 @@
         </select>
         <small id="trainerIdError" class="field-error"></small>
 
+        <label>Sucursal</label>
+        <select id="branchId">
+            <option value="">Seleccione una sucursal</option>
+        </select>
+        <small id="branchIdError" class="field-error"></small>
+
         <label>Cantidad inscritos</label>
         <input type="number" id="enrolledCount" value="0" min="0" readonly>
         <small id="enrolledCountError" class="field-error"></small>
@@ -67,13 +69,16 @@
 
         <div class="buttons">
             <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
-            <a class="btn-secondary" th:href="@{/admin/classes}">Volver</a>
+            <a class="btn-secondary" th:href="${classBasePath}">Volver</a>
         </div>
     </form>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+</script>
 <script th:src="@{/js/trainer/classes/form.js}"></script>
 
 </body>

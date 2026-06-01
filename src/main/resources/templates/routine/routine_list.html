@@ -5,22 +5,19 @@
     <title th:text="${title}">Lista de rutinas</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('routines')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTI&Oacute;N ADMINISTRATIVA</span>
-        <h1>Administraci&oacute;n de rutinas</h1>
-        <p class="hero-text">Consulta, registra, modifica y cambia el estado de las rutinas del gimnasio.</p>
+
+<main class="container portal-card admin-page-card wide-table-card">
+    <div class="buttons admin-action-row" th:if="${canManageRoutines}">
+        <a th:href="${routineBasePath + '/form'}" class="btn-primary">Nueva rutina</a>
     </div>
-</section>
 
-<main class="container portal-card admin-page-card">
-
-    <form class="admin-filter-row portal-filters" method="get" th:action="@{/admin/routines}">
+    <form class="admin-filter-row portal-filters" method="get" th:action="${routineBasePath}">
         <select name="difficultyLevel">
             <option value="">Todas las dificultades</option>
             <option value="Principiante" th:selected="${difficultyLevel == 'Principiante'}">Principiante</option>
@@ -36,10 +33,10 @@
         </select>
 
         <button type="submit" class="btn-primary">Buscar</button>
-        <a th:href="@{/admin/routines}" class="btn-secondary">Limpiar filtros</a>
+        <a th:href="${routineBasePath}" class="btn-secondary">Limpiar filtros</a>
     </form>
 
-    <table class="portal-table">
+    <table class="portal-table admin-table">
         <thead>
         <tr>
             <th>Nombre</th>
@@ -70,38 +67,34 @@
 
             <td>
                 <div class="actions">
-                    <a class="btn-secondary" th:href="@{/admin/routines/details/{id}(id=${routine.idRoutine})}">Ver</a>
-                    <a class="btn-primary" th:href="@{/admin/routines/edit/{id}(id=${routine.idRoutine})}">Editar</a>
-                    <a class="btn-danger" th:href="@{/admin/routines/delete/{id}(id=${routine.idRoutine})}" data-delete-link>Eliminar</a>
+                    <a class="btn-secondary" th:href="${routineBasePath + '/details/' + routine.idRoutine}">Ver</a>
+                    <a th:if="${canManageRoutines}" class="btn-primary" th:href="${routineBasePath + '/edit/' + routine.idRoutine}">Editar</a>
+                    <a th:if="${canManageRoutines}" class="btn-danger" th:href="${routineBasePath + '/delete/' + routine.idRoutine}" data-delete-link>Eliminar</a>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${totalPages > 1}">
+    <nav class="pagination" aria-label="Paginacion de rutinas"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary"
-           th:if="${currentPage > 0}"
-           th:href="@{/admin/routines(page=${currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{${routineBasePath}(page=${currentPage == 0 ? currentPage : currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
             Anterior
         </a>
 
-        <button type="button"
-                class="page-active"
-                disabled
-                th:text="${'Página ' + (currentPage + 1) + ' de ' + totalPages}">
-        </button>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{${routineBasePath}(page=${i}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
         <a class="btn-secondary"
-           th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/admin/routines(page=${currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{${routineBasePath}(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
             Siguiente
         </a>
-    </div>
-
-    <div class="buttons">
-        <a th:href="@{/admin/routines/form}" class="btn-primary">Nueva rutina</a>
-    </div>
+    </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
@@ -111,28 +104,18 @@
     const errorMessage = /*[[${errorMessage}]]*/ null;
 
     if (successMessage) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Operacion realizada',
-            text: successMessage,
-            confirmButtonText: 'Aceptar'
-        });
+        showAdminSuccess(successMessage);
     }
 
     if (errorMessage) {
-        Swal.fire({
-            icon: 'error',
-            title: 'No se pudo eliminar',
-            text: errorMessage,
-            confirmButtonText: 'Aceptar'
-        });
+        showAdminError('No se pudo eliminar', errorMessage);
     }
 
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
 
-            Swal.fire({
+            confirmAdminAction({
                 icon: 'warning',
                 title: 'Desea eliminar este elemento?',
                 text: 'Esta acción no se puede deshacer.',
@@ -142,6 +125,7 @@
                 confirmButtonColor: '#dc2626'
             }).then(function (result) {
                 if (result.isConfirmed) {
+                    showAdminLoading('Eliminando...');
                     window.location.href = link.href;
                 }
             });

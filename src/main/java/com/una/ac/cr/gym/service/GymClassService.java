@@ -1,7 +1,10 @@
 package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.GymClass;
+import com.una.ac.cr.gym.domain.User;
+import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.GymClassRepository;
+import com.una.ac.cr.gym.repository.UserRepository;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,30 +17,96 @@ import org.springframework.stereotype.Service;
 public class GymClassService {
 
     private final GymClassRepository gymClassRepository;
+    private final BranchRepository branchRepository;
+    private final UserRepository userRepository;
 
-    public GymClassService(GymClassRepository gymClassRepository) {
+    public GymClassService(GymClassRepository gymClassRepository,
+            BranchRepository branchRepository,
+            UserRepository userRepository) {
         this.gymClassRepository = gymClassRepository;
+        this.branchRepository = branchRepository;
+        this.userRepository = userRepository;
     }
 
     public List<GymClass> getAllClasses() {
-        return gymClassRepository.findAll();
+        return gymClassRepository.findAllWithRelations(PageRequest.of(0, 100)).getContent();
+    }
+
+    public List<GymClass> getActiveClasses() {
+        return gymClassRepository.findByStatusTrue(PageRequest.of(0, 100)).getContent();
+    }
+
+    public List<GymClass> getActiveClassesByBranch(int branchId) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(branchId, PageRequest.of(0, 100)).getContent();
+    }
+
+    public Page<GymClass> getClassesByBranchPage(Integer branchId, int page, int size) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(
+                branchId,
+                PageRequest.of(page, size)
+        );
+    }
+
+    public Page<GymClass> getActiveClassesByBranchPage(Integer branchId, int page, int size) {
+        return gymClassRepository.findActiveByBranchOrTrainerBranch(
+                branchId,
+                PageRequest.of(page, size)
+        );
+    }
+
+    public List<GymClass> getClassesByTrainer(Integer trainerId) {
+        return gymClassRepository.findByTrainer_UserId(trainerId, PageRequest.of(0, 100)).getContent();
+    }
+
+    public List<GymClass> getClassesByTrainerAndBranch(Integer trainerId, Integer branchId) {
+        if (branchId == null || branchId <= 0) {
+            return List.of();
+        }
+
+        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(0, 100)).getContent();
     }
 
     public Page<GymClass> getClassesPage(int page, int size) {
-        return gymClassRepository.findAll(PageRequest.of(page, size));
+        return gymClassRepository.findAllWithRelations(PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getActiveClassesPage(int page, int size) {
+        return gymClassRepository.findByStatusTrue(PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getTrainerClassesPage(Integer trainerId, int page, int size) {
+        return gymClassRepository.findByTrainer_UserId(trainerId, PageRequest.of(page, size));
+    }
+
+    public Page<GymClass> getTrainerClassesPage(Integer trainerId, Integer branchId, int page, int size) {
+        if (branchId == null || branchId <= 0) {
+            return Page.empty(PageRequest.of(page, size));
+        }
+
+        return gymClassRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(page, size));
+    }
+
+    public boolean classBelongsToTrainerAndBranch(int classId, Integer trainerId, Integer branchId) {
+        if (branchId == null || branchId <= 0) {
+            return false;
+        }
+
+        return gymClassRepository.existsByIdClassAndTrainerAndBranch(classId, trainerId, branchId);
     }
 
     public GymClass getClassById(int idClass) {
-        return gymClassRepository.findById(idClass).orElse(null);
+        return gymClassRepository.findByIdWithRelations(idClass).orElse(null);
     }
 
     public GymClass saveClass(GymClass gymClass) {
         Map<String, String> errors = validateFields(gymClass);
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(errors.values().iterator().next());
         }
 
         calculateDuration(gymClass);
+        normalizeBranch(gymClass);
 
         gymClass.setStatus(true);
         gymClass.setEnrolledCount(0);
@@ -49,21 +118,22 @@ public class GymClassService {
 
         GymClass currentClass = gymClassRepository.findById(idClass).orElse(null);
 
+        if (currentClass == null) {
+            throw new IllegalArgumentException("La clase que intenta editar no existe.");
+        }
+
         gymClass.setIdClass(idClass);
 
         Map<String, String> errors = validateFields(gymClass);
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(errors.values().iterator().next());
         }
 
         calculateDuration(gymClass);
+        normalizeBranch(gymClass);
 
-        if (currentClass != null) {
-            gymClass.setEnrolledCount(currentClass.getEnrolledCount());
-        } else {
-            gymClass.setEnrolledCount(0);
-        }
-
+        gymClass.setEnrolledCount(currentClass.getEnrolledCount());
         gymClass.setStatus(true);
 
         return gymClassRepository.save(gymClass);
@@ -97,7 +167,8 @@ public class GymClassService {
             errors.put("endTime", "Este campo es obligatorio.");
         }
 
-        if (gymClass.getStartTime() != null && gymClass.getEndTime() != null
+        if (gymClass.getStartTime() != null
+                && gymClass.getEndTime() != null
                 && !gymClass.getEndTime().isAfter(gymClass.getStartTime())) {
             errors.put("endTime", "La hora final debe ser mayor que la hora de inicio.");
         }
@@ -106,14 +177,38 @@ public class GymClassService {
             errors.put("maxCapacity", "Ingrese un valor válido.");
         }
 
-        if (gymClass.getTrainer() == null || gymClass.getTrainer().getUserId() == null
+        if (gymClass.getBranch() == null || gymClass.getBranch().getId() <= 0) {
+            errors.put("branchId", "Seleccione una sucursal.");
+        } else if (branchRepository.findById(gymClass.getBranch().getId()).isEmpty()) {
+            errors.put("branchId", "La sucursal seleccionada no existe.");
+        }
+
+        if (gymClass.getTrainer() == null
+                || gymClass.getTrainer().getUserId() == null
                 || gymClass.getTrainer().getUserId() <= 0) {
             errors.put("trainerId", "Seleccione una opción.");
         }
 
+        if (gymClass.getTrainer() != null
+                && gymClass.getTrainer().getUserId() != null
+                && gymClass.getTrainer().getUserId() > 0
+                && gymClass.getBranch() != null
+                && gymClass.getBranch().getId() > 0) {
+
+            User trainer = userRepository.findById(gymClass.getTrainer().getUserId()).orElse(null);
+
+            if (trainer == null || !"trainer".equals(trainer.getRole())) {
+                errors.put("trainerId", "Seleccione un entrenador valido.");
+            } else if (trainer.getBranch() != null
+                    && trainer.getBranch().getId() != gymClass.getBranch().getId()) {
+                errors.put("trainerId", "El entrenador pertenece a otra sucursal.");
+            }
+        }
+
         if (gymClass.getEnrolledCount() < 0) {
             errors.put("enrolledCount", "Ingrese un valor válido.");
-        } else if (gymClass.getMaxCapacity() > 0 && gymClass.getEnrolledCount() > gymClass.getMaxCapacity()) {
+        } else if (gymClass.getMaxCapacity() > 0
+                && gymClass.getEnrolledCount() > gymClass.getMaxCapacity()) {
             errors.put("enrolledCount", "La cantidad de inscritos no puede superar la capacidad.");
         }
 
@@ -135,12 +230,20 @@ public class GymClassService {
     }
 
     private void calculateDuration(GymClass gymClass) {
-
         int duration = (int) Duration.between(
                 gymClass.getStartTime(),
                 gymClass.getEndTime()
         ).toMinutes();
 
         gymClass.setDuration(duration);
+    }
+
+    private void normalizeBranch(GymClass gymClass) {
+        if (gymClass.getBranch() == null || gymClass.getBranch().getId() <= 0) {
+            gymClass.setBranch(null);
+            return;
+        }
+
+        gymClass.setBranch(branchRepository.findById(gymClass.getBranch().getId()).orElse(null));
     }
 }

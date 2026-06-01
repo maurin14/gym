@@ -5,27 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">GESTIÓN ADMINISTRATIVA</span>
-        <h1>Administración de usuarios</h1>
-        <p class="hero-text">
-            Administra usuarios registrados, roles, estados y datos principales desde el mismo panel visual.
-        </p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/users/add}" class="btn-primary">Agregar usuario</a>
+        <a th:href="@{/users/add}" class="btn-primary">Nuevo usuario</a>
     </div>
 
     <form th:action="@{/users}" method="get" class="admin-filter-row portal-filters">
@@ -42,13 +35,14 @@
         <a th:href="@{/users}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table class="portal-table">
+    <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Cédula</th>
             <th>Usuario</th>
             <th>Rol</th>
+            <th>Sucursal</th>
             <th>Estado</th>
             <th>Registro</th>
             <th>Acciones</th>
@@ -67,6 +61,8 @@
                 <span th:if="${u.role == 'client'}" class="badge badge-inactive">Cliente</span>
             </td>
 
+            <td th:text="${u.role == 'trainer' ? (u.branch != null ? u.branch.name : 'Sin sucursal asignada') : '-'}"></td>
+
             <td>
                 <span th:if="${u.status == 'active'}" class="status-active">Activo</span>
                 <span th:if="${u.status == 'inactive'}" class="status-inactive">Inactivo</span>
@@ -82,7 +78,8 @@
                     <a th:if="${session.user.role == 'administrator'}"
                        th:href="@{/users/delete(id=${u.userId})}"
                        class="btn-danger"
-                       onclick="return confirm('Desea eliminar este usuario?')">
+                       data-delete-link
+                       data-delete-title="Eliminar usuario?">
                         Eliminar
                     </a>
                 </div>
@@ -90,29 +87,50 @@
         </tr>
 
         <tr th:if="${#lists.isEmpty(users)}">
-            <td colspan="7" class="empty-message">No hay usuarios registrados.</td>
+            <td colspan="8" class="empty-message">No hay usuarios registrados.</td>
         </tr>
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 1}"
-           th:href="@{/users(page=${currentPage - 1}, fullName=${fullName}, role=${role})}">
+    <nav class="pagination" aria-label="Paginacion de usuarios"
+         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage == 0} ? ' disabled'"
+           th:href="@{/users(page=${currentPage == 0 ? currentPage : currentPage - 1}, fullName=${fullName}, role=${role})}">
             Anterior
         </a>
 
-        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <a th:href="@{/users(page=${i}, fullName=${fullName}, role=${role})}"
-               th:text="${i}"
-               th:classappend="${i == currentPage} ? 'page-active'"></a>
-        </span>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:href="@{/users(page=${i}, fullName=${fullName}, role=${role})}"
+           th:text="${i + 1}"
+           th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
-        <a th:if="${currentPage < totalPages}"
-           th:href="@{/users(page=${currentPage + 1}, fullName=${fullName}, role=${role})}">
+        <a class="btn-secondary"
+           th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+           th:href="@{/users(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, fullName=${fullName}, role=${role})}">
             Siguiente
         </a>
-    </div>
+    </nav>
 </main>
+
+<script>
+    document.querySelectorAll('[data-delete-link]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            confirmAdminAction({
+                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                text: '',
+                confirmText: 'Eliminar',
+                icon: 'warning'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showAdminLoading('Procesando...');
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 

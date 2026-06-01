@@ -4,7 +4,7 @@
 
 <div th:fragment="tableBranch">
 
-    <table class="portal-table">
+    <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
             <th>Imagen</th>
@@ -66,33 +66,28 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${branches.totalPages > 1}">
+    <nav class="pagination" aria-label="Paginacion de sucursales"
+         th:with="visualTotalPages=${branches.totalPages > 0 ? branches.totalPages : 1}">
 
-        <button type="button"
-                class="btn-secondary"
-                th:if="${branches.hasPrevious()}"
-                th:data-page="${branches.number - 1}"
-                onclick="changeBranchPage(this)">
+        <a class="btn-secondary"
+           th:classappend="${!branches.hasPrevious()} ? ' disabled'"
+           th:href="@{/admin/branches(page=${branches.hasPrevious() ? branches.number - 1 : branches.number}, name=${name}, active=${active})}">
             Anterior
-        </button>
+        </a>
 
-        <button type="button"
-                th:each="i : ${#numbers.sequence(0, branches.totalPages - 1)}"
-                th:text="${i + 1}"
-                th:data-page="${i}"
-                th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}"
-                onclick="changeBranchPage(this)">
-        </button>
+        <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
+           th:text="${i + 1}"
+           th:href="@{/admin/branches(page=${i}, name=${name}, active=${active})}"
+           th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}">
+        </a>
 
-        <button type="button"
-                class="btn-secondary"
-                th:if="${branches.hasNext()}"
-                th:data-page="${branches.number + 1}"
-                onclick="changeBranchPage(this)">
+        <a class="btn-secondary"
+           th:classappend="${!branches.hasNext()} ? ' disabled'"
+           th:href="@{/admin/branches(page=${branches.hasNext() ? branches.number + 1 : branches.number}, name=${name}, active=${active})}">
             Siguiente
-        </button>
+        </a>
 
-    </div>
+    </nav>
 
 </div>
 

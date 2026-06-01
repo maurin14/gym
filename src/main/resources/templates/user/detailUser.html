@@ -14,13 +14,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">USUARIO</span>
-        <h1>Detalle de usuario</h1>
-        <p class="hero-text">Información completa del usuario registrado en el sistema.</p>
-    </div>
-</section>
 
 <main class="container portal-card admin-page-card">
     <section class="detail-info">
@@ -29,6 +22,11 @@
             <p>
                 <strong>Nombre:</strong>
                 <span th:text="${userView.fullName}"></span>
+            </p>
+
+            <p th:if="${userView.role == 'trainer'}">
+                <strong>Sucursal:</strong>
+                <span th:text="${userView.branch != null ? userView.branch.name : 'Sin sucursal asignada'}"></span>
             </p>
 
             <p>

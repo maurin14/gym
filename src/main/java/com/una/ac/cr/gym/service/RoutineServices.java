@@ -159,4 +159,33 @@ public class RoutineServices {
                 pageable
         );
     }
+
+    public Page<Routine> getRoutinesAssignedToClients(List<Integer> clientIds,
+            String difficultyLevel, String routineType, Pageable pageable) {
+
+        if (clientIds == null || clientIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        if (difficultyLevel == null) {
+            difficultyLevel = "";
+        }
+
+        if (routineType == null) {
+            routineType = "";
+        }
+
+        return routineRepository.findRoutinesAssignedToClients(
+                clientIds,
+                difficultyLevel.trim(),
+                routineType.trim(),
+                pageable
+        );
+    }
+
+    public boolean routineBelongsToClients(int routineId, List<Integer> clientIds) {
+        return clientIds != null
+                && !clientIds.isEmpty()
+                && routineRepository.existsAssignedToClients(routineId, clientIds);
+    }
 }

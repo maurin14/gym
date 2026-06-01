@@ -3,46 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Formulario de horario</title>
+    <title th:text="#{schedule.form.title} "></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('schedules')}"></div>
 
-<section class="hero-section portal-head">
-    <div class="hero-overlay">
-        <span class="hero-badge">HORARIO</span>
-        <h1 th:text="${title}">Formulario de horario</h1>
-        <p class="hero-text">Complete la informacion administrativa del horario.</p>
-    </div>
-</section>
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
-    <form class="portal-form" th:action="@{/admin/schedules/save}" th:object="${schedule}" method="post" novalidate>
+    <form class="portal-form" th:action="@{/admin/schedules/save}" th:object="${schedule}" method="post" novalidate
+        th:data-admin-confirm="${schedule.id > 0 ? #messages.msg('message.schedule.update') : #messages.msg('message.schedule.create')}"
+        th:data-admin-loading="#{message.saving}">
         <input type="hidden" th:field="*{id}">
 
-        <label>Sucursal</label>
+        <label th:text="#{label.gym.branch}"></label>
         <select th:field="*{branch.id}">
-            <option value="0">Seleccione una sucursal</option>
+            <option value="0" th:text="#{select.branch}"> </option>
             <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}">Sucursal</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="${fieldErrors['branch.id']}"></small>
 
-        <label>Dia de la semana</label>
+        <label  th:text="#{label.gym.day}"></label>
         <select th:field="*{dayOfWeek}">
-            <option value="">Seleccione un dia</option>
-            <option th:each="day : ${days}" th:value="${day}" th:text="${day}">Dia</option>
+            <option value="" th:text="#{select.day}"></option>
+            
+            <option th:each="day : ${days}" th:value="${day}" th:text="#{'day.' + ${day.name().toLowerCase()}}"></option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['dayOfWeek'] != null}" th:text="${fieldErrors['dayOfWeek']}"></small>
 
-        <label>Hora de inicio</label>
+        <label th:text="#{label.gym.hour}"></label>
         <input type="time" th:field="*{startTime}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['startTime'] != null}" th:text="${fieldErrors['startTime']}"></small>
 
-        <label>Hora de fin</label>
+        <label th:text="#{label.gym.end}"></label>
         <input type="time" th:field="*{endTime}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['endTime'] != null}" th:text="${fieldErrors['endTime']}"></small>
 
@@ -50,15 +48,15 @@
         <input type="text" th:field="*{scheduleType}" maxlength="100" placeholder="Ejemplo: Atencion general, Yoga, CrossFit">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['scheduleType'] != null}" th:text="${fieldErrors['scheduleType']}"></small>
 
-        <label>Estado</label>
+        <label th:text="#{label.gym.stage}"></label>
         <select th:field="*{active}">
-            <option th:value="true">Activo</option>
-            <option th:value="false">Inactivo</option>
+           <option th:value="true" th:text="#{status.active}"></option>
+           <option th:value="false" th:text="#{status.inactive}"></option>
         </select>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar</button>
-            <a th:href="@{/admin/schedules}" class="btn-secondary">Cancelar</a>
+           <button type="submit" class="btn-primary" th:text="#{button.save}"></button>
+          <a th:href="@{/admin/schedules}" class="btn-secondary" th:text="#{button.cancel}"></a>
         </div>
     </form>
 </main>

@@ -55,7 +55,8 @@ public class ProductController {
             maxPrice = maxProductPrice;
         }
 
-        Pageable pageable = PageRequest.of(page, 5);
+        int currentPage = Math.max(page, 0);
+        Pageable pageable = PageRequest.of(currentPage, 5);
 
         Page<Product> productPage = productService.getProductsFiltered(
                 category,
@@ -64,10 +65,21 @@ public class ProductController {
                 pageable
         );
 
+        if (currentPage >= productPage.getTotalPages() && productPage.getTotalPages() > 0) {
+            currentPage = productPage.getTotalPages() - 1;
+            pageable = PageRequest.of(currentPage, 5);
+            productPage = productService.getProductsFiltered(
+                    category,
+                    minPrice,
+                    maxPrice,
+                    pageable
+            );
+        }
+
         model.addAttribute("title", "Lista de productos");
         model.addAttribute("products", productPage.getContent());
 
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", productPage.getTotalPages());
 
         model.addAttribute("category", category);
@@ -75,6 +87,8 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
 
         model.addAttribute("categories", productService.getCategories());
+        model.addAttribute("minProductPrice", minProductPrice);
+        model.addAttribute("maxProductPrice", maxProductPrice);
 
         return "product/product_list";
     }

@@ -2,6 +2,8 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,8 @@ public class LoginController {
     private UserService uService;
 
     @GetMapping("/login")
-    public String loginForm(Model model) {
+    public String loginForm(Model model, HttpServletResponse response) {
+        addNoCacheHeaders(response);
         return "login";
     }
 
@@ -23,7 +26,9 @@ public class LoginController {
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         HttpSession session,
+                        HttpServletResponse response,
                         Model model) {
+        addNoCacheHeaders(response);
 
         User user = uService.login(username, password);
 
@@ -46,8 +51,24 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
+    public String logout(HttpSession session, HttpServletResponse response) {
+        if (session != null) {
+            session.invalidate();
+        }
+
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
+        addNoCacheHeaders(response);
+        return "redirect:/login?logout";
+    }
+
+    private void addNoCacheHeaders(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
     }
 }
