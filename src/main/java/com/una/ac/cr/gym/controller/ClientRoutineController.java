@@ -29,7 +29,7 @@ public class ClientRoutineController {
             Model model) {
 
         addRoutineCatalogAttributes(model, page, size, difficulty, type);
-        model.addAttribute("title", "Rutinas disponibles");
+        model.addAttribute("title", "title.routine.catalog");
         return "client/routine_catalog";
     }
 
@@ -53,7 +53,7 @@ public class ClientRoutineController {
             return "redirect:/client/routines";
         }
 
-        model.addAttribute("title", "Detalle de la rutina");
+        model.addAttribute("title", "title.routine.detail");
         model.addAttribute("routine", routine);
         return "client/routine_detail";
     }

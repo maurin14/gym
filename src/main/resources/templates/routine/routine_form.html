@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${title}">Formulario rutina</title>
+    <title th:text="#{${title}}">Formulario rutina</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -14,70 +14,70 @@
 
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${error != null}" class="field-error">
-        <span th:text="${error}"></span>
+        <span th:text="#{${error}}"></span>
     </div>
 
     <form class="portal-form" th:action="@{/admin/routines/save}" th:object="${routine}" method="post" novalidate
-          th:attr="data-admin-confirm=${routine.idRoutine > 0 ? 'Guardar cambios?' : 'Registrar rutina?'},data-admin-loading='Guardando...'">
+          th:attr="data-admin-confirm=${routine.idRoutine > 0 ? #messages.msg('confirm.routine.update') : #messages.msg('confirm.routine.create')},data-admin-loading=#{confirm.loading.save}">
         <input type="hidden" th:field="*{idRoutine}" />
 
-        <label>Nombre</label>
+        <label th:text="#{label.routine.name}">Nombre</label>
         <input type="text" th:field="*{nameRoutine}" required />
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameRoutine'] != null}" th:text="${fieldErrors['nameRoutine']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameRoutine'] != null}" th:text="#{${fieldErrors['nameRoutine']}}"></small>
 
-        <label>Dificultad</label>
+        <label th:text="#{label.routine.difficulty}">Dificultad</label>
         <select th:field="*{difficultyLevel}" required>
-            <option value="" disabled selected>Seleccione</option>
-            <option value="Principiante">Principiante</option>
-            <option value="Intermedio">Intermedio</option>
-            <option value="Avanzado">Avanzado</option>
+            <option value="" disabled selected th:text="#{label.routine.select}">Seleccione</option>
+            <option value="Principiante" th:text="#{label.routine.beginner}">Principiante</option>
+            <option value="Intermedio" th:text="#{label.routine.intermediate}">Intermedio</option>
+            <option value="Avanzado" th:text="#{label.routine.advanced}">Avanzado</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['difficultyLevel'] != null}" th:text="${fieldErrors['difficultyLevel']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['difficultyLevel'] != null}" th:text="#{${fieldErrors['difficultyLevel']}}"></small>
 
-        <label>Duraci&oacute;n (minutos)</label>
+        <label th:text="#{label.routine.durationMinutes}">Duracion (minutos)</label>
         <input type="number" th:field="*{estimatedDuration}" min="1" required />
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['estimatedDuration'] != null}" th:text="${fieldErrors['estimatedDuration']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['estimatedDuration'] != null}" th:text="#{${fieldErrors['estimatedDuration']}}"></small>
 
-        <label>Cantidad de ejercicios</label>
+        <label th:text="#{label.routine.quantityExercises}">Cantidad de ejercicios</label>
         <input type="number" th:field="*{quantityExercises}" min="1" required />
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['quantityExercises'] != null}" th:text="${fieldErrors['quantityExercises']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['quantityExercises'] != null}" th:text="#{${fieldErrors['quantityExercises']}}"></small>
 
-        <label>Objetivo</label>
+        <label th:text="#{label.routine.objective}">Objetivo</label>
         <select th:field="*{trainingObjective}" required>
-            <option value="" disabled selected>Seleccione</option>
-            <option value="Fuerza">Fuerza</option>
-            <option value="Resistencia">Resistencia</option>
-            <option value="Pérdida de peso">Pérdida de peso</option>
-            <option value="Hipertrofia">Hipertrofia</option>
+            <option value="" disabled selected th:text="#{label.routine.select}">Seleccione</option>
+            <option value="Fuerza" th:text="#{label.routine.strength}">Fuerza</option>
+            <option value="Resistencia" th:text="#{label.routine.endurance}">Resistencia</option>
+            <option value="Pérdida de peso" th:text="#{label.routine.weightLoss}">Perdida de peso</option>
+            <option value="Hipertrofia" th:text="#{label.routine.hypertrophy}">Hipertrofia</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['trainingObjective'] != null}" th:text="${fieldErrors['trainingObjective']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['trainingObjective'] != null}" th:text="#{${fieldErrors['trainingObjective']}}"></small>
 
-        <label>Tipo de rutina</label>
+        <label th:text="#{label.routine.type}">Tipo de rutina</label>
         <select th:field="*{routineType}" required>
-            <option value="" disabled selected>Seleccione</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Fuerza">Fuerza</option>
-            <option value="Funcional">Funcional</option>
+            <option value="" disabled selected th:text="#{label.routine.select}">Seleccione</option>
+            <option value="Cardio" th:text="#{label.routine.cardio}">Cardio</option>
+            <option value="Fuerza" th:text="#{label.routine.strength}">Fuerza</option>
+            <option value="Funcional" th:text="#{label.routine.functional}">Funcional</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['routineType'] != null}" th:text="${fieldErrors['routineType']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['routineType'] != null}" th:text="#{${fieldErrors['routineType']}}"></small>
 
-        <label>Descripci&oacute;n</label>
+        <label th:text="#{label.routine.description}">Descripcion</label>
         <textarea th:field="*{description}" required></textarea>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="#{${fieldErrors['description']}}"></small>
 
-        <label>Ejercicios</label>
+        <label th:text="#{label.routine.exercises}">Ejercicios</label>
         <textarea rows="6" th:field="*{exercises}" required></textarea>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['exercises'] != null}" th:text="${fieldErrors['exercises']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['exercises'] != null}" th:text="#{${fieldErrors['exercises']}}"></small>
 
-        <label>Estado</label>
+        <label th:text="#{label.routine.status}">Estado</label>
         <select th:field="*{state}">
-            <option value="true">Activa</option>
-            <option value="false">Inactiva</option>
+            <option value="true" th:text="#{label.status.activeFemale}">Activa</option>
+            <option value="false" th:text="#{label.status.inactiveFemale}">Inactiva</option>
         </select>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar</button>
-            <a th:href="@{/admin/routines}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary" th:text="#{button.save}">Guardar</button>
+            <a th:href="@{/admin/routines}" class="btn-secondary" th:text="#{button.cancel}">Cancelar</a>
         </div>
     </form>
 </main>
