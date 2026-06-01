@@ -104,11 +104,11 @@ public class ProductServices {
 
     public String deleteProduct(int idProduct) {
         if (idProduct <= 0) {
-            return "Id de producto inválido.";
+            return "message.product.invalidId";
         }
 
         if (!productRepository.existsById(idProduct)) {
-            return "No se encontro el producto solicitado.";
+            return "message.product.notFound";
         }
 
         productRepository.deleteById(idProduct);
@@ -119,52 +119,52 @@ public class ProductServices {
         Map<String, String> errors = new LinkedHashMap<>();
 
         if (product == null) {
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            errors.put("form", "message.form.review");
             return errors;
         }
 
         if (isUpdate && product.getIdProduct() <= 0) {
-            errors.put("form", "No se pudo actualizar el registro.");
+            errors.put("form", "message.form.updateError");
         }
 
         if (isBlank(product.getNameProduct())) {
-            errors.put("nameProduct", "Este campo es obligatorio.");
+            errors.put("nameProduct", "message.validation.required");
         } else if (product.getNameProduct().trim().length() > 100) {
-            errors.put("nameProduct", "Ingrese 100 caracteres o menos.");
+            errors.put("nameProduct", "message.validation.max100");
         }
 
         if (isBlank(product.getCategory())) {
-            errors.put("category", "Este campo es obligatorio.");
+            errors.put("category", "message.validation.required");
         } else if (product.getCategory().trim().length() > 80) {
-            errors.put("category", "Ingrese 80 caracteres o menos.");
+            errors.put("category", "message.validation.max80");
         }
 
         if (product.getPrice() == null) {
-            errors.put("price", "Este campo es obligatorio.");
+            errors.put("price", "message.validation.required");
         } else if (product.getPrice() < 0) {
-            errors.put("price", "El precio debe ser mayor o igual a 0.");
+            errors.put("price", "message.validation.priceMin");
         }
 
         if (product.getQuantityStock() == null) {
-            errors.put("quantityStock", "Este campo es obligatorio.");
+            errors.put("quantityStock", "message.validation.required");
         } else if (product.getQuantityStock() < 0) {
-            errors.put("quantityStock", "Ingrese un valor válido.");
+            errors.put("quantityStock", "message.validation.value");
         }
 
         if (product.getRegisterDate() == null) {
-            errors.put("registerDate", "La fecha es obligatoria.");
+            errors.put("registerDate", "message.validation.dateRequired");
         } else if (product.getRegisterDate().isAfter(LocalDate.now())) {
-            errors.put("registerDate", "Ingrese una fecha válida.");
+            errors.put("registerDate", "message.validation.dateValid");
         }
 
         if (isBlank(product.getDescription())) {
-            errors.put("description", "Este campo es obligatorio.");
+            errors.put("description", "message.validation.required");
         } else if (product.getDescription().length() > 255) {
-            errors.put("description", "Ingrese 255 caracteres o menos.");
+            errors.put("description", "message.validation.max255");
         }
 
         if (product.getImagePath() != null && product.getImagePath().length() > 255) {
-            errors.put("imagePath", "Ingrese 255 caracteres o menos.");
+            errors.put("imagePath", "message.validation.max255");
         }
 
         return errors;

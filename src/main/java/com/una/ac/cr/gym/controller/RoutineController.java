@@ -44,7 +44,7 @@ public class RoutineController {
             routinePage = routineService.getFilteredRoutines(difficultyLevel, routineType, currentPage);
         }
 
-        model.addAttribute("title", "Lista de rutinas");
+        model.addAttribute("title", "title.routine.list");
         model.addAttribute("routines", routinePage.getContent());
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", routinePage.getTotalPages());
@@ -58,7 +58,7 @@ public class RoutineController {
 
     @GetMapping("/form")
     public String showRoutineForm(Model model) {
-        model.addAttribute("title", "Registrar rutina");
+        model.addAttribute("title", "title.routine.create");
         model.addAttribute("routine", new Routine());
         return "routine/routine_form";
     }
@@ -69,27 +69,27 @@ public class RoutineController {
         Map<String, String> fieldErrors = routineService.validateFields(routine);
 
         if (isUpdate && routineService.getRoutine(routine.getIdRoutine()) == null) {
-            fieldErrors.put("form", "La rutina que intenta editar no existe.");
+            fieldErrors.put("form", "message.routine.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
-            model.addAttribute("title", isUpdate ? "Editar rutina" : "Registrar rutina");
+            model.addAttribute("title", isUpdate ? "title.routine.edit" : "title.routine.create");
             model.addAttribute("routine", routine);
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("error", "message.form.review");
             return "routine/routine_form";
         }
 
         String result = routineService.saveRoutine(routine);
 
         if (!result.isEmpty()) {
-            model.addAttribute("title", isUpdate ? "Editar rutina" : "Registrar rutina");
+            model.addAttribute("title", isUpdate ? "title.routine.edit" : "title.routine.create");
             model.addAttribute("routine", routine);
             model.addAttribute("error", result);
             return "routine/routine_form";
         }
 
-        String message = isUpdate ? "Rutina editada correctamente." : "Rutina guardada correctamente.";
+        String message = isUpdate ? "message.routine.updated" : "message.routine.saved";
         redirectAttributes.addFlashAttribute("successMessage", message);
         return "redirect:/admin/routines";
     }
@@ -102,7 +102,7 @@ public class RoutineController {
             return "redirect:/admin/routines";
         }
 
-        model.addAttribute("title", "Editar rutina");
+        model.addAttribute("title", "title.routine.edit");
         model.addAttribute("routine", routine);
         return "routine/routine_form";
     }
@@ -115,7 +115,7 @@ public class RoutineController {
             return "redirect:/admin/routines";
         }
 
-        model.addAttribute("title", "Detalle de la rutina");
+        model.addAttribute("title", "title.routine.detail");
         model.addAttribute("routine", routine);
         model.addAttribute("routineBasePath", "/admin/routines");
         model.addAttribute("canManageRoutines", true);
@@ -131,7 +131,7 @@ public class RoutineController {
             return "redirect:/admin/routines";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Rutina eliminada correctamente.");
+        redirectAttributes.addFlashAttribute("successMessage", "message.routine.deleted");
         return "redirect:/admin/routines";
     }
 }

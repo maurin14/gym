@@ -18,8 +18,23 @@ public class WebConfig implements WebMvcConfigurer {
         this.authInterceptor = authInterceptor;
     }
 
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        localeResolver.setDefaultLocale(Locale.of("es"));
+        return localeResolver;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+        interceptor.setParamName("lang");
+        return interceptor;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
@@ -35,19 +50,4 @@ public class WebConfig implements WebMvcConfigurer {
           registry.addInterceptor(localeChangeInterceptor());  
     }
     
-    @Bean
-    public LocaleResolver localeResolver(){
-        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.of("en","us"));
-        return localeResolver;
-    }
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor(){
-    LocaleChangeInterceptor lci= new LocaleChangeInterceptor();
-    lci.setParamName("lang");
-    return lci;
-            
-    }
-
-
 }
