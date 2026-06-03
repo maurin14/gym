@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clases disponibles - SAM GYM FITNESS</title>
+    <title th:text="#{title.class.available}">Clases disponibles - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -14,25 +14,25 @@
 <main>
     <section class="client-hero compact-hero classes-hero">
         <div>
-            <span class="section-kicker">Entrenamiento</span>
-            <h1>Clases disponibles</h1>
-            <p>Consulta las sesiones grupales activas y registra tu asistencia en la clase que deseas tomar.</p>
+            <span class="section-kicker" th:text="#{section.kicker.training}">Entrenamiento</span>
+            <h1 th:text="#{title.class.available}">Clases disponibles</h1>
+            <p th:text="#{text.class.description}">Consulta las sesiones grupales activas y registra tu asistencia en la clase que deseas tomar.</p>
         </div>
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-            <a th:href="@{/client/home}">Inicio</a>
+        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
+            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
             <span>/</span>
-            <strong>Clases</strong>
+            <strong th:text="#{label.class.available}">Clases</strong>
         </nav>
 
         <div class="client-table-card">
             <div class="section-heading table-heading">
                 <div>
-                    <span class="section-kicker">Agenda</span>
-                    <h2>Selecciona una clase</h2>
-                    <p>La disponibilidad se actualiza desde el m&oacute;dulo de clases del gimnasio.</p>
+                    <span class="section-kicker" th:text="#{section.kicker.agenda}">Agenda</span>
+                    <h2 th:text="#{label.select.class}">Selecciona una clase</h2>
+                    <p th:text="#{text.class.availability}">La disponibilidad se actualiza desde el módulo de clases del gimnasio.</p>
                 </div>
             </div>
 
@@ -40,17 +40,17 @@
                 <table class="client-table">
                     <thead>
                     <tr>
-                        <th>Tipo</th>
-                        <th>Entrenador</th>
-                        <th>Sucursal</th>
-                        <th>Fecha</th>
-                        <th>Inicio</th>
-                        <th>Final</th>
-                        <th>Duraci&oacute;n</th>
-                        <th>Capacidad</th>
-                        <th>Dificultad</th>
-                        <th>Descripci&oacute;n</th>
-                        <th>Acci&oacute;n</th>
+                        <th th:text="#{label.class.type}">Tipo</th>
+                        <th th:text="#{label.class.trainer}">Entrenador</th>
+                        <th th:text="#{label.class.branch}">Sucursal</th>
+                        <th th:text="#{label.class.date}">Fecha</th>
+                        <th th:text="#{label.class.startTime}">Inicio</th>
+                        <th th:text="#{label.class.endTime}">Final</th>
+                        <th th:text="#{label.class.duration}">Duración</th>
+                        <th th:text="#{label.class.capacity}">Capacidad</th>
+                        <th th:text="#{label.class.difficulty}">Dificultad</th>
+                        <th th:text="#{label.class.description}">Descripción</th>
+                        <th th:text="#{label.class.action}">Acción</th>
                     </tr>
                     </thead>
 

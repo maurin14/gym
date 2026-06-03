@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis asistencias - SAM GYM FITNESS</title>
+    <title th:text="#{title.attendance.my}">Mis asistencias - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -14,38 +14,38 @@
 <main>
     <section class="client-hero compact-hero attendances-hero">
         <div>
-            <span class="section-kicker">Mi cuenta</span>
-            <h1>Mis asistencias</h1>
-            <p>Revisa las visitas y registros asociados a tus clases dentro del gimnasio.</p>
+            <span class="section-kicker" th:text="#{section.kicker.account}">Mi cuenta</span>
+            <h1 th:text="#{title.attendance.my}">Mis asistencias</h1>
+            <p th:text="#{text.attendance.description}">Revisa las visitas y registros asociados a tus clases dentro del gimnasio.</p>
         </div>
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-            <a th:href="@{/client/home}">Inicio</a>
+        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
+            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
             <span>/</span>
-            <strong>Asistencia</strong>
+            <strong th:text="#{title.attendance.my}">Asistencia</strong>
         </nav>
 
         <div class="client-table-card">
             <div class="section-heading table-heading">
                 <div>
-                    <span class="section-kicker">Historial</span>
-                    <h2>Registros de asistencia</h2>
-                    <p>Consulta el estado, observaci&oacute;n y fecha de registro de tus asistencias.</p>
+                    <span class="section-kicker" th:text="#{section.kicker.history}">Historial</span>
+                    <h2 th:text="#{label.attendance.records}">Registros de asistencia</h2>
+                    <p th:text="#{text.attendance.records}">Consulta el estado, observación y fecha de registro de tus asistencias.</p>
                 </div>
-                <a th:href="@{/client/classes}" class="btn-secondary">Ver clases</a>
+                <a th:href="@{/client/classes}" class="btn-secondary" th:text="#{button.view.classes}">Ver clases</a>
             </div>
 
             <div class="table-responsive">
                 <table class="client-table">
                     <thead>
                     <tr>
-                        <th>Clase</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Observaci&oacute;n</th>
-                        <th>Registro</th>
+                        <th th:text="#{label.class.type}">Clase</th>
+                        <th th:text="#{label.class.date}">Fecha</th>
+                        <th th:text="#{label.attendance.status}">Estado</th>
+                        <th th:text="#{label.attendance.observation}">Observación</th>
+                        <th th:text="#{label.attendance.register}">Registro</th>
                     </tr>
                     </thead>
 

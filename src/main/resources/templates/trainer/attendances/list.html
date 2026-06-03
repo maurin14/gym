@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de asistencias</title>
+    <title th:text="#{title.attendance.list}">Listado de asistencias</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -14,20 +14,21 @@
 
 <main class="container portal-card admin-page-card wide-table-card">
     <div class="buttons admin-action-row">
-        <a class="btn-primary" th:href="${attendanceBasePath + '/form'}">Nueva asistencia</a>
+        <a class="btn-primary" th:href="${attendanceBasePath + '/form'}"
+           th:text="#{button.add.attendance}">Nueva asistencia</a>
     </div>
 
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
-            <th>Cliente</th>
-            <th>Clase</th>
-            <th>Sucursal</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Observaci&oacute;n</th>
-            <th>Registro</th>
-            <th>Acciones</th>
+            <th th:text="#{label.attendance.client}">Cliente</th>
+            <th th:text="#{label.attendance.class}">Clase</th>
+            <th th:text="#{label.attendance.branch}">Sucursal</th>
+            <th th:text="#{label.attendance.date}">Fecha</th>
+            <th th:text="#{label.attendance.status}">Estado</th>
+            <th th:text="#{label.attendance.observation}">Observación</th>
+            <th th:text="#{label.attendance.register}">Registro</th>
+            <th th:text="#{label.attendance.actions}">Acciones</th>
         </tr>
         </thead>
 
