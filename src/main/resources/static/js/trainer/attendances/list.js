@@ -66,7 +66,7 @@ function showAttendances(attendances) {
                 <td>${attendance.clientName}</td>
                 <td>${attendance.classType}</td>
                 <td>${attendance.branchName || "Sin sucursal"}</td>
-                <td>${attendance.attendanceDate}</td>
+                <td>${formatDate(attendance.attendanceDate)}</td>
 
                 <td>
                     <span class="badge ${statusClass}">
@@ -75,7 +75,7 @@ function showAttendances(attendances) {
                 </td>
 
                 <td>${attendance.observation}</td>
-                <td>${attendance.registerDate}</td>
+                <td>${formatDate(attendance.registerDate)}</td>
 
                 <td>
                     <div class="actions">
@@ -112,6 +112,21 @@ function getAttendanceStatusClass(status) {
     }
 
     return "status-active";
+}
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+    const parts = String(dateValue).split("-");
+
+    if (parts.length !== 3) {
+        return dateValue;
+    }
+
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
 }
 
 function showPagination() {
