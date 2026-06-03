@@ -136,6 +136,7 @@ public class ReportController {
         }
 
         model.addAttribute("reportNew", report);
+        model.addAttribute("administrators", userService.getAdministrators());
         return "report/formReport";
     }
 
