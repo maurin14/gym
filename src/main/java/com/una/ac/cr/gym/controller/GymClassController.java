@@ -414,7 +414,14 @@ public class GymClassController {
         map.put("difficultyLevel", gymClass.getDifficultyLevel());
         map.put("description", gymClass.getDescription());
         map.put("duration", gymClass.getDuration());
-        map.put("status", gymClass.isStatus());
+
+        // --- CAMBIO AQUI: Calcular estado según fecha y hora ---
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime fechaFinClase = LocalDateTime.of(
+                gymClass.getClassDate(),
+                gymClass.getEndTime()
+        );
+        map.put("status", fechaFinClase.isAfter(ahora));
 
         map.put("trainerId",
                 gymClass.getTrainer() != null
