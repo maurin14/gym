@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Detalle de Usuario - SAM GYM FITNESS</title>
+    <title th:text="#{title.user.detail}">Detalle de Usuario - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
@@ -11,76 +11,80 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-
 <main class="container portal-card admin-page-card">
     <section class="detail-info">
         <div class="info-card">
 
             <p>
-                <strong>Nombre:</strong>
+                <strong th:text="#{label.user.name} + ':'">Nombre:</strong>
                 <span th:text="${userView.fullName}"></span>
             </p>
 
             <p th:if="${userView.role == 'trainer'}">
-                <strong>Sucursal:</strong>
-                <span th:text="${userView.branch != null ? userView.branch.name : 'Sin sucursal asignada'}"></span>
+                <strong th:text="#{label.user.branch} + ':'">Sucursal:</strong>
+                <span th:text="${userView.branch != null ? userView.branch.name : #messages.msg('label.user.noBranch')}"></span>
             </p>
 
             <p>
-                <strong>Cédula:</strong>
+                <strong th:text="#{label.user.idCard} + ':'">Cédula:</strong>
                 <span th:text="${userView.idCard}"></span>
             </p>
 
             <p>
-                <strong>Correo:</strong>
+                <strong th:text="#{label.user.email} + ':'">Correo:</strong>
                 <span th:text="${userView.email}"></span>
             </p>
 
             <p>
-                <strong>Teléfono:</strong>
+                <strong th:text="#{label.user.phone} + ':'">Teléfono:</strong>
                 <span th:text="${userView.phone}"></span>
             </p>
 
             <p>
-                <strong>Nombre de usuario:</strong>
+                <strong th:text="#{label.user.username} + ':'">Nombre de usuario:</strong>
                 <span th:text="${userView.username}"></span>
             </p>
 
             <p>
-                <strong>Rol:</strong>
+                <strong th:text="#{label.user.role} + ':'">Rol:</strong>
 
                 <span th:if="${userView.role == 'administrator'}"
-                      class="badge badge-active">
+                      class="badge badge-active"
+                      th:text="#{label.user.role.admin}">
                     Administrador
                 </span>
 
                 <span th:if="${userView.role == 'trainer'}"
-                      class="badge badge-pending">
+                      class="badge badge-pending"
+                      th:text="#{label.user.role.trainer}">
                     Entrenador
                 </span>
 
                 <span th:if="${userView.role == 'client'}"
-                      class="badge badge-inactive">
+                      class="badge badge-inactive"
+                      th:text="#{label.user.role.client}">
                     Cliente
                 </span>
             </p>
 
             <p>
-                <strong>Estado:</strong>
+                <strong th:text="#{label.user.status} + ':'">Estado:</strong>
 
                 <span th:if="${userView.status == 'active'}"
-                      class="status-active">
+                      class="status-active"
+                      th:text="#{status.active}">
                     Activo
                 </span>
 
                 <span th:if="${userView.status == 'inactive'}"
-                      class="status-inactive">
+                      class="status-inactive"
+                      th:text="#{status.inactive}">
                     Inactivo
                 </span>
             </p>
 
             <p>
-                <strong>Fecha de registro:</strong>
+                <strong th:text="#{label.user.recordDate} + ':'">Fecha de registro:</strong>
                 <span th:text="${userView.formattedRecordDate}"></span>
             </p>
 
@@ -88,10 +92,11 @@
     </section>
 
     <div class="buttons">
-        <a th:href="@{/users}" class="btn-secondary">Volver</a>
+        <a th:href="@{/users}" class="btn-secondary" th:text="#{button.back}">Volver</a>
 
         <a th:href="@{/users/edit(id=${userView.userId})}"
-           class="btn-primary">
+           class="btn-primary"
+           th:text="#{button.edit}">
             Editar
         </a>
     </div>
@@ -100,5 +105,4 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
-
 </html>

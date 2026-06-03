@@ -8,25 +8,7 @@
 </head>
 <body>
 
-<header class="main-header">
-    <div class="header-left">
-        <a th:href="@{/admin/home}">
-            <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo">
-        </a>
-        <span class="system-name">SAM GYM FITNESS</span>
-    </div>
-
-    <nav class="header-nav">
-        <a th:href="@{/admin/home}">Inicio</a>
-        <a th:href="@{/admin/branches}">Sucursales</a>
-        <a th:href="@{/admin/payments}">Pagos</a>
-        <a th:href="@{/admin/routines}">Rutinas</a>
-        <a th:href="@{/admin/classes}">Clases</a>
-        <a th:href="@{/admin/products}">Productos</a>
-        <a th:href="@{/admin/schedules}">Horarios</a>
-        <a th:href="@{/logout}">Cerrar sesión</a>
-    </nav>
-</header>
+<div th:replace="~{admin/fragments/admin_layout :: adminHeader('home')}"></div>
 
 <main>
     <section class="hero-section">

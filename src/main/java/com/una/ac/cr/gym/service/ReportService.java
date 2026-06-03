@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +48,13 @@ public class ReportService implements CRUD<Report>{
     
     @Autowired
     private AttendanceService attendanceService;
+    
+    @Autowired
+    private MessageSource messageSource;
+
+    private String msg(String key){
+        return messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
+    }
     
     public void save(Report r){
         String validation = validate(r);
@@ -124,7 +133,8 @@ public class ReportService implements CRUD<Report>{
     }
     
     public Page<Report> getReportsByPage(int page, int size){
-        Page<Report> reportPage = rData.findAll(PageRequest.of(page - 1, size));
+   
+        Page<Report> reportPage = rData.findAll(PageRequest.of(page, size));
 
         for(Report r : reportPage.getContent()){
             User u = uData.findById(r.getGeneratedBy()).orElse(null);
@@ -185,14 +195,14 @@ public class ReportService implements CRUD<Report>{
 
             for(User u : users){
                 Map<String, String> map = new LinkedHashMap<>();
-                map.put("Nombre", u.getFullName());
-                map.put("Cédula", u.getIdCard());
-                map.put("Correo", u.getEmail());
-                map.put("Teléfono", u.getPhone());
-                map.put("Usuario", u.getUsername());
-                map.put("Rol", u.getRole());
-                map.put("Estado", u.getStatus());
-                map.put("Fecha de registro", u.getFormattedRecordDate());
+                map.put(msg("label.user.fullName"), u.getFullName());
+                map.put(msg("label.user.idCard"), u.getIdCard());
+                map.put(msg("label.user.email"), u.getEmail());
+                map.put(msg("label.user.phone"), u.getPhone());
+                map.put(msg("label.user.username"), u.getUsername());
+                map.put(msg("label.user.role"), u.getRole());
+                map.put(msg("label.user.status"), u.getStatus());
+                map.put(msg("label.user.recordDate"), u.getFormattedRecordDate());
                 list.add(map);
             }
 
@@ -202,22 +212,22 @@ public class ReportService implements CRUD<Report>{
             for(Payment p : payments){
                 Map<String, String> map = new LinkedHashMap<>();
 
-                map.put("ID Pago", String.valueOf(p.getId()));
-                map.put("Usuario ID", String.valueOf(p.getUserId()));
-                map.put("Monto", "₡" + p.getAmount());
-                map.put("Fecha de pago", String.valueOf(p.getPaymentDate()));
-                map.put("Método de pago", p.getPaymentMethod());
-                map.put("Estado", p.getStatus());
-                map.put("Descripción", p.getDescription());
+                map.put(msg("label.payment.id"), String.valueOf(p.getId()));
+                map.put(msg("label.payment.userId"), String.valueOf(p.getIdUser()));
+                map.put(msg("label.payment.amount"), "₡" + p.getAmount());
+                map.put(msg("label.payment.date"), String.valueOf(p.getPaymentDate()));
+                map.put(msg("label.payment.method"), p.getPaymentMethod());
+                map.put(msg("label.payment.status"), p.getStatus());
+                map.put(msg("label.payment.description"), p.getDescription());
 
                 if(p.getBranch() != null){
-                    map.put("Sucursal", String.valueOf(p.getBranch().getId()));
+                    map.put(msg("label.payment.branch"), String.valueOf(p.getBranch().getId()));
                 }else{
-                    map.put("Sucursal", "Sin sucursal");
+                    map.put(msg("label.payment.branch"), msg("label.gym.none"));
                 }
 
                 list.add(map);
-            }   list.add(row("Cliente", "María Solano", "Monto", "₡15 000", "Estado", "Pagado"));
+            }
 
         }else if("attendances".equalsIgnoreCase(reportType)){
 
@@ -228,24 +238,24 @@ public class ReportService implements CRUD<Report>{
                 Map<String, String> map = new LinkedHashMap<>();
 
                 if(a.getClient() != null){
-                    map.put("Cliente", a.getClient().getFullName());
+                    map.put(msg("label.attendance.client"), a.getClient().getFullName());
                 }else{
-                    map.put("Cliente", "Sin cliente");
+                    map.put(msg("label.attendance.client"), msg("label.attendance.noClient"));
                 }
 
                 if(a.getGymClass() != null){
-                    map.put("Clase", a.getGymClass().getClassType());
+                    map.put(msg("label.attendance.class"), a.getGymClass().getClassType());
                 }else{
-                    map.put("Clase", "Sin clase");
+                    map.put(msg("label.attendance.class"), msg("label.attendance.noClass"));
                 }
 
-                map.put("Fecha", String.valueOf(a.getAttendanceDate()));
-                map.put("Asistencia", a.getAttendanceStatus());
+                map.put(msg("label.attendance.date"), String.valueOf(a.getAttendanceDate()));
+                map.put(msg("label.attendance.status"), a.getAttendanceStatus());
 
                 if(a.getObservation() != null){
-                    map.put("Observación", a.getObservation());
+                    map.put(msg("label.attendance.observation"), a.getObservation());
                 }else{
-                    map.put("Observación", "Sin observación");
+                    map.put(msg("label.attendance.observation"), msg("label.attendance.noObservation"));
                 }
 
                 list.add(map);

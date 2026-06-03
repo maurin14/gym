@@ -28,7 +28,7 @@ public class ReportController {
     private Report report;
 
     @GetMapping({"", "/"})
-    public String index(@RequestParam(defaultValue = "1") int page,
+    public String index(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(required = false) String reportType,
                         @RequestParam(required = false) String reportStatus,
                         Model model,
@@ -55,10 +55,17 @@ public class ReportController {
         }
 
         int size = 5;
-        Page<Report> reportPage = rService.getReportsByPage(page, size);
+        int currentPage = Math.max(page, 0);
+
+        Page<Report> reportPage = rService.getReportsByPage(currentPage, size);
+
+        if(currentPage > reportPage.getTotalPages() && reportPage.getTotalPages() > 0){
+            currentPage = reportPage.getTotalPages() - 1;
+            reportPage = rService.getReportsByPage(currentPage, size);
+        }
 
         model.addAttribute("reports", reportPage.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", reportPage.getTotalPages());
         model.addAttribute("reportType", reportType);
         model.addAttribute("reportStatus", reportStatus);
