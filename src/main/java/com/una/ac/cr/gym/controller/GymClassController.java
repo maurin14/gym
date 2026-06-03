@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import java.time.LocalDateTime;
 
 @Controller
 public class GymClassController {
@@ -399,7 +400,7 @@ public class GymClassController {
                 : null;
     }
 
-    private Map<String, Object> toClassMap(GymClass gymClass) {
+     private Map<String, Object> toClassMap(GymClass gymClass) {
 
         Map<String, Object> map = new HashMap<>();
 
