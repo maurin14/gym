@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Usuarios - SAM GYM FITNESS</title>
+    <title th:text="#{title.user.list}">Usuarios - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
@@ -12,40 +12,38 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('users')}"></div>
 
-
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/users/add}" class="btn-primary">Nuevo usuario</a>
+        <a th:href="@{/users/add}" class="btn-primary" th:text="#{label.user.new}">Nuevo usuario</a>
     </div>
 
     <form th:action="@{/users}" method="get" class="admin-filter-row portal-filters">
-        <input type="text" name="fullName" th:value="${fullName}" placeholder="Buscar por nombre">
-
+    <input type="text" name="fullName" th:value="${fullName}" th:placeholder="#{label.user.searchPlaceholder}">
         <select name="role">
-            <option value="">Todos los roles</option>
-            <option value="administrator" th:selected="${role == 'administrator'}">Administrador</option>
-            <option value="trainer" th:selected="${role == 'trainer'}">Entrenador</option>
-            <option value="client" th:selected="${role == 'client'}">Cliente</option>
+            <option value="" th:text="#{label.user.allRoles}">Todos los roles</option>
+            <option value="administrator" th:selected="${role == 'administrator'}" th:text="#{label.user.role.admin}">Administrador</option>
+            <option value="trainer" th:selected="${role == 'trainer'}" th:text="#{label.user.role.trainer}">Entrenador</option>
+            <option value="client" th:selected="${role == 'client'}" th:text="#{label.user.role.client}">Cliente</option>
         </select>
 
-        <button type="submit" class="btn-primary">Buscar</button>
-        <a th:href="@{/users}" class="btn-secondary">Limpiar</a>
+        <button type="submit" class="btn-primary" th:text="#{button.search}">Buscar</button>
+        <a th:href="@{/users}" class="btn-secondary" th:text="#{button.clean}">Limpiar</a>
     </form>
 
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Cédula</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th>Sucursal</th>
-            <th>Estado</th>
-            <th>Registro</th>
-            <th>Acciones</th>
+            <th th:text="#{label.user.fullName}">Nombre</th>
+            <th th:text="#{label.user.idCard}">Cédula</th>
+            <th th:text="#{label.user.username}">Usuario</th>
+            <th th:text="#{label.user.role}">Rol</th>
+            <th th:text="#{label.user.branch}">Sucursal</th>
+            <th th:text="#{label.user.status}">Estado</th>
+            <th th:text="#{label.user.record}">Registro</th>
+            <th th:text="#{label.user.actions}">Acciones</th>
         </tr>
         </thead>
 
@@ -56,30 +54,31 @@
             <td th:text="${u.username}"></td>
 
             <td>
-                <span th:if="${u.role == 'administrator'}" class="badge badge-active">Administrador</span>
-                <span th:if="${u.role == 'trainer'}" class="badge badge-pending">Entrenador</span>
-                <span th:if="${u.role == 'client'}" class="badge badge-inactive">Cliente</span>
+                <span th:if="${u.role == 'administrator'}" class="badge badge-active" th:text="#{label.user.role.admin}">Administrador</span>
+                <span th:if="${u.role == 'trainer'}" class="badge badge-pending" th:text="#{label.user.role.trainer}">Entrenador</span>
+                <span th:if="${u.role == 'client'}" class="badge badge-inactive" th:text="#{label.user.role.client}">Cliente</span>
             </td>
 
             <td th:text="${u.role == 'trainer' ? (u.branch != null ? u.branch.name : 'Sin sucursal asignada') : '-'}"></td>
 
             <td>
-                <span th:if="${u.status == 'active'}" class="status-active">Activo</span>
-                <span th:if="${u.status == 'inactive'}" class="status-inactive">Inactivo</span>
+                <span th:if="${u.status == 'active'}" class="status-active" th:text="#{status.active}">Activo</span>
+                <span th:if="${u.status == 'inactive'}" class="status-inactive" th:text="#{status.inactive}">Inactivo</span>
             </td>
 
             <td th:text="${u.formattedRecordDate}"></td>
 
             <td>
                 <div class="actions">
-                    <a th:href="@{/users/detail(id=${u.userId})}" class="btn-secondary">Ver</a>
-                    <a th:href="@{/users/edit(id=${u.userId})}" class="btn-primary">Editar</a>
+                    <a th:href="@{/users/detail(id=${u.userId})}" class="btn-secondary" th:text="#{button.view}">Ver</a>
+                    <a th:href="@{/users/edit(id=${u.userId})}" class="btn-primary" th:text="#{button.edit}">Editar</a>
 
                     <a th:if="${session.user.role == 'administrator'}"
                        th:href="@{/users/delete(id=${u.userId})}"
                        class="btn-danger"
                        data-delete-link
-                       data-delete-title="Eliminar usuario?">
+                       th:attr="data-delete-title=#{confirm.user.delete}"
+                       th:text="#{button.delete}">
                         Eliminar
                     </a>
                 </div>
@@ -87,16 +86,17 @@
         </tr>
 
         <tr th:if="${#lists.isEmpty(users)}">
-            <td colspan="8" class="empty-message">No hay usuarios registrados.</td>
-        </tr>
+            <td colspan="8" class="empty-message" th:text="#{label.user.noUsers}">No hay usuarios registrados.</td>        </tr>
         </tbody>
     </table>
 
     <nav class="pagination" aria-label="Paginacion de usuarios"
-         th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
+     th:with="visualTotalPages=${totalPages != null and totalPages > 0 ? totalPages : 1},
+              safeCurrentPage=${currentPage != null ? currentPage : 0}">
         <a class="btn-secondary"
            th:classappend="${currentPage == 0} ? ' disabled'"
-           th:href="@{/users(page=${currentPage == 0 ? currentPage : currentPage - 1}, fullName=${fullName}, role=${role})}">
+           th:href="@{/users(page=${currentPage == 0 ? currentPage : currentPage - 1}, fullName=${fullName}, role=${role})}"
+           th:text="#{button.previous}">
             Anterior
         </a>
 
@@ -107,7 +107,8 @@
 
         <a class="btn-secondary"
            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
-           th:href="@{/users(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, fullName=${fullName}, role=${role})}">
+           th:href="@{/users(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, fullName=${fullName}, role=${role})}"
+           th:text="#{button.next}">
             Siguiente
         </a>
     </nav>
@@ -135,4 +136,5 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 </body>
+</html>
 </html>

@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 
-
-
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulario de Usuario - SAM GYM FITNESS</title>
+    <title th:text="#{title.user.form}">Formulario de Usuario - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
@@ -24,13 +21,13 @@
           th:attr="data-system-confirm='Guardar cambios?',data-system-loading='Procesando...'">
         <input type="hidden" th:field="*{userId}">
 
-        <label>Nombre completo</label>
+        <label th:text="#{label.user.fullNameComplete}">Nombre completo</label>
         <input type="text" th:field="*{fullName}" required
                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+"
                title="El nombre solo debe contener letras">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['fullName'] != null}" th:text="${fieldErrors['fullName']}"></small>
 
-        <label>Cédula</label>
+        <label th:text="#{label.user.idCard}">Cédula</label>
         <input type="text" th:field="*{idCard}" required
                pattern="[0-9]+"
                inputmode="numeric"
@@ -40,43 +37,43 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idCard'] != null}" th:text="${fieldErrors['idCard']}"></small>
         <span id="idCardMessage" class="field-error"></span>
 
-        <label>Correo electrónico</label>
+        <label th:text="#{label.user.email}">Correo electrónico</label>
         <input type="email" th:field="*{email}" required
                onblur="checkField('email', this.value, 'emailMessage')">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['email'] != null}" th:text="${fieldErrors['email']}"></small>
         <span id="emailMessage" class="field-error"></span>
 
-        <label>Teléfono</label>
+        <label th:text="#{label.user.phone}">Teléfono</label>
         <input type="text" th:field="*{phone}" required
                pattern="[0-9]{4}-[0-9]{4}"
                title="Debe tener el formato 8888-8888"
                maxlength="9">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['phone'] != null}" th:text="${fieldErrors['phone']}"></small>
 
-        <label>Nombre de usuario</label>
+        <label th:text="#{label.user.username}">Nombre de usuario</label>
         <input type="text" th:field="*{username}" required
                autocomplete="new-username"
                onblur="checkField('username', this.value, 'usernameMessage')">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['username'] != null}" th:text="${fieldErrors['username']}"></small>
         <span id="usernameMessage" class="field-error"></span>
 
-        <label>Contraseña</label>
+        <label th:text="#{label.user.password}">Contraseña</label>
         <input type="password" th:field="*{password}" required autocomplete="new-password">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['password'] != null}" th:text="${fieldErrors['password']}"></small>
 
-        <label>Rol</label>
+        <label th:text="#{label.user.role}">Rol</label>
         <select th:field="*{role}" id="role" required onchange="toggleTrainerBranch()">
-            <option value="">Seleccione</option>
-            <option value="client">Cliente</option>
-            <option value="trainer">Entrenador</option>
-            <option value="administrator">Administrador</option>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
+            <option value="client" th:text="#{label.user.role.client}">Cliente</option>
+            <option value="trainer" th:text="#{label.user.role.trainer}">Entrenador</option>
+            <option value="administrator" th:text="#{label.user.role.admin}">Administrador</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['role'] != null}" th:text="${fieldErrors['role']}"></small>
 
         <div id="trainerBranchField" class="portal-form-field">
-            <label>Sucursal del entrenador</label>
+            <label th:text="#{label.user.trainerBranch}">Sucursal del entrenador</label>
             <select th:field="*{branch.id}">
-                <option value="0">Seleccione una sucursal</option>
+                <option value="0" th:text="#{label.user.selectBranch}">Seleccione una sucursal</option>
                 <option th:each="branch : ${branches}"
                         th:value="${branch.id}"
                         th:text="${branch.name}">
@@ -86,21 +83,21 @@
             <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="${fieldErrors['branch.id']}"></small>
         </div>
 
-        <label>Estado</label>
+        <label th:text="#{label.user.status}">Estado</label>
         <select th:field="*{status}" required>
-            <option value="">Seleccione</option>
-            <option value="active">Activo</option>
-            <option value="inactive">Inactivo</option>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
+            <option value="active" th:text="#{status.active}">Activo</option>
+            <option value="inactive" th:text="#{status.inactive}">Inactivo</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="${fieldErrors['status']}"></small>
 
-        <label>Fecha de registro</label>
+        <label th:text="#{label.user.recordDate}">Fecha de registro</label>
         <input type="date" th:field="*{recordDate}" required>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['recordDate'] != null}" th:text="${fieldErrors['recordDate']}"></small>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar usuario</button>
-            <a th:href="@{/users}" class="btn-secondary">Volver</a>
+            <button type="submit" class="btn-primary" th:text="#{button.saveUser}">Guardar usuario</button>
+            <a th:href="@{/users}" class="btn-secondary" th:text="#{button.back}">Volver</a>
         </div>
     </form>
 </main>
@@ -133,7 +130,7 @@
             let emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
 
             if(!emailRegex.test(value)){
-                message.innerHTML = "Correo invalido.";
+                message.innerHTML = "[[#{message.user.invalidEmail}]]";
                 message.style.color = "#dc2626";
                 return;
             }
@@ -145,10 +142,10 @@
             .then(response => response.text())
             .then(data => {
                 if(data === "exists"){
-                    message.innerHTML = "Ya registrado.";
+                    message.innerHTML = "[[#{message.user.exists}]]";
                     message.style.color = "#dc2626";
                 }else{
-                    message.innerHTML = "Disponible.";
+                    message.innerHTML = "[[#{message.user.available}]]";
                     message.style.color = "#15803d";
                 }
             });
@@ -157,3 +154,4 @@
 
 </body>
 </html>
+

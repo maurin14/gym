@@ -67,6 +67,20 @@
 
             <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
         </div>
+        
+        <div class="language-selector">
+            <a href="#" onclick="changeLanguage('es'); return false;">ES</a>
+            |
+            <a href="#" onclick="changeLanguage('en'); return false;">EN</a>
+        </div>
+
+        <script>
+        function changeLanguage(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
+        }
+        </script>
     </nav>
 </header>
 

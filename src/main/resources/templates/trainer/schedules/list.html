@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mis horarios - SAM GYM FITNESS</title>
+    <title th:text='menu.trainer'></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
@@ -12,8 +12,8 @@
 <main class="container portal-card admin-page-card">
     <div class="admin-title-row">
         <div>
-            <h2 class="section-title">Mis horarios</h2>
-            <p class="admin-description">Horarios generados desde las clases asignadas al entrenador.</p>
+            <h2 class="section-title" th:text="#{menu.trainer.title}"></h2>
+            <p class="admin-description" th:text="#{menu.trainer.subTitle}"></p>
         </div>
     </div>
 
@@ -21,27 +21,27 @@
         <table class="portal-table admin-table">
             <thead>
                 <tr>
-                    <th>Clase</th>
-                    <th>Sucursal</th>
-                    <th>Fecha</th>
-                    <th>D&iacute;a</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Estado</th>
+                    <th th:text="#{label.gym.class}"></th>
+                    <th th:text="#{label.gym.branch}"></th>
+                    <th th:text="#{label.gym.date}"></th>
+                    <th th:text="#{label.gym.day}"></th>
+                    <th th:text="#{label.gym.hour}"></th>
+                    <th th:text="#{label.gym.end}"></th>
+                    <th th:text="#{label.gym.stage}"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${classes == null or #lists.isEmpty(classes)}">
-                    <td colspan="7" class="empty-message">No tienes horarios asignados.</td>
+                    <td colspan="7" class="empty-message" th:text="#{msn.schedule.null}"></td>
                 </tr>
                 <tr th:each="gymClass : ${classes}">
-                    <td th:text="${gymClass.classType}">Clase</td>
-                    <td th:text="${gymClass.branch != null ? gymClass.branch.name : 'Sin sucursal'}">Sucursal</td>
-                    <td th:text="${gymClass.classDate}">Fecha</td>
-                    <td th:text="${gymClass.classDate != null ? gymClass.classDate.dayOfWeek : 'Sin d&iacute;a'}">Dia</td>
-                    <td th:text="${gymClass.startTime != null ? #temporals.format(gymClass.startTime, 'HH:mm') : 'Sin hora'}">Inicio</td>
-                    <td th:text="${gymClass.endTime != null ? #temporals.format(gymClass.endTime, 'HH:mm') : 'Sin hora'}">Fin</td>
-                    <td th:text="${gymClass.status ? 'Activa' : 'Inactiva'}">Estado</td>
+                    <td th:text="${gymClass.classType}"></td>
+                    <td th:text="${gymClass.branch != null ? gymClass.branch.name : #messages.msg('label.gym.none')}"></td>                  
+                    <td th:text="${gymClass.classDate}"></td>
+                    <td th:text="${gymClass.classDate != null ? gymClass.classDate.dayOfWeek : #messages.msg('msn.trainer.null')}"></td>
+                    <td th:text="${gymClass.startTime != null ? #temporals.format(gymClass.startTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"></td>
+                    <td th:text="${gymClass.endTime != null ? #temporals.format(gymClass.endTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"></td>
+                    <td th:text="${gymClass.status ? #messages.msg('status.active') : #messages.msg('status.inactive')}"></td>
                 </tr>
             </tbody>
         </table>

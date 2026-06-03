@@ -209,4 +209,5 @@ public class UserController {
     private void addFormAttributes(Model model) {
         model.addAttribute("branches", branchService.getActiveBranches());
     }
+
 }

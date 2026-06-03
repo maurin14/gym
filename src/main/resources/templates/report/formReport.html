@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulario de Reporte - SAM GYM FITNESS</title>
+    <title th:text="#{title.report.form}">Formulario de Reporte - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
@@ -12,7 +12,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
@@ -20,59 +19,69 @@
           th:attr="data-admin-confirm=${reportNew.reportId != null ? 'Guardar cambios?' : 'Registrar reporte?'},data-admin-loading='Guardando...'">
         <input type="hidden" th:field="*{reportId}">
 
-        <label>Tipo de reporte</label>
+        <label th:text="#{label.report.type}">Tipo de reporte</label>
         <select th:field="*{reportType}" required>
-            <option value="">Seleccione</option>
-            <option value="users">Usuarios</option>
-            <option value="payments">Pagos</option>
-            <option value="attendances">Asistencias</option>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
+            <option value="users" th:text="#{label.report.type.users}">Usuarios</option>
+            <option value="payments" th:text="#{label.report.type.payments}">Pagos</option>
+            <option value="attendances" th:text="#{label.report.type.attendances}">Asistencias</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportType'] != null}" th:text="${fieldErrors['reportType']}"></small>
 
-        <label>Generado por</label>
-        <input type="hidden" th:field="*{generatedBy}">
-        <input type="text" th:field="*{userName}" readonly>
+        <label th:text="#{label.report.generatedBy}">Generado por</label>
+        <select th:field="*{generatedBy}" required>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
+            <option th:each="admin : ${administrators}"
+                    th:value="${admin.userId}"
+                    th:text="${admin.fullName}">
+            </option>
+        </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['generatedBy'] != null}" th:text="${fieldErrors['generatedBy']}"></small>
 
-        <label>Descripción</label>
+        <label th:text="#{label.report.description}">Descripción</label>
         <textarea th:field="*{description}" rows="3" required></textarea>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
 
-        <label>Fecha de inicio</label>
+        <label th:text="#{label.report.startDate}">Fecha de inicio</label>
         <input type="date" th:field="*{startDate}" required onchange="checkDates()">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['startDate'] != null}" th:text="${fieldErrors['startDate']}"></small>
 
-        <label>Fecha final</label>
+        <label th:text="#{label.report.endDate}">Fecha final</label>
         <input type="date" th:field="*{endDate}" required onchange="checkDates()">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['endDate'] != null}" th:text="${fieldErrors['endDate']}"></small>
 
         <span id="dateMessage" class="field-error"></span>
 
-        <label>Formato</label>
+        <label th:text="#{label.report.format}">Formato</label>
         <select th:field="*{format}" required>
-            <option value="">Seleccione</option>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
             <option value="pdf">PDF</option>
             <option value="excel">Excel</option>
             <option value="csv">CSV</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['format'] != null}" th:text="${fieldErrors['format']}"></small>
 
-        <label>Estado del reporte</label>
+        <label th:text="#{label.report.reportStatus}">Estado del reporte</label>
         <select th:field="*{reportStatus}" required>
-            <option value="">Seleccione</option>
-            <option value="generated">Generado</option>
-            <option value="pending">Pendiente</option>
-            <option value="error">Error</option>
+            <option value="" th:text="#{label.report.select}">Seleccione</option>
+            <option value="generated" th:text="#{label.report.status.generated}">Generado</option>
+            <option value="pending" th:text="#{label.report.status.pending}">Pendiente</option>
+            <option value="error" th:text="#{label.report.status.error}">Error</option>
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportStatus'] != null}" th:text="${fieldErrors['reportStatus']}"></small>
 
-        <label>Ruta del archivo</label>
+        <label th:text="#{label.report.filePath}">Ruta del archivo</label>
         <input type="text" th:field="*{filePath}" placeholder="Se puede dejar vacío">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['filePath'] != null}" th:text="${fieldErrors['filePath']}"></small>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar reporte</button>
-            <a th:href="@{/reports}" class="btn-secondary">Volver</a>
+            <button type="submit" class="btn-primary" th:text="#{button.saveReport}">
+                Guardar reporte
+            </button>
+
+            <a th:href="@{/reports}" class="btn-secondary" th:text="#{button.back}">
+                Volver
+            </a>
         </div>
     </form>
 </main>
@@ -91,10 +100,10 @@
         }
 
         if(startDate > endDate){
-            message.innerHTML = "La fecha de inicio no puede ser mayor que la fecha final";
+            message.innerHTML = "[[#{message.report.invalidRange}]]";
             message.style.color = "#dc2626";
         }else{
-            message.innerHTML = "Rango de fechas válido";
+            message.innerHTML = "[[#{message.report.validRange}]]";
             message.style.color = "#15803d";
         }
     }
