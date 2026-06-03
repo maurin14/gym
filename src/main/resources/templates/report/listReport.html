@@ -12,7 +12,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
@@ -40,7 +39,8 @@
         <a th:href="@{/reports}" class="btn-secondary">Limpiar</a>
     </form>
 
-    <table class="portal-table admin-table">
+    <table class="portal-table">
+
         <thead>
         <tr>
             <th>Tipo</th>

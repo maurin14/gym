@@ -2,8 +2,8 @@ package com.una.ac.cr.gym.controller;
 
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.service.ReportService;
+import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +21,14 @@ public class ReportController {
 
     @Autowired
     private ReportService rService;
+    
+    @Autowired
+    private UserService userService;
+    
+    private Report report;
 
     @GetMapping({"", "/"})
-    public String index(@RequestParam(defaultValue = "0") int page,
+    public String index(@RequestParam(defaultValue = "1") int page,
                         @RequestParam(required = false) String reportType,
                         @RequestParam(required = false) String reportStatus,
                         Model model,
@@ -37,17 +42,23 @@ public class ReportController {
             return "redirect:/";
         }
 
-        int size = 5;
-        int currentPage = Math.max(page, 0);
-        Page<Report> reportPage = rService.filterReportsByPage(reportType, reportStatus, currentPage, size);
+        if((reportType != null && !reportType.trim().isEmpty())
+                || (reportStatus != null && !reportStatus.trim().isEmpty())){
 
-        if (currentPage >= reportPage.getTotalPages() && reportPage.getTotalPages() > 0) {
-            currentPage = reportPage.getTotalPages() - 1;
-            reportPage = rService.filterReportsByPage(reportType, reportStatus, currentPage, size);
+            model.addAttribute("reports", rService.filterReports(reportType, reportStatus));
+            model.addAttribute("reportType", reportType);
+            model.addAttribute("reportStatus", reportStatus);
+            model.addAttribute("currentPage", 1);
+            model.addAttribute("totalPages", 1);
+
+            return "report/listReport";
         }
 
+        int size = 5;
+        Page<Report> reportPage = rService.getReportsByPage(page, size);
+
         model.addAttribute("reports", reportPage.getContent());
-        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reportPage.getTotalPages());
         model.addAttribute("reportType", reportType);
         model.addAttribute("reportStatus", reportStatus);
@@ -66,11 +77,12 @@ public class ReportController {
         
         Report r = rService.createNewReport(session);
         model.addAttribute("reportNew", r);
+        model.addAttribute("administrators", userService.getAdministrators());
         return "report/formReport";
     }
 
     @PostMapping("/save")
-    public String save(Report reportNew, Model model, RedirectAttributes redirect, HttpSession session) {
+    public String save(Report reportNew, RedirectAttributes redirect, HttpSession session) {
         String access = rService.validateAdministratorAccess(session);
 
         if(access != null){
@@ -78,20 +90,19 @@ public class ReportController {
             return "redirect:/";
         }
 
-        Map<String, String> fieldErrors = rService.validateFields(reportNew);
+        String message = rService.validate(reportNew);
+
+        if (message != null) {
+            redirect.addFlashAttribute("messageError", message);
+
+            if (reportNew.getReportId() == null) {
+                return "redirect:/reports/add";
+            } else {
+                return "redirect:/reports/edit?id=" + reportNew.getReportId();
+            }
+        }
+
         boolean isNew = reportNew.getReportId() == null;
-
-        if (!isNew && rService.getReportById(reportNew.getReportId()) == null) {
-            fieldErrors.put("form", "El reporte que intenta editar no existe.");
-        }
-
-        if (!fieldErrors.isEmpty()) {
-            model.addAttribute("reportNew", reportNew);
-            model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
-            return "report/formReport";
-        }
-
         rService.save(reportNew);
         boolean saved = true;
 
@@ -125,6 +136,7 @@ public class ReportController {
         }
 
         model.addAttribute("reportNew", report);
+        model.addAttribute("administrators", userService.getAdministrators());
         return "report/formReport";
     }
 

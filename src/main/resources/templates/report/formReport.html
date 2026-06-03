@@ -12,7 +12,6 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-
 <main class="container form-container portal-card admin-page-card">
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
@@ -30,8 +29,13 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportType'] != null}" th:text="${fieldErrors['reportType']}"></small>
 
         <label>Generado por</label>
-        <input type="hidden" th:field="*{generatedBy}">
-        <input type="text" th:field="*{userName}" readonly>
+        <select th:field="*{generatedBy}" required>
+            <option value="">Seleccione</option>
+            <option th:each="admin : ${administrators}"
+                    th:value="${admin.userId}"
+                    th:text="${admin.fullName}">
+            </option>
+        </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['generatedBy'] != null}" th:text="${fieldErrors['generatedBy']}"></small>
 
         <label>Descripción</label>

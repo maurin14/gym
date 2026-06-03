@@ -210,3 +210,5 @@ public class UserController {
         model.addAttribute("branches", branchService.getActiveBranches());
     }
 }
+}
+}
