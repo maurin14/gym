@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horarios - SAM GYM FITNESS</title>
+    <title th:text='menu.schedule'></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -18,128 +18,137 @@
     <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/admin/schedules/new}" class="btn-primary">Nuevo horario</a>
+        <a th:href="@{/admin/schedules/new}" class="btn-primary" th:text="#{button.newSchedule}"></a>
     </div>
 
     <div class="admin-title-row">
         <div>
-            <h2 class="section-title">Listado de horarios</h2>
-            <p class="admin-description">Consulte, filtre y gestione los horarios registrados.</p>
+            <h2 class="section-title" th:text="#{menu.schedule.title}"></h2>
+            <p class="admin-description" th:text="#{subMenu.schedule.title}"></p>
         </div>
     </div>
 
     <form class="admin-filter-row portal-filters" th:action="@{/admin/schedules}" method="get">
         <select name="branchId" aria-label="Filtrar por sucursal">
-            <option value="">Todas las sucursales</option>
+            <option value="" th:text="#{label.gym.allBranches}"></option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
                     th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
                     th:text="${branch.name}">
-                Sucursal
+                
             </option>
         </select>
-        <input type="time" name="start" th:value="${start}" aria-label="Hora inicial">
-        <input type="time" name="end" th:value="${end}" aria-label="Hora final">
+        <input type="time" name="start" th:value="${start}" th:aria-label="#{label.gym.startTime}">
+        <input type="time" name="end" th:value="${end}" th:aria-label="#{label.gym.endTime}">
         <input type="hidden" name="size" th:value="${pageSize}">
-        <button type="submit" class="btn-primary">Filtrar</button>
-        <a th:href="@{/admin/schedules}" class="btn-secondary">Limpiar filtros</a>
+        <button type="submit" class="btn-primary" th:text="#{button.filter}"></button>
+        <a th:href="@{/admin/schedules}" class="btn-secondary" th:text="#{button.cleanFilter}"></a>
     </form>
 
     <div class="table-responsive">
         <table class="portal-table admin-table">
             <thead>
                 <tr>
-                    <th>Dia</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th>Sucursal</th>
-                    <th>Acciones</th>
+                <th th:text="#{label.gym.day}"></th>
+                <th th:text="#{label.gym.hour}"></th>
+                <th th:text="#{label.gym.end}"></th>
+                <th th:text="#{label.gym.type}"></th>
+                <th th:text="#{label.gym.stage}"></th>
+                <th th:text="#{label.gym.branch}"></th>
+                <th th:text="#{label.gym.actions}"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${schedules == null or #lists.isEmpty(schedules)}">
-                    <td colspan="7" class="empty-message">No hay horarios registrados.</td>
+                    <td colspan="7" class="empty-message" th:text="#{msn.schedule.null}"></td>
                 </tr>
                 <tr th:each="scheduleItem : ${schedules}">
-                    <td th:text="${scheduleItem.dayOfWeek}">Dia</td>
-                    <td th:text="${scheduleItem.startTime != null ? #temporals.format(scheduleItem.startTime, 'HH:mm') : 'Sin hora'}">00:00</td>
-                    <td th:text="${scheduleItem.endTime != null ? #temporals.format(scheduleItem.endTime, 'HH:mm') : 'Sin hora'}">00:00</td>
-                    <td th:text="${scheduleItem.scheduleType}">Tipo</td>
+                    <td th:text="#{'day.' + ${scheduleItem.dayOfWeek.name().toLowerCase()}}"></td>
+                    <td th:text="${scheduleItem.startTime != null ? #temporals.format(scheduleItem.startTime, 'HH:mm') : #messages.msg('label.gym.noTime')}">00:00</td>
+                    <td th:text="${scheduleItem.endTime != null ? #temporals.format(scheduleItem.endTime, 'HH:mm') : #messages.msg('label.gym.noTime')}">00:00</td>
+                    <td th:text="${scheduleItem.scheduleType}"> </td>
                     <td>
                         <span th:class="${scheduleItem.active} ? 'status-active' : 'status-inactive'"
-                              th:text="${scheduleItem.active} ? 'Activo' : 'Inactivo'">Activo</span>
+                             th:text="${scheduleItem.active} ? #{status.active} : #{status.inactive}"></span>
                     </td>
-                    <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : 'Sin sucursal'}">Sucursal</td>
+                    <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : #messages.msg('label.gym.none')}"></td>
+                    
+                    </td>  
                     <td class="actions">
-                        <a th:href="@{/admin/schedules/edit/{id}(id=${scheduleItem.id})}" class="btn-primary">Editar</a>
-                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary" data-status-link>Cambiar estado</a>
+                        <a th:href="@{/admin/schedules/edit/{id}(id=${scheduleItem.id})}" class="btn-primary" th:text="#{button.edit}"></a>
+                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary" data-status-link th:text="#{button.changeStatus}"></a>
                         <a th:href="@{/admin/schedules/delete/{id}(id=${scheduleItem.id})}"
                            class="btn-danger"
                            data-delete-link
-                           data-delete-title="Eliminar horario?">Eliminar</a>
+                           th:data-delete-title="#{msn.schedule.delete}" th:text="#{button.delete}"></a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <nav class="pagination" aria-label="Paginacion de horarios"
+    <nav class="pagination" aria-label="Paginacion de horarios" 
          th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
-        <a class="btn-secondary"
+        <a class="btn-secondary" th:text="#{button.previous}"
            th:classappend="${currentPage == 0} ? ' disabled'"
            th:href="@{/admin/schedules(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
-            Anterior
         </a>
+        
         <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
            th:href="@{/admin/schedules(page=${i}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}"
            th:text="${i + 1}"
            th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
-        <a class="btn-secondary"
+        
+        <a class="btn-secondary" th:text="#{button.next}"
            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
            th:href="@{/admin/schedules(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, start=${start}, end=${end})}">
-            Siguiente
+            
         </a>
     </nav>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
-
 <script th:inline="javascript">
-    const successMessage = [[${successMessage != null ? successMessage : null}]];
-    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
-    if (successMessage != null) {
-        showAdminSuccess(successMessage);
-    }
-    if (errorMessage != null) {
-        showAdminError(errorMessage);
-    }
-</script>
+    const messages = {
+        
+        deleteTitle: '[[#{message.delete.confirm}]]',
+        deleteText: '[[#{message.delete.text}]]',
+        deleteButton: '[[#{button.delete}]]',
+        statusTitle: '[[#{message.status.change}]]',
+        yesButton: '[[#{button.yes}]]'  ,
+        deleting: '[[#{message.deleting}]]',
+        processing: '[[#{message.processing}]]'
+    
+    };
 
-<script>
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
+
             confirmAdminAction({
-                title: link.dataset.deleteTitle || 'Eliminar registro?',
-                text: 'Esta accion no se puede deshacer.',
-                confirmText: 'Eliminar',
+                title: link.dataset.deleteTitle || messages.deleteTitle,
+                text: messages.deleteText,
+                confirmText: messages.deleteButton,
                 icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Eliminando...');
+                    showAdminLoading(messages.deleting);
                     window.location.href = link.href;
                 }
             });
         });
     });
+
     document.querySelectorAll('[data-status-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
-            confirmAdminAction({ title: 'Cambiar estado?', confirmText: 'Si' }).then(function (result) {
+
+            confirmAdminAction({
+                title: messages.statusTitle,
+                confirmText: messages.yesButton
+            }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Procesando...');
+                    showAdminLoading(messages.processing);
                     window.location.href = link.href;
                 }
             });

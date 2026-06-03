@@ -4,10 +4,7 @@
  */
 package com.una.ac.cr.gym.domain;
 
-/**
- *
- * @author Amanda
- */
+
 
 
 import jakarta.persistence.*;

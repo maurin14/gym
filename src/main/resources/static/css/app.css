@@ -1430,4 +1430,17 @@ tr:hover,
         padding: 8px 12px;
         font-size: 13px;
     }
+    
+    .branch-filter-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .branch-filter-label {
+        font-weight: 900;
+        color: #111827;
+        font-size: 15px;
+        white-space: nowrap;
+    }
 }

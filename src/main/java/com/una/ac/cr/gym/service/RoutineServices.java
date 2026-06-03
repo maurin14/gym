@@ -50,11 +50,11 @@ public class RoutineServices {
     @Transactional
     public String deleteRoutine(int idRoutine) {
         if (idRoutine <= 0) {
-            return "ID de rutina inválido";
+            return "message.routine.invalidId";
         }
 
         if (!routineRepository.existsById(idRoutine)) {
-            return "Rutina no encontrada";
+            return "message.routine.notFound";
         }
 
         try {
@@ -63,7 +63,7 @@ public class RoutineServices {
             routineRepository.flush();
         } catch (DataIntegrityViolationException ex) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "No se puede eliminar la rutina porque tiene registros relacionados.";
+            return "message.routine.relatedRecords";
         }
 
         return "";
@@ -73,44 +73,44 @@ public class RoutineServices {
         Map<String, String> errors = new LinkedHashMap<>();
 
         if (routine == null) {
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            errors.put("form", "message.form.review");
             return errors;
         }
 
         if (isBlank(routine.getNameRoutine())) {
-            errors.put("nameRoutine", "Este campo es obligatorio.");
+            errors.put("nameRoutine", "message.validation.required");
         }
 
         if (isBlank(routine.getDifficultyLevel())) {
-            errors.put("difficultyLevel", "Seleccione una opción.");
+            errors.put("difficultyLevel", "message.validation.select");
         }
 
         if (isBlank(routine.getRoutineType())) {
-            errors.put("routineType", "Seleccione una opción.");
+            errors.put("routineType", "message.validation.select");
         }
 
         if (routine.getEstimatedDuration() == null) {
-            errors.put("estimatedDuration", "Este campo es obligatorio.");
+            errors.put("estimatedDuration", "message.validation.required");
         } else if (routine.getEstimatedDuration() <= 0) {
-            errors.put("estimatedDuration", "Ingrese un valor válido.");
+            errors.put("estimatedDuration", "message.validation.value");
         }
 
         if (routine.getQuantityExercises() == null) {
-            errors.put("quantityExercises", "Este campo es obligatorio.");
+            errors.put("quantityExercises", "message.validation.required");
         } else if (routine.getQuantityExercises() <= 0) {
-            errors.put("quantityExercises", "Ingrese un valor válido.");
+            errors.put("quantityExercises", "message.validation.value");
         }
 
         if (isBlank(routine.getTrainingObjective())) {
-            errors.put("trainingObjective", "Seleccione una opción.");
+            errors.put("trainingObjective", "message.validation.select");
         }
 
         if (isBlank(routine.getDescription())) {
-            errors.put("description", "Este campo es obligatorio.");
+            errors.put("description", "message.validation.required");
         }
 
         if (isBlank(routine.getExercises())) {
-            errors.put("exercises", "Este campo es obligatorio.");
+            errors.put("exercises", "message.validation.required");
         }
 
         return errors;

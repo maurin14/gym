@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horarios - SAM GYM FITNESS</title>
+    <title th:text='menu.client'></title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -14,9 +14,9 @@
 <main>
     <section class="client-hero compact-hero">
         <div>
-            <span class="section-kicker">Horarios</span>
-            <h1>Horarios disponibles</h1>
-            <p>Consulta los horarios de atencion, clases y actividades disponibles en cada sucursal.</p>
+            <span class="section-kicker" th:text="#{label.gym.schedules}"></span>
+            <h1 th:text="#{menu.schedule.titleCliente}"></h1>
+            <p th:text="#{subMenu.schedule.titleCliente}"></p>
         </div>
     </section>
 
@@ -24,58 +24,60 @@
         <nav class="client-breadcrumb" aria-label="Ruta de navegacion">
             <a th:href="@{/client/home}">Inicio</a>
             <span>/</span>
-            <strong>Horarios</strong>
+            <strong th:text="#{label.gym.schedules}"></strong>
         </nav>
 
         <form class="catalog-toolbar" th:action="@{/client/schedules}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
             <div class="toolbar-field">
-                <label for="branchId">Sucursal</label>
+                <label for="branchId" th:text="#{label.gym.branch}"></label>
                 <select id="branchId" name="branchId">
-                    <option value="">Todas</option>
+                    <option value="" th:text="#{label.gym.all}"></option>
                     <option th:each="branch : ${branches}"
                             th:value="${branch.id}"
                             th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
                             th:text="${branch.name}">
-                        Sucursal
+                        
                     </option>
                 </select>
             </div>
-            <button type="submit" class="btn-primary">Filtrar</button>
-            <a th:href="@{/client/schedules}" class="btn-secondary">Limpiar</a>
+            <button type="submit" class="btn-primary" th:text="#{button.filter}"></button>
+            <a th:href="@{/client/schedules}" class="btn-secondary"th:text="#{button.cleanFilter}"></a>
         </form>
 
         <div class="client-table-card">
             <div class="section-heading">
-                <h2>Agenda del gimnasio</h2>
-                <p>Informacion consultiva de horarios registrados.</p>
+             <h2 th:text="#{menu.schedule.agenda}"></h2>
+             <p th:text="#{menu.schedule.description}"></p>
             </div>
 
-            <div class="empty-state" th:if="${schedules == null or #lists.isEmpty(schedules)}">
-                No hay horarios disponibles en este momento.
+            <div class="empty-state" th:if="${schedules == null or #lists.isEmpty(schedules)}" th:text="#{msn.schedule.null}">
+                
             </div>
 
             <table class="client-table" th:if="${schedules != null and !#lists.isEmpty(schedules)}">
                 <thead>
                     <tr>
-                        <th>Dia</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Tipo</th>
-                        <th>Sucursal</th>
-                        <th>Estado</th>
+                <th th:text="#{label.gym.day}"></th>
+                <th th:text="#{label.gym.hour}"></th>
+                <th th:text="#{label.gym.end}"></th>
+                <th th:text="#{label.gym.type}"></th>
+                <th th:text="#{label.gym.branch}"></th> 
+                <th th:text="#{label.gym.stage}"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="scheduleItem : ${schedules}">
-                        <td th:text="${scheduleItem.dayOfWeek}">Dia</td>
-                        <td th:text="${scheduleItem.startTime != null ? #temporals.format(scheduleItem.startTime, 'HH:mm') : 'Sin hora'}">00:00</td>
-                        <td th:text="${scheduleItem.endTime != null ? #temporals.format(scheduleItem.endTime, 'HH:mm') : 'Sin hora'}">00:00</td>
-                        <td th:text="${scheduleItem.scheduleType}">Tipo</td>
-                        <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : 'Sin sucursal'}">Sucursal</td>
+                        <td  th:text="#{${'day.' + #strings.toLowerCase(scheduleItem.dayOfWeek.name())}}"></td>
+                        <td th:text="${scheduleItem.startTime != null ? #temporals.format(scheduleItem.startTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"> </td>
+                        <td th:text="${scheduleItem.endTime != null ? #temporals.format(scheduleItem.endTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"></td>
+                        <td th:text="${scheduleItem.scheduleType}"></td>
+                        <td th:text="${scheduleItem.branch != null ? scheduleItem.branch.name : #messages.msg('label.gym.none')}"></td>
+                
                         <td>
                             <span th:class="${scheduleItem.active} ? 'status-active' : 'status-inactive'"
-                                  th:text="${scheduleItem.active} ? 'Disponible' : 'No disponible'">Disponible</span>
+                             th:text="${scheduleItem.active} ? #{status.available} : #{status.unavailable}"></span>
+                           
                         </td>
                     </tr>
                 </tbody>
@@ -84,9 +86,9 @@
 
         <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginacion de horarios">
             <a class="pagination-link"
-               th:classappend="${currentPage == 0} ? ' disabled'"
+               th:classappend="${currentPage == 0} ? ' disabled'"  th:text="#{button.previous}"
                th:href="@{/client/schedules(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId})}">
-                Anterior
+              
             </a>
             <a class="pagination-link page-number"
                th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
@@ -95,10 +97,10 @@
                th:text="${pageNumber + 1}">
                 1
             </a>
-            <a class="pagination-link"
+            <a class="pagination-link"  th:text="#{button.next}"
                th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
                th:href="@{/client/schedules(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId})}">
-                Siguiente
+              
             </a>
         </nav>
     </section>
