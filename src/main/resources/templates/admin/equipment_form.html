@@ -6,6 +6,7 @@
     <title th:text="#{equipment.subMenu}"></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
@@ -55,7 +56,8 @@
                th:text="${fieldErrors['state']}"></small>
 
         <label th:text='#{label.gym.purchasedate}'></label>
-        <input type="date" th:field="*{purchaseDate}">
+        <input type="date" th:value="${#temporals.format(purchaseDate, 'yyyy-MM-dd')}"
+               name="purchaseDate">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['purchaseDate'] != null}"
                th:text="${fieldErrors['purchaseDate']}"></small>
