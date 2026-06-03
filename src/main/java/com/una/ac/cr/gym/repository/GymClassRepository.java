@@ -1,6 +1,8 @@
 package com.una.ac.cr.gym.repository;
 
 import com.una.ac.cr.gym.domain.GymClass;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,6 +81,52 @@ public interface GymClassRepository extends JpaRepository<GymClass, Integer> {
            """)
     Page<GymClass> findActiveByBranchOrTrainerBranch(@Param("branchId") int branchId,
                                                       Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
+    @Query("""
+           SELECT gc FROM GymClass gc
+           WHERE gc.status = true
+           AND gc.enrolledCount < gc.maxCapacity
+           AND (
+               gc.classDate > :today
+               OR (gc.classDate = :today AND gc.startTime > :now)
+           )
+           """)
+    Page<GymClass> findAvailableClasses(
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now,
+            Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+        "trainer",
+        "branch",
+        "trainer.branch"
+    })
+    @Query("""
+           SELECT gc FROM GymClass gc
+           WHERE gc.status = true
+           AND gc.enrolledCount < gc.maxCapacity
+           AND (
+               gc.classDate > :today
+               OR (gc.classDate = :today AND gc.startTime > :now)
+           )
+           AND (
+               (gc.branch IS NOT NULL AND gc.branch.id = :branchId)
+               OR (gc.branch IS NULL
+                   AND gc.trainer IS NOT NULL
+                   AND gc.trainer.branch IS NOT NULL
+                   AND gc.trainer.branch.id = :branchId)
+           )
+           """)
+    Page<GymClass> findAvailableClassesByBranch(
+            @Param("branchId") int branchId,
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now,
+            Pageable pageable);
 
     boolean existsByIdClassAndTrainer_UserId(int idClass, Integer trainerId);
 

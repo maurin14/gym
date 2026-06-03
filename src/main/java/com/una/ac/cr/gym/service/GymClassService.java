@@ -6,6 +6,8 @@ import com.una.ac.cr.gym.repository.BranchRepository;
 import com.una.ac.cr.gym.repository.GymClassRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +50,10 @@ public class GymClassService {
     }
 
     public Page<GymClass> getActiveClassesByBranchPage(Integer branchId, int page, int size) {
-        return gymClassRepository.findActiveByBranchOrTrainerBranch(
+        return gymClassRepository.findAvailableClassesByBranch(
                 branchId,
+                LocalDate.now(),
+                LocalTime.now(),
                 PageRequest.of(page, size)
         );
     }
@@ -71,7 +75,11 @@ public class GymClassService {
     }
 
     public Page<GymClass> getActiveClassesPage(int page, int size) {
-        return gymClassRepository.findByStatusTrue(PageRequest.of(page, size));
+        return gymClassRepository.findAvailableClasses(
+                LocalDate.now(),
+                LocalTime.now(),
+                PageRequest.of(page, size)
+        );
     }
 
     public Page<GymClass> getTrainerClassesPage(Integer trainerId, int page, int size) {
