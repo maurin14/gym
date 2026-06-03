@@ -24,6 +24,10 @@ public class UserService {
         return uData.findAll();
     }
     
+    public List<User> getAdministrators(){
+        return uData.findByRole("administrator");
+    }
+    
     public List<User> filterUsers(String fullName, String role){
         boolean hasName = fullName != null && !fullName.trim().isEmpty();
         boolean hasRole = role != null && !role.trim().isEmpty();
