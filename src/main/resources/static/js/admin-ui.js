@@ -9,19 +9,19 @@ function systemSwalOptions(options) {
 
 function confirmSystemAction(options) {
     return Swal.fire(systemSwalOptions({
-        title: options.title || window.i18n.saveChanges,
+        title: options.title || "Guardar cambios?",
         text: options.text || "",
         icon: options.icon || "question",
         showCancelButton: true,
-        confirmButtonText: options.confirmText || window.i18n.yes,
-        cancelButtonText: options.cancelText || window.i18n.cancel
+        confirmButtonText: options.confirmText || "Si",
+        cancelButtonText: options.cancelText || "Cancelar"
     }));
 }
 
 function showSystemLoading(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || window.i18n.processing,
-        text: text || window.i18n.saving,
+        title: title || "Procesando...",
+        text: text || "Espere un momento.",
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: function () {
@@ -32,19 +32,19 @@ function showSystemLoading(title, text) {
 
 function showSystemSuccess(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || window.i18n.success,
+        title: title || "Guardado.",
         text: text || "",
         icon: "success",
-        confirmButtonText: window.i18n.accept
+        confirmButtonText: "OK"
     }));
 }
 
 function showSystemError(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || window.i18n.error,
+        title: title || "No se pudo guardar.",
         text: text || "",
         icon: "error",
-        confirmButtonText: window.i18n.accept
+        confirmButtonText: "OK"
     }));
 }
 
@@ -55,44 +55,29 @@ const showAdminSuccess = showSystemSuccess;
 const showAdminError = showSystemError;
 
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("form[data-admin-confirm], form[data-system-confirm]").forEach(function (form) {
+        let submitting = false;
 
-    document
-        .querySelectorAll("form[data-admin-confirm], form[data-system-confirm]")
-        .forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            if (submitting) {
+                return;
+            }
 
-            let submitting = false;
+            event.preventDefault();
 
-            form.addEventListener("submit", function (event) {
-
-                if (submitting) {
+            confirmSystemAction({
+                title: form.dataset.adminConfirm || form.dataset.systemConfirm,
+                text: form.dataset.adminText || form.dataset.systemText || "",
+                confirmText: form.dataset.adminConfirmText || form.dataset.systemConfirmText || "Guardar"
+            }).then(function (result) {
+                if (!result.isConfirmed || submitting) {
                     return;
                 }
 
-                event.preventDefault();
-
-                confirmSystemAction({
-                    title: form.dataset.adminConfirm || form.dataset.systemConfirm,
-                    text: form.dataset.adminText || form.dataset.systemText || "",
-                    confirmText:
-                        form.dataset.adminConfirmText ||
-                        form.dataset.systemConfirmText ||
-                        window.i18n.save
-                }).then(function (result) {
-
-                    if (!result.isConfirmed || submitting) {
-                        return;
-                    }
-
-                    submitting = true;
-
-                    showSystemLoading(
-                        form.dataset.adminLoading ||
-                        form.dataset.systemLoading ||
-                        window.i18n.processing
-                    );
-
-                    form.submit();
-                });
+                submitting = true;
+                showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || "Procesando...");
+                form.submit();
             });
         });
-}); extraña
+    });
+});
