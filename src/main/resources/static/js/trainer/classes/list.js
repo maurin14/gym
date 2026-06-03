@@ -103,7 +103,7 @@ function showClasses(classes) {
                 <td>${gymClass.classType}</td>
                 <td>${gymClass.trainerName}</td>
                 <td>${gymClass.branchName || "Sin sucursal"}</td>
-                <td>${gymClass.classDate}</td>
+                <td>${formatDate(gymClass.classDate)}</td>
                 <td>${gymClass.startTime}</td>
                 <td>${gymClass.endTime}</td>
                 <td>${gymClass.duration} min</td>
@@ -160,6 +160,21 @@ function getDifficultyClass(difficultyLevel) {
     }
 
     return "status-active";
+}
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+    const parts = String(dateValue).split("-");
+
+    if (parts.length !== 3) {
+        return dateValue;
+    }
+
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
 }
 
 function showPagination() {
