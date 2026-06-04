@@ -20,9 +20,8 @@ public class AttendanceService {
     private final UserRepository userRepository;
 
     public AttendanceService(AttendanceRepository attendanceRepository,
-            GymClassRepository gymClassRepository,
-            UserRepository userRepository) {
-
+                             GymClassRepository gymClassRepository,
+                             UserRepository userRepository) {
         this.attendanceRepository = attendanceRepository;
         this.gymClassRepository = gymClassRepository;
         this.userRepository = userRepository;
@@ -44,7 +43,6 @@ public class AttendanceService {
         if (branchId == null || branchId <= 0) {
             return List.of();
         }
-
         return attendanceRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(0, 100)).getContent();
     }
 
@@ -56,7 +54,6 @@ public class AttendanceService {
         if (branchId == null || branchId <= 0) {
             return Page.empty(PageRequest.of(page, size));
         }
-
         return attendanceRepository.findByTrainerAndBranch(trainerId, branchId, PageRequest.of(page, size));
     }
 
@@ -68,7 +65,6 @@ public class AttendanceService {
         if (branchId == null || branchId <= 0) {
             return List.of();
         }
-
         return attendanceRepository.findDistinctClientsByTrainerAndBranch(trainerId, branchId);
     }
 
@@ -80,7 +76,6 @@ public class AttendanceService {
         if (branchId == null || branchId <= 0) {
             return false;
         }
-
         return gymClassRepository.existsByIdClassAndTrainerAndBranch(classId, trainerId, branchId);
     }
 
@@ -132,7 +127,6 @@ public class AttendanceService {
     }
 
     public Attendance saveAttendance(Attendance attendance) {
-
         attendance.setRegisterDate(LocalDate.now());
         attendance.setStatus(true);
 
@@ -143,9 +137,7 @@ public class AttendanceService {
     }
 
     public Attendance updateAttendance(int idAttendance, Attendance attendance) {
-
-        Attendance currentAttendance =
-                attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
+        Attendance currentAttendance = attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
 
         if (currentAttendance == null) {
             return null;
@@ -161,23 +153,14 @@ public class AttendanceService {
         GymClass newClass = null;
 
         if (attendance.getGymClass() != null) {
-            newClass = gymClassRepository
-                    .findById(attendance.getGymClass().getIdClass())
-                    .orElse(null);
-
+            newClass = gymClassRepository.findById(attendance.getGymClass().getIdClass()).orElse(null);
             attendance.setGymClass(newClass);
         }
 
-        Integer currentClassId =
-                currentClass != null ? currentClass.getIdClass() : null;
+        Integer currentClassId = currentClass != null ? currentClass.getIdClass() : null;
+        Integer newClassId = newClass != null ? newClass.getIdClass() : null;
 
-        Integer newClassId =
-                newClass != null ? newClass.getIdClass() : null;
-
-        if (currentClassId != null
-                && !currentClassId.equals(newClassId)
-                && currentClass.getEnrolledCount() > 0) {
-
+        if (currentClassId != null && !currentClassId.equals(newClassId) && currentClass.getEnrolledCount() > 0) {
             currentClass.setEnrolledCount(currentClass.getEnrolledCount() - 1);
             gymClassRepository.save(currentClass);
         }
@@ -191,16 +174,10 @@ public class AttendanceService {
     }
 
     public void deleteAttendance(int idAttendance) {
-
-        Attendance attendance =
-                attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
+        Attendance attendance = attendanceRepository.findByIdWithRelations(idAttendance).orElse(null);
 
         if (attendance != null && attendance.getGymClass() != null) {
-
-            GymClass gymClass = gymClassRepository
-                    .findById(attendance.getGymClass().getIdClass())
-                    .orElse(null);
-
+            GymClass gymClass = gymClassRepository.findById(attendance.getGymClass().getIdClass()).orElse(null);
             if (gymClass != null && gymClass.getEnrolledCount() > 0) {
                 gymClass.setEnrolledCount(gymClass.getEnrolledCount() - 1);
                 gymClassRepository.save(gymClass);
@@ -211,29 +188,14 @@ public class AttendanceService {
     }
 
     private void loadClient(Attendance attendance) {
-
-        if (attendance.getClient() == null
-                || attendance.getClient().getUserId() == null) {
-            return;
-        }
-
-        User client = userRepository
-                .findById(attendance.getClient().getUserId())
-                .orElse(null);
-
+        if (attendance.getClient() == null || attendance.getClient().getUserId() == null) return;
+        User client = userRepository.findById(attendance.getClient().getUserId()).orElse(null);
         attendance.setClient(client);
     }
 
     private void loadGymClass(Attendance attendance, boolean increaseEnrolledCount) {
-
-        if (attendance.getGymClass() == null) {
-            return;
-        }
-
-        GymClass gymClass = gymClassRepository
-                .findById(attendance.getGymClass().getIdClass())
-                .orElse(null);
-
+        if (attendance.getGymClass() == null) return;
+        GymClass gymClass = gymClassRepository.findById(attendance.getGymClass().getIdClass()).orElse(null);
         if (gymClass == null) {
             attendance.setGymClass(null);
             return;
