@@ -11,6 +11,7 @@ import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.GymClassService;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -88,7 +89,10 @@ public class BranchController {
 
     @GetMapping("/admin/branches/new")
     public String newBranch(Model model) {
-        model.addAttribute("branch", new Branch());
+        Branch branch = new Branch();
+        branch.setActive(true);
+        branch.setOpeningDate(LocalDate.now());
+        model.addAttribute("branch", branch);
         return "branches/admin/formBranch";
     }
 

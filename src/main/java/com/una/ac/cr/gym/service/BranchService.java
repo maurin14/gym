@@ -6,14 +6,17 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Branch;
 import com.una.ac.cr.gym.repository.BranchRepository;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
@@ -27,6 +30,27 @@ public class BranchService implements CRUD<Branch> {
 
     @Autowired
     private BranchRepository branchRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @PostConstruct
+    public void ensureBranchSchemaMatchesDomain() {
+        try {
+            String columnType = jdbcTemplate.queryForObject("""
+                    SELECT COLUMN_TYPE
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = DATABASE()
+                      AND TABLE_NAME = 'tb_branches'
+                      AND COLUMN_NAME = 'province'
+                      AND IS_NULLABLE = 'NO'
+                    """, String.class);
+
+            jdbcTemplate.execute("ALTER TABLE tb_branches MODIFY COLUMN province " + columnType + " NULL");
+        } catch (EmptyResultDataAccessException ex) {
+            // The column does not exist or already allows nulls, so the domain mapping is compatible.
+        }
+    }
 
     @Override
     public void save(Branch branch) {

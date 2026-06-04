@@ -143,7 +143,7 @@ public class PaymentService implements CRUD<Payment> {
         }
 
         if (payment.getBranch() == null || payment.getBranch().getId() <= 0) {
-            errors.put("branch", "message.validation.select");
+            errors.put("branch.id", "message.validation.select");
         }
 
         if (payment.getAmount() == null) {

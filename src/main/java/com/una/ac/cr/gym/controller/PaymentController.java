@@ -11,6 +11,7 @@ import com.una.ac.cr.gym.service.BranchService;
 import com.una.ac.cr.gym.service.PaymentService;
 import com.una.ac.cr.gym.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -90,7 +91,9 @@ public class PaymentController {
 
     @GetMapping("/admin/payments/new")
     public String newPayment(Model model) {
-        model.addAttribute("payment", new Payment());
+        Payment payment = new Payment();
+        payment.setPaymentDate(LocalDate.now());
+        model.addAttribute("payment", payment);
         model.addAttribute("branches", branchService.getActiveBranches());
         model.addAttribute("clients", userService.getClients());
         return "payments/admin/formPayment";
@@ -98,10 +101,10 @@ public class PaymentController {
 
     @PostMapping("/admin/payments/save")
     public String savePayment(@ModelAttribute("payment") Payment payment,
-                              @RequestParam(required = false) Integer branchId,
                               Model model) {
 
-        Branch branch = branchId != null ? branchService.getById(branchId) : null;
+        Integer branchId = payment.getBranch() != null ? payment.getBranch().getId() : null;
+        Branch branch = branchId != null && branchId > 0 ? branchService.getById(branchId) : null;
         payment.setBranch(branch);
 
         Map<String, String> fieldErrors = paymentService.validateFields(payment);

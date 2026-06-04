@@ -39,15 +39,14 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idUser'] != null}" th:text="#{${fieldErrors['idUser']}}"></small>
 
         <label th:text="#{label.payment.branch}">Sucursal</label>
-        <select name="branchId" required>
+        <select th:field="*{branch.id}" required>
             <option value="" th:text="#{select.branch}">Seleccione una sucursal</option>
             <option th:each="b : ${branches}"
                     th:value="${b.id}"
-                    th:text="${b.name}"
-                    th:selected="${payment.branch != null and payment.branch.id == b.id}">
+                    th:text="${b.name}">
             </option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch'] != null}" th:text="#{${fieldErrors['branch']}}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="#{${fieldErrors['branch.id']}}"></small>
 
         <label th:text="#{label.payment.amount}">Monto</label>
         <input type="number"
