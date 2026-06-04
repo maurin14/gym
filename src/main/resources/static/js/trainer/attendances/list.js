@@ -35,7 +35,7 @@ function loadBranchesFilter() {
     fetch("/attendances/branches")
         .then(response => response.json())
         .then(data => {
-            branchFilter.innerHTML = `<option value="">${i18n.branchAll}</option>`;
+            branchFilter.innerHTML = `<option value="">${i18n.branchAll || "All branches"}</option>`;
             data.forEach(branch => {
                 branchFilter.innerHTML += `<option value="${branch.id}">${branch.name}</option>`;
             });
@@ -77,7 +77,6 @@ function renderAttendances(attendances) {
     attendances.forEach(att => {
         const statusClass = getStatusClass(att.attendanceStatus);
 
-        // Traducción estricta basada en i18n
         let statusText = att.attendanceStatus.toLowerCase();
         if (statusText === "presente" || statusText === "present") statusText = i18n.statusPresent;
         else if (statusText === "ausente" || statusText === "absent") statusText = i18n.statusAbsent;

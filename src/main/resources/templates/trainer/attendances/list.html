@@ -10,13 +10,17 @@
 
 <body class="page-portal">
 
+<!-- Header -->
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
 <main class="container portal-card admin-page-card wide-table-card">
+
+    <!-- Botón de registrar asistencia -->
     <div class="buttons admin-action-row">
         <a class="btn-primary" th:href="${attendanceBasePath + '/form'}" th:text="#{button.add.attendance}">New Attendance</a>
     </div>
 
+    <!-- Tabla de asistencias -->
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
@@ -30,20 +34,23 @@
             <th th:text="#{label.attendance.actions}">Actions</th>
         </tr>
         </thead>
-
         <tbody id="attendancesTableBody"></tbody>
     </table>
 
+    <!-- Paginación -->
     <div id="attendancesPagination" class="pagination"></div>
+
 </main>
 
+<!-- Footer -->
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<!-- Configuración JS e i18n -->
 <script th:inline="javascript">
     window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/trainer/attendances";
-    window.canDeleteAttendances = /*[[${session.user != null and session.user.role == 'administrator'}]]*/ false;
+    window.canDeleteAttendances = /*[[${session.user != null and session.user.role == 'trainer'}]]*/ true;
 
-    // i18n dinámico
+    // Traducciones dinámicas
     window.i18n = {
         edit: /*[[#{button.edit}]]*/ "Edit",
         delete: /*[[#{button.delete}]]*/ "Delete",
@@ -60,7 +67,7 @@
     };
 </script>
 
-<script th:src="@{/js/trainer/attendances/list.js}"></script>
+<!-- Script específico de trainer.attendances -->
 <script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>

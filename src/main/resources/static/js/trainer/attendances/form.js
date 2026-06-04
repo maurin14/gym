@@ -5,316 +5,169 @@ const attendanceBasePath = window.attendanceBasePath ||
 
 let attendanceSaving = false;
 
-document.addEventListener("DOMContentLoaded", function () {
+// i18n dinámico
+const i18n = window.i18n || {
+    selectClient: "Select a client",
+    selectClass: "Select a class",
+    attendanceRequired: "This field is required",
+    statusRequired: "Select a valid option",
+    incompleteData: "Please complete the required fields",
+    savingAttendance: "Saving attendance...",
+    attendanceSaved: "Attendance saved successfully",
+    attendanceUpdated: "Attendance updated successfully",
+    loadClientsError: "Could not load clients.",
+    loadClassesError: "Could not load classes.",
+    loadAttendanceError: "Could not load attendance.",
+    saveError: "Could not save attendance"
+};
 
+document.addEventListener("DOMContentLoaded", function () {
     Promise.all([
         loadClients(),
         loadClasses()
     ]).then(() => {
-
         const idAttendance = getAttendanceIdFromPath();
-
         if (idAttendance) {
             loadAttendanceForEdit(idAttendance);
         }
     });
-
 });
 
 function loadClients() {
-
     return fetch("/attendances/clients")
-            .then(response => response.json())
-            .then(data => {
-
-                const clientSelect =
-                        document.getElementById("clientId");
-
-                clientSelect.innerHTML =
-                        '<option value="">Seleccione un cliente</option>';
-
-                data
-                        .filter(client =>
-                            client.status &&
-                                    client.status.toLowerCase() === "active"
-                        )
-                        .forEach(client => {
-
-                            clientSelect.innerHTML += `
-                        <option value="${client.userId}">
-                            ${client.fullName}
-                        </option>
-                    `;
-                        });
-            })
-            .catch(() => {
-                showAdminError(
-                        "Error",
-                        "No se pudieron cargar los clientes."
-                );
-            });
+        .then(res => res.json())
+        .then(data => {
+            const clientSelect = document.getElementById("clientId");
+            clientSelect.innerHTML = `<option value="">${i18n.selectClient}</option>`;
+            data.filter(c => c.status && c.status.toLowerCase() === "active")
+                .forEach(c => {
+                    clientSelect.innerHTML += `<option value="${c.userId}">${c.fullName}</option>`;
+                });
+        })
+        .catch(() => showAdminError("Error", i18n.loadClientsError));
 }
 
 function loadClasses() {
-
     return fetch("/classes")
-            .then(response => response.json())
-            .then(data => {
-
-                const classSelect =
-                        document.getElementById("classId");
-
-                classSelect.innerHTML =
-                        '<option value="">Seleccione una clase</option>';
-
-                data.forEach(gymClass => {
-
-                    classSelect.innerHTML += `
-                    <option value="${gymClass.idClass}"
-                            data-date="${gymClass.classDate}">
-                        ${gymClass.classType}
-                        - ${gymClass.branchName || "Sin sucursal"}
-                        - ${gymClass.classDate}
+        .then(res => res.json())
+        .then(data => {
+            const classSelect = document.getElementById("classId");
+            classSelect.innerHTML = `<option value="">${i18n.selectClass}</option>`;
+            data.forEach(c => {
+                classSelect.innerHTML += `
+                    <option value="${c.idClass}" data-date="${c.classDate}">
+                        ${c.classType} - ${c.branchName || ""}
+                        - ${c.classDate}
                     </option>
                 `;
-                });
-            })
-            .catch(() => {
-                showAdminError(
-                        "Error",
-                        "No se pudieron cargar las clases."
-                );
             });
+        })
+        .catch(() => showAdminError("Error", i18n.loadClassesError));
 }
 
 function loadAttendanceForEdit(idAttendance) {
-
     fetch("/attendances/edit/" + idAttendance)
-            .then(response => {
-
-                if (!response.ok) {
-                    throw new Error();
-                }
-
-                return response.json();
-            })
-            .then(attendance => {
-
-                document.getElementById("idAttendance").value =
-                        attendance.idAttendance || "";
-
-                const title =
-                        document.getElementById("formTitle");
-
-                if (title) {
-                    title.textContent =
-                            "Editar asistencia";
-                }
-
-                setInputValue("clientId", attendance.clientId || "");
-                setInputValue("classId", attendance.classId || "");
-                setInputValue("attendanceDate", attendance.attendanceDate || "");
-                setInputValue("attendanceStatus", attendance.attendanceStatus || "Presente");
-                setInputValue("observation", attendance.observation || "");
-
-            })
-            .catch(() => {
-                showAdminError(
-                        "Error",
-                        "No se pudo cargar la asistencia."
-                );
-            });
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.json();
+        })
+        .then(att => {
+            document.getElementById("idAttendance").value = att.idAttendance || "";
+            const title = document.getElementById("formTitle");
+            if (title) title.textContent = i18n.attendanceUpdated;
+            setInputValue("clientId", att.clientId || "");
+            setInputValue("classId", att.classId || "");
+            setInputValue("attendanceDate", att.attendanceDate || "");
+            setInputValue("attendanceStatus", att.attendanceStatus || "Presente");
+            setInputValue("observation", att.observation || "");
+        })
+        .catch(() => showAdminError("Error", i18n.loadAttendanceError));
 }
 
 function setInputValue(id, value) {
-
-    const element =
-            document.getElementById(id);
-
-    if (element) {
-        element.value = value;
-    }
+    const el = document.getElementById(id);
+    if (el) el.value = value;
 }
 
 function getAttendanceIdFromPath() {
-
-    const match =
-            window.location.pathname.match(/\/form\/(\d+)$/);
-
+    const match = window.location.pathname.match(/\/form\/(\d+)$/);
     return match ? match[1] : "";
 }
 
 function setAttendanceDate() {
-
-    const classSelect =
-            document.getElementById("classId");
-
-    const selectedOption =
-            classSelect.options[classSelect.selectedIndex];
-
-    if (selectedOption) {
-
-        const date =
-                selectedOption.getAttribute("data-date");
-
-        if (date) {
-            document.getElementById("attendanceDate").value =
-                    date;
-        }
+    const classSelect = document.getElementById("classId");
+    const selected = classSelect.options[classSelect.selectedIndex];
+    if (selected) {
+        const date = selected.getAttribute("data-date");
+        if (date) document.getElementById("attendanceDate").value = date;
     }
 }
 
 function saveAttendance() {
-
-    if (attendanceSaving) {
-        return;
-    }
+    if (attendanceSaving) return;
 
     clearAttendanceErrors();
 
-    const idAttendance =
-            document.getElementById("idAttendance").value;
-
-    const clientId =
-            document.getElementById("clientId").value;
-
-    const classId =
-            document.getElementById("classId").value;
-
-    const attendanceDate =
-            document.getElementById("attendanceDate").value;
-
-    const attendanceStatus =
-            document.getElementById("attendanceStatus").value;
-
-    const observation =
-            document.getElementById("observation").value.trim();
+    const idAttendance = document.getElementById("idAttendance").value;
+    const clientId = document.getElementById("clientId").value;
+    const classId = document.getElementById("classId").value;
+    const attendanceDate = document.getElementById("attendanceDate").value;
+    const attendanceStatus = document.getElementById("attendanceStatus").value;
+    const observation = document.getElementById("observation").value.trim();
 
     let hasErrors = false;
-
-    if (clientId === "") {
-        showAttendanceError("clientId", "Seleccione un cliente.");
-        hasErrors = true;
-    }
-
-    if (classId === "") {
-        showAttendanceError("classId", "Seleccione una clase.");
-        hasErrors = true;
-    }
-
-    if (attendanceDate === "") {
-        showAttendanceError("attendanceDate", "La fecha es obligatoria.");
-        hasErrors = true;
-    }
-
-    if (attendanceStatus === "") {
-        showAttendanceError("attendanceStatus", "Seleccione un estado.");
-        hasErrors = true;
-    }
+    if (clientId === "") { showAttendanceError("clientId", i18n.selectClient); hasErrors = true; }
+    if (classId === "") { showAttendanceError("classId", i18n.selectClass); hasErrors = true; }
+    if (attendanceDate === "") { showAttendanceError("attendanceDate", i18n.attendanceRequired); hasErrors = true; }
+    if (attendanceStatus === "") { showAttendanceError("attendanceStatus", i18n.statusRequired); hasErrors = true; }
 
     if (hasErrors) {
-        showAdminError(
-                "Datos incompletos",
-                "Debe completar los campos obligatorios."
-        );
+        showAdminError(i18n.incompleteData, i18n.incompleteData);
         return;
     }
 
     const attendance = {
-
-        client: {
-            userId: parseInt(clientId)
-        },
-
-        gymClass: {
-            idClass: parseInt(classId)
-        },
-
-        attendanceDate: attendanceDate,
-        attendanceStatus: attendanceStatus,
-        observation: observation || ""
+        client: { userId: parseInt(clientId) },
+        gymClass: { idClass: parseInt(classId) },
+        attendanceDate,
+        attendanceStatus,
+        observation
     };
 
-    const url = idAttendance !== ""
-            ? "/attendances/" + idAttendance
-            : "/attendances";
-
-    const method = idAttendance !== ""
-            ? "PUT"
-            : "POST";
+    const url = idAttendance !== "" ? "/attendances/" + idAttendance : "/attendances";
+    const method = idAttendance !== "" ? "PUT" : "POST";
 
     attendanceSaving = true;
-
-    showAdminLoading("Guardando asistencia...");
+    showAdminLoading(i18n.savingAttendance);
 
     fetch(url, {
-
-        method: method,
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
+        method,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(attendance)
-
     })
-            .then(response => {
-
-                if (!response.ok) {
-                    throw new Error();
-                }
-
-                return response.json();
-            })
-            .then(() => {
-
-                showAdminSuccess(
-                        idAttendance !== ""
-                        ? "Asistencia actualizada correctamente."
-                        : "Asistencia registrada correctamente."
-                )
-                        .then(() => {
-                            window.location.href =
-                                    attendanceBasePath;
-                        });
-            })
-            .catch(() => {
-
-                attendanceSaving = false;
-
-                showAdminError(
-                        "Error",
-                        "No se pudo guardar la asistencia."
-                );
-            });
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(() => {
+        showAdminSuccess(
+            idAttendance !== "" ? i18n.attendanceUpdated : i18n.attendanceSaved
+        ).then(() => window.location.href = attendanceBasePath);
+    })
+    .catch(() => {
+        attendanceSaving = false;
+        showAdminError("Error", i18n.saveError);
+    });
 }
 
 function clearAttendanceErrors() {
-
-    document.querySelectorAll(".field-error")
-            .forEach(error => {
-                error.textContent = "";
-            });
-
-    document.querySelectorAll(".invalid")
-            .forEach(field => {
-                field.classList.remove("invalid");
-            });
+    document.querySelectorAll(".field-error").forEach(e => e.textContent = "");
+    document.querySelectorAll(".invalid").forEach(f => f.classList.remove("invalid"));
 }
 
 function showAttendanceError(field, message) {
-
-    const error =
-            document.getElementById(field + "Error");
-
-    const fieldElement =
-            document.getElementById(field);
-
-    if (error) {
-        error.textContent = message;
-    }
-
-    if (fieldElement) {
-        fieldElement.classList.add("invalid");
-    }
+    const error = document.getElementById(field + "Error");
+    const fieldEl = document.getElementById(field);
+    if (error) error.textContent = message;
+    if (fieldEl) fieldEl.classList.add("invalid");
 }
