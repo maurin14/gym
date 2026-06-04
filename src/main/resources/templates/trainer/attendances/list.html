@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de asistencias</title>
+    <title th:text="#{title.attendance.list}">Attendance List</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -14,20 +14,20 @@
 
 <main class="container portal-card admin-page-card wide-table-card">
     <div class="buttons admin-action-row">
-        <a class="btn-primary" th:href="${attendanceBasePath + '/form'}">Nueva asistencia</a>
+        <a class="btn-primary" th:href="${attendanceBasePath + '/form'}" th:text="#{button.add.attendance}">New Attendance</a>
     </div>
 
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
-            <th>Cliente</th>
-            <th>Clase</th>
-            <th>Sucursal</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Observaci&oacute;n</th>
-            <th>Registro</th>
-            <th>Acciones</th>
+            <th th:text="#{label.attendance.client}">Client</th>
+            <th th:text="#{label.attendance.class}">Class</th>
+            <th th:text="#{label.attendance.branch}">Branch</th>
+            <th th:text="#{label.attendance.date}">Date</th>
+            <th th:text="#{label.attendance.status}">Status</th>
+            <th th:text="#{label.attendance.observation}">Observation</th>
+            <th th:text="#{label.attendance.register}">Register</th>
+            <th th:text="#{label.attendance.actions}">Actions</th>
         </tr>
         </thead>
 
@@ -42,7 +42,25 @@
 <script th:inline="javascript">
     window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/trainer/attendances";
     window.canDeleteAttendances = /*[[${session.user != null and session.user.role == 'administrator'}]]*/ false;
+
+    // i18n dinámico
+    window.i18n = {
+        edit: /*[[#{button.edit}]]*/ "Edit",
+        delete: /*[[#{button.delete}]]*/ "Delete",
+        statusPresent: /*[[#{status.present}]]*/ "Present",
+        statusAbsent: /*[[#{status.absent}]]*/ "Absent",
+        statusLate: /*[[#{status.late}]]*/ "Late",
+        emptyAttendances: /*[[#{empty.attendances}]]*/ "No attendances available.",
+        previous: /*[[#{button.previous}]]*/ "Previous",
+        next: /*[[#{button.next}]]*/ "Next",
+        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "This action cannot be undone.",
+        deleting: /*[[#{message.deleting}]]*/ "Deleting...",
+        deleteError: /*[[#{message.delete.error}]]*/ "Could not delete.",
+        noBranch: /*[[#{label.no.branch}]]*/ "No Branch"
+    };
 </script>
+
+<script th:src="@{/js/trainer/attendances/list.js}"></script>
 <script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>

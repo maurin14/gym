@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Administración de clases</title>
+    <title th:text="#{title.class.list}">Administración de clases</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -16,20 +16,17 @@
 
     <div class="admin-title-row">
 
+        <!-- Filtro de sucursal -->
         <div class="admin-filter-row branch-filter-container" style="margin-bottom: 0;">
-
-            <label for="branchFilter" class="branch-filter-label">
-                Sucursal:
-            </label>
-
+            <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">Sucursal:</label>
             <select id="branchFilter" onchange="filterClassesByBranch()">
-                <option value="">Todas las sucursales</option>
+                <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
             </select>
-
         </div>
 
+        <!-- Botón nueva clase -->
         <div class="buttons admin-action-row" th:if="${canManageClasses}">
-            <a class="btn-primary" th:href="${classBasePath + '/form'}">Nueva clase</a>
+            <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">Nueva clase</a>
         </div>
 
     </div>
@@ -37,19 +34,19 @@
     <table class="portal-table admin-table is-wide">
         <thead>
             <tr>
-                <th>Tipo</th>
-                <th>Entrenador</th>
-                <th>Sucursal</th>
-                <th>Fecha</th>
-                <th>Inicio</th>
-                <th>Final</th>
-                <th>Duración</th>
-                <th>Capacidad</th>
-                <th>Inscritos</th>
-                <th>Estado</th>
-                <th>Dificultad</th>
-                <th>Descripción</th>
-                <th th:if="${canManageClasses}">Acciones</th>
+                <th th:text="#{label.class.type}">Tipo</th>
+                <th th:text="#{label.class.trainer}">Entrenador</th>
+                <th th:text="#{label.class.branch}">Sucursal</th>
+                <th th:text="#{label.class.date}">Fecha</th>
+                <th th:text="#{label.class.startTime}">Inicio</th>
+                <th th:text="#{label.class.endTime}">Final</th>
+                <th th:text="#{label.class.duration}">Duración</th>
+                <th th:text="#{label.class.capacity}">Capacidad</th>
+                <th th:text="#{label.class.enrolled}">Inscritos</th>
+                <th th:text="#{label.class.status}">Estado</th>
+                <th th:text="#{label.class.difficulty}">Dificultad</th>
+                <th th:text="#{label.class.description}">Descripción</th>
+                <th th:if="${canManageClasses}" th:text="#{label.class.actions}">Acciones</th>
             </tr>
         </thead>
 
@@ -63,10 +60,23 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
-    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
-    window.canManageClasses = /*[[${canManageClasses}]]*/ false;
+    window.i18n = {
+        edit: /*[[#{button.edit}]]*/,
+        delete: /*[[#{button.delete}]]*/,
+        statusPresent: /*[[#{status.present}]]*/,
+        statusAbsent: /*[[#{status.absent}]]*/,
+        statusLate: /*[[#{status.late}]]*/,
+        emptyAttendances: /*[[#{empty.attendances}]]*/,
+        previous: /*[[#{button.previous}]]*/,
+        next: /*[[#{button.next}]]*/,
+        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/,
+        deleting: /*[[#{message.deleting}]]*/,
+        deleteError: /*[[#{message.delete.error}]]*/,
+        noBranch: /*[[#{label.no.branch}]]*/
+    };
 </script>
-<script th:src="@{/js/trainer/classes/list.js}"></script>
+
+<script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>
 </html>

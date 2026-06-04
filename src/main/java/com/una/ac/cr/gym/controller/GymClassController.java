@@ -414,7 +414,20 @@ public class GymClassController {
         map.put("difficultyLevel", gymClass.getDifficultyLevel());
         map.put("description", gymClass.getDescription());
         map.put("duration", gymClass.getDuration());
-        map.put("status", gymClass.isStatus());
+
+        boolean claseActiva = false;
+        if (gymClass.getClassDate() != null && gymClass.getEndTime() != null) {
+            try {
+                LocalDateTime fechaFinClase = LocalDateTime.of(
+                        gymClass.getClassDate(),
+                        gymClass.getEndTime()
+                );
+                claseActiva = fechaFinClase.isAfter(LocalDateTime.now());
+            } catch (Exception e) {
+                claseActiva = false;
+            }
+        }
+        map.put("status", claseActiva);
 
         map.put("trainerId",
                 gymClass.getTrainer() != null
