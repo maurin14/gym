@@ -8,35 +8,12 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('attendances')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('attendances')}"></div>
 
 <main>
-    <section class="client-hero compact-hero attendances-hero">
-        <div>
-            <span class="section-kicker" th:text="#{section.kicker.account}">Mi cuenta</span>
-            <h1 th:text="#{title.attendance.my}">Mis asistencias</h1>
-            <p th:text="#{text.attendance.description}">Revisa las visitas y registros asociados a tus clases dentro del gimnasio.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{title.attendance.my}">Asistencia</strong>
-        </nav>
-
         <div class="client-table-card">
-            <div class="section-heading table-heading">
-                <div>
-                    <span class="section-kicker" th:text="#{section.kicker.history}">Historial</span>
-                    <h2 th:text="#{label.attendance.records}">Registros de asistencia</h2>
-                    <p th:text="#{text.attendance.records}">Consulta el estado, observación y fecha de registro de tus asistencias.</p>
-                </div>
-                <a th:href="@{/client/classes}" class="btn-secondary" th:text="#{button.view.classes}">Ver clases</a>
-            </div>
-
             <div class="table-responsive">
                 <table class="client-table">
                     <thead>
@@ -51,6 +28,10 @@
 
                     <tbody id="attendancesTableBody"></tbody>
                 </table>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/client/classes}" class="btn-secondary" th:text="#{button.view.classes}">Ver clases</a>
             </div>
 
             <nav id="attendancesPagination" class="client-pagination" th:aria-label="#{pagination.attendance}"></nav>

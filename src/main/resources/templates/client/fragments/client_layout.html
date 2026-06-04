@@ -146,10 +146,12 @@
         <strong class="client-current-module" th:switch="${active}">
             <span th:case="'routines'" th:text="#{client.nav.routines}">Rutinas</span>
             <span th:case="'products'" th:text="#{client.nav.products}">Productos</span>
+            <span th:case="'classes'" th:text="#{client.nav.classes}">Clases</span>
             <span th:case="'schedules'" th:text="#{client.nav.schedules}">Horarios</span>
             <span th:case="'equipment'" th:text="#{client.nav.equipment}">Equipamiento</span>
             <span th:case="'payments'" th:text="#{client.nav.payments}">Pagos</span>
             <span th:case="'branches'" th:text="#{client.nav.branches}">Sucursales</span>
+            <span th:case="'attendances'" th:text="#{client.nav.attendance}">Asistencia</span>
             <span th:case="*" th:text="#{client.nav.home}">Inicio</span>
         </strong>
     </nav>

@@ -269,7 +269,8 @@ h1, h2, h3 {
 /* CONTENEDORES */
 
 .container {
-    max-width: 1180px;
+    width: min(96vw, 1600px);
+    max-width: none;
     margin: 35px auto;
     background: var(--white);
     padding: 30px;
@@ -577,13 +578,15 @@ textarea:focus {
 }
 
 .admin-page-card {
-    max-width: 1180px;
+    width: min(96vw, 1600px);
+    max-width: none;
     margin: 24px auto;
     overflow-x: auto;
 }
 
 .admin-page-card.wide-table-card {
-    max-width: 1500px;
+    width: min(98vw, 1760px);
+    max-width: none;
 }
 
 /* FORMULARIO PORTAL CORREGIDO */
@@ -742,17 +745,34 @@ td,
     font-size: 14px;
     white-space: normal;
     word-break: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
 }
 
 .portal-table th,
 .portal-table td {
-    max-width: 280px;
+    max-width: none;
 }
 
 .portal-table .actions,
 .portal-table td.actions {
-    min-width: 150px;
+    min-width: 190px;
+}
+
+.portal-table .actions,
+.portal-table td .actions,
+td.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.portal-table .actions a,
+.portal-table .actions button,
+td.actions a,
+td.actions button {
+    white-space: nowrap;
+    flex: 0 0 auto;
 }
 
 tr:nth-child(even),
@@ -787,12 +807,15 @@ tr:hover,
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 90px;
+    min-width: max-content;
     min-height: 30px;
     border-radius: 999px;
     font-weight: 900;
     font-size: 12px;
     padding: 7px 12px;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
 }
 
 .badge-active,
@@ -1214,6 +1237,19 @@ tr:hover,
     margin: 0;
     color: #4b5563;
     line-height: 1.7;
+}
+
+.admin-home-main {
+    min-height: calc(100vh - 88px);
+    padding: 1px 0 34px;
+    background:
+        linear-gradient(rgba(245, 245, 245, 0.88), rgba(245, 245, 245, 0.92)),
+        url('/images/fondo.jpg') center/cover fixed no-repeat;
+}
+
+.admin-home-modules {
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.94);
 }
 
 .cta-section {
