@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +12,8 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('home')}"></div>
 
-<main>
-    <section class="hero-section">
-        <div class="hero-overlay">
-            <img th:src="@{/images/logo.jpeg}" alt="Logo SAM GYM FITNESS" class="hero-logo">
-            <h1 th:text="#{admin.home.heading}">Panel de administración</h1>
-            <p class="hero-slogan" th:text="#{admin.home.slogan}">Control total del sistema</p>
-            <p class="hero-text">
-                <span th:text="#{admin.home.description}">Desde este panel puedes administrar sucursales, pagos, rutinas, clases, equipamiento, asistencia, productos, usuarios y reportes.</span>
-            </p>
-        </div>
-    </section>
-
-    <section class="container">
+<main class="admin-home-main">
+    <section class="container admin-home-modules">
         <h2 class="section-title" th:text="#{admin.home.systemManagement}">Gestión del sistema</h2>
 
         <div class="modules-grid">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{login.title}">Iniciar sesión</title>
     <meta charset="UTF-8">
@@ -29,7 +29,7 @@
         <div th:if="${messageError}" class="alert error-box" th:text="#{${messageError}}"></div>
         <div th:if="${param.logout}" class="status-active" th:text="#{login.logout}">Sesión cerrada.</div>
 
-        <form th:action="@{/login(lang=${#locale.language})}" method="post" autocomplete="off">
+        <form id="loginForm" th:action="@{/login(lang=${#locale.language})}" method="post" autocomplete="off">
             <label for="username" th:text="#{login.username}">Nombre de usuario</label>
             <input id="username"
                    type="text"
@@ -53,7 +53,41 @@
     </div>
 </main>
 
-<script>
+<script th:inline="javascript">
+    window.loginValidationMessages = {
+        required: /*[[#{validation.required}]]*/ "Complete este campo."
+    };
+
+    document.querySelectorAll('#loginForm input[required]').forEach(function (input) {
+        input.addEventListener('invalid', function () {
+            if (input.validity.valueMissing) {
+                input.setCustomValidity(window.loginValidationMessages.required);
+            }
+        });
+
+        input.addEventListener('input', function () {
+            input.setCustomValidity('');
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
+        let firstInvalid = null;
+
+        document.querySelectorAll('#loginForm input[required]').forEach(function (input) {
+            input.setCustomValidity('');
+
+            if (input.validity.valueMissing) {
+                input.setCustomValidity(window.loginValidationMessages.required);
+                firstInvalid = firstInvalid || input;
+            }
+        });
+
+        if (firstInvalid) {
+            event.preventDefault();
+            firstInvalid.reportValidity();
+        }
+    });
+
     function clearTransientVisualState() {
         document.documentElement.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
         document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');

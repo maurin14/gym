@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,34 +8,12 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('classes')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('classes')}"></div>
 
 <main>
-    <section class="client-hero compact-hero classes-hero">
-        <div>
-            <span class="section-kicker" th:text="#{section.kicker.training}">Entrenamiento</span>
-            <h1 th:text="#{title.class.available}">Clases disponibles</h1>
-            <p th:text="#{text.class.description}">Consulta las sesiones grupales activas y registra tu asistencia en la clase que deseas tomar.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.class.available}">Clases</strong>
-        </nav>
-
         <div class="client-table-card">
-            <div class="section-heading table-heading">
-                <div>
-                    <span class="section-kicker" th:text="#{section.kicker.agenda}">Agenda</span>
-                    <h2 th:text="#{label.select.class}">Selecciona una clase</h2>
-                    <p th:text="#{text.class.availability}">La disponibilidad se actualiza desde el módulo de clases del gimnasio.</p>
-                </div>
-            </div>
-
             <div class="table-responsive">
                 <table class="client-table">
                     <thead>
