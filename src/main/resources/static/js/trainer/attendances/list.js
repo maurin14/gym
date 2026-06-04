@@ -12,6 +12,11 @@ const attendanceBasePath =
 const canDeleteAttendances =
         Boolean(window.canDeleteAttendances);
 
+const i18n = {
+    edit: /*[[#{button.edit}]]*/ "Editar",
+    delete: /*[[#{button.delete}]]*/ "Eliminar"
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
 });
@@ -81,14 +86,14 @@ function showAttendances(attendances) {
                     <div class="actions">
                         <a class="btn-primary"
                            href="${attendanceBasePath}/form/${attendance.idAttendance}">
-                            Editar
+                            ${i18n.edit}
                         </a>
 
                         ${canDeleteAttendances ? `
                         <button type="button"
                                 class="btn-danger"
                                 onclick="deleteAttendance(${attendance.idAttendance})">
-                            Eliminar
+                            ${i18n.delete}
                         </button>
                         ` : ""}
                     </div>
@@ -104,14 +109,14 @@ function getAttendanceStatusClass(status) {
             status ? status.toLowerCase() : "";
 
     if (statusText === "ausente") {
-        return "status-inactive";
+        return "status-inactive";  // rojo
     }
 
     if (statusText === "tarde") {
-        return "status-pending";
+        return "status-pending";   // amarillo
     }
 
-    return "status-active";
+    return "status-active";        // verde
 }
 
 function formatDate(dateValue) {
@@ -126,7 +131,7 @@ function formatDate(dateValue) {
         return dateValue;
     }
 
-    return parts[2] + "-" + parts[1] + "-" + parts[0];
+    return parts[2].padStart(2,'0') + "-" + parts[1].padStart(2,'0') + "-" + parts[0];
 }
 
 function showPagination() {
@@ -173,7 +178,6 @@ function createPageButton(text, page, className, disabled) {
     button.textContent = text;
     button.dataset.page = page;
     button.disabled = Boolean(disabled);
-
     button.addEventListener("click", function () {
         changeAttendancePage(this);
     });
@@ -199,9 +203,9 @@ function deleteAttendance(idAttendance) {
     }
 
     confirmAdminAction({
-        title: "Eliminar asistencia?",
-        text: "Esta accion no se puede deshacer.",
-        confirmText: "Eliminar",
+        title: i18n.delete + "?",
+        text: "Esta acción no se puede deshacer.",
+        confirmText: i18n.delete,
         icon: "warning"
     }).then((result) => {
 
@@ -220,7 +224,7 @@ function deleteAttendance(idAttendance) {
                         throw new Error("No se pudo eliminar.");
                     }
 
-                    showAdminSuccess("Eliminado.")
+                    showAdminSuccess(i18n.delete + ".")
                             .then(loadAttendances);
                 })
                 .catch(error => {
