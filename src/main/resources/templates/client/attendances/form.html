@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar asistencia - SAM GYM FITNESS</title>
+    <title th:text="#{title.attendance.register}">Registrar asistencia - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -14,43 +14,43 @@
 <main>
     <section class="client-hero compact-hero attendances-hero">
         <div>
-            <span class="section-kicker">Asistencia</span>
-            <h1>Registrar asistencia</h1>
-            <p>Confirma la clase seleccionada y agrega una observaci&oacute;n si lo necesitas.</p>
+            <span class="section-kicker" th:text="#{section.kicker.attendance}">Asistencia</span>
+            <h1 th:text="#{title.attendance.register}">Registrar asistencia</h1>
+            <p th:text="#{text.attendance.confirm}">Confirma la clase seleccionada y agrega una observación si lo necesitas.</p>
         </div>
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-            <a th:href="@{/client/home}">Inicio</a>
+        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
+            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
             <span>/</span>
-            <a th:href="@{/client/classes}">Clases</a>
+            <a th:href="@{/client/classes}" th:text="#{label.class.available}">Clases</a>
             <span>/</span>
-            <strong>Registrar asistencia</strong>
+            <strong th:text="#{title.attendance.register}">Registrar asistencia</strong>
         </nav>
 
         <div class="client-form-card">
             <form class="client-form">
                 <div class="toolbar-field">
-                    <label for="classId">Clase</label>
+                    <label for="classId" th:text="#{label.class.select}">Clase</label>
                     <select id="classId" onchange="setAttendanceDate()"></select>
                     <small id="classIdError" class="field-error"></small>
                 </div>
 
                 <div class="toolbar-field">
-                    <label for="attendanceDate">Fecha de asistencia</label>
+                    <label for="attendanceDate" th:text="#{label.attendance.date}">Fecha de asistencia</label>
                     <input type="date" id="attendanceDate" readonly>
                     <small id="attendanceDateError" class="field-error"></small>
                 </div>
 
                 <div class="toolbar-field full-span">
-                    <label for="observation">Observaci&oacute;n</label>
+                    <label for="observation" th:text="#{label.attendance.observation}">Observación</label>
                     <textarea id="observation" rows="5"></textarea>
                 </div>
 
                 <div class="form-actions full-span">
-                    <button type="button" class="btn-primary" onclick="saveClientAttendance()">Registrar</button>
-                    <a class="btn-secondary" th:href="@{/client/classes}">Volver</a>
+                    <button type="button" class="btn-primary" onclick="saveClientAttendance()" th:text="#{button.add.attendance}">Registrar</button>
+                    <a class="btn-secondary" th:href="@{/client/classes}" th:text="#{button.back}">Volver</a>
                 </div>
             </form>
         </div>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de clase</title>
+    <title th:text="#{title.class.form}">Formulario de clase</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -13,62 +13,62 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
 <main class="container form-container portal-card admin-page-card">
-    <h1 class="page-title" id="formTitle">Agregar clase</h1>
+    <h1 class="page-title" id="formTitle" th:text="#{title.class.add}">Agregar clase</h1>
     <input type="hidden" id="idClass">
     <small id="formError" class="field-error"></small>
 
     <form class="portal-form">
-        <label>Tipo de clase</label>
+        <label th:text="#{label.class.type}">Tipo de clase</label>
         <input type="text" id="classType">
         <small id="classTypeError" class="field-error"></small>
 
-        <label>Fecha</label>
+        <label th:text="#{label.class.date}">Fecha</label>
         <input type="date" id="classDate">
         <small id="classDateError" class="field-error"></small>
 
-        <label>Hora inicio</label>
+        <label th:text="#{label.class.startTime}">Hora inicio</label>
         <input type="time" id="startTime">
         <small id="startTimeError" class="field-error"></small>
 
-        <label>Hora final</label>
+        <label th:text="#{label.class.endTime}">Hora final</label>
         <input type="time" id="endTime">
         <small id="endTimeError" class="field-error"></small>
 
-        <label>Capacidad máxima</label>
+        <label th:text="#{label.class.capacity}">Capacidad máxima</label>
         <input type="number" id="maxCapacity" min="1">
         <small id="maxCapacityError" class="field-error"></small>
 
-        <label>Sucursal</label>
+        <label th:text="#{label.class.branch}">Sucursal</label>
         <select id="branchId">
-            <option value="">Seleccione una sucursal</option>
+            <option value="" th:text="#{label.select.branch}">Seleccione una sucursal</option>
         </select>
         <small id="branchIdError" class="field-error"></small>
 
-        <label>Entrenador</label>
+        <label th:text="#{label.class.trainer}">Entrenador</label>
         <select id="trainerId">
-            <option value="">Seleccione un entrenador</option>
+            <option value="" th:text="#{label.select.trainer}">Seleccione un entrenador</option>
         </select>
         <small id="trainerIdError" class="field-error"></small>
 
-        <label>Cantidad inscritos</label>
+        <label th:text="#{label.class.enrolled}">Cantidad inscritos</label>
         <input type="number" id="enrolledCount" value="0" min="0" readonly>
         <small id="enrolledCountError" class="field-error"></small>
 
-        <label>Dificultad</label>
+        <label th:text="#{label.class.difficulty}">Dificultad</label>
         <select id="difficultyLevel">
-            <option value="Bajo">Bajo</option>
-            <option value="Medio">Medio</option>
-            <option value="Alto">Alto</option>
+            <option value="Bajo" th:text="#{difficulty.low}">Bajo</option>
+            <option value="Medio" th:text="#{difficulty.medium}">Medio</option>
+            <option value="Alto" th:text="#{difficulty.high}">Alto</option>
         </select>
         <small id="difficultyLevelError" class="field-error"></small>
 
-        <label>Descripción</label>
+        <label th:text="#{label.class.description}">Descripción</label>
         <textarea id="description"></textarea>
         <small id="descriptionError" class="field-error"></small>
 
         <div class="buttons">
-            <button type="button" class="btn-primary" onclick="saveClass()">Guardar</button>
-            <a class="btn-secondary" th:href="${classBasePath}">Volver</a>
+            <button type="button" class="btn-primary" onclick="saveClass()" th:text="#{button.add.class}">Guardar</button>
+            <a class="btn-secondary" th:href="${classBasePath}" th:text="#{button.back}">Volver</a>
         </div>
     </form>
 </main>
