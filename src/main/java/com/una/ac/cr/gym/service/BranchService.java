@@ -138,6 +138,16 @@ public class BranchService implements CRUD<Branch> {
             errors.put("phone", "message.validation.value");
         }
 
+        if (isBlank(branch.getEmail())) {
+            errors.put("email", "branch.validation.email.required");
+        } else if (!branch.getEmail().trim().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            errors.put("email", "branch.validation.email.invalid");
+        } else if (branch.getEmail().trim().length() > 120) {
+            errors.put("email", "message.validation.max120");
+        } else {
+            branch.setEmail(branch.getEmail().trim());
+        }
+
         if (branch.getCapacity() == null) {
             errors.put("capacity", "message.validation.required");
         } else if (branch.getCapacity() < 1) {

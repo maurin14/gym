@@ -91,6 +91,18 @@ public class ProductServices {
         return "";
     }
 
+    public Map<String, String> validateProductForm(Product product, String newCategory, String existingCategory, boolean isUpdate) {
+        Map<String, String> errors = validateCategorySelection(product, newCategory, existingCategory);
+        Map<String, String> fieldErrors = validateFields(product, isUpdate);
+
+        if (errors.containsKey("categorySelection")) {
+            fieldErrors.remove("category");
+        }
+
+        errors.putAll(fieldErrors);
+        return errors;
+    }
+
     public String updateProduct(Product product) {
         Map<String, String> errors = validateFields(product, true);
 
@@ -168,6 +180,52 @@ public class ProductServices {
         }
 
         return errors;
+    }
+
+    private Map<String, String> validateCategorySelection(Product product, String newCategory, String existingCategory) {
+        Map<String, String> errors = new LinkedHashMap<>();
+
+        if (product == null) {
+            errors.put("form", "message.form.review");
+            return errors;
+        }
+
+        boolean hasNewCategory = !isBlank(newCategory);
+        boolean hasExistingCategory = !isBlank(existingCategory);
+
+        if (!hasNewCategory && !hasExistingCategory) {
+            errors.put("categorySelection", "product.validation.category.required");
+            product.setCategory(null);
+            return errors;
+        }
+
+        if (hasNewCategory && hasExistingCategory) {
+            errors.put("categorySelection", "product.validation.category.exclusive");
+            return errors;
+        }
+
+        String selectedCategory = hasNewCategory ? newCategory.trim() : existingCategory.trim();
+        String normalizedCategory = findCanonicalCategory(selectedCategory);
+
+        if (normalizedCategory.length() > 80) {
+            errors.put("categorySelection", "message.validation.max80");
+            return errors;
+        }
+
+        product.setCategory(normalizedCategory);
+        return errors;
+    }
+
+    private String findCanonicalCategory(String category) {
+        String normalizedCategory = category.trim();
+
+        for (String existingCategory : getCategories()) {
+            if (!isBlank(existingCategory) && existingCategory.trim().equalsIgnoreCase(normalizedCategory)) {
+                return existingCategory.trim();
+            }
+        }
+
+        return normalizedCategory;
     }
 
     private String firstError(Map<String, String> errors) {

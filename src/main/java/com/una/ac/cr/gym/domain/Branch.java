@@ -26,6 +26,9 @@ public class Branch {
     @Column(name = "phone", nullable = false, length = 8)
     private String phone;
 
+    @Column(name = "email", nullable = false, length = 120)
+    private String email;
+
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
@@ -42,12 +45,13 @@ public class Branch {
     public Branch() {
     }
 
-    public Branch(int id, String name, String address, String phone, Integer capacity,
+    public Branch(int id, String name, String address, String phone, String email, Integer capacity,
                   LocalDate openingDate, Boolean active, String imageUrl) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
+        this.email = email;
         this.capacity = capacity;
         this.openingDate = openingDate;
         this.active = active;
@@ -84,6 +88,14 @@ public class Branch {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Integer getCapacity() {

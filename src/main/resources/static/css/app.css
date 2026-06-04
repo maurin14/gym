@@ -617,6 +617,7 @@ textarea:focus {
 .portal-form > input,
 .portal-form > select,
 .portal-form > textarea,
+.portal-form > .portal-form-field > input,
 .portal-form > .portal-form-field > select {
     grid-column: 2;
 }
@@ -1465,6 +1466,7 @@ tr:hover,
     .portal-form > small,
     .portal-form > span,
     .portal-form > .portal-form-field > label,
+    .portal-form > .portal-form-field > input,
     .portal-form > .portal-form-field > select,
     .portal-form > .portal-form-field > small {
         grid-column: 1 / -1;

@@ -101,11 +101,14 @@ public class ProductController {
         model.addAttribute("title", "title.product.create");
         model.addAttribute("product", product);
         model.addAttribute("action", "/admin/products/save");
+        populateProductFormModel(model, "", "");
         return "product/product_form";
     }
 
     @PostMapping("/save")
     public String saveProduct(Product product,
+            @RequestParam(required = false) String newCategory,
+            @RequestParam(required = false) String existingCategory,
             @RequestParam("imageFile") MultipartFile imageFile,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -113,13 +116,14 @@ public class ProductController {
         product.setRegisterDate(LocalDate.now());
         product.setState(true);
 
-        Map<String, String> fieldErrors = productService.validateFields(product, false);
+        Map<String, String> fieldErrors = productService.validateProductForm(product, newCategory, existingCategory, false);
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("title", "title.product.create");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/save");
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("error", "message.form.review");
+            populateProductFormModel(model, newCategory, existingCategory);
             return "product/product_form";
         }
 
@@ -152,6 +156,7 @@ public class ProductController {
                 model.addAttribute("product", product);
                 model.addAttribute("action", "/admin/products/save");
                 model.addAttribute("error", "message.product.imageSaveError");
+                populateProductFormModel(model, newCategory, existingCategory);
                 return "product/product_form";
             }
         }
@@ -163,6 +168,7 @@ public class ProductController {
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/save");
             model.addAttribute("error", result);
+            populateProductFormModel(model, newCategory, existingCategory);
             return "product/product_form";
         }
 
@@ -184,11 +190,14 @@ public class ProductController {
         model.addAttribute("title", "title.product.edit");
         model.addAttribute("product", product);
         model.addAttribute("action", "/admin/products/update");
+        populateProductFormModel(model, "", product.getCategory());
         return "product/product_form";
     }
 
     @PostMapping("/update")
     public String updateProduct(Product product,
+            @RequestParam(required = false) String newCategory,
+            @RequestParam(required = false) String existingCategory,
             @RequestParam("imageFile") MultipartFile imageFile,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -204,13 +213,14 @@ public class ProductController {
 
         product.setRegisterDate(currentProduct.getRegisterDate());
 
-        Map<String, String> fieldErrors = productService.validateFields(product, true);
+        Map<String, String> fieldErrors = productService.validateProductForm(product, newCategory, existingCategory, true);
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("title", "title.product.edit");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/update");
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("error", "message.form.review");
+            populateProductFormModel(model, newCategory, existingCategory);
             return "product/product_form";
         }
 
@@ -243,6 +253,7 @@ public class ProductController {
                 model.addAttribute("product", product);
                 model.addAttribute("action", "/admin/products/update");
                 model.addAttribute("error", "message.product.imageSaveError");
+                populateProductFormModel(model, newCategory, existingCategory);
                 return "product/product_form";
             }
         }
@@ -254,6 +265,7 @@ public class ProductController {
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/update");
             model.addAttribute("error", result);
+            populateProductFormModel(model, newCategory, existingCategory);
             return "product/product_form";
         }
 
@@ -290,5 +302,11 @@ public class ProductController {
         model.addAttribute("title", "title.product.detail");
         model.addAttribute("product", product);
         return "product/product_details";
+    }
+
+    private void populateProductFormModel(Model model, String newCategory, String existingCategory) {
+        model.addAttribute("categories", productService.getCategories());
+        model.addAttribute("newCategory", newCategory == null ? "" : newCategory);
+        model.addAttribute("existingCategory", existingCategory == null ? "" : existingCategory);
     }
 }

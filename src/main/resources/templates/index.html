@@ -198,13 +198,22 @@
 
 <script>
     function clearTransientVisualState() {
-        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+        document.documentElement.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
 
-        if (document.body.style.overflow === 'hidden') {
-            document.body.style.overflow = '';
-        }
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
 
-        document.querySelectorAll('.swal2-container, .modal-backdrop').forEach(function (element) {
+        document.querySelectorAll('.menu-backdrop, .sidebar-overlay, .menu-overlay, .drawer-backdrop, .modal-backdrop, .loading-overlay, .admin-overlay, .client-overlay').forEach(function (overlay) {
+            overlay.classList.remove('active', 'show', 'visible', 'is-active', 'is-visible');
+            overlay.style.removeProperty('display');
+            overlay.style.removeProperty('pointer-events');
+            overlay.style.removeProperty('opacity');
+            overlay.style.removeProperty('visibility');
+        });
+
+        document.querySelectorAll('.swal2-container, .modal-backdrop, .loading-overlay').forEach(function (element) {
             element.remove();
         });
     }
@@ -221,6 +230,7 @@
     document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
+            clearTransientVisualState();
             changeLanguage(link.dataset.lang);
         });
     });

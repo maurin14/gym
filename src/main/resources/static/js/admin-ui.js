@@ -15,7 +15,9 @@ function confirmSystemAction(options) {
     options = options || {};
 
     if (!window.Swal) {
-        return Promise.resolve({ isConfirmed: window.confirm(options.title || systemMessage("confirmTitle", "Save changes?")) });
+        return Promise.resolve({
+            isConfirmed: window.confirm(options.title || systemMessage("confirmTitle", "Save changes?"))
+        });
     }
 
     return Swal.fire(systemSwalOptions({
@@ -30,42 +32,48 @@ function confirmSystemAction(options) {
 
 function showSystemLoading(title, text) {
     if (!window.Swal) {
-        return Promise.resolve();
+        return;
     }
 
-    return Swal.fire(systemSwalOptions({
+    Swal.fire(systemSwalOptions({
         title: title || systemMessage("loadingTitle", "Processing..."),
         text: text || systemMessage("loadingText", "Please wait."),
         allowOutsideClick: false,
         allowEscapeKey: false,
+        showConfirmButton: false,
         didOpen: function () {
             Swal.showLoading();
         }
     }));
 }
 
-function showSystemSuccess(title, text) {
+function showSystemSuccess(messageOrTitle, text) {
     if (!window.Swal) {
-        return Promise.resolve();
+        return;
     }
 
-    return Swal.fire(systemSwalOptions({
-        title: title || systemMessage("successTitle", "Saved."),
-        text: text || "",
+    const hasText = typeof text !== 'undefined';
+
+    Swal.fire(systemSwalOptions({
         icon: "success",
-        confirmButtonText: systemMessage("okButton", "OK")
+        title: hasText ? messageOrTitle : systemMessage("successTitle", "Saved."),
+        text: hasText ? text : (messageOrTitle || ""),
+        timer: 1800,
+        showConfirmButton: false
     }));
 }
 
-function showSystemError(title, text) {
+function showSystemError(messageOrTitle, text) {
     if (!window.Swal) {
-        return Promise.resolve();
+        return;
     }
 
-    return Swal.fire(systemSwalOptions({
-        title: title || systemMessage("errorTitle", "Could not save."),
-        text: text || "",
+    const hasText = typeof text !== 'undefined';
+
+    Swal.fire(systemSwalOptions({
         icon: "error",
+        title: hasText ? messageOrTitle : systemMessage("errorTitle", "Could not save."),
+        text: hasText ? text : (messageOrTitle || ""),
         confirmButtonText: systemMessage("okButton", "OK")
     }));
 }
@@ -76,25 +84,31 @@ const showAdminLoading = showSystemLoading;
 const showAdminSuccess = showSystemSuccess;
 const showAdminError = showSystemError;
 
-function clearSystemTransientState() {
-    document.body.classList.remove('modal-open', 'drawer-open', 'sidebar-open', 'menu-open', 'swal2-shown', 'swal2-height-auto');
-
-    if (document.body.style.overflow === 'hidden') {
-        document.body.style.overflow = '';
-    }
-
-    if (window.Swal && Swal.isVisible && Swal.isVisible()) {
-        Swal.close();
-    }
-}
-
-window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-        clearSystemTransientState();
-    }
-});
-
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.module-menu').forEach(function (menu) {
+        menu.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                menu.removeAttribute('open');
+            });
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        document.querySelectorAll('.module-menu[open]').forEach(function (menu) {
+            if (!menu.contains(event.target)) {
+                menu.removeAttribute('open');
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.module-menu[open]').forEach(function (menu) {
+                menu.removeAttribute('open');
+            });
+        }
+    });
+
     document.querySelectorAll("form[data-admin-confirm], form[data-system-confirm]").forEach(function (form) {
         let submitting = false;
 
@@ -115,9 +129,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 submitting = true;
-                showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || systemMessage("loadingTitle", "Processing..."));
-                form.submit();
+                const submitButton = event.submitter || form.querySelector('button[type="submit"], input[type="submit"]');
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
+
+                try {
+                    showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || systemMessage("loadingTitle", "Processing..."));
+                    form.submit();
+                } catch (error) {
+                    submitting = false;
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+                    throw error;
+                }
             });
         });
     });
+
+    if (window.systemFlashMessages) {
+        if (window.systemFlashMessages.success) {
+            showSystemSuccess(window.systemFlashMessages.success);
+        }
+
+        if (window.systemFlashMessages.error) {
+            showSystemError(window.systemFlashMessages.error);
+        }
+    }
 });
