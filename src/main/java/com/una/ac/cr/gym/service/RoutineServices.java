@@ -2,7 +2,6 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Routine;
 import com.una.ac.cr.gym.repository.RoutineRepository;
-import com.una.ac.cr.gym.repository.RoutineUserRepository;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +19,6 @@ public class RoutineServices {
 
     @Autowired
     private RoutineRepository routineRepository;
-
-    @Autowired
-    private RoutineUserRepository routineUserRepository;
 
     public List<Routine> getRoutines() {
         return routineRepository.findAll();
@@ -58,7 +54,6 @@ public class RoutineServices {
         }
 
         try {
-            routineUserRepository.deleteByIdRoutine(idRoutine);
             routineRepository.deleteById(idRoutine);
             routineRepository.flush();
         } catch (DataIntegrityViolationException ex) {
@@ -158,34 +153,5 @@ public class RoutineServices {
                 routineType.trim(),
                 pageable
         );
-    }
-
-    public Page<Routine> getRoutinesAssignedToClients(List<Integer> clientIds,
-            String difficultyLevel, String routineType, Pageable pageable) {
-
-        if (clientIds == null || clientIds.isEmpty()) {
-            return Page.empty(pageable);
-        }
-
-        if (difficultyLevel == null) {
-            difficultyLevel = "";
-        }
-
-        if (routineType == null) {
-            routineType = "";
-        }
-
-        return routineRepository.findRoutinesAssignedToClients(
-                clientIds,
-                difficultyLevel.trim(),
-                routineType.trim(),
-                pageable
-        );
-    }
-
-    public boolean routineBelongsToClients(int routineId, List<Integer> clientIds) {
-        return clientIds != null
-                && !clientIds.isEmpty()
-                && routineRepository.existsAssignedToClients(routineId, clientIds);
     }
 }

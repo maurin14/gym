@@ -30,8 +30,6 @@
                 <h1 th:text="${routine.nameRoutine}">Rutina</h1>
                 <p th:text="${routine.description}">Descripción de la rutina</p>
             </div>
-
-            <button type="button" class="btn-primary select-routine-btn" th:text="#{label.routine.doRoutine}">Realizar rutina</button>
         </div>
 
         <div class="detail-meta routine-meta">
@@ -62,21 +60,6 @@
 
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
-<script th:inline="javascript">
-    const pendingTitle = /*[[#{message.routine.featurePending}]]*/ 'Funcion en preparacion';
-    const pendingText = /*[[#{message.routine.selectionPending}]]*/ 'La selección de rutinas estará disponible cuando se habilite el inicio de sesión.';
-    const acceptText = /*[[#{button.accept}]]*/ 'Aceptar';
-
-    document.querySelector('.select-routine-btn').addEventListener('click', function () {
-        Swal.fire({
-            icon: 'info',
-            title: pendingTitle,
-            text: pendingText,
-            confirmButtonText: acceptText,
-            confirmButtonColor: '#d97818'
-        });
-    });
-</script>
 <script th:src="@{/js/client-home.js}" defer></script>
 
 </body>
