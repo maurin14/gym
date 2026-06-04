@@ -20,6 +20,7 @@ const i18n = window.i18n || {
     deleteConfirmation: "This action cannot be undone.",
     deleting: "Deleting...",
     deleteError: "Could not delete.",
+    deleteSuccess: "Class deleted successfully.",
     emptyClasses: "No classes available.",
     noBranch: "No Branch",
     difficultyLow: "Low",
@@ -192,7 +193,7 @@ function deleteClass(idClass) {
         fetch("/classes/" + idClass, { method: "DELETE" })
             .then(response => {
                 if (!response.ok) throw new Error(i18n.deleteError);
-                showAdminSuccess(i18n.delete + "d.").then(loadClasses);
+                showAdminSuccess(i18n.deleteSuccess).then(loadClasses);
             })
             .catch(error => {
                 showAdminError(error.message || i18n.deleteError);

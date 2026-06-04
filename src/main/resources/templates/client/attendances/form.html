@@ -21,7 +21,7 @@
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
+        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
             <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
             <span>/</span>
             <a th:href="@{/client/classes}" th:text="#{label.class.available}">Clases</a>
@@ -60,6 +60,20 @@
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    window.i18n = {
+        selectClass: /*[[#{label.select.class}]]*/ "Select a class",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch",
+        classRequired: /*[[#{attendance.validation.classRequired}]]*/ "Select a class.",
+        dateRequired: /*[[#{attendance.validation.dateRequired}]]*/ "The date is required.",
+        reviewFields: /*[[#{message.form.review}]]*/ "Please review the highlighted fields.",
+        confirmTitle: /*[[#{confirm.default.title}]]*/ "Save changes?",
+        saveButton: /*[[#{button.save}]]*/ "Save",
+        loadingTitle: /*[[#{confirm.loading.save}]]*/ "Saving...",
+        saveError: /*[[#{attendance.message.saveError}]]*/ "Could not save attendance.",
+        saved: /*[[#{attendance.message.saved}]]*/ "Attendance saved successfully."
+    };
+</script>
 <script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/attendances/form.js}" defer></script>

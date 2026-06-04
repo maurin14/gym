@@ -7,7 +7,11 @@ const i18n = window.i18n || {
     selectTrainer: "Select a trainer.",
     reviewFields: "Please review the highlighted fields.",
     saved: "Saved.",
-    updated: "Updated."
+    updated: "Updated.",
+    saving: "Saving...",
+    saveError: "Could not save.",
+    formTitleAdd: "Add Class",
+    formTitleEdit: "Edit Class"
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -74,7 +78,10 @@ function loadClass(idClass) {
                 return;
             }
 
-            document.getElementById("formTitle").innerText = idClass ? i18n.updated : i18n.saved;
+            const formTitle = document.getElementById("formTitle");
+            if (formTitle) {
+                formTitle.innerText = idClass ? i18n.formTitleEdit : i18n.formTitleAdd;
+            }
 
             setInputValue("idClass", gymClass.idClass);
             setInputValue("classType", gymClass.classType || "");

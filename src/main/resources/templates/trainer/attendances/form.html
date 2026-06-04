@@ -56,6 +56,26 @@
 
 <script th:inline="javascript">
     window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/trainer/attendances";
+    window.i18n = {
+        selectClient: /*[[#{label.select.client}]]*/ "Select a client",
+        selectClass: /*[[#{label.select.class}]]*/ "Select a class",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch",
+        errorTitle: /*[[#{sweetalert.error.title}]]*/ "Error",
+        clientsLoadError: /*[[#{attendance.message.clientsLoadError}]]*/ "Could not load clients.",
+        classesLoadError: /*[[#{attendance.message.classesLoadError}]]*/ "Could not load classes.",
+        loadError: /*[[#{attendance.message.loadError}]]*/ "Could not load attendance.",
+        formTitleEdit: /*[[#{title.attendance.edit}]]*/ "Edit Attendance",
+        clientRequired: /*[[#{attendance.validation.clientRequired}]]*/ "Select a client.",
+        classRequired: /*[[#{attendance.validation.classRequired}]]*/ "Select a class.",
+        dateRequired: /*[[#{attendance.validation.dateRequired}]]*/ "The date is required.",
+        statusRequired: /*[[#{attendance.validation.statusRequired}]]*/ "Select a status.",
+        incompleteTitle: /*[[#{attendance.validation.incompleteTitle}]]*/ "Incomplete data",
+        incompleteText: /*[[#{attendance.validation.incompleteText}]]*/ "Complete the required fields.",
+        saving: /*[[#{attendance.loading.save}]]*/ "Saving attendance...",
+        saved: /*[[#{attendance.message.saved}]]*/ "Attendance saved successfully.",
+        updated: /*[[#{attendance.message.updated}]]*/ "Attendance updated successfully.",
+        saveError: /*[[#{attendance.message.saveError}]]*/ "Could not save attendance."
+    };
 </script>
 <script th:src="@{/js/trainer/attendances/form.js}"></script>
 

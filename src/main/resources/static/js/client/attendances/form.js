@@ -3,6 +3,18 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 let clientAttendanceSaving = false;
+const i18n = window.i18n || {
+    selectClass: "Select a class",
+    noBranch: "No branch",
+    classRequired: "Select a class.",
+    dateRequired: "The date is required.",
+    reviewFields: "Please review the highlighted fields.",
+    confirmTitle: "Save changes?",
+    saveButton: "Save",
+    loadingTitle: "Saving...",
+    saveError: "Could not save attendance.",
+    saved: "Attendance saved successfully."
+};
 
 function loadClasses() {
 
@@ -13,13 +25,13 @@ function loadClasses() {
             const classSelect = document.getElementById("classId");
 
             classSelect.innerHTML =
-                    '<option value="">Seleccione una clase</option>';
+                    `<option value="">${i18n.selectClass}</option>`;
 
             data.forEach(gymClass => {
 
                 classSelect.innerHTML += `
                     <option value="${gymClass.idClass}" data-date="${gymClass.classDate}">
-                        ${gymClass.classType} - ${gymClass.branchName || "Sin sucursal"} - ${gymClass.classDate}
+                        ${gymClass.classType} - ${gymClass.branchName || i18n.noBranch} - ${gymClass.classDate}
                     </option>
                 `;
             });
@@ -56,14 +68,14 @@ function saveClientAttendance() {
     clearClientAttendanceErrors();
 
     if (classId === "") {
-        showClientAttendanceError("classId", "Seleccione una clase.");
-        showSystemError("Revise los datos.");
+        showClientAttendanceError("classId", i18n.classRequired);
+        showSystemError(i18n.reviewFields);
         return;
     }
 
     if (attendanceDate === "") {
-        showClientAttendanceError("attendanceDate", "La fecha es obligatoria.");
-        showSystemError("Revise los datos.");
+        showClientAttendanceError("attendanceDate", i18n.dateRequired);
+        showSystemError(i18n.reviewFields);
         return;
     }
 
@@ -77,15 +89,15 @@ function saveClientAttendance() {
     };
 
     confirmSystemAction({
-        title: systemMessage("confirmTitle", "Guardar cambios?"),
-        confirmText: systemMessage("saveButton", "Guardar")
+        title: systemMessage("confirmTitle", i18n.confirmTitle),
+        confirmText: systemMessage("saveButton", i18n.saveButton)
     }).then(result => {
         if (!result.isConfirmed || clientAttendanceSaving) {
             return;
         }
 
         clientAttendanceSaving = true;
-        showSystemLoading(systemMessage("loadingTitle", "Procesando..."));
+        showSystemLoading(systemMessage("loadingTitle", i18n.loadingTitle));
 
         fetch("/attendances", {
             method: "POST",
@@ -95,15 +107,15 @@ function saveClientAttendance() {
             body: JSON.stringify(attendance)
         }).then(response => {
             if (!response.ok) {
-                throw new Error("No se pudo guardar.");
+                throw new Error(i18n.saveError);
             }
 
-            showSystemSuccess("Guardado.").then(() => {
+            showSystemSuccess(i18n.saved).then(() => {
                 window.location.href = "/client/attendances";
             });
         }).catch(error => {
             clientAttendanceSaving = false;
-            showSystemError(error.message || "No se pudo guardar.");
+            showSystemError(error.message || i18n.saveError);
         });
     });
 }

@@ -1,6 +1,15 @@
 let currentPage = 1;
 let totalPages = 1;
 const rowsPerPage = 4;
+const i18n = window.i18n || {
+    loadError: "Could not load attendances.",
+    emptyAttendances: "No attendances available.",
+    previous: "Previous",
+    next: "Next",
+    statusPresent: "Present",
+    statusAbsent: "Absent",
+    statusLate: "Late"
+};
 
 document.addEventListener("DOMContentLoaded", function () {
     loadAttendances();
@@ -15,7 +24,7 @@ function loadAttendances() {
             showAttendances(data.attendances);
             showPagination();
         })
-        .catch(() => showSystemError("No se pudo cargar."));
+        .catch(() => showSystemError(i18n.loadError));
 }
 
 function showAttendances(attendances) {
@@ -25,7 +34,7 @@ function showAttendances(attendances) {
     if (!attendances || attendances.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="empty-message">No hay asistencias registradas.</td>
+                <td colspan="5" class="empty-message">${i18n.emptyAttendances}</td>
             </tr>
         `;
         return;
@@ -42,7 +51,7 @@ function showAttendances(attendances) {
 
                 <td>
                     <span class="badge ${statusClass}">
-                        ${attendance.attendanceStatus || ""}
+                        ${getAttendanceStatusLabel(attendance.attendanceStatus)}
                     </span>
                 </td>
 
@@ -68,6 +77,29 @@ function getAttendanceStatusClass(status) {
     return "status-active";
 }
 
+function getAttendanceStatusLabel(status) {
+
+    if (!status) {
+        return "";
+    }
+
+    const statusText = status.toLowerCase();
+
+    if (statusText === "ausente" || statusText === "absent") {
+        return i18n.statusAbsent;
+    }
+
+    if (statusText === "tarde" || statusText === "late") {
+        return i18n.statusLate;
+    }
+
+    if (statusText === "presente" || statusText === "present") {
+        return i18n.statusPresent;
+    }
+
+    return status;
+}
+
 function formatDate(dateValue) {
 
     if (!dateValue) {
@@ -89,7 +121,7 @@ function showPagination() {
 
     const visualTotalPages = Math.max(totalPages, 1);
 
-    pagination.appendChild(createPageLink("Anterior", Math.max(currentPage - 1, 1), currentPage === 1));
+    pagination.appendChild(createPageLink(i18n.previous, Math.max(currentPage - 1, 1), currentPage === 1));
 
     for (let page = 1; page <= visualTotalPages; page++) {
         const link = createPageLink(page, page, false);
@@ -99,7 +131,7 @@ function showPagination() {
         pagination.appendChild(link);
     }
 
-    pagination.appendChild(createPageLink("Siguiente", Math.min(currentPage + 1, visualTotalPages), currentPage >= visualTotalPages));
+    pagination.appendChild(createPageLink(i18n.next, Math.min(currentPage + 1, visualTotalPages), currentPage >= visualTotalPages));
 }
 
 function createPageLink(text, page, disabled) {

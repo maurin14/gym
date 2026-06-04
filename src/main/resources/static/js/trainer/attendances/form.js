@@ -1,7 +1,28 @@
 const attendanceBasePath = window.attendanceBasePath ||
-        (window.location.pathname.startsWith("/admin/attendances")
-                ? "/admin/attendances"
+        (window.location.pathname.startsWith("/admin/attendance")
+                ? "/admin/attendance"
                 : "/trainer/attendances");
+
+const i18n = window.i18n || {
+    selectClient: "Select a client",
+    selectClass: "Select a class",
+    noBranch: "No branch",
+    errorTitle: "Error",
+    clientsLoadError: "Could not load clients.",
+    classesLoadError: "Could not load classes.",
+    loadError: "Could not load attendance.",
+    formTitleEdit: "Edit Attendance",
+    clientRequired: "Select a client.",
+    classRequired: "Select a class.",
+    dateRequired: "The date is required.",
+    statusRequired: "Select a status.",
+    incompleteTitle: "Incomplete data",
+    incompleteText: "Complete the required fields.",
+    saving: "Saving attendance...",
+    saved: "Attendance saved successfully.",
+    updated: "Attendance updated successfully.",
+    saveError: "Could not save attendance."
+};
 
 let attendanceSaving = false;
 
@@ -31,7 +52,7 @@ function loadClients() {
                         document.getElementById("clientId");
 
                 clientSelect.innerHTML =
-                        '<option value="">Seleccione un cliente</option>';
+                        `<option value="">${i18n.selectClient}</option>`;
 
                 data
                         .filter(client =>
@@ -49,8 +70,8 @@ function loadClients() {
             })
             .catch(() => {
                 showAdminError(
-                        "Error",
-                        "No se pudieron cargar los clientes."
+                        i18n.errorTitle,
+                        i18n.clientsLoadError
                 );
             });
 }
@@ -65,7 +86,7 @@ function loadClasses() {
                         document.getElementById("classId");
 
                 classSelect.innerHTML =
-                        '<option value="">Seleccione una clase</option>';
+                        `<option value="">${i18n.selectClass}</option>`;
 
                 data.forEach(gymClass => {
 
@@ -73,7 +94,7 @@ function loadClasses() {
                     <option value="${gymClass.idClass}"
                             data-date="${gymClass.classDate}">
                         ${gymClass.classType}
-                        - ${gymClass.branchName || "Sin sucursal"}
+                        - ${gymClass.branchName || i18n.noBranch}
                         - ${gymClass.classDate}
                     </option>
                 `;
@@ -81,8 +102,8 @@ function loadClasses() {
             })
             .catch(() => {
                 showAdminError(
-                        "Error",
-                        "No se pudieron cargar las clases."
+                        i18n.errorTitle,
+                        i18n.classesLoadError
                 );
             });
 }
@@ -108,7 +129,7 @@ function loadAttendanceForEdit(idAttendance) {
 
                 if (title) {
                     title.textContent =
-                            "Editar asistencia";
+                            i18n.formTitleEdit;
                 }
 
                 setInputValue("clientId", attendance.clientId || "");
@@ -120,8 +141,8 @@ function loadAttendanceForEdit(idAttendance) {
             })
             .catch(() => {
                 showAdminError(
-                        "Error",
-                        "No se pudo cargar la asistencia."
+                        i18n.errorTitle,
+                        i18n.loadError
                 );
             });
 }
@@ -193,29 +214,29 @@ function saveAttendance() {
     let hasErrors = false;
 
     if (clientId === "") {
-        showAttendanceError("clientId", "Seleccione un cliente.");
+        showAttendanceError("clientId", i18n.clientRequired);
         hasErrors = true;
     }
 
     if (classId === "") {
-        showAttendanceError("classId", "Seleccione una clase.");
+        showAttendanceError("classId", i18n.classRequired);
         hasErrors = true;
     }
 
     if (attendanceDate === "") {
-        showAttendanceError("attendanceDate", "La fecha es obligatoria.");
+        showAttendanceError("attendanceDate", i18n.dateRequired);
         hasErrors = true;
     }
 
     if (attendanceStatus === "") {
-        showAttendanceError("attendanceStatus", "Seleccione un estado.");
+        showAttendanceError("attendanceStatus", i18n.statusRequired);
         hasErrors = true;
     }
 
     if (hasErrors) {
         showAdminError(
-                "Datos incompletos",
-                "Debe completar los campos obligatorios."
+                i18n.incompleteTitle,
+                i18n.incompleteText
         );
         return;
     }
@@ -245,7 +266,7 @@ function saveAttendance() {
 
     attendanceSaving = true;
 
-    showAdminLoading("Guardando asistencia...");
+    showAdminLoading(i18n.saving);
 
     fetch(url, {
 
@@ -270,8 +291,8 @@ function saveAttendance() {
 
                 showAdminSuccess(
                         idAttendance !== ""
-                        ? "Asistencia actualizada correctamente."
-                        : "Asistencia registrada correctamente."
+                        ? i18n.updated
+                        : i18n.saved
                 )
                         .then(() => {
                             window.location.href =
@@ -283,8 +304,8 @@ function saveAttendance() {
                 attendanceSaving = false;
 
                 showAdminError(
-                        "Error",
-                        "No se pudo guardar la asistencia."
+                        i18n.errorTitle,
+                        i18n.saveError
                 );
             });
 }

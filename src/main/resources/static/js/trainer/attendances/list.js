@@ -20,6 +20,7 @@ const i18n = window.i18n || {
     deleteConfirmation: "This action cannot be undone.",
     deleting: "Deleting...",
     deleteError: "Could not delete.",
+    deleteSuccess: "Attendance deleted successfully.",
     noBranch: "No Branch"
 };
 
@@ -142,7 +143,7 @@ function deleteAttendance(idAttendance) {
         fetch(`/attendances/${idAttendance}`, { method: "DELETE" })
             .then(res => {
                 if (!res.ok) throw new Error(i18n.deleteError);
-                showAdminSuccess(i18n.delete + ".").then(loadAttendances);
+                showAdminSuccess(i18n.deleteSuccess).then(loadAttendances);
             })
             .catch(err => showAdminError(err.message || i18n.deleteError));
     });
