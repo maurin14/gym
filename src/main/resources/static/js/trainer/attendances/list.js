@@ -143,8 +143,15 @@ function deleteAttendance(idAttendance) {
         fetch(`/attendances/${idAttendance}`, { method: "DELETE" })
             .then(res => {
                 if (!res.ok) throw new Error(i18n.deleteError);
-                showAdminSuccess(i18n.deleteSuccess).then(loadAttendances);
-            })
+                    Swal.fire({
+                        icon: 'success',
+                        title: i18n.deleteSuccess, 
+                        showConfirmButton: true,
+                        confirmButtonText: i18n.confirmButton
+                    }).then(() => {
+                        loadAttendances();             
+                    });
+        })
             .catch(err => showAdminError(err.message || i18n.deleteError));
     });
 }

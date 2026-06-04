@@ -26,6 +26,7 @@ const i18n = window.i18n || {
     difficultyLow: "Low",
     difficultyMedium: "Medium",
     difficultyHigh: "High"
+
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -193,8 +194,15 @@ function deleteClass(idClass) {
         fetch("/classes/" + idClass, { method: "DELETE" })
             .then(response => {
                 if (!response.ok) throw new Error(i18n.deleteError);
-                showAdminSuccess(i18n.deleteSuccess).then(loadClasses);
-            })
+                     Swal.fire({
+                        icon: 'success',
+                        title: i18n.deleteSuccess,
+                        showConfirmButton: true,
+                        confirmButtonText: i18n.confirmButton
+                    }).then(() => {
+                        loadClasses();
+                    });
+        })
             .catch(error => {
                 showAdminError(error.message || i18n.deleteError);
             });

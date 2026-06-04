@@ -291,7 +291,7 @@ function saveAttendance() {
             .then(() => {
 
                 Swal.fire({
-                    icon: 'success', // check verde
+                    icon: 'success', 
                     title: idAttendance !== "" ? i18n.attendanceUpdated : i18n.attendanceSaved,
                     showConfirmButton: true,
                     confirmButtonText: i18n.confirmButton 

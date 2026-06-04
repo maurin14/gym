@@ -110,8 +110,13 @@ function saveClientAttendance() {
                 throw new Error(i18n.saveError);
             }
 
-            showSystemSuccess(i18n.saved).then(() => {
-                window.location.href = "/client/attendances";
+            Swal.fire({
+                icon: 'success', 
+                title: i18n.saved, 
+                showConfirmButton: true,
+                confirmButtonText: i18n.confirmButton 
+            }).then(() => {
+                window.location.href = "/client/attendances"; 
             });
         }).catch(error => {
             clientAttendanceSaving = false;

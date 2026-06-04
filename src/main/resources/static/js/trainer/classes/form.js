@@ -12,7 +12,8 @@ const i18n = window.i18n || {
     saveError: "Could not save.",
     formTitleAdd: "Add Class",
     formTitleEdit: "Edit Class",
-    confirmButton: /*[[#{confirm.button}]]*/ "Aceptar"
+    confirmButton: /*[[#{confirm.button}]]*/ "Accept",
+    
 };
 
 document.addEventListener("DOMContentLoaded", function () {
