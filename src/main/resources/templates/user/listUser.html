@@ -90,7 +90,7 @@
         </tbody>
     </table>
 
-    <nav class="pagination" aria-label="Paginacion de usuarios"
+    <nav class="pagination" th:aria-label="#{pagination.user}"
      th:with="visualTotalPages=${totalPages != null and totalPages > 0 ? totalPages : 1},
               safeCurrentPage=${currentPage != null ? currentPage : 0}">
         <a class="btn-secondary"
@@ -114,18 +114,22 @@
     </nav>
 </main>
 
-<script>
+<script th:inline="javascript">
+    const userDeleteDefaultTitle = /*[[#{confirm.user.delete}]]*/ '¿Eliminar usuario?';
+    const userDeleteConfirmText = /*[[#{button.delete}]]*/ 'Eliminar';
+    const userDeleteLoadingText = /*[[#{message.processing}]]*/ 'Procesando...';
+
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             confirmAdminAction({
-                title: link.dataset.deleteTitle || 'Eliminar registro?',
+                title: link.dataset.deleteTitle || userDeleteDefaultTitle,
                 text: '',
-                confirmText: 'Eliminar',
+                confirmText: userDeleteConfirmText,
                 icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Procesando...');
+                    showAdminLoading(userDeleteLoadingText);
                     window.location.href = link.href;
                 }
             });

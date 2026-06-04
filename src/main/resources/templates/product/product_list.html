@@ -25,7 +25,7 @@
 
     <form class="admin-filter-row portal-filters" th:action="@{/admin/products}" method="get">
         <select name="category">
-            <option value="" th:text="#{label.product.allCategories}">Todas las categorias</option>
+            <option value="" th:text="#{label.product.allCategories}">Todas las categorías</option>
             <option th:each="cat : ${categories}"
                     th:value="${cat}"
                     th:text="${cat}"
@@ -54,7 +54,7 @@
         <tr>
             <th th:text="#{label.product.image}">Imagen</th>
             <th th:text="#{label.product.name}">Nombre</th>
-            <th th:text="#{label.product.category}">Categoria</th>
+            <th th:text="#{label.product.category}">Categoría</th>
             <th th:text="#{label.product.price}">Precio</th>
             <th th:text="#{label.product.stock}">Stock</th>
             <th th:text="#{label.product.status}">Estado</th>
@@ -133,7 +133,7 @@
 <script th:inline="javascript">
     const successMessage = /*[[${successMessage != null ? #messages.msg(successMessage) : null}]]*/ null;
     const deleteTitle = /*[[#{confirm.product.delete.title}]]*/ 'Eliminar producto?';
-    const deleteText = /*[[#{confirm.delete.text}]]*/ 'Esta accion no se puede deshacer.';
+    const deleteText = /*[[#{confirm.delete.text}]]*/ 'Esta acción no se puede deshacer.';
     const deleteConfirmText = /*[[#{button.delete}]]*/ 'Eliminar';
     const deleteLoadingText = /*[[#{confirm.loading.delete}]]*/ 'Eliminando...';
 

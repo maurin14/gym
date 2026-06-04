@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Administración de sucursales</title>
+    <title th:text="#{title.branch.admin}">Administración de sucursales</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -12,26 +12,32 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('branches')}"></div>
 
-
 <main class="container portal-card admin-page-card">
-    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="status-active" th:text="#{${successMessage}}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="#{${errorMessage}}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/admin/branches/new}" class="btn-primary">Nueva sucursal</a>
+        <a th:href="@{/admin/branches/new}" class="btn-primary" th:text="#{button.newBranch}">Nueva sucursal</a>
     </div>
 
     <form class="admin-filter-row portal-filters" th:action="@{/admin/branches}" method="get">
-        <input type="text" id="filterName" name="name" placeholder="Buscar por nombre" th:value="${name}">
-
-        <select id="filterActive" name="active">
-            <option value="">Todos los estados</option>
-            <option value="true" th:selected="${active == 'true'}">Activa</option>
-            <option value="false" th:selected="${active == 'false'}">Inactiva</option>
+        <select id="filterBranch" name="branchId">
+            <option value="" th:text="#{label.gym.allBranches}">Todas las sucursales</option>
+            <option th:each="branchOption : ${branchOptions}"
+                    th:value="${branchOption.id}"
+                    th:text="${branchOption.name}"
+                    th:selected="${branchId != null and branchId == branchOption.id}">
+            </option>
         </select>
 
-        <button type="submit" class="btn-primary">Buscar</button>
-        <a th:href="@{/admin/branches}" class="btn-secondary">Limpiar filtros</a>
+        <select id="filterActive" name="active">
+            <option value="" th:text="#{label.branch.allStatus}">Todos los estados</option>
+            <option value="true" th:selected="${active == 'true'}" th:text="#{label.status.activeFemale}">Activa</option>
+            <option value="false" th:selected="${active == 'false'}" th:text="#{label.status.inactiveFemale}">Inactiva</option>
+        </select>
+
+        <button type="submit" class="btn-primary" th:text="#{button.search}">Buscar</button>
+        <a th:href="@{/admin/branches}" class="btn-secondary" th:text="#{button.cleanFilters}">Limpiar filtros</a>
     </form>
 
     <div id="branch-table-container">
@@ -42,21 +48,28 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
+    window.branchMessages = {
+        deleteTitle: /*[[#{confirm.branch.delete}]]*/ "Eliminar sucursal?",
+        deleteText: /*[[#{confirm.delete.text}]]*/ "Esta acción no se puede deshacer.",
+        deleteConfirm: /*[[#{button.delete}]]*/ "Eliminar",
+        deleteLoading: /*[[#{confirm.loading.delete}]]*/ "Eliminando...",
+        yes: /*[[#{button.yes}]]*/ "Si"
+    };
+
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = "Acción realizada correctamente.";
+        let message = /*[[#{message.action.success}]]*/ "Acción realizada correctamente.";
 
-        if (success[0] === "save") message = "Sucursal registrada correctamente.";
-        if (success[0] === "edit") message = "Sucursal actualizada correctamente.";
-        if (success[0] === "delete") message = "Sucursal eliminada correctamente.";
-        if (success[0] === "status") message = "Estado de la sucursal actualizado correctamente.";
+        if (success[0] === "save") message = /*[[#{message.branch.saved}]]*/ "Sucursal registrada correctamente.";
+        if (success[0] === "edit") message = /*[[#{message.branch.updated}]]*/ "Sucursal actualizada correctamente.";
+        if (success[0] === "delete") message = /*[[#{message.branch.deleted}]]*/ "Sucursal eliminada correctamente.";
 
         showAdminSuccess(message);
     }
 
-    const successMessage = [[${successMessage != null ? successMessage : null}]];
-    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+    const successMessage = /*[[${successMessage != null ? #messages.msg(successMessage) : null}]]*/ null;
+    const errorMessage = /*[[${errorMessage != null ? #messages.msg(errorMessage) : null}]]*/ null;
 
     if (successMessage != null) {
         showAdminSuccess(successMessage);

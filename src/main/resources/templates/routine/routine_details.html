@@ -26,11 +26,11 @@
         <div class="detail-info">
             <article class="info-card highlight">
                 <h3 th:text="${routine.nameRoutine}">Rutina</h3>
-                <p th:text="${routine.description}">Descripcion de la rutina</p>
+                <p th:text="${routine.description}">Descripción de la rutina</p>
             </article>
 
             <article class="info-card">
-                <h3 th:text="#{label.routine.generalInfo}">Informacion general</h3>
+                <h3 th:text="#{label.routine.generalInfo}">Información general</h3>
                 <p><strong th:text="|#{label.routine.difficulty}:|">Dificultad:</strong> <span th:text="${routine.difficultyLevel}"></span></p>
                 <p><strong th:text="|#{label.routine.duration}:|">Duracion:</strong> <span th:text="${routine.estimatedDuration + ' ' + #messages.msg('label.common.minutes')}"></span></p>
                 <p><strong th:text="|#{label.routine.objective}:|">Objetivo:</strong> <span th:text="${routine.trainingObjective}"></span></p>

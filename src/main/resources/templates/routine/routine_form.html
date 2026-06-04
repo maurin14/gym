@@ -61,7 +61,7 @@
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['routineType'] != null}" th:text="#{${fieldErrors['routineType']}}"></small>
 
-        <label th:text="#{label.routine.description}">Descripcion</label>
+        <label th:text="#{label.routine.description}">Descripción</label>
         <textarea th:field="*{description}" required></textarea>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="#{${fieldErrors['description']}}"></small>
 

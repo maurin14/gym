@@ -187,6 +187,48 @@ select {
     color: var(--gold);
 }
 
+.client-module-nav {
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.client-current-separator {
+    color: rgba(255, 255, 255, 0.34);
+}
+
+.client-current-module {
+    color: var(--gold);
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.client-language-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.62);
+    font-weight: 900;
+}
+
+.client-language-selector a {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+.client-language-selector a:hover,
+.client-language-selector a.active {
+    color: var(--gold);
+}
+
+.client-language-selector a.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
 .client-menu-drawer {
     width: min(480px, 92vw);
     position: fixed;
@@ -364,10 +406,10 @@ body.menu-open .menu-backdrop {
 
 .client-home-hero,
 .client-hero {
-    min-height: 500px;
+    min-height: 360px;
     display: flex;
     align-items: center;
-    padding: 88px 7% 76px;
+    padding: 76px 7% 48px;
     color: var(--white);
     background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.30)),
@@ -379,10 +421,13 @@ body.menu-open .menu-backdrop {
 }
 
 .compact-hero {
-    min-height: 420px;
+    min-height: 300px;
 }
 
 .routines-hero {
+    min-height: 280px;
+    padding-top: 72px;
+    padding-bottom: 42px;
     background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.25)),
         url('/images/fondo.jpg') center/cover no-repeat;

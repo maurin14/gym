@@ -2,17 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<header th:fragment="adminHeader(active)" class="main-header portal-header"
-        th:with="moduleName=${active == 'branches' ? 'Sucursales' :
-            (active == 'payments' ? 'Pagos' :
-            (active == 'routines' ? 'Rutinas' :
-            (active == 'products' ? 'Productos' :
-            (active == 'classes' ? 'Clases' :
-            (active == 'users' ? 'Usuarios' :
-            (active == 'schedules' ? 'Horarios' :
-            (active == 'reports' ? 'Reportes' :
-            (active == 'equipment' ? 'Equipamiento' :
-            (active == 'attendance' ? 'Asistencia' : 'Inicio')))))))))}">
+<header th:fragment="adminHeader(active)" class="main-header portal-header">
     <div class="header-left portal-brand">
         <a th:if="${session.user != null and session.user.role == 'administrator'}" th:href="@{/admin/home}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="logo portal-logo">
@@ -23,35 +13,47 @@
         <div class="brand-text">
             <span class="system-name portal-title">SAM GYM FITNESS</span>
             <span th:if="${session.user != null and session.user.role == 'administrator'}" 
-                  class="brand-subtitle portal-subtitle">Panel administrador</span>
+                  class="brand-subtitle portal-subtitle" th:text="#{nav.admin.panel}">Panel administrador</span>
             <span th:if="${session.user != null and session.user.role == 'trainer'}" 
-                  class="brand-subtitle portal-subtitle">PANEL ENTRENADOR</span>
+                  class="brand-subtitle portal-subtitle" th:text="#{nav.trainer.panel}">PANEL ENTRENADOR</span>
         </div>
     </div>
 
-    <nav class="header-nav portal-nav" aria-label="Navegaci&oacute;n administrativa">
-        <span class="current-module" th:if="${active != 'home'}" th:text="${moduleName}">M&oacute;dulo</span>
+    <nav class="header-nav portal-nav" th:aria-label="#{nav.portal.navigation}">
+        <span class="current-module" th:if="${active != 'home'}" th:switch="${active}">
+            <span th:case="'branches'" th:text="#{nav.admin.branches}">Sucursales</span>
+            <span th:case="'payments'" th:text="#{nav.admin.payments}">Pagos</span>
+            <span th:case="'routines'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.routines} : #{nav.admin.routines}">Rutinas</span>
+            <span th:case="'products'" th:text="#{nav.admin.products}">Productos</span>
+            <span th:case="'classes'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.classes} : #{nav.admin.classes}">Clases</span>
+            <span th:case="'users'" th:text="#{nav.admin.users}">Usuarios</span>
+            <span th:case="'schedules'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.schedules} : #{nav.admin.schedules}">Horarios</span>
+            <span th:case="'reports'" th:text="#{nav.admin.reports}">Reportes</span>
+            <span th:case="'equipment'" th:text="#{nav.admin.equipment}">Equipamiento</span>
+            <span th:case="'attendance'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.attendance} : #{nav.admin.attendance}">Asistencia</span>
+            <span th:case="*" th:text="#{nav.admin.home}">Inicio</span>
+        </span>
 
         <details class="module-menu">
-            <summary>Men&uacute;</summary>
+            <summary th:text="#{label.gym.menu}">Menu</summary>
             <div class="module-menu-panel">
                 <th:block th:if="${session.user != null and session.user.role == 'administrator'}">
-                    <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
-                    <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
-                    <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
-                    <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
-                    <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
-                    <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'">Usuarios</a>
-                    <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Horarios</a>
-                    <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'">Reportes</a>
-                    <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'">Equipamiento</a>
-                    <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
+                    <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'" th:text="#{nav.admin.branches}">Sucursales</a>
+                    <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'" th:text="#{nav.admin.payments}">Pagos</a>
+                    <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'" th:text="#{nav.admin.routines}">Rutinas</a>
+                    <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'" th:text="#{nav.admin.products}">Productos</a>
+                    <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'" th:text="#{nav.admin.classes}">Clases</a>
+                    <a th:href="@{/users}" th:classappend="${active == 'users'} ? ' active'" th:text="#{nav.admin.users}">Usuarios</a>
+                    <a th:href="@{/admin/schedules}" th:classappend="${active == 'schedules'} ? ' active'" th:text="#{nav.admin.schedules}">Horarios</a>
+                    <a th:href="@{/reports}" th:classappend="${active == 'reports'} ? ' active'" th:text="#{nav.admin.reports}">Reportes</a>
+                    <a th:href="@{/admin/equipment}" th:classappend="${active == 'equipment'} ? ' active'" th:text="#{nav.admin.equipment}">Equipamiento</a>
+                    <a th:href="@{/admin/attendance}" th:classappend="${active == 'attendance'} ? ' active'" th:text="#{nav.admin.attendance}">Asistencia</a>
                 </th:block>
                 <th:block th:if="${session.user != null and session.user.role == 'trainer'}">
-                    <a th:href="@{/trainer/classes}" th:classappend="${active == 'classes'} ? ' active'">Mis clases</a>
-                    <a th:href="@{/trainer/schedules}" th:classappend="${active == 'schedules'} ? ' active'">Mis horarios</a>
-                    <a th:href="@{/trainer/attendances}" th:classappend="${active == 'attendance'} ? ' active'">Asistencia</a>
-                    <a th:href="@{/trainer/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
+                    <a th:href="@{/trainer/classes}" th:classappend="${active == 'classes'} ? ' active'" th:text="#{nav.trainer.classes}">Mis clases</a>
+                    <a th:href="@{/trainer/schedules}" th:classappend="${active == 'schedules'} ? ' active'" th:text="#{nav.trainer.schedules}">Mis horarios</a>
+                    <a th:href="@{/trainer/attendances}" th:classappend="${active == 'attendance'} ? ' active'" th:text="#{nav.trainer.attendance}">Asistencia</a>
+                    <a th:href="@{/trainer/routines}" th:classappend="${active == 'routines'} ? ' active'" th:text="#{nav.trainer.routines}">Rutinas</a>
                 </th:block>
             </div>
         </details>
@@ -59,27 +61,70 @@
         <div class="header-actions">
             <a th:if="${session.user != null and session.user.role == 'administrator'}"
                 th:href="@{/admin/home}"
-                th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+                th:classappend="${active == 'home'} ? ' active'"
+                th:text="#{nav.admin.home}">Inicio</a>
 
             <a th:if="${session.user != null and session.user.role == 'trainer'}"
                 th:href="@{/trainer/home}"
-                th:classappend="${active == 'home'} ? ' active'">Inicio</a>
+                th:classappend="${active == 'home'} ? ' active'"
+                th:text="#{nav.admin.home}">Inicio</a>
 
-            <a th:href="@{/logout}">Cerrar sesi&oacute;n</a>
+            <a th:href="@{/logout}" th:text="#{nav.logout}">Cerrar sesión</a>
         </div>
         
-        <div class="language-selector">
-            <a href="#" onclick="changeLanguage('es'); return false;">ES</a>
+        <div class="language-selector" th:with="currentLang=${#locale.language}">
+            <a th:href="@{''(lang='es')}"
+               th:classappend="${currentLang == 'es'} ? ' active'"
+               data-lang="es">ES</a>
             |
-            <a href="#" onclick="changeLanguage('en'); return false;">EN</a>
+            <a th:href="@{''(lang='en')}"
+               th:classappend="${currentLang == 'en'} ? ' active'"
+               data-lang="en">EN</a>
         </div>
 
-        <script>
+        <script th:inline="javascript">
+        function clearTransientVisualState() {
+            document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+
+            if (document.body.style.overflow === 'hidden') {
+                document.body.style.overflow = '';
+            }
+
+            if (window.Swal && Swal.isVisible && Swal.isVisible()) {
+                Swal.close();
+            }
+        }
+
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                clearTransientVisualState();
+            }
+        });
+
+        window.systemMessages = Object.assign({}, window.systemMessages || {}, {
+            confirmTitle: /*[[#{confirm.default.title}]]*/ "Guardar cambios?",
+            confirmButton: /*[[#{button.yes}]]*/ "Si",
+            cancelButton: /*[[#{button.cancel}]]*/ "Cancelar",
+            saveButton: /*[[#{button.save}]]*/ "Guardar",
+            loadingTitle: /*[[#{message.processing}]]*/ "Procesando...",
+            loadingText: /*[[#{message.loading.wait}]]*/ "Espere un momento.",
+            successTitle: /*[[#{message.success.saved}]]*/ "Guardado.",
+            errorTitle: /*[[#{message.error.save}]]*/ "No se pudo guardar.",
+            okButton: /*[[#{button.accept}]]*/ "Aceptar"
+        });
+
         function changeLanguage(lang) {
             const url = new URL(window.location.href);
             url.searchParams.set('lang', lang);
             window.location.href = url.toString();
         }
+
+        document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                changeLanguage(link.dataset.lang);
+            });
+        });
         </script>
     </nav>
 </header>

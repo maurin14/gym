@@ -9,25 +9,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('routines')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('routines')}"></div>
 
 <main>
-    <section class="client-hero routines-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.routine.training}">Entrenamiento</span>
-            <h1 th:text="#{title.routine.catalog}">Rutinas disponibles</h1>
-            <p th:text="#{label.routine.catalogDescription}">Consulta planes de entrenamiento preparados para distintos objetivos, niveles y tipos de actividad.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.routine.routines}">Rutinas</strong>
-        </nav>
-
         <form class="catalog-toolbar"
               method="get"
               th:action="@{/client/routines}"

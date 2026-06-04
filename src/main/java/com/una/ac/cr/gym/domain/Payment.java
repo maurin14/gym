@@ -34,7 +34,7 @@ public class Payment {
     @Column(name = "status", nullable = false, length = 30)
     private String status;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", nullable = false, length = 255)
     private String description;
 
     @Column(name = "id_user", nullable = false)

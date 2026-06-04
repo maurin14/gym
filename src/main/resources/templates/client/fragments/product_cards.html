@@ -23,9 +23,9 @@
             </a>
 
             <div class="card-content">
-                <span class="tag" th:text="${product.category}">Categoria</span>
+                <span class="tag" th:text="${product.category}">Categoría</span>
                 <h3 th:text="${product.nameProduct}">Producto</h3>
-                <p class="muted-text" th:text="${product.description}">Descripcion</p>
+                <p class="muted-text" th:text="${product.description}">Descripción</p>
 
                 <div class="card-footer">
                     <strong th:utext="'&#8353; ' + ${#numbers.formatDecimal(product.price, 1, 2)}">&#8353; 0.00</strong>

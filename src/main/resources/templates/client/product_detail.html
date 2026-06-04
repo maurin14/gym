@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('products')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('products')}"></div>
 
 <main class="detail-page">
@@ -34,10 +34,10 @@
         </div>
 
         <div class="detail-content">
-            <a th:href="@{/client/products}" class="back-link" th:text="#{button.backCatalog}">Volver al catalogo</a>
-            <span class="tag" th:text="${product.category}">Categoria</span>
+            <a th:href="@{/client/products}" class="back-link" th:text="#{button.backCatalog}">Volver al catálogo</a>
+            <span class="tag" th:text="${product.category}">Categoría</span>
             <h1 th:text="${product.nameProduct}">Producto</h1>
-            <p class="detail-description" th:text="${product.description}">Descripcion del producto</p>
+            <p class="detail-description" th:text="${product.description}">Descripción del producto</p>
 
             <div class="detail-meta">
                 <div class="meta-item price-item">

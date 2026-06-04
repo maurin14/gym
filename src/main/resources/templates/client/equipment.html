@@ -8,25 +8,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('equipment')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('equipment')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker" th:text='#{label.gym.equipment}' ></span>
-            <h1  th:text='#{label.equipment.available}'></h1>
-            <p  th:text='#{menu.equipment.client}'></p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegacion">
-            <a th:href="@{/client/home}"  th:text='#{label.gym.start}'></a>
-            <span>/</span>
-            <strong   th:text='#{label.gym.equipment}'></strong>
-        </nav>
-
         <form class="catalog-toolbar" th:action="@{/client/equipment}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
 
@@ -80,7 +66,7 @@
             </article>
         </div>
 
-        <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginacion de equipamiento">
+        <nav class="client-pagination" th:if="${totalPages > 1}" th:aria-label="#{pagination.equipment}">
             <a class="pagination-link"
                th:classappend="${currentPage == 0} ? ' disabled'"  th:text='#{button.previous}'
                th:href="@{/client/equipment(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId})}">

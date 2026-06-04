@@ -3,30 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text='menu.client'></title>
+    <title th:text="#{menu.client}">Horarios - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('schedules')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('schedules')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.gym.schedules}"></span>
-            <h1 th:text="#{menu.schedule.titleCliente}"></h1>
-            <p th:text="#{subMenu.schedule.titleCliente}"></p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegacion">
-            <a th:href="@{/client/home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.gym.schedules}"></strong>
-        </nav>
-
         <form class="catalog-toolbar" th:action="@{/client/schedules}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
             <div class="toolbar-field">
@@ -42,7 +28,7 @@
                 </select>
             </div>
             <button type="submit" class="btn-primary" th:text="#{button.filter}"></button>
-            <a th:href="@{/client/schedules}" class="btn-secondary"th:text="#{button.cleanFilter}"></a>
+            <a th:href="@{/client/schedules}" class="btn-secondary" th:text="#{button.cleanFilter}"></a>
         </form>
 
         <div class="client-table-card">
@@ -84,7 +70,7 @@
             </table>
         </div>
 
-        <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginacion de horarios">
+        <nav class="client-pagination" th:if="${totalPages > 1}" th:aria-label="#{pagination.schedule}">
             <a class="pagination-link"
                th:classappend="${currentPage == 0} ? ' disabled'"  th:text="#{button.previous}"
                th:href="@{/client/schedules(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId})}">

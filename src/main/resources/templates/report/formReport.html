@@ -16,7 +16,7 @@
     <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
 
     <form class="portal-form" th:action="@{/reports/save}" th:object="${reportNew}" method="post" novalidate
-          th:attr="data-admin-confirm=${reportNew.reportId != null ? 'Guardar cambios?' : 'Registrar reporte?'},data-admin-loading='Guardando...'">
+          th:attr="data-admin-confirm=${reportNew.reportId != null ? #messages.msg('confirm.report.update') : #messages.msg('confirm.report.create')},data-admin-loading=#{confirm.loading.save}">
         <input type="hidden" th:field="*{reportId}">
 
         <label th:text="#{label.report.type}">Tipo de reporte</label>

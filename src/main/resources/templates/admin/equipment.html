@@ -110,7 +110,7 @@
         </table>
     </div>
 
-    <nav class="pagination" aria-label="Paginacion de equipamiento"
+    <nav class="pagination" th:aria-label="#{pagination.equipment}"
          th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary" th:text="#{button.previous}"
            th:classappend="${currentPage == 0} ? ' disabled'"

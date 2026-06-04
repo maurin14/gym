@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text='menu.trainer'></title>
+    <title th:text="#{menu.trainer}">Mis horarios - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
@@ -38,7 +38,7 @@
                     <td th:text="${gymClass.classType}"></td>
                     <td th:text="${gymClass.branch != null ? gymClass.branch.name : #messages.msg('label.gym.none')}"></td>                  
                     <td th:text="${gymClass.classDate}"></td>
-                    <td th:text="${gymClass.classDate != null ? gymClass.classDate.dayOfWeek : #messages.msg('msn.trainer.null')}"></td>
+                    <td th:text="${gymClass.classDate != null ? #messages.msg('day.' + #strings.toLowerCase(gymClass.classDate.dayOfWeek.name())) : #messages.msg('msn.trainer.null')}"></td>
                     <td th:text="${gymClass.startTime != null ? #temporals.format(gymClass.startTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"></td>
                     <td th:text="${gymClass.endTime != null ? #temporals.format(gymClass.endTime, 'HH:mm') : #messages.msg('label.gym.noTime')}"></td>
                     <td th:text="${gymClass.status ? #messages.msg('status.active') : #messages.msg('status.inactive')}"></td>

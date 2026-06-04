@@ -60,7 +60,7 @@ public class HomeController {
             }
 
             model.addAttribute("trainerBranch",
-                    user.getBranch() != null ? user.getBranch().getName() : "Sin sucursal asignada");
+                    user.getBranch() != null ? user.getBranch().getName() : null);
             return "trainer/index";
         }
 
