@@ -8,25 +8,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('equipment')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('equipment')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker" th:text='#{label.gym.equipment}' ></span>
-            <h1  th:text='#{label.equipment.available}'></h1>
-            <p  th:text='#{menu.equipment.client}'></p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong   th:text='#{label.gym.equipment}'></strong>
-        </nav>
-
         <form class="catalog-toolbar" th:action="@{/client/equipment}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
 

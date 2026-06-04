@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('branches')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('branches')}"></div>
 
 <main class="detail-page">
@@ -29,7 +29,7 @@
             <a th:href="@{/client/branches}" class="back-link" th:text="#{button.backBranches}">Volver a sucursales</a>
             <span class="section-kicker" th:text="#{label.branch.detail}">Detalle de sucursal</span>
             <h1 th:text="${branch.name}">Sucursal</h1>
-            <p class="detail-description" th:text="${branch.address}">Direccion de la sucursal</p>
+            <p class="detail-description" th:text="${branch.address}">Dirección de la sucursal</p>
 
             <div class="detail-meta stacked-meta">
                 <div class="meta-item">
@@ -37,8 +37,8 @@
                     <strong th:text="${#temporals.format(branch.openingDate, 'dd/MM/yyyy')}">Fecha</strong>
                 </div>
                 <div class="meta-item">
-                    <span th:text="#{label.branch.phone}">Telefono</span>
-                    <strong th:text="${branch.phone}">Telefono</strong>
+                    <span th:text="#{label.branch.phone}">Teléfono</span>
+                    <strong th:text="${branch.phone}">Teléfono</strong>
                 </div>
                 <div class="meta-item">
                     <span th:text="#{label.branch.capacity}">Capacidad</span>

@@ -58,7 +58,7 @@
                th:placeholder="#{placeholder.payment.amount}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['amount'] != null}" th:text="#{${fieldErrors['amount']}}"></small>
 
-        <label th:text="#{label.payment.method}">Metodo de pago</label>
+        <label th:text="#{label.payment.method}">Método de pago</label>
         <select th:field="*{paymentMethod}" required>
             <option value="" th:text="#{select.select}">Seleccione</option>
             <option value="Efectivo" th:text="#{label.payment.method.cash}">Efectivo</option>
@@ -77,7 +77,7 @@
         </select>
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="#{${fieldErrors['status']}}"></small>
 
-        <label th:text="#{label.payment.description}">Descripcion</label>
+        <label th:text="#{label.payment.description}">Descripción</label>
         <input type="text"
                th:field="*{description}"
                maxlength="255"

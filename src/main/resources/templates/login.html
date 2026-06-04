@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{login.title}">Iniciar sesion</title>
+    <title th:text="#{login.title}">Iniciar sesión</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/app.css}">
@@ -24,10 +24,10 @@
                data-lang="en">EN</a>
         </div>
 
-        <h1 th:text="#{login.title}">Iniciar sesion</h1>
+        <h1 th:text="#{login.title}">Iniciar sesión</h1>
 
         <div th:if="${messageError}" class="alert error-box" th:text="#{${messageError}}"></div>
-        <div th:if="${param.logout}" class="status-active" th:text="#{login.logout}">Sesion cerrada.</div>
+        <div th:if="${param.logout}" class="status-active" th:text="#{login.logout}">Sesión cerrada.</div>
 
         <form th:action="@{/login(lang=${#locale.language})}" method="post" autocomplete="off">
             <label for="username" th:text="#{login.username}">Nombre de usuario</label>
@@ -37,7 +37,7 @@
                    required
                    th:placeholder="#{login.username.placeholder}">
 
-            <label for="password" th:text="#{login.password}">Contrasena</label>
+            <label for="password" th:text="#{login.password}">Contraseña</label>
             <input id="password"
                    type="password"
                    name="password"
@@ -54,6 +54,21 @@
 </main>
 
 <script>
+    function clearTransientVisualState() {
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+
+        if (document.body.style.overflow === 'hidden') {
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.swal2-container, .modal-backdrop').forEach(function (element) {
+            element.remove();
+        });
+    }
+
+    clearTransientVisualState();
+    window.addEventListener('pageshow', clearTransientVisualState);
+
     function changeLanguage(lang) {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', lang);

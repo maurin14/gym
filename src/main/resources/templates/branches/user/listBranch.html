@@ -8,25 +8,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('branches')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('branches')}"></div>
 
 <main>
-    <section class="client-hero compact-hero branches-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.branch.locations}">Sedes</span>
-            <h1 th:text="#{label.branch.availableBranches}">Sucursales disponibles</h1>
-            <p th:text="#{label.branch.catalogDescription}">Consulta las sedes activas del gimnasio, su ubicacion, capacidad y datos generales.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.branch.branches}">Sucursales</strong>
-        </nav>
-
         <form class="catalog-toolbar branch-toolbar" method="get" th:action="@{/client/branches}">
             <div class="toolbar-field search-field">
                 <label for="filterName" th:text="#{label.branch.search}">Buscar</label>
@@ -50,7 +36,7 @@
                 <div class="branch-card-body">
                     <span class="status-badge status-paid" th:text="#{label.status.activeFemale}">Activa</span>
                     <h3 th:text="${b.name}">Sucursal</h3>
-                    <p th:text="${b.address}">Direccion</p>
+                    <p th:text="${b.address}">Dirección</p>
 
                     <div class="card-footer">
                         <span class="muted-text" th:text="${#messages.msg('label.branch.capacity') + ': ' + b.capacity}">Capacidad</span>

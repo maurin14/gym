@@ -8,25 +8,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('schedules')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('schedules')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.gym.schedules}"></span>
-            <h1 th:text="#{menu.schedule.titleCliente}"></h1>
-            <p th:text="#{subMenu.schedule.titleCliente}"></p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.gym.schedules}"></strong>
-        </nav>
-
         <form class="catalog-toolbar" th:action="@{/client/schedules}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
             <div class="toolbar-field">

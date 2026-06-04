@@ -14,6 +14,10 @@ function systemMessage(key, fallback) {
 function confirmSystemAction(options) {
     options = options || {};
 
+    if (!window.Swal) {
+        return Promise.resolve({ isConfirmed: window.confirm(options.title || systemMessage("confirmTitle", "Save changes?")) });
+    }
+
     return Swal.fire(systemSwalOptions({
         title: options.title || systemMessage("confirmTitle", "Save changes?"),
         text: options.text || "",
@@ -25,6 +29,10 @@ function confirmSystemAction(options) {
 }
 
 function showSystemLoading(title, text) {
+    if (!window.Swal) {
+        return Promise.resolve();
+    }
+
     return Swal.fire(systemSwalOptions({
         title: title || systemMessage("loadingTitle", "Processing..."),
         text: text || systemMessage("loadingText", "Please wait."),
@@ -37,6 +45,10 @@ function showSystemLoading(title, text) {
 }
 
 function showSystemSuccess(title, text) {
+    if (!window.Swal) {
+        return Promise.resolve();
+    }
+
     return Swal.fire(systemSwalOptions({
         title: title || systemMessage("successTitle", "Saved."),
         text: text || "",
@@ -46,6 +58,10 @@ function showSystemSuccess(title, text) {
 }
 
 function showSystemError(title, text) {
+    if (!window.Swal) {
+        return Promise.resolve();
+    }
+
     return Swal.fire(systemSwalOptions({
         title: title || systemMessage("errorTitle", "Could not save."),
         text: text || "",
@@ -59,6 +75,24 @@ const confirmAdminAction = confirmSystemAction;
 const showAdminLoading = showSystemLoading;
 const showAdminSuccess = showSystemSuccess;
 const showAdminError = showSystemError;
+
+function clearSystemTransientState() {
+    document.body.classList.remove('modal-open', 'drawer-open', 'sidebar-open', 'menu-open', 'swal2-shown', 'swal2-height-auto');
+
+    if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = '';
+    }
+
+    if (window.Swal && Swal.isVisible && Swal.isVisible()) {
+        Swal.close();
+    }
+}
+
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        clearSystemTransientState();
+    }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("form[data-admin-confirm], form[data-system-confirm]").forEach(function (form) {

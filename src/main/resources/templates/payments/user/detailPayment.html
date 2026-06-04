@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('payments')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('payments')}"></div>
 
 <main class="detail-page">
@@ -54,11 +54,11 @@
                 <strong th:text="${payment.clientName != null ? payment.clientName : #messages.msg('label.payment.clientNotFound')}">Cliente</strong>
             </div>
             <div class="meta-item">
-                <span th:text="#{label.payment.methodShort}">Metodo</span>
+                <span th:text="#{label.payment.methodShort}">Método</span>
                 <strong th:text="${payment.paymentMethod == 'Efectivo' ? #messages.msg('label.payment.method.cash') :
                                  (payment.paymentMethod == 'Tarjeta' ? #messages.msg('label.payment.method.card') :
                                  (payment.paymentMethod == 'SINPE' ? #messages.msg('label.payment.method.sinpe') :
-                                 (payment.paymentMethod == 'Transferencia' ? #messages.msg('label.payment.method.transfer') : payment.paymentMethod)))}">Metodo</strong>
+                                 (payment.paymentMethod == 'Transferencia' ? #messages.msg('label.payment.method.transfer') : payment.paymentMethod)))}">Método</strong>
             </div>
             <div class="meta-item">
                 <span th:text="#{label.payment.branch}">Sucursal</span>

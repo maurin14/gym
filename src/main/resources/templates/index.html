@@ -30,7 +30,7 @@
                th:classappend="${currentLang == 'en'} ? ' active'"
                data-lang="en">EN</a>
         </div>
-        <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary landing-login-button" th:text="#{login.title}">Iniciar sesion</a>
+        <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary landing-login-button" th:text="#{login.title}">Iniciar sesión</a>
     </nav>
 </header>
 
@@ -39,9 +39,9 @@
     <section class="landing-hero" id="inicio">
         <div class="landing-hero-content">
             <span class="hero-badge" th:text="#{landing.hero.badge}">Plataforma web para gimnasio</span>
-            <h1 th:text="#{landing.hero.title}">Tu gimnasio mas organizado, moderno y conectado</h1>
+            <h1 th:text="#{landing.hero.title}">Tu gimnasio más organizado, moderno y conectado</h1>
             <p th:text="#{landing.hero.text}">
-                SAM GYM FITNESS es una plataforma disenada para centralizar la gestion del gimnasio.
+                SAM GYM FITNESS es una plataforma diseñada para centralizar la gestión del gimnasio.
             </p>
 
             <div class="landing-buttons">
@@ -53,12 +53,12 @@
             <div class="preview-card">
                 <h3 th:text="#{landing.preview.title}">Todo en un solo lugar</h3>
                 <ul class="preview-list">
-                    <li th:text="#{landing.preview.branches}">Sucursales y ubicacion</li>
+                    <li th:text="#{landing.preview.branches}">Sucursales y ubicación</li>
                     <li th:text="#{landing.preview.payments}">Pagos e historial</li>
                     <li th:text="#{landing.preview.classes}">Clases y horarios</li>
                     <li th:text="#{landing.preview.routines}">Rutinas de entrenamiento</li>
                     <li th:text="#{landing.preview.products}">Productos y servicios</li>
-                    <li th:text="#{landing.preview.admin}">Gestion administrativa integral</li>
+                    <li th:text="#{landing.preview.admin}">Gestión administrativa integral</li>
                 </ul>
             </div>
         </div>
@@ -67,16 +67,16 @@
     <section class="landing-section" id="servicios">
         <div class="section-head">
             <span class="section-tag" th:text="#{landing.nav.services}">Servicios</span>
-            <h2 th:text="#{landing.services.title}">Una plataforma integral para la gestion del gimnasio</h2>
+            <h2 th:text="#{landing.services.title}">Una plataforma integral para la gestión del gimnasio</h2>
             <p th:text="#{landing.services.text}">
-                Disenada para mejorar la organizacion y facilitar procesos administrativos.
+                Diseñada para mejorar la organización y facilitar procesos administrativos.
             </p>
         </div>
 
         <div class="feature-grid">
             <article class="feature-card">
                 <h3 th:text="#{nav.admin.branches}">Sucursales</h3>
-                <p th:text="#{landing.services.branches}">Consulta sedes, ubicacion, capacidad, estado y datos generales.</p>
+                <p th:text="#{landing.services.branches}">Consulta sedes, ubicación, capacidad, estado y datos generales.</p>
             </article>
 
             <article class="feature-card">
@@ -109,21 +109,21 @@
     <section class="landing-section soft-section" id="beneficios">
         <div class="section-head">
             <span class="section-tag" th:text="#{landing.nav.benefits}">Beneficios</span>
-            <h2 th:text="#{landing.benefits.title}">Mas control, mejor experiencia</h2>
+            <h2 th:text="#{landing.benefits.title}">Más control, mejor experiencia</h2>
             <p th:text="#{landing.benefits.text}">
-                Una solucion pensada para centralizar procesos y mejorar la administracion.
+                Una solución pensada para centralizar procesos y mejorar la administración.
             </p>
         </div>
 
         <div class="benefits-grid">
             <div class="benefit-box">
                 <h3 th:text="#{landing.benefits.centralizationTitle}">Centralizacion</h3>
-                <p th:text="#{landing.benefits.centralization}">Toda la informacion del gimnasio organizada dentro de una sola plataforma.</p>
+                <p th:text="#{landing.benefits.centralization}">Toda la información del gimnasio organizada dentro de una sola plataforma.</p>
             </div>
 
             <div class="benefit-box">
                 <h3 th:text="#{landing.benefits.organizationTitle}">Organizacion</h3>
-                <p th:text="#{landing.benefits.organization}">Control mas claro de clientes, pagos, clases, rutinas y recursos.</p>
+                <p th:text="#{landing.benefits.organization}">Control más claro de clientes, pagos, clases, rutinas y recursos.</p>
             </div>
 
             <div class="benefit-box">
@@ -159,8 +159,8 @@
             </article>
 
             <article class="feature-card">
-                <h3 th:text="#{landing.audience.adminTitle}">Para administracion</h3>
-                <p th:text="#{landing.audience.admin}">Ayuda a tomar decisiones con mejor organizacion y claridad.</p>
+                <h3 th:text="#{landing.audience.adminTitle}">Para administración</h3>
+                <p th:text="#{landing.audience.admin}">Ayuda a tomar decisiones con mejor organización y claridad.</p>
             </article>
         </div>
     </section>
@@ -169,10 +169,10 @@
         <div class="cta-box">
             <h2 th:text="#{landing.cta.title}">Accede a SAM GYM FITNESS</h2>
             <p th:text="#{landing.cta.text}">
-                Inicia sesion para acceder a la plataforma.
+                Inicia sesión para acceder a la plataforma.
             </p>
             <div class="landing-buttons centered">
-                <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary" th:text="#{login.title}">Iniciar sesion</a>
+                <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary" th:text="#{login.title}">Iniciar sesión</a>
             </div>
         </div>
     </section>
@@ -192,11 +192,26 @@
         <a href="#inicio" th:text="#{landing.nav.home}">Inicio</a>
         <a href="#servicios" th:text="#{landing.nav.services}">Servicios</a>
         <a href="#beneficios" th:text="#{landing.nav.benefits}">Beneficios</a>
-        <a th:href="@{/login(lang=${#locale.language})}" th:text="#{login.title}">Iniciar sesion</a>
+        <a th:href="@{/login(lang=${#locale.language})}" th:text="#{login.title}">Iniciar sesión</a>
     </div>
 </footer>
 
 <script>
+    function clearTransientVisualState() {
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+
+        if (document.body.style.overflow === 'hidden') {
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.swal2-container, .modal-backdrop').forEach(function (element) {
+            element.remove();
+        });
+    }
+
+    clearTransientVisualState();
+    window.addEventListener('pageshow', clearTransientVisualState);
+
     function changeLanguage(lang) {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', lang);

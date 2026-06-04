@@ -19,18 +19,18 @@
         </div>
     </div>
 
-    <nav class="header-nav portal-nav" aria-label="Navegaci&oacute;n administrativa">
+    <nav class="header-nav portal-nav" th:aria-label="#{nav.portal.navigation}">
         <span class="current-module" th:if="${active != 'home'}" th:switch="${active}">
             <span th:case="'branches'" th:text="#{nav.admin.branches}">Sucursales</span>
             <span th:case="'payments'" th:text="#{nav.admin.payments}">Pagos</span>
-            <span th:case="'routines'" th:text="#{nav.admin.routines}">Rutinas</span>
+            <span th:case="'routines'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.routines} : #{nav.admin.routines}">Rutinas</span>
             <span th:case="'products'" th:text="#{nav.admin.products}">Productos</span>
-            <span th:case="'classes'" th:text="#{nav.admin.classes}">Clases</span>
+            <span th:case="'classes'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.classes} : #{nav.admin.classes}">Clases</span>
             <span th:case="'users'" th:text="#{nav.admin.users}">Usuarios</span>
-            <span th:case="'schedules'" th:text="#{nav.admin.schedules}">Horarios</span>
+            <span th:case="'schedules'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.schedules} : #{nav.admin.schedules}">Horarios</span>
             <span th:case="'reports'" th:text="#{nav.admin.reports}">Reportes</span>
             <span th:case="'equipment'" th:text="#{nav.admin.equipment}">Equipamiento</span>
-            <span th:case="'attendance'" th:text="#{nav.admin.attendance}">Asistencia</span>
+            <span th:case="'attendance'" th:text="${session.user != null and session.user.role == 'trainer'} ? #{nav.trainer.attendance} : #{nav.admin.attendance}">Asistencia</span>
             <span th:case="*" th:text="#{nav.admin.home}">Inicio</span>
         </span>
 
@@ -52,8 +52,8 @@
                 <th:block th:if="${session.user != null and session.user.role == 'trainer'}">
                     <a th:href="@{/trainer/classes}" th:classappend="${active == 'classes'} ? ' active'" th:text="#{nav.trainer.classes}">Mis clases</a>
                     <a th:href="@{/trainer/schedules}" th:classappend="${active == 'schedules'} ? ' active'" th:text="#{nav.trainer.schedules}">Mis horarios</a>
-                    <a th:href="@{/trainer/attendances}" th:classappend="${active == 'attendance'} ? ' active'" th:text="#{nav.admin.attendance}">Asistencia</a>
-                    <a th:href="@{/trainer/routines}" th:classappend="${active == 'routines'} ? ' active'" th:text="#{nav.admin.routines}">Rutinas</a>
+                    <a th:href="@{/trainer/attendances}" th:classappend="${active == 'attendance'} ? ' active'" th:text="#{nav.trainer.attendance}">Asistencia</a>
+                    <a th:href="@{/trainer/routines}" th:classappend="${active == 'routines'} ? ' active'" th:text="#{nav.trainer.routines}">Rutinas</a>
                 </th:block>
             </div>
         </details>
@@ -69,7 +69,7 @@
                 th:classappend="${active == 'home'} ? ' active'"
                 th:text="#{nav.admin.home}">Inicio</a>
 
-            <a th:href="@{/logout}" th:text="#{nav.logout}">Cerrar sesion</a>
+            <a th:href="@{/logout}" th:text="#{nav.logout}">Cerrar sesión</a>
         </div>
         
         <div class="language-selector" th:with="currentLang=${#locale.language}">
@@ -83,6 +83,24 @@
         </div>
 
         <script th:inline="javascript">
+        function clearTransientVisualState() {
+            document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+
+            if (document.body.style.overflow === 'hidden') {
+                document.body.style.overflow = '';
+            }
+
+            if (window.Swal && Swal.isVisible && Swal.isVisible()) {
+                Swal.close();
+            }
+        }
+
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                clearTransientVisualState();
+            }
+        });
+
         window.systemMessages = Object.assign({}, window.systemMessages || {}, {
             confirmTitle: /*[[#{confirm.default.title}]]*/ "Guardar cambios?",
             confirmButton: /*[[#{button.yes}]]*/ "Si",

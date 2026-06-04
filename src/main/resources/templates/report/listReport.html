@@ -92,7 +92,7 @@
         </tbody>
     </table>
 
-    <nav class="pagination" aria-label="Paginacion de reportes"
+    <nav class="pagination" th:aria-label="#{pagination.report}"
       th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
      <a class="btn-secondary"
         th:classappend="${currentPage == 0} ? ' disabled'"
@@ -117,7 +117,7 @@
 
 <script th:inline="javascript">
     const reportDeleteDefaultTitle = /*[[#{confirm.report.delete}]]*/ 'Eliminar reporte?';
-    const reportDeleteText = /*[[#{confirm.delete.text}]]*/ 'Esta accion no se puede deshacer.';
+    const reportDeleteText = /*[[#{confirm.delete.text}]]*/ 'Esta acción no se puede deshacer.';
     const reportDeleteConfirmText = /*[[#{button.delete}]]*/ 'Eliminar';
     const reportDeleteLoadingText = /*[[#{confirm.loading.delete}]]*/ 'Eliminando...';
 

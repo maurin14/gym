@@ -3,31 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{${title}}">Catalogo de productos</title>
+    <title th:text="#{${title}}">Catálogo de productos</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
     <script th:src="@{/js/client-catalog.js}" defer></script>
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('products')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('products')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.product.products}">Productos</span>
-            <h1 th:text="#{label.product.catalog}">Catalogo visual</h1>
-            <p th:text="#{label.product.catalogDescription}">Explora productos disponibles en el gimnasio. Esta seccion es informativa y no incluye carrito ni compra en linea.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.product.products}">Productos</strong>
-        </nav>
-
         <form class="catalog-toolbar"
               method="get"
               th:action="@{/client/products}"
@@ -47,7 +33,7 @@
             </div>
 
             <div class="toolbar-field">
-                <label for="productCategory" th:text="#{label.product.category}">Categoria</label>
+                <label for="productCategory" th:text="#{label.product.category}">Categoría</label>
                 <select id="productCategory" name="category">
                     <option value="" th:text="#{label.product.all}">Todas</option>
                     <option th:each="cat : ${categories}"

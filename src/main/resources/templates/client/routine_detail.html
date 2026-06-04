@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('routines')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('routines')}"></div>
 
 <main class="detail-page">
@@ -28,7 +28,7 @@
             <div>
                 <span class="section-kicker" th:text="${routine.routineType}">Tipo</span>
                 <h1 th:text="${routine.nameRoutine}">Rutina</h1>
-                <p th:text="${routine.description}">Descripcion de la rutina</p>
+                <p th:text="${routine.description}">Descripción de la rutina</p>
             </div>
 
             <button type="button" class="btn-primary select-routine-btn" th:text="#{label.routine.doRoutine}">Realizar rutina</button>
@@ -64,7 +64,7 @@
 
 <script th:inline="javascript">
     const pendingTitle = /*[[#{message.routine.featurePending}]]*/ 'Funcion en preparacion';
-    const pendingText = /*[[#{message.routine.selectionPending}]]*/ 'La seleccion de rutinas estara disponible cuando se habilite el inicio de sesion.';
+    const pendingText = /*[[#{message.routine.selectionPending}]]*/ 'La selección de rutinas estará disponible cuando se habilite el inicio de sesión.';
     const acceptText = /*[[#{button.accept}]]*/ 'Aceptar';
 
     document.querySelector('.select-routine-btn').addEventListener('click', function () {

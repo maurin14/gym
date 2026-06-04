@@ -8,25 +8,11 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('payments')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('payments')}"></div>
 
 <main>
-    <section class="client-hero compact-hero payments-hero">
-        <div>
-            <span class="section-kicker" th:text="#{label.payment.myAccount}">Mi cuenta</span>
-            <h1 th:text="#{label.payment.myPayments}">Mis pagos</h1>
-            <p th:text="#{label.payment.userListDescription}">Consulta el historial de pagos asociados a tu usuario y filtra por estado o metodo.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
-            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.payment.payments}">Pagos</strong>
-        </nav>
-
         <div class="client-table-card">
             <form class="catalog-toolbar payment-toolbar" method="get" th:action="@{/payments}">
                 <div class="toolbar-field">
@@ -40,9 +26,9 @@
                 </div>
 
                 <div class="toolbar-field">
-                    <label for="filterPaymentMethod" th:text="#{label.payment.methodShort}">Metodo</label>
+                    <label for="filterPaymentMethod" th:text="#{label.payment.methodShort}">Método</label>
                     <select id="filterPaymentMethod" name="paymentMethod">
-                        <option value="" th:text="#{label.payment.allMethods}">Todos los metodos</option>
+                        <option value="" th:text="#{label.payment.allMethods}">Todos los métodos</option>
                         <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}" th:text="#{label.payment.method.cash}">Efectivo</option>
                         <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}" th:text="#{label.payment.method.card}">Tarjeta</option>
                         <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}" th:text="#{label.payment.method.sinpe}">SINPE</option>
@@ -62,9 +48,9 @@
                         <th th:text="#{label.payment.client}">Cliente</th>
                         <th th:text="#{label.payment.branch}">Sucursal</th>
                         <th th:text="#{label.payment.amount}">Monto</th>
-                        <th th:text="#{label.payment.methodShort}">Metodo</th>
+                        <th th:text="#{label.payment.methodShort}">Método</th>
                         <th th:text="#{label.payment.status}">Estado</th>
-                        <th th:text="#{label.payment.description}">Descripcion</th>
+                        <th th:text="#{label.payment.description}">Descripción</th>
                         <th th:text="#{label.common.detail}">Detalle</th>
                     </tr>
                     </thead>

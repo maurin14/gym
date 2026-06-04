@@ -30,7 +30,7 @@
                th:placeholder="#{placeholder.product.name}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="#{${fieldErrors['nameProduct']}}"></small>
 
-        <label for="category" th:text="#{label.product.category}">Categoria</label>
+        <label for="category" th:text="#{label.product.category}">Categoría</label>
         <input type="text"
                id="category"
                th:field="*{category}"
@@ -60,7 +60,7 @@
             <option th:value="false" th:text="#{label.status.inactive}">Inactivo</option>
         </select>
 
-        <label for="description" th:text="#{label.product.description}">Descripcion</label>
+        <label for="description" th:text="#{label.product.description}">Descripción</label>
         <textarea id="description"
                   th:field="*{description}"
                   th:placeholder="#{placeholder.product.description}"></textarea>

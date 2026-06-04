@@ -38,12 +38,12 @@
         <div class="detail-info">
             <article class="info-card highlight">
                 <h3 th:text="${product.nameProduct}">Producto</h3>
-                <p th:text="${product.description}">Descripcion del producto</p>
+                <p th:text="${product.description}">Descripción del producto</p>
             </article>
 
             <article class="info-card">
-                <h3 th:text="#{label.product.generalInfo}">Informacion general</h3>
-                <p><strong th:text="|#{label.product.category}:|">Categoria:</strong> <span th:text="${product.category}">Categoria</span></p>
+                <h3 th:text="#{label.product.generalInfo}">Información general</h3>
+                <p><strong th:text="|#{label.product.category}:|">Categoría:</strong> <span th:text="${product.category}">Categoría</span></p>
                 <p><strong th:text="|#{label.product.price}:|">Precio:</strong> <span th:utext="'&#8353; ' + ${#numbers.formatDecimal(product.price, 1, 2)}">&#8353; 0.00</span></p>
                 <p><strong th:text="|#{label.product.quantityStock}:|">Cantidad en stock:</strong> <span th:text="${product.quantityStock}">0</span></p>
                 <p><strong th:text="|#{label.product.registerDate}:|">Fecha de registro:</strong> <span th:text="${product.registerDate}">2026-04-08</span></p>

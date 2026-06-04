@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{title.payment.admin}">Administracion de Pagos</title>
+    <title th:text="#{title.payment.admin}">Administración de pagos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -26,7 +26,7 @@
         </select>
 
         <select id="filterPaymentMethod" name="paymentMethod">
-            <option value="" th:text="#{label.payment.allMethods}">Todos los metodos</option>
+            <option value="" th:text="#{label.payment.allMethods}">Todos los métodos</option>
             <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}" th:text="#{label.payment.method.cash}">Efectivo</option>
             <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}" th:text="#{label.payment.method.card}">Tarjeta</option>
             <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}" th:text="#{label.payment.method.sinpe}">SINPE</option>
@@ -56,7 +56,7 @@
 <script th:inline="javascript">
     window.paymentMessages = {
         deleteTitle: /*[[#{confirm.payment.delete}]]*/ "Eliminar pago?",
-        deleteText: /*[[#{confirm.delete.text}]]*/ "Esta accion no se puede deshacer.",
+        deleteText: /*[[#{confirm.delete.text}]]*/ "Esta acción no se puede deshacer.",
         deleteConfirm: /*[[#{button.delete}]]*/ "Eliminar",
         deleteLoading: /*[[#{confirm.loading.delete}]]*/ "Eliminando...",
         statusTitle: /*[[#{confirm.status.change}]]*/ "Cambiar estado?",
@@ -68,7 +68,7 @@
     const success = [[${param.success}]];
 
     if (success != null) {
-        let message = /*[[#{message.action.success}]]*/ "Accion realizada correctamente.";
+        let message = /*[[#{message.action.success}]]*/ "Acción realizada correctamente.";
 
         if (success[0] === "save") message = /*[[#{message.payment.saved}]]*/ "Pago registrado correctamente.";
         if (success[0] === "edit") message = /*[[#{message.payment.updated}]]*/ "Pago actualizado correctamente.";

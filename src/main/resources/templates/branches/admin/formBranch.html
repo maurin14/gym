@@ -44,7 +44,7 @@
                th:placeholder="#{placeholder.branch.name}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['name'] != null}" th:text="#{${fieldErrors['name']}}"></small>
 
-        <label th:text="#{label.branch.address}">Direccion</label>
+        <label th:text="#{label.branch.address}">Dirección</label>
         <input type="text"
                th:field="*{address}"
                required
@@ -52,7 +52,7 @@
                th:placeholder="#{placeholder.branch.address}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['address'] != null}" th:text="#{${fieldErrors['address']}}"></small>
 
-        <label th:text="#{label.branch.phone}">Telefono</label>
+        <label th:text="#{label.branch.phone}">Teléfono</label>
         <input type="text"
                th:field="*{phone}"
                required

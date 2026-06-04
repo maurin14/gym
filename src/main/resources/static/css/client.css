@@ -187,6 +187,24 @@ select {
     color: var(--gold);
 }
 
+.client-module-nav {
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.client-current-separator {
+    color: rgba(255, 255, 255, 0.34);
+}
+
+.client-current-module {
+    color: var(--gold);
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
 .client-language-selector {
     display: inline-flex;
     align-items: center;

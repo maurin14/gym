@@ -90,7 +90,7 @@
         </tbody>
     </table>
 
-    <nav class="pagination" aria-label="Paginacion de usuarios"
+    <nav class="pagination" th:aria-label="#{pagination.user}"
      th:with="visualTotalPages=${totalPages != null and totalPages > 0 ? totalPages : 1},
               safeCurrentPage=${currentPage != null ? currentPage : 0}">
         <a class="btn-secondary"
@@ -115,7 +115,7 @@
 </main>
 
 <script th:inline="javascript">
-    const userDeleteDefaultTitle = /*[[#{confirm.user.delete}]]*/ 'Eliminar usuario?';
+    const userDeleteDefaultTitle = /*[[#{confirm.user.delete}]]*/ '¿Eliminar usuario?';
     const userDeleteConfirmText = /*[[#{button.delete}]]*/ 'Eliminar';
     const userDeleteLoadingText = /*[[#{message.processing}]]*/ 'Procesando...';
 
