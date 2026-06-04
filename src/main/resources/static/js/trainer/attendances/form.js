@@ -22,7 +22,7 @@ const i18n = window.i18n || {
     saved: "Attendance saved successfully.",
     updated: "Attendance updated successfully.",
     saveError: "Could not save attendance.",
-    confirmButton: /*[[#{confirm.button}]]*/ "Aceptar"
+    confirmButton: "Accept"
 };
 
 let attendanceSaving = false;

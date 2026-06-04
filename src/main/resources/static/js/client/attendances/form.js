@@ -13,7 +13,8 @@ const i18n = window.i18n || {
     saveButton: "Save",
     loadingTitle: "Saving...",
     saveError: "Could not save attendance.",
-    saved: "Attendance saved successfully."
+    saved: "Attendance saved successfully.",
+    confirmButton: "Accept" 
 };
 
 function loadClasses() {
