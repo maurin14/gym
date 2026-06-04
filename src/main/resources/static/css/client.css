@@ -364,10 +364,10 @@ body.menu-open .menu-backdrop {
 
 .client-home-hero,
 .client-hero {
-    min-height: 500px;
+    min-height: 360px;
     display: flex;
     align-items: center;
-    padding: 88px 7% 76px;
+    padding: 76px 7% 48px;
     color: var(--white);
     background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.30)),
@@ -379,10 +379,13 @@ body.menu-open .menu-backdrop {
 }
 
 .compact-hero {
-    min-height: 420px;
+    min-height: 300px;
 }
 
 .routines-hero {
+    min-height: 280px;
+    padding-top: 72px;
+    padding-bottom: 42px;
     background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.25)),
         url('/images/fondo.jpg') center/cover no-repeat;

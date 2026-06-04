@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis pagos - SAM GYM FITNESS</title>
+    <title th:text="#{title.payment.userList}">Mis pagos - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -14,81 +14,86 @@
 <main>
     <section class="client-hero compact-hero payments-hero">
         <div>
-            <span class="section-kicker">Mi cuenta</span>
-            <h1>Mis pagos</h1>
-            <p>Consulta el historial de pagos asociados a tu usuario y filtra por estado o m&eacute;todo.</p>
+            <span class="section-kicker" th:text="#{label.payment.myAccount}">Mi cuenta</span>
+            <h1 th:text="#{label.payment.myPayments}">Mis pagos</h1>
+            <p th:text="#{label.payment.userListDescription}">Consulta el historial de pagos asociados a tu usuario y filtra por estado o metodo.</p>
         </div>
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-            <a th:href="@{/client/home}">Inicio</a>
+        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
+            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
             <span>/</span>
-            <strong>Pagos</strong>
+            <strong th:text="#{label.payment.payments}">Pagos</strong>
         </nav>
 
         <div class="client-table-card">
             <form class="catalog-toolbar payment-toolbar" method="get" th:action="@{/payments}">
                 <div class="toolbar-field">
-                    <label for="filterStatus">Estado</label>
+                    <label for="filterStatus" th:text="#{label.payment.status}">Estado</label>
                     <select id="filterStatus" name="status">
-                        <option value="">Todos los estados</option>
-                        <option value="Pagado" th:selected="${status == 'Pagado'}">Pagado</option>
-                        <option value="Pendiente" th:selected="${status == 'Pendiente'}">Pendiente</option>
-                        <option value="Anulado" th:selected="${status == 'Anulado'}">Anulado</option>
+                        <option value="" th:text="#{label.payment.allStatus}">Todos los estados</option>
+                        <option value="Pagado" th:selected="${status == 'Pagado'}" th:text="#{label.payment.status.paid}">Pagado</option>
+                        <option value="Pendiente" th:selected="${status == 'Pendiente'}" th:text="#{label.payment.status.pending}">Pendiente</option>
+                        <option value="Anulado" th:selected="${status == 'Anulado'}" th:text="#{label.payment.status.cancelled}">Anulado</option>
                     </select>
                 </div>
 
                 <div class="toolbar-field">
-                    <label for="filterPaymentMethod">M&eacute;todo</label>
+                    <label for="filterPaymentMethod" th:text="#{label.payment.methodShort}">Metodo</label>
                     <select id="filterPaymentMethod" name="paymentMethod">
-                        <option value="">Todos los m&eacute;todos</option>
-                        <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}">Efectivo</option>
-                        <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}">Tarjeta</option>
-                        <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}">SINPE</option>
-                        <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}">Transferencia</option>
+                        <option value="" th:text="#{label.payment.allMethods}">Todos los metodos</option>
+                        <option value="Efectivo" th:selected="${paymentMethod == 'Efectivo'}" th:text="#{label.payment.method.cash}">Efectivo</option>
+                        <option value="Tarjeta" th:selected="${paymentMethod == 'Tarjeta'}" th:text="#{label.payment.method.card}">Tarjeta</option>
+                        <option value="SINPE" th:selected="${paymentMethod == 'SINPE'}" th:text="#{label.payment.method.sinpe}">SINPE</option>
+                        <option value="Transferencia" th:selected="${paymentMethod == 'Transferencia'}" th:text="#{label.payment.method.transfer}">Transferencia</option>
                     </select>
                 </div>
 
-                <button type="submit" class="btn-primary">Buscar</button>
-                <a th:href="@{/payments}" class="btn-secondary">Limpiar</a>
+                <button type="submit" class="btn-primary" th:text="#{button.search}">Buscar</button>
+                <a th:href="@{/payments}" class="btn-secondary" th:text="#{button.clean}">Limpiar</a>
             </form>
 
             <div class="table-responsive">
                 <table class="client-table">
                     <thead>
                     <tr>
-                        <th>Fecha pago</th>
-                        <th>Cliente</th>
-                        <th>Sucursal</th>
-                        <th>Monto</th>
-                        <th>M&eacute;todo</th>
-                        <th>Estado</th>
-                        <th>Descripci&oacute;n</th>
-                        <th>Detalle</th>
+                        <th th:text="#{label.payment.dateShort}">Fecha pago</th>
+                        <th th:text="#{label.payment.client}">Cliente</th>
+                        <th th:text="#{label.payment.branch}">Sucursal</th>
+                        <th th:text="#{label.payment.amount}">Monto</th>
+                        <th th:text="#{label.payment.methodShort}">Metodo</th>
+                        <th th:text="#{label.payment.status}">Estado</th>
+                        <th th:text="#{label.payment.description}">Descripcion</th>
+                        <th th:text="#{label.common.detail}">Detalle</th>
                     </tr>
                     </thead>
 
                     <tbody>
                     <tr th:if="${payments.content.size() == 0}">
-                        <td colspan="8" class="empty-message">No se encontraron pagos.</td>
+                        <td colspan="8" class="empty-message" th:text="#{label.payment.noUserPayments}">No se encontraron pagos.</td>
                     </tr>
 
                     <tr th:each="p : ${payments.content}">
                         <td th:text="${#temporals.format(p.paymentDate, 'dd/MM/yyyy')}"></td>
-                        <td th:text="${p.clientName != null ? p.clientName : 'Cliente no encontrado'}"></td>
-                        <td th:text="${p.branch != null ? p.branch.name : 'Sin sucursal'}"></td>
+                        <td th:text="${p.clientName != null ? p.clientName : #messages.msg('label.payment.clientNotFound')}"></td>
+                        <td th:text="${p.branch != null ? p.branch.name : #messages.msg('label.gym.none')}"></td>
                         <td th:text="${'CRC ' + p.amount}"></td>
-                        <td th:text="${p.paymentMethod}"></td>
+                        <td th:text="${p.paymentMethod == 'Efectivo' ? #messages.msg('label.payment.method.cash') :
+                                     (p.paymentMethod == 'Tarjeta' ? #messages.msg('label.payment.method.card') :
+                                     (p.paymentMethod == 'SINPE' ? #messages.msg('label.payment.method.sinpe') :
+                                     (p.paymentMethod == 'Transferencia' ? #messages.msg('label.payment.method.transfer') : p.paymentMethod)))}"></td>
                         <td>
-                            <span th:text="${p.status}"
+                            <span th:text="${p.status == 'Pagado' ? #messages.msg('label.payment.status.paid') :
+                                           (p.status == 'Pendiente' ? #messages.msg('label.payment.status.pending') :
+                                           (p.status == 'Anulado' ? #messages.msg('label.payment.status.cancelled') : p.status))}"
                                   th:class="${p.status == 'Pagado' ? 'status-badge status-paid' :
                                            (p.status == 'Pendiente' ? 'status-badge status-pending' : 'status-badge status-cancelled')}">
                             </span>
                         </td>
                         <td th:text="${p.description}"></td>
                         <td>
-                            <a th:href="@{/payments/{id}(id=${p.id})}" class="btn-primary table-action">Ver detalle</a>
+                            <a th:href="@{/payments/{id}(id=${p.id})}" class="btn-primary table-action" th:text="#{button.viewDetail}">Ver detalle</a>
                         </td>
                     </tr>
                     </tbody>
@@ -98,7 +103,8 @@
             <div class="client-pagination" th:if="${payments.totalPages > 1}">
                 <a class="pagination-link"
                    th:if="${payments.hasPrevious()}"
-                   th:href="@{/payments(page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}">
+                   th:href="@{/payments(page=${payments.number - 1}, status=${status}, paymentMethod=${paymentMethod})}"
+                   th:text="#{button.previous}">
                     Anterior
                 </a>
 
@@ -110,7 +116,8 @@
 
                 <a class="pagination-link"
                    th:if="${payments.hasNext()}"
-                   th:href="@{/payments(page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}">
+                   th:href="@{/payments(page=${payments.number + 1}, status=${status}, paymentMethod=${paymentMethod})}"
+                   th:text="#{button.next}">
                     Siguiente
                 </a>
             </div>

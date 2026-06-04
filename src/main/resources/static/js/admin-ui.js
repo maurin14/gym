@@ -7,21 +7,27 @@ function systemSwalOptions(options) {
     }, options || {});
 }
 
+function systemMessage(key, fallback) {
+    return (window.systemMessages && window.systemMessages[key]) || fallback;
+}
+
 function confirmSystemAction(options) {
+    options = options || {};
+
     return Swal.fire(systemSwalOptions({
-        title: options.title || "Guardar cambios?",
+        title: options.title || systemMessage("confirmTitle", "Save changes?"),
         text: options.text || "",
         icon: options.icon || "question",
         showCancelButton: true,
-        confirmButtonText: options.confirmText || "Si",
-        cancelButtonText: options.cancelText || "Cancelar"
+        confirmButtonText: options.confirmText || options.confirmButtonText || systemMessage("confirmButton", "Yes"),
+        cancelButtonText: options.cancelText || options.cancelButtonText || systemMessage("cancelButton", "Cancel")
     }));
 }
 
 function showSystemLoading(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || "Procesando...",
-        text: text || "Espere un momento.",
+        title: title || systemMessage("loadingTitle", "Processing..."),
+        text: text || systemMessage("loadingText", "Please wait."),
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: function () {
@@ -32,19 +38,19 @@ function showSystemLoading(title, text) {
 
 function showSystemSuccess(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || "Guardado.",
+        title: title || systemMessage("successTitle", "Saved."),
         text: text || "",
         icon: "success",
-        confirmButtonText: "OK"
+        confirmButtonText: systemMessage("okButton", "OK")
     }));
 }
 
 function showSystemError(title, text) {
     return Swal.fire(systemSwalOptions({
-        title: title || "No se pudo guardar.",
+        title: title || systemMessage("errorTitle", "Could not save."),
         text: text || "",
         icon: "error",
-        confirmButtonText: "OK"
+        confirmButtonText: systemMessage("okButton", "OK")
     }));
 }
 
@@ -68,14 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
             confirmSystemAction({
                 title: form.dataset.adminConfirm || form.dataset.systemConfirm,
                 text: form.dataset.adminText || form.dataset.systemText || "",
-                confirmText: form.dataset.adminConfirmText || form.dataset.systemConfirmText || "Guardar"
+                confirmText: form.dataset.adminConfirmText || form.dataset.systemConfirmText || systemMessage("saveButton", "Save")
             }).then(function (result) {
                 if (!result.isConfirmed || submitting) {
                     return;
                 }
 
                 submitting = true;
-                showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || "Procesando...");
+                showSystemLoading(form.dataset.adminLoading || form.dataset.systemLoading || systemMessage("loadingTitle", "Processing..."));
                 form.submit();
             });
         });

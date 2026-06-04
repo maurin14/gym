@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de sucursal - SAM GYM FITNESS</title>
+    <title th:text="#{title.branch.detail}">Detalle de sucursal - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -12,12 +12,12 @@
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('branches')}"></div>
 
 <main class="detail-page">
-    <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-        <a th:href="@{/client/home}">Inicio</a>
+    <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
+        <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
         <span>/</span>
-        <a th:href="@{/client/branches}">Sucursales</a>
+        <a th:href="@{/client/branches}" th:text="#{label.branch.branches}">Sucursales</a>
         <span>/</span>
-        <strong>Detalle</strong>
+        <strong th:text="#{label.common.detail}">Detalle</strong>
     </nav>
 
     <section class="detail-shell branch-detail-shell">
@@ -26,42 +26,42 @@
         </div>
 
         <div class="detail-content">
-            <a th:href="@{/client/branches}" class="back-link">Volver a sucursales</a>
-            <span class="section-kicker">Detalle de sucursal</span>
+            <a th:href="@{/client/branches}" class="back-link" th:text="#{button.backBranches}">Volver a sucursales</a>
+            <span class="section-kicker" th:text="#{label.branch.detail}">Detalle de sucursal</span>
             <h1 th:text="${branch.name}">Sucursal</h1>
-            <p class="detail-description" th:text="${branch.address}">Direcci&oacute;n de la sucursal</p>
+            <p class="detail-description" th:text="${branch.address}">Direccion de la sucursal</p>
 
             <div class="detail-meta stacked-meta">
                 <div class="meta-item">
-                    <span>Fecha apertura</span>
+                    <span th:text="#{label.branch.openingDateShort}">Fecha apertura</span>
                     <strong th:text="${#temporals.format(branch.openingDate, 'dd/MM/yyyy')}">Fecha</strong>
                 </div>
                 <div class="meta-item">
-                    <span>Tel&eacute;fono</span>
-                    <strong th:text="${branch.phone}">Teléfono</strong>
+                    <span th:text="#{label.branch.phone}">Telefono</span>
+                    <strong th:text="${branch.phone}">Telefono</strong>
                 </div>
                 <div class="meta-item">
-                    <span>Capacidad</span>
+                    <span th:text="#{label.branch.capacity}">Capacidad</span>
                     <strong th:text="${branch.capacity}">0</strong>
                 </div>
                 <div class="meta-item">
-                    <span>Estado</span>
-                    <strong>Activa</strong>
+                    <span th:text="#{label.branch.status}">Estado</span>
+                    <strong th:text="#{label.status.activeFemale}">Activa</strong>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="client-section">
-        <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
-        <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+        <div th:if="${messageSuccess}" class="status-active" th:text="#{${messageSuccess}}"></div>
+        <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
         <div class="client-table-card">
             <div class="section-heading table-heading">
                 <div>
-                    <span class="section-kicker">Clases</span>
-                    <h2>Clases disponibles en esta sucursal</h2>
-                    <p>Selecciona una clase activa para inscribirte con tu cuenta.</p>
+                    <span class="section-kicker" th:text="#{label.branch.classes}">Clases</span>
+                    <h2 th:text="#{label.branch.availableClasses}">Clases disponibles en esta sucursal</h2>
+                    <p th:text="#{label.branch.classSelection}">Selecciona una clase activa para inscribirte con tu cuenta.</p>
                 </div>
             </div>
 
@@ -69,32 +69,32 @@
                 <table class="client-table">
                     <thead>
                     <tr>
-                        <th>Clase</th>
-                        <th>Entrenador</th>
-                        <th>Fecha</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Cupo</th>
-                        <th>Dificultad</th>
-                        <th>Acci&oacute;n</th>
+                        <th th:text="#{label.gym.class}">Clase</th>
+                        <th th:text="#{label.branch.trainer}">Entrenador</th>
+                        <th th:text="#{label.gym.date}">Fecha</th>
+                        <th th:text="#{label.gym.start}">Inicio</th>
+                        <th th:text="#{label.gym.end}">Fin</th>
+                        <th th:text="#{label.branch.availableCapacity}">Cupo</th>
+                        <th th:text="#{label.branch.difficulty}">Dificultad</th>
+                        <th th:text="#{label.branch.action}">Accion</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${classes == null or #lists.isEmpty(classes)}">
-                        <td colspan="8" class="empty-message">No hay clases disponibles en esta sucursal.</td>
+                        <td colspan="8" class="empty-message" th:text="#{label.branch.noClasses}">No hay clases disponibles en esta sucursal.</td>
                     </tr>
                     <tr th:each="gymClass : ${classes}">
                         <td th:text="${gymClass.classType}">Clase</td>
-                        <td th:text="${gymClass.trainer != null ? gymClass.trainer.fullName : 'Sin entrenador'}">Entrenador</td>
+                        <td th:text="${gymClass.trainer != null ? gymClass.trainer.fullName : #messages.msg('label.branch.noTrainer')}">Entrenador</td>
                         <td th:text="${gymClass.classDate}">Fecha</td>
-                        <td th:text="${gymClass.startTime != null ? #temporals.format(gymClass.startTime, 'HH:mm') : 'Sin hora'}">Inicio</td>
-                        <td th:text="${gymClass.endTime != null ? #temporals.format(gymClass.endTime, 'HH:mm') : 'Sin hora'}">Fin</td>
-                        <td th:text="${(gymClass.maxCapacity - gymClass.enrolledCount) + ' disponibles'}">Cupo</td>
+                        <td th:text="${gymClass.startTime != null ? #temporals.format(gymClass.startTime, 'HH:mm') : #messages.msg('label.gym.noTime')}">Inicio</td>
+                        <td th:text="${gymClass.endTime != null ? #temporals.format(gymClass.endTime, 'HH:mm') : #messages.msg('label.gym.noTime')}">Fin</td>
+                        <td th:text="${(gymClass.maxCapacity - gymClass.enrolledCount) + ' ' + #messages.msg('label.branch.availableSlots')}">Cupo</td>
                         <td th:text="${gymClass.difficultyLevel}">Dificultad</td>
                         <td>
                             <form th:action="@{/client/branches/{branchId}/classes/{classId}/enroll(branchId=${branch.id}, classId=${gymClass.idClass})}"
                                   method="post">
-                                <button type="submit" class="btn-primary">Inscribirme</button>
+                                <button type="submit" class="btn-primary" th:text="#{button.enroll}">Inscribirme</button>
                             </form>
                         </td>
                     </tr>

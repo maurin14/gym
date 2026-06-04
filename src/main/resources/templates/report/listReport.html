@@ -115,18 +115,23 @@
  </nav>
 </main>
 
-<script>
+<script th:inline="javascript">
+    const reportDeleteDefaultTitle = /*[[#{confirm.report.delete}]]*/ 'Eliminar reporte?';
+    const reportDeleteText = /*[[#{confirm.delete.text}]]*/ 'Esta accion no se puede deshacer.';
+    const reportDeleteConfirmText = /*[[#{button.delete}]]*/ 'Eliminar';
+    const reportDeleteLoadingText = /*[[#{confirm.loading.delete}]]*/ 'Eliminando...';
+
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             confirmAdminAction({
-                title: link.dataset.deleteTitle || 'Eliminar registro?',
-                text: 'Esta accion no se puede deshacer.',
-                confirmText: 'Eliminar',
+                title: link.dataset.deleteTitle || reportDeleteDefaultTitle,
+                text: reportDeleteText,
+                confirmText: reportDeleteConfirmText,
                 icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Eliminando...');
+                    showAdminLoading(reportDeleteLoadingText);
                     window.location.href = link.href;
                 }
             });

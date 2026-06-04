@@ -96,48 +96,48 @@ public class BranchService implements CRUD<Branch> {
         Map<String, String> errors = new LinkedHashMap<>();
 
         if (branch == null) {
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            errors.put("form", "message.form.review");
             return errors;
         }
 
         if (isBlank(branch.getImageUrl())) {
-            errors.put("imageUrl", "Este campo es obligatorio.");
+            errors.put("imageUrl", "message.validation.required");
         } else if (branch.getImageUrl().trim().length() > 255) {
-            errors.put("imageUrl", "Ingrese 255 caracteres o menos.");
+            errors.put("imageUrl", "message.validation.max255");
         }
 
         if (branch.getOpeningDate() == null) {
-            errors.put("openingDate", "La fecha es obligatoria.");
+            errors.put("openingDate", "message.validation.dateRequired");
         } else if (branch.getOpeningDate().isAfter(LocalDate.now())) {
-            errors.put("openingDate", "Ingrese una fecha válida.");
+            errors.put("openingDate", "message.validation.dateValid");
         }
 
         if (isBlank(branch.getName())) {
-            errors.put("name", "Este campo es obligatorio.");
+            errors.put("name", "message.validation.required");
         } else if (branch.getName().trim().length() > 100) {
-            errors.put("name", "Ingrese 100 caracteres o menos.");
+            errors.put("name", "message.validation.max100");
         }
 
         if (isBlank(branch.getAddress())) {
-            errors.put("address", "Este campo es obligatorio.");
+            errors.put("address", "message.validation.required");
         } else if (branch.getAddress().trim().length() > 150) {
-            errors.put("address", "Ingrese 150 caracteres o menos.");
+            errors.put("address", "message.validation.max150");
         }
 
         if (isBlank(branch.getPhone())) {
-            errors.put("phone", "Este campo es obligatorio.");
+            errors.put("phone", "message.validation.required");
         } else if (!branch.getPhone().matches("^[0-9]{8}$")) {
-            errors.put("phone", "Ingrese un valor válido.");
+            errors.put("phone", "message.validation.value");
         }
 
         if (branch.getCapacity() == null) {
-            errors.put("capacity", "Este campo es obligatorio.");
+            errors.put("capacity", "message.validation.required");
         } else if (branch.getCapacity() < 1) {
-            errors.put("capacity", "Ingrese un valor válido.");
+            errors.put("capacity", "message.validation.value");
         }
 
         if (branch.getActive() == null) {
-            errors.put("active", "Seleccione una opción.");
+            errors.put("active", "message.validation.select");
         }
 
         return errors;

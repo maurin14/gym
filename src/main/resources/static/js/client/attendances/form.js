@@ -77,15 +77,15 @@ function saveClientAttendance() {
     };
 
     confirmSystemAction({
-        title: "Guardar cambios?",
-        confirmText: "Guardar"
+        title: systemMessage("confirmTitle", "Guardar cambios?"),
+        confirmText: systemMessage("saveButton", "Guardar")
     }).then(result => {
         if (!result.isConfirmed || clientAttendanceSaving) {
             return;
         }
 
         clientAttendanceSaving = true;
-        showSystemLoading("Procesando...");
+        showSystemLoading(systemMessage("loadingTitle", "Procesando..."));
 
         fetch("/attendances", {
             method: "POST",

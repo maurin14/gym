@@ -126,46 +126,46 @@ public class PaymentService implements CRUD<Payment> {
         Map<String, String> errors = new LinkedHashMap<>();
 
         if (payment == null) {
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            errors.put("form", "message.form.review");
             return errors;
         }
 
         if (payment.getPaymentDate() == null) {
-            errors.put("paymentDate", "La fecha es obligatoria.");
+            errors.put("paymentDate", "message.validation.dateRequired");
         } else if (payment.getPaymentDate().isAfter(LocalDate.now())) {
-            errors.put("paymentDate", "Ingrese una fecha válida.");
+            errors.put("paymentDate", "message.validation.dateValid");
         }
 
         if (payment.getIdUser() == null) {
-            errors.put("idUser", "Seleccione un cliente.");
+            errors.put("idUser", "message.payment.selectClient");
         } else if (payment.getIdUser() < 1) {
-            errors.put("idUser", "Ingrese un valor válido.");
+            errors.put("idUser", "message.validation.value");
         }
 
         if (payment.getBranch() == null || payment.getBranch().getId() <= 0) {
-            errors.put("branch", "Seleccione una opción.");
+            errors.put("branch", "message.validation.select");
         }
 
         if (payment.getAmount() == null) {
-            errors.put("amount", "Este campo es obligatorio.");
+            errors.put("amount", "message.validation.required");
         } else if (payment.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            errors.put("amount", "Ingrese un valor válido.");
+            errors.put("amount", "message.validation.value");
         }
 
         if (isBlank(payment.getPaymentMethod())) {
-            errors.put("paymentMethod", "Seleccione una opción.");
+            errors.put("paymentMethod", "message.validation.select");
         } else if (!isAllowed(payment.getPaymentMethod(), "Efectivo", "Tarjeta", "SINPE", "Transferencia")) {
-            errors.put("paymentMethod", "Seleccione una opción.");
+            errors.put("paymentMethod", "message.validation.select");
         }
 
         if (isBlank(payment.getStatus())) {
-            errors.put("status", "Seleccione una opción.");
+            errors.put("status", "message.validation.select");
         } else if (!isAllowed(payment.getStatus(), "Pagado", "Pendiente", "Anulado")) {
-            errors.put("status", "Seleccione una opción.");
+            errors.put("status", "message.validation.select");
         }
 
         if (payment.getDescription() != null && payment.getDescription().length() > 255) {
-            errors.put("description", "Ingrese 255 caracteres o menos.");
+            errors.put("description", "message.validation.max255");
         }
 
         return errors;
@@ -212,7 +212,7 @@ public class PaymentService implements CRUD<Payment> {
             }
 
             User user = usersById.get(payment.getIdUser());
-            payment.setClientName(user != null ? user.getFullName() : "Cliente no encontrado");
+            payment.setClientName(user != null ? user.getFullName() : null);
         }
     }
 
@@ -222,6 +222,6 @@ public class PaymentService implements CRUD<Payment> {
         }
 
         User user = userRepository.findById(payment.getIdUser()).orElse(null);
-        payment.setClientName(user != null ? user.getFullName() : "Cliente no encontrado");
+        payment.setClientName(user != null ? user.getFullName() : null);
     }
 }

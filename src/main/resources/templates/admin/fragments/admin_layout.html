@@ -3,8 +3,8 @@
 <body>
 
 <header th:fragment="adminHeader(active)" class="main-header portal-header"
-        th:with="moduleName=${active == 'branches' ? 'Sucursales' :
-            (active == 'payments' ? 'Pagos' :
+        th:with="moduleName=${active == 'branches' ? #messages.msg('nav.admin.branches') :
+            (active == 'payments' ? #messages.msg('nav.admin.payments') :
             (active == 'routines' ? 'Rutinas' :
             (active == 'products' ? 'Productos' :
             (active == 'classes' ? 'Clases' :
@@ -23,7 +23,7 @@
         <div class="brand-text">
             <span class="system-name portal-title">SAM GYM FITNESS</span>
             <span th:if="${session.user != null and session.user.role == 'administrator'}" 
-                  class="brand-subtitle portal-subtitle">Panel administrador</span>
+                  class="brand-subtitle portal-subtitle" th:text="#{nav.admin.panel}">Panel administrador</span>
             <span th:if="${session.user != null and session.user.role == 'trainer'}" 
                   class="brand-subtitle portal-subtitle">PANEL ENTRENADOR</span>
         </div>
@@ -36,8 +36,8 @@
             <summary>Men&uacute;</summary>
             <div class="module-menu-panel">
                 <th:block th:if="${session.user != null and session.user.role == 'administrator'}">
-                    <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'">Sucursales</a>
-                    <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'">Pagos</a>
+                    <a th:href="@{/admin/branches}" th:classappend="${active == 'branches'} ? ' active'" th:text="#{nav.admin.branches}">Sucursales</a>
+                    <a th:href="@{/admin/payments}" th:classappend="${active == 'payments'} ? ' active'" th:text="#{nav.admin.payments}">Pagos</a>
                     <a th:href="@{/admin/routines}" th:classappend="${active == 'routines'} ? ' active'">Rutinas</a>
                     <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? ' active'">Productos</a>
                     <a th:href="@{/admin/classes}" th:classappend="${active == 'classes'} ? ' active'">Clases</a>
@@ -74,7 +74,19 @@
             <a href="#" onclick="changeLanguage('en'); return false;">EN</a>
         </div>
 
-        <script>
+        <script th:inline="javascript">
+        window.systemMessages = Object.assign({}, window.systemMessages || {}, {
+            confirmTitle: /*[[#{confirm.default.title}]]*/ "Guardar cambios?",
+            confirmButton: /*[[#{button.yes}]]*/ "Si",
+            cancelButton: /*[[#{button.cancel}]]*/ "Cancelar",
+            saveButton: /*[[#{button.save}]]*/ "Guardar",
+            loadingTitle: /*[[#{message.processing}]]*/ "Procesando...",
+            loadingText: /*[[#{message.loading.wait}]]*/ "Espere un momento.",
+            successTitle: /*[[#{message.success.saved}]]*/ "Guardado.",
+            errorTitle: /*[[#{message.error.save}]]*/ "No se pudo guardar.",
+            okButton: /*[[#{button.accept}]]*/ "Aceptar"
+        });
+
         function changeLanguage(lang) {
             const url = new URL(window.location.href);
             url.searchParams.set('lang', lang);

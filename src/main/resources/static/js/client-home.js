@@ -40,12 +40,13 @@ document.addEventListener('keydown', function (event) {
 document.querySelectorAll('[data-placeholder-module]').forEach(function (button) {
     button.addEventListener('click', function () {
         const moduleName = button.dataset.placeholderModule;
+        const messages = window.systemMessages || {};
 
         Swal.fire({
             icon: 'info',
-            title: moduleName + ' estará disponible pronto',
-            text: 'Esta sección se habilitará cuando el módulo correspondiente esté integrado al portal cliente.',
-            confirmButtonText: 'Aceptar',
+            title: moduleName + ' ' + (messages.clientPlaceholderTitleSuffix || 'estara disponible pronto'),
+            text: messages.clientPlaceholderText || 'Esta seccion se habilitara cuando el modulo correspondiente este integrado al portal cliente.',
+            confirmButtonText: messages.acceptButton || 'Aceptar',
             confirmButtonColor: '#d97818'
         });
     });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de pago - SAM GYM FITNESS</title>
+    <title th:text="#{title.payment.detail}">Detalle de pago - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
@@ -12,27 +12,29 @@
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('payments')}"></div>
 
 <main class="detail-page">
-    <nav class="client-breadcrumb" aria-label="Ruta de navegaci&oacute;n">
-        <a th:href="@{/client/home}">Inicio</a>
+    <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
+        <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
         <span>/</span>
-        <a th:href="@{/payments}">Pagos</a>
+        <a th:href="@{/payments}" th:text="#{label.payment.payments}">Pagos</a>
         <span>/</span>
-        <strong>Detalle</strong>
+        <strong th:text="#{label.common.detail}">Detalle</strong>
     </nav>
 
     <section class="routine-detail-shell payment-detail-shell">
-        <a th:href="@{/payments}" class="back-link">Volver a pagos</a>
+        <a th:href="@{/payments}" class="back-link" th:text="#{button.backPayments}">Volver a pagos</a>
 
         <div class="routine-detail-head">
             <div>
-                <span class="section-kicker">Detalle de pago</span>
-                <h1 th:text="${'Pago #' + payment.id}">Pago</h1>
-                <p th:text="${payment.description != null and not #strings.isEmpty(payment.description) ? payment.description : 'Movimiento registrado en tu historial de pagos.'}">
+                <span class="section-kicker" th:text="#{label.payment.detail}">Detalle de pago</span>
+                <h1 th:text="${#messages.msg('label.payment.payment') + ' #' + payment.id}">Pago</h1>
+                <p th:text="${payment.description != null and not #strings.isEmpty(payment.description) ? payment.description : #messages.msg('label.payment.defaultDescription')}">
                     Movimiento registrado en tu historial de pagos.
                 </p>
             </div>
 
-            <span th:text="${payment.status}"
+            <span th:text="${payment.status == 'Pagado' ? #messages.msg('label.payment.status.paid') :
+                           (payment.status == 'Pendiente' ? #messages.msg('label.payment.status.pending') :
+                           (payment.status == 'Anulado' ? #messages.msg('label.payment.status.cancelled') : payment.status))}"
                   th:class="${payment.status == 'Pagado' ? 'status-badge status-paid detail-status' :
                            (payment.status == 'Pendiente' ? 'status-badge status-pending detail-status' : 'status-badge status-cancelled detail-status')}">
             </span>
@@ -40,24 +42,27 @@
 
         <div class="detail-meta routine-meta">
             <div class="meta-item price-item">
-                <span>Monto</span>
+                <span th:text="#{label.payment.amount}">Monto</span>
                 <strong th:text="${'CRC ' + payment.amount}">CRC 0</strong>
             </div>
             <div class="meta-item">
-                <span>Fecha</span>
+                <span th:text="#{label.gym.date}">Fecha</span>
                 <strong th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy')}">Fecha</strong>
             </div>
             <div class="meta-item">
-                <span>Cliente</span>
-                <strong th:text="${payment.clientName != null ? payment.clientName : 'Cliente no encontrado'}">Cliente</strong>
+                <span th:text="#{label.payment.client}">Cliente</span>
+                <strong th:text="${payment.clientName != null ? payment.clientName : #messages.msg('label.payment.clientNotFound')}">Cliente</strong>
             </div>
             <div class="meta-item">
-                <span>M&eacute;todo</span>
-                <strong th:text="${payment.paymentMethod}">Método</strong>
+                <span th:text="#{label.payment.methodShort}">Metodo</span>
+                <strong th:text="${payment.paymentMethod == 'Efectivo' ? #messages.msg('label.payment.method.cash') :
+                                 (payment.paymentMethod == 'Tarjeta' ? #messages.msg('label.payment.method.card') :
+                                 (payment.paymentMethod == 'SINPE' ? #messages.msg('label.payment.method.sinpe') :
+                                 (payment.paymentMethod == 'Transferencia' ? #messages.msg('label.payment.method.transfer') : payment.paymentMethod)))}">Metodo</strong>
             </div>
             <div class="meta-item">
-                <span>Sucursal</span>
-                <strong th:text="${payment.branch != null ? payment.branch.name : 'Sin sucursal'}">Sucursal</strong>
+                <span th:text="#{label.payment.branch}">Sucursal</span>
+                <strong th:text="${payment.branch != null ? payment.branch.name : #messages.msg('label.gym.none')}">Sucursal</strong>
             </div>
         </div>
     </section>

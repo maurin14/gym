@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulario de pago</title>
+    <title th:text="#{title.payment.form}">Formulario de pago</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -12,9 +12,8 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('payments')}"></div>
 
-
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
     <form id="paymentForm"
           class="portal-form"
@@ -25,66 +24,85 @@
 
         <input type="hidden" th:field="*{id}">
 
-        <label>Fecha de pago</label>
+        <label th:text="#{label.payment.date}">Fecha de pago</label>
         <input type="date" th:field="*{paymentDate}" required>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['paymentDate'] != null}" th:text="${fieldErrors['paymentDate']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['paymentDate'] != null}" th:text="#{${fieldErrors['paymentDate']}}"></small>
 
-        <label>Cliente</label>
+        <label th:text="#{label.payment.client}">Cliente</label>
         <select th:field="*{idUser}" required>
-            <option value="">Seleccione un cliente</option>
+            <option value="" th:text="#{label.payment.selectClient}">Seleccione un cliente</option>
             <option th:each="client : ${clients}"
                     th:value="${client.userId}"
                     th:text="${client.fullName}">
             </option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idUser'] != null}" th:text="${fieldErrors['idUser']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['idUser'] != null}" th:text="#{${fieldErrors['idUser']}}"></small>
 
-        <label>Sucursal</label>
+        <label th:text="#{label.payment.branch}">Sucursal</label>
         <select name="branchId" required>
-            <option value="">Seleccione una sucursal</option>
+            <option value="" th:text="#{select.branch}">Seleccione una sucursal</option>
             <option th:each="b : ${branches}"
                     th:value="${b.id}"
                     th:text="${b.name}"
                     th:selected="${payment.branch != null and payment.branch.id == b.id}">
             </option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch'] != null}" th:text="${fieldErrors['branch']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch'] != null}" th:text="#{${fieldErrors['branch']}}"></small>
 
-        <label>Monto</label>
-        <input type="number" th:field="*{amount}" required min="0.01" step="0.01" placeholder="Ejemplo: 15000">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['amount'] != null}" th:text="${fieldErrors['amount']}"></small>
+        <label th:text="#{label.payment.amount}">Monto</label>
+        <input type="number"
+               th:field="*{amount}"
+               required
+               min="0.01"
+               step="0.01"
+               th:placeholder="#{placeholder.payment.amount}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['amount'] != null}" th:text="#{${fieldErrors['amount']}}"></small>
 
-        <label>Método de pago</label>
+        <label th:text="#{label.payment.method}">Metodo de pago</label>
         <select th:field="*{paymentMethod}" required>
-            <option value="">Seleccione</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Tarjeta">Tarjeta</option>
-            <option value="SINPE">SINPE</option>
-            <option value="Transferencia">Transferencia</option>
+            <option value="" th:text="#{select.select}">Seleccione</option>
+            <option value="Efectivo" th:text="#{label.payment.method.cash}">Efectivo</option>
+            <option value="Tarjeta" th:text="#{label.payment.method.card}">Tarjeta</option>
+            <option value="SINPE" th:text="#{label.payment.method.sinpe}">SINPE</option>
+            <option value="Transferencia" th:text="#{label.payment.method.transfer}">Transferencia</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['paymentMethod'] != null}" th:text="${fieldErrors['paymentMethod']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['paymentMethod'] != null}" th:text="#{${fieldErrors['paymentMethod']}}"></small>
 
-        <label>Estado del pago</label>
+        <label th:text="#{label.payment.paymentStatus}">Estado del pago</label>
         <select th:field="*{status}" required>
-            <option value="">Seleccione</option>
-            <option value="Pagado">Pagado</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Anulado">Anulado</option>
+            <option value="" th:text="#{select.select}">Seleccione</option>
+            <option value="Pagado" th:text="#{label.payment.status.paid}">Pagado</option>
+            <option value="Pendiente" th:text="#{label.payment.status.pending}">Pendiente</option>
+            <option value="Anulado" th:text="#{label.payment.status.cancelled}">Anulado</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="${fieldErrors['status']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['status'] != null}" th:text="#{${fieldErrors['status']}}"></small>
 
-        <label>Descripción</label>
-        <input type="text" th:field="*{description}" maxlength="255" placeholder="Ejemplo: Pago de mensualidad">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="${fieldErrors['description']}"></small>
+        <label th:text="#{label.payment.description}">Descripcion</label>
+        <input type="text"
+               th:field="*{description}"
+               maxlength="255"
+               th:placeholder="#{placeholder.payment.description}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="#{${fieldErrors['description']}}"></small>
 
         <div class="buttons">
-            <button type="button" class="btn-primary" onclick="confirmSavePayment()">Guardar</button>
-            <button type="button" class="btn-secondary" onclick="confirmCancelPayment()">Cancelar</button>
+            <button type="button" class="btn-primary" onclick="confirmSavePayment()" th:text="#{button.save}">Guardar</button>
+            <button type="button" class="btn-secondary" onclick="confirmCancelPayment()" th:text="#{button.cancel}">Cancelar</button>
         </div>
     </form>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+
+<script th:inline="javascript">
+    window.paymentMessages = {
+        saveTitle: /*[[#{confirm.payment.save}]]*/ "Guardar pago?",
+        saveConfirm: /*[[#{button.save}]]*/ "Guardar",
+        saveLoading: /*[[#{confirm.loading.save}]]*/ "Guardando...",
+        cancelTitle: /*[[#{confirm.cancel.title}]]*/ "Cancelar cambios?",
+        cancelText: /*[[#{confirm.cancel.text}]]*/ "Los cambios no guardados se perderan.",
+        yes: /*[[#{button.yes}]]*/ "Si"
+    };
+</script>
 
 </body>
 </html>

@@ -2,7 +2,8 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<header th:fragment="clientHeader" class="client-header">
+<th:block th:fragment="clientHeader">
+<header class="client-header">
     <a th:href="@{/client/home}" class="client-brand">
         <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
         <span>
@@ -11,7 +12,7 @@
     </a>
 
     <nav class="client-top-nav" aria-label="Navegaci&oacute;n principal">
-        <a th:href="@{/client/home}">Inicio</a>
+        <a th:href="@{/client/home}" th:text="#{nav.client.home}">Inicio</a>
     </nav>
 
     <button type="button"
@@ -26,6 +27,23 @@
         <strong>Men&uacute;</strong>
     </button>
 </header>
+<script th:inline="javascript">
+    window.systemMessages = Object.assign({}, window.systemMessages || {}, {
+        confirmTitle: /*[[#{confirm.default.title}]]*/ "Guardar cambios?",
+        confirmButton: /*[[#{button.yes}]]*/ "Si",
+        cancelButton: /*[[#{button.cancel}]]*/ "Cancelar",
+        saveButton: /*[[#{button.save}]]*/ "Guardar",
+        loadingTitle: /*[[#{message.processing}]]*/ "Procesando...",
+        loadingText: /*[[#{message.loading.wait}]]*/ "Espere un momento.",
+        successTitle: /*[[#{message.success.saved}]]*/ "Guardado.",
+        errorTitle: /*[[#{message.error.save}]]*/ "No se pudo guardar.",
+        okButton: /*[[#{button.accept}]]*/ "Aceptar",
+        acceptButton: /*[[#{button.accept}]]*/ "Aceptar",
+        clientPlaceholderTitleSuffix: /*[[#{message.client.placeholderTitleSuffix}]]*/ "estara disponible pronto",
+        clientPlaceholderText: /*[[#{message.client.placeholderText}]]*/ "Esta seccion se habilitara cuando el modulo correspondiente este integrado al portal cliente."
+    });
+</script>
+</th:block>
 
 <div th:fragment="clientMenuDrawer(active)" class="client-menu-shell">
     <button type="button" class="menu-backdrop" aria-label="Cerrar men&uacute; cliente" data-menu-close></button>
@@ -96,15 +114,15 @@
             </div>
 
             <div class="drawer-section">
-                <span class="drawer-section-title">Mi cuenta</span>
+                <span class="drawer-section-title" th:text="#{nav.client.account}">Mi cuenta</span>
 
                 <a th:href="@{/payments}"
                    class="drawer-link"
                    th:classappend="${active == 'payments'} ? ' active'">
                     <span class="drawer-icon">P</span>
                     <span>
-                        <strong>Pagos</strong>
-                        <small>Historial y control de pagos.</small>
+                        <strong th:text="#{nav.client.payments}">Pagos</strong>
+                        <small th:text="#{nav.client.paymentsDescription}">Historial y control de pagos.</small>
                     </span>
                 </a>
 
@@ -138,15 +156,15 @@
             </div>
 
             <div class="drawer-section">
-                <span class="drawer-section-title">Sedes</span>
+                <span class="drawer-section-title" th:text="#{nav.client.locations}">Sedes</span>
 
                 <a th:href="@{/client/branches}"
                    class="drawer-link"
                    th:classappend="${active == 'branches'} ? ' active'">
                     <span class="drawer-icon">S</span>
                     <span>
-                        <strong>Sucursales</strong>
-                        <small>Ubicaci&oacute;n y datos generales.</small>
+                        <strong th:text="#{nav.client.branches}">Sucursales</strong>
+                        <small th:text="#{nav.client.branchesDescription}">Ubicacion y datos generales.</small>
                     </span>
                 </a>
             </div>

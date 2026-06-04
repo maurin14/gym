@@ -95,13 +95,13 @@ public class BranchController {
 
         Map<String, String> fieldErrors = branchService.validateFields(branch);
         if (branch.getId() > 0 && branchService.getById(branch.getId()) == null) {
-            fieldErrors.put("form", "La sucursal que intenta editar no existe.");
+            fieldErrors.put("form", "message.branch.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("branch", branch);
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("messageError", "message.form.review");
             return "branches/admin/formBranch";
         }
 
@@ -127,11 +127,11 @@ public class BranchController {
     public String changeBranchStatus(@PathVariable int id,
                                      RedirectAttributes redirectAttributes) {
         if (!branchService.toggleStatus(id)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
+            redirectAttributes.addFlashAttribute("errorMessage", "message.branch.notFound");
             return "redirect:/admin/branches";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Estado de la sucursal actualizado correctamente.");
+        redirectAttributes.addFlashAttribute("successMessage", "message.branch.statusUpdated");
         return "redirect:/admin/branches";
     }
 
@@ -141,16 +141,16 @@ public class BranchController {
         Branch branch = branchService.getById(id);
 
         if (branch == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
+            redirectAttributes.addFlashAttribute("errorMessage", "message.branch.notFound");
             return "redirect:/admin/branches";
         }
 
         try {
             branchService.delete(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Sucursal eliminada correctamente.");
+            redirectAttributes.addFlashAttribute("successMessage", "message.branch.deleted");
         } catch (DataIntegrityViolationException ex) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "No se puede eliminar la sucursal porque tiene equipos asociados.");
+                    "message.branch.relatedEquipment");
         }
 
         return "redirect:/admin/branches";
@@ -197,24 +197,43 @@ public class BranchController {
         GymClass gymClass = gymClassService.getClassById(classId);
 
         if (gymClass == null) {
-            redirectAttributes.addFlashAttribute("messageError", "No se pudo completar la inscripcion.");
+            redirectAttributes.addFlashAttribute("messageError", "message.branch.enrollError");
             return "redirect:/client/branches/" + branchId;
         }
 
         if (!classBelongsToBranch(gymClass, branchId)) {
-            redirectAttributes.addFlashAttribute("messageError", "La clase no pertenece a esta sucursal.");
+            redirectAttributes.addFlashAttribute("messageError", "message.branch.classMismatch");
             return "redirect:/client/branches/" + branchId;
         }
 
         String result = attendanceService.enrollClientInClass(user, classId);
 
         if (result.isEmpty()) {
-            redirectAttributes.addFlashAttribute("messageSuccess", "Inscripcion realizada.");
+            redirectAttributes.addFlashAttribute("messageSuccess", "message.branch.enrolled");
         } else {
-            redirectAttributes.addFlashAttribute("messageError", result);
+            redirectAttributes.addFlashAttribute("messageError", enrollmentMessageKey(result));
         }
 
         return "redirect:/client/branches/" + branchId;
+    }
+
+    private String enrollmentMessageKey(String result) {
+        if ("Debe iniciar sesion.".equals(result)) {
+            return "message.branch.loginRequired";
+        }
+        if ("Clase no encontrada.".equals(result)) {
+            return "message.branch.classNotFound";
+        }
+        if ("La clase no esta disponible.".equals(result)) {
+            return "message.branch.classUnavailable";
+        }
+        if ("Ya estas inscrito en esta clase.".equals(result)) {
+            return "message.branch.alreadyEnrolled";
+        }
+        if ("No hay cupos disponibles.".equals(result)) {
+            return "message.branch.noCapacity";
+        }
+        return "message.branch.enrollError";
     }
 
     private boolean classBelongsToBranch(GymClass gymClass, int branchId) {
