@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,29 +8,13 @@
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('attendances')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('attendances')}"></div>
 
 <main>
-    <section class="client-hero compact-hero attendances-hero">
-        <div>
-            <span class="section-kicker" th:text="#{section.kicker.attendance}">Asistencia</span>
-            <h1 th:text="#{title.attendance.register}">Registrar asistencia</h1>
-            <p th:text="#{text.attendance.confirm}">Confirma la clase seleccionada y agrega una observación si lo necesitas.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
-            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
-            <span>/</span>
-            <a th:href="@{/client/classes}" th:text="#{label.class.available}">Clases</a>
-            <span>/</span>
-            <strong th:text="#{title.attendance.register}">Registrar asistencia</strong>
-        </nav>
-
-        <div class="client-form-card">
-            <form class="client-form">
+        <div class="client-form-card narrow-form">
+            <form class="client-form single-column">
                 <div class="toolbar-field">
                     <label for="classId" th:text="#{label.class.select}">Clase</label>
                     <select id="classId" onchange="setAttendanceDate()"></select>
@@ -60,6 +44,20 @@
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    window.i18n = {
+        selectClass: /*[[#{label.select.class}]]*/ "Select a class",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch",
+        classRequired: /*[[#{attendance.validation.classRequired}]]*/ "Select a class.",
+        dateRequired: /*[[#{attendance.validation.dateRequired}]]*/ "The date is required.",
+        reviewFields: /*[[#{message.form.review}]]*/ "Please review the highlighted fields.",
+        confirmTitle: /*[[#{confirm.default.title}]]*/ "Save changes?",
+        saveButton: /*[[#{button.save}]]*/ "Save",
+        loadingTitle: /*[[#{confirm.loading.save}]]*/ "Saving...",
+        saveError: /*[[#{attendance.message.saveError}]]*/ "Could not save attendance.",
+        saved: /*[[#{attendance.message.saved}]]*/ "Attendance saved successfully."
+    };
+</script>
 <script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/attendances/form.js}" defer></script>

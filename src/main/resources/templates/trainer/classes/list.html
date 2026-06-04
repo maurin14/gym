@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{title.class.list}">Administración de clases</title>
@@ -12,27 +12,24 @@
 
     <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-    <main class="container portal-card admin-page-card wide-table-card">
+    <main class="container portal-card admin-page-card">
 
-        <div class="admin-title-row">
-
-            <div class="admin-filter-row branch-filter-container" style="margin-bottom: 0;">
-                <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">
-                    Sucursal:
-                </label>
-                <select id="branchFilter" onchange="filterClassesByBranch()">
-                    <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
-                </select>
-            </div>
-
-            <div class="buttons admin-action-row" th:if="${canManageClasses}">
-                <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">
-                    Nueva clase
-                </a>
-            </div>
-
+        <div class="buttons admin-action-row" th:if="${canManageClasses}">
+            <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">
+                Nueva clase
+            </a>
         </div>
 
+        <div class="admin-filter-row portal-filters branch-filter-container">
+            <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">
+                Sucursal:
+            </label>
+            <select id="branchFilter" onchange="filterClassesByBranch()">
+                <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
+            </select>
+        </div>
+
+        <div class="table-responsive">
         <table class="portal-table admin-table is-wide">
             <thead>
                 <tr>
@@ -54,6 +51,7 @@
 
             <tbody id="classesTableBody"></tbody>
         </table>
+        </div>
 
         <div id="classesPagination" class="pagination"></div>
 
@@ -76,6 +74,9 @@
             deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "Esta acción no se puede deshacer.",
             deleting: /*[[#{message.deleting}]]*/ "Eliminando...",
             deleteError: /*[[#{message.delete.error}]]*/ "No se pudo eliminar.",
+            deleteSuccess: /*[[#{message.class.deleted}]]*/ "Clase eliminada correctamente.",
+            emptyClasses: /*[[#{empty.classes}]]*/ "No hay clases disponibles.",
+            noBranch: /*[[#{label.no.branch}]]*/ "Sin sucursal",
             difficultyLow: /*[[#{difficulty.low}]]*/ "Bajo",
             difficultyMedium: /*[[#{difficulty.medium}]]*/ "Medio",
             difficultyHigh: /*[[#{difficulty.high}]]*/ "Alto"

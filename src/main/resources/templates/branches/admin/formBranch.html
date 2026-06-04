@@ -62,6 +62,14 @@
                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['phone'] != null}" th:text="#{${fieldErrors['phone']}}"></small>
 
+        <label th:text="#{branch.form.email}">Correo electrónico</label>
+        <input type="email"
+               th:field="*{email}"
+               required
+               maxlength="120"
+               th:placeholder="#{branch.form.email.placeholder}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['email'] != null}" th:text="#{${fieldErrors['email']}}"></small>
+
         <label th:text="#{label.branch.capacityMax}">Capacidad maxima</label>
         <input type="number"
                th:field="*{capacity}"

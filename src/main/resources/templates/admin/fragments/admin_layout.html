@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 
 <header th:fragment="adminHeader(active)" class="main-header portal-header">
@@ -83,24 +83,6 @@
         </div>
 
         <script th:inline="javascript">
-        function clearTransientVisualState() {
-            document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
-
-            if (document.body.style.overflow === 'hidden') {
-                document.body.style.overflow = '';
-            }
-
-            if (window.Swal && Swal.isVisible && Swal.isVisible()) {
-                Swal.close();
-            }
-        }
-
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
-                clearTransientVisualState();
-            }
-        });
-
         window.systemMessages = Object.assign({}, window.systemMessages || {}, {
             confirmTitle: /*[[#{confirm.default.title}]]*/ "Guardar cambios?",
             confirmButton: /*[[#{button.yes}]]*/ "Si",
@@ -111,6 +93,11 @@
             successTitle: /*[[#{message.success.saved}]]*/ "Guardado.",
             errorTitle: /*[[#{message.error.save}]]*/ "No se pudo guardar.",
             okButton: /*[[#{button.accept}]]*/ "Aceptar"
+        });
+
+        window.systemFlashMessages = Object.assign({}, window.systemFlashMessages || {}, {
+            success: /*[[${successMessage != null ? #messages.msg(successMessage) : (messageSuccess != null ? messageSuccess : null)}]]*/ null,
+            error: /*[[${errorMessage != null ? #messages.msg(errorMessage) : (messageError != null ? messageError : null)}]]*/ null
         });
 
         function getPositiveFormId() {
@@ -158,6 +145,30 @@
                 event.preventDefault();
                 changeLanguage(link.dataset.lang);
             });
+        });
+
+        document.querySelectorAll('.module-menu').forEach(function (menu) {
+            menu.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    menu.removeAttribute('open');
+                });
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('.module-menu[open]').forEach(function (menu) {
+                if (!menu.contains(event.target)) {
+                    menu.removeAttribute('open');
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.module-menu[open]').forEach(function (menu) {
+                    menu.removeAttribute('open');
+                });
+            }
         });
         </script>
     </nav>

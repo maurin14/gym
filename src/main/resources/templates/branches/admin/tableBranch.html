@@ -12,6 +12,7 @@
             <th th:text="#{label.branch.name}">Nombre</th>
             <th th:text="#{label.branch.address}">Dirección</th>
             <th th:text="#{label.branch.phone}">Teléfono</th>
+            <th th:text="#{branch.form.email}">Correo electrónico</th>
             <th th:text="#{label.branch.capacity}">Capacidad</th>
             <th th:text="#{label.branch.status}">Estado</th>
             <th th:text="#{label.branch.actions}">Acciones</th>
@@ -20,7 +21,7 @@
 
         <tbody>
         <tr th:if="${branches.content.size() == 0}">
-            <td colspan="8" class="empty-message" th:text="#{label.branch.noBranches}">No se encontraron sucursales registradas.</td>
+            <td colspan="9" class="empty-message" th:text="#{label.branch.noBranches}">No se encontraron sucursales registradas.</td>
         </tr>
 
         <tr th:each="b : ${branches.content}">
@@ -34,6 +35,7 @@
             <td th:text="${b.name}"></td>
             <td th:text="${b.address}"></td>
             <td th:text="${b.phone}"></td>
+            <td th:text="${b.email}"></td>
             <td th:text="${b.capacity}"></td>
 
             <td>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{${title}}">Formulario de producto</title>
@@ -30,12 +30,35 @@
                th:placeholder="#{placeholder.product.name}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['nameProduct'] != null}" th:text="#{${fieldErrors['nameProduct']}}"></small>
 
-        <label for="category" th:text="#{label.product.category}">Categoría</label>
-        <input type="text"
-               id="category"
-               th:field="*{category}"
-               th:placeholder="#{placeholder.product.category}">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['category'] != null}" th:text="#{${fieldErrors['category']}}"></small>
+        <div class="portal-form-field">
+            <label for="newCategory" th:text="#{product.form.newCategory}">Nueva categoría</label>
+            <input type="text"
+                   id="newCategory"
+                   name="newCategory"
+                   th:value="${newCategory}"
+                   th:placeholder="#{product.form.newCategory.placeholder}">
+        </div>
+
+        <div class="portal-form-field">
+            <label for="existingCategory" th:text="#{product.form.existingCategory}">Categoría existente</label>
+            <select id="existingCategory" name="existingCategory">
+                <option value="" th:text="#{product.form.existingCategory.placeholder}">Seleccione una categoría</option>
+                <option th:each="categoryItem : ${categories}"
+                        th:value="${categoryItem}"
+                        th:text="${categoryItem}"
+                        th:selected="${existingCategory != null and existingCategory.equalsIgnoreCase(categoryItem)}">
+                    Categoría
+                </option>
+            </select>
+        </div>
+        <small class="field-error"
+               th:if="${fieldErrors != null and fieldErrors['categorySelection'] != null}"
+               th:text="#{${fieldErrors['categorySelection']}}">
+        </small>
+        <small class="field-error"
+               th:if="${fieldErrors != null and fieldErrors['categorySelection'] == null and fieldErrors['category'] != null}"
+               th:text="#{${fieldErrors['category']}}">
+        </small>
 
         <label for="price" th:text="#{label.product.price}">Precio</label>
         <input type="number"

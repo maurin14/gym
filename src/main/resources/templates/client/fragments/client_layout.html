@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 
 <th:block th:fragment="clientHeader">
@@ -39,21 +39,31 @@
 </header>
 <script th:inline="javascript">
     function clearTransientVisualState() {
-        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
-
-        if (document.body.style.overflow === 'hidden') {
-            document.body.style.overflow = '';
+        if (!document.body) {
+            return;
         }
 
-        if (window.Swal && Swal.isVisible && Swal.isVisible()) {
-            Swal.close();
-        }
+        document.documentElement.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
+
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+
+        document.querySelectorAll('.menu-backdrop, .sidebar-overlay, .menu-overlay, .drawer-backdrop, .modal-backdrop, .loading-overlay, .admin-overlay, .client-overlay').forEach(function (overlay) {
+            overlay.classList.remove('active', 'show', 'visible', 'is-active', 'is-visible');
+            overlay.style.removeProperty('display');
+            overlay.style.removeProperty('pointer-events');
+            overlay.style.removeProperty('opacity');
+            overlay.style.removeProperty('visibility');
+        });
     }
 
+    clearTransientVisualState();
+    document.addEventListener('DOMContentLoaded', clearTransientVisualState, { once: true });
+
     window.addEventListener('pageshow', function (event) {
-        if (event.persisted) {
-            clearTransientVisualState();
-        }
+        clearTransientVisualState();
     });
 
     window.systemMessages = Object.assign({}, window.systemMessages || {}, {
@@ -114,6 +124,7 @@
     document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
+            clearTransientVisualState();
             changeLanguage(link.dataset.lang);
         });
     });
@@ -135,10 +146,12 @@
         <strong class="client-current-module" th:switch="${active}">
             <span th:case="'routines'" th:text="#{client.nav.routines}">Rutinas</span>
             <span th:case="'products'" th:text="#{client.nav.products}">Productos</span>
+            <span th:case="'classes'" th:text="#{client.nav.classes}">Clases</span>
             <span th:case="'schedules'" th:text="#{client.nav.schedules}">Horarios</span>
             <span th:case="'equipment'" th:text="#{client.nav.equipment}">Equipamiento</span>
             <span th:case="'payments'" th:text="#{client.nav.payments}">Pagos</span>
             <span th:case="'branches'" th:text="#{client.nav.branches}">Sucursales</span>
+            <span th:case="'attendances'" th:text="#{client.nav.attendance}">Asistencia</span>
             <span th:case="*" th:text="#{client.nav.home}">Inicio</span>
         </strong>
     </nav>
@@ -167,21 +180,31 @@
 </header>
 <script th:inline="javascript">
     function clearTransientVisualState() {
-        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
-
-        if (document.body.style.overflow === 'hidden') {
-            document.body.style.overflow = '';
+        if (!document.body) {
+            return;
         }
 
-        if (window.Swal && Swal.isVisible && Swal.isVisible()) {
-            Swal.close();
-        }
+        document.documentElement.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto', 'overflow-hidden', 'no-scroll');
+
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+
+        document.querySelectorAll('.menu-backdrop, .sidebar-overlay, .menu-overlay, .drawer-backdrop, .modal-backdrop, .loading-overlay, .admin-overlay, .client-overlay').forEach(function (overlay) {
+            overlay.classList.remove('active', 'show', 'visible', 'is-active', 'is-visible');
+            overlay.style.removeProperty('display');
+            overlay.style.removeProperty('pointer-events');
+            overlay.style.removeProperty('opacity');
+            overlay.style.removeProperty('visibility');
+        });
     }
 
+    clearTransientVisualState();
+    document.addEventListener('DOMContentLoaded', clearTransientVisualState, { once: true });
+
     window.addEventListener('pageshow', function (event) {
-        if (event.persisted) {
-            clearTransientVisualState();
-        }
+        clearTransientVisualState();
     });
 
     window.systemMessages = Object.assign({}, window.systemMessages || {}, {
@@ -242,6 +265,7 @@
     document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
+            clearTransientVisualState();
             changeLanguage(link.dataset.lang);
         });
     });

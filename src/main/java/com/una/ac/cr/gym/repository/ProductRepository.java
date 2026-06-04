@@ -40,10 +40,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             Pageable pageable
     );
 
-    @Query("SELECT DISTINCT p.category FROM Product p WHERE p.category IS NOT NULL AND p.category <> ''")
+    @Query("SELECT DISTINCT TRIM(p.category) FROM Product p WHERE p.category IS NOT NULL AND TRIM(p.category) <> '' ORDER BY TRIM(p.category)")
     List<String> findDistinctCategories();
 
-    @Query("SELECT DISTINCT p.category FROM Product p WHERE p.state = true AND p.category IS NOT NULL AND p.category <> ''")
+    @Query("SELECT DISTINCT TRIM(p.category) FROM Product p WHERE p.state = true AND p.category IS NOT NULL AND TRIM(p.category) <> '' ORDER BY TRIM(p.category)")
     List<String> findDistinctActiveCategories();
 
     @Query("SELECT MIN(p.price) FROM Product p")

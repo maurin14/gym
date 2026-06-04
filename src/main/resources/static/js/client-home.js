@@ -1,6 +1,9 @@
 (function () {
     if (window.clientHomeUiInitialized) {
         document.body.classList.remove('menu-open');
+        document.querySelectorAll('[data-menu-toggle]').forEach(function (toggle) {
+            toggle.setAttribute('aria-expanded', 'false');
+        });
         return;
     }
 
@@ -18,16 +21,11 @@
         });
     }
 
-    function clearTransientUiState() {
+    function closeMenu() {
         setMenuState(false);
-        document.body.classList.remove('modal-open', 'drawer-open', 'sidebar-open');
-
-        if (document.body.style.overflow === 'hidden') {
-            document.body.style.overflow = '';
-        }
     }
 
-    clearTransientUiState();
+    closeMenu();
 
     if (clientHeader) {
         const toggleHeaderState = function () {
@@ -39,32 +37,30 @@
     }
 
     menuToggles.forEach(function (toggle) {
-        toggle.addEventListener('click', function () {
+        toggle.addEventListener('click', function (event) {
+            event.stopPropagation();
             setMenuState(!document.body.classList.contains('menu-open'));
         });
     });
 
     menuCloseButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            setMenuState(false);
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            closeMenu();
         });
     });
 
     document.querySelectorAll('.client-menu-drawer a').forEach(function (link) {
-        link.addEventListener('click', clearTransientUiState);
+        link.addEventListener('click', closeMenu);
     });
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
-            setMenuState(false);
+            closeMenu();
         }
     });
 
-    window.addEventListener('pagehide', clearTransientUiState);
-    window.addEventListener('beforeunload', clearTransientUiState);
-    window.addEventListener('pageshow', function () {
-        clearTransientUiState();
-    });
+    window.addEventListener('pageshow', closeMenu);
 
     document.querySelectorAll('[data-placeholder-module]').forEach(function (button) {
         button.addEventListener('click', function () {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,37 +8,12 @@
 </head>
 <body>
 
-<!-- Header y menú -->
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('classes')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('classes')}"></div>
 
 <main>
-    <!-- Hero / sección superior -->
-    <section class="client-hero compact-hero classes-hero">
-        <div>
-            <span class="section-kicker" th:text="#{section.kicker.training}">Entrenamiento</span>
-            <h1 th:text="#{title.class.available}">Clases disponibles</h1>
-            <p th:text="#{text.class.description}">Consulta las sesiones grupales activas y registra tu asistencia en la clase que deseas tomar.</p>
-        </div>
-    </section>
-
-    <!-- Sección de tabla -->
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
-            <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
-            <span>/</span>
-            <strong th:text="#{label.class.available}">Clases</strong>
-        </nav>
-
         <div class="client-table-card">
-            <div class="section-heading table-heading">
-                <div>
-                    <span class="section-kicker" th:text="#{section.kicker.agenda}">Agenda</span>
-                    <h2 th:text="#{label.select.class}">Selecciona una clase</h2>
-                    <p th:text="#{text.class.availability}">La disponibilidad se actualiza desde el módulo de clases del gimnasio.</p>
-                </div>
-            </div>
-
             <div class="table-responsive">
                 <table class="client-table">
                     <thead>
@@ -56,20 +31,32 @@
                         <th th:text="#{label.class.action}">Acción</th>
                     </tr>
                     </thead>
+
                     <tbody id="classesTableBody"></tbody>
                 </table>
             </div>
 
-            <nav id="classesPagination" class="client-pagination" aria-label="Paginación de clases"></nav>
+            <nav id="classesPagination" class="client-pagination" th:aria-label="#{pagination.classes}"></nav>
         </div>
     </section>
 </main>
 
-<!-- Footer -->
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    window.i18n = {
+        loadError: /*[[#{message.class.loadError}]]*/ "Could not load classes.",
+        emptyClasses: /*[[#{empty.classes}]]*/ "No classes available.",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch",
+        register: /*[[#{button.add.attendance}]]*/ "Register",
+        previous: /*[[#{button.previous}]]*/ "Previous",
+        next: /*[[#{button.next}]]*/ "Next",
+        difficultyLow: /*[[#{difficulty.low}]]*/ "Low",
+        difficultyMedium: /*[[#{difficulty.medium}]]*/ "Medium",
+        difficultyHigh: /*[[#{difficulty.high}]]*/ "High"
+    };
+</script>
 <script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
 <script th:src="@{/js/client/classes/list.js}" defer></script>

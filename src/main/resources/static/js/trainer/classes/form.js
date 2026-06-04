@@ -7,7 +7,13 @@ const i18n = window.i18n || {
     selectTrainer: "Select a trainer.",
     reviewFields: "Please review the highlighted fields.",
     saved: "Saved.",
-    updated: "Updated."
+    updated: "Updated.",
+    saving: "Saving...",
+    saveError: "Could not save.",
+    formTitleAdd: "Add Class",
+    formTitleEdit: "Edit Class",
+    confirmButton: /*[[#{confirm.button}]]*/ "Accept",
+    
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -32,15 +38,13 @@ function getClassIdFromPath() {
 
 function getClassesListPath() {
     return window.classBasePath || (window.location.pathname.startsWith("/admin/classes")
-            ? "/admin/classes"
-            : "/trainer/classes");
+        ? "/admin/classes"
+        : "/trainer/classes");
 }
 
 function loadTrainers() {
     const branchId = document.getElementById("branchId")?.value || "";
-    const url = branchId
-        ? "/classes/trainers?branchId=" + encodeURIComponent(branchId)
-        : "/classes/trainers";
+    const url = branchId ? "/classes/trainers?branchId=" + encodeURIComponent(branchId) : "/classes/trainers";
 
     return fetch(url)
         .then(response => response.json())
@@ -69,12 +73,10 @@ function loadClass(idClass) {
     fetch("/classes/" + idClass)
         .then(response => response.json())
         .then(gymClass => {
-            if (gymClass.success === false) {
-                showClassError("form", gymClass.message || i18n.reviewFields);
+            if (!gymClass || gymClass.success === false) {
+                showClassError("form", gymClass?.message || i18n.reviewFields);
                 return;
             }
-
-            document.getElementById("formTitle").innerText = idClass ? i18n.updated : i18n.saved;
 
             setInputValue("idClass", gymClass.idClass);
             setInputValue("classType", gymClass.classType || "");
@@ -85,8 +87,10 @@ function loadClass(idClass) {
             setInputValue("enrolledCount", gymClass.enrolledCount || 0);
             setInputValue("description", gymClass.description || "");
             setInputValue("branchId", gymClass.branchId || "");
-
             setSelectValue("difficultyLevel", gymClass.difficultyLevel);
+
+            const formTitle = document.getElementById("formTitle");
+            if (formTitle) formTitle.innerText = i18n.formTitleEdit;
 
             loadTrainers().then(() => {
                 setInputValue("trainerId", gymClass.trainerId || "");
@@ -98,8 +102,8 @@ function loadClass(idClass) {
 }
 
 function setInputValue(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.value = value;
+    const el = document.getElementById(id);
+    if (el) el.value = value;
 }
 
 function normalizeDate(value) {
@@ -113,23 +117,16 @@ function normalizeTime(value) {
 function setSelectValue(selectId, value) {
     const select = document.getElementById(selectId);
     if (!select) return;
-
-    if (!value) {
-        select.value = "";
-        return;
-    }
-
-    const exists = Array.from(select.options).some(option => option.value === value);
-    if (!exists) select.add(new Option(value, value));
-
+    if (!value) { select.value = ""; return; }
+    if (!Array.from(select.options).some(o => o.value === value)) select.add(new Option(value, value));
     select.value = value;
 }
 
 function saveClass() {
     if (classSaving) return;
-
     clearClassErrors();
 
+    const idClass = document.getElementById("idClass").value;
     const classType = document.getElementById("classType").value.trim();
     const classDate = document.getElementById("classDate").value;
     const startTime = document.getElementById("startTime").value;
@@ -142,13 +139,12 @@ function saveClass() {
     const description = document.getElementById("description").value.trim();
 
     const clientErrors = {};
-
     if (!classType) clientErrors.classType = i18n.requiredField;
     if (!classDate) clientErrors.classDate = i18n.requiredField;
     if (!startTime) clientErrors.startTime = i18n.requiredField;
     if (!endTime) clientErrors.endTime = i18n.requiredField;
     if (!maxCapacity) clientErrors.maxCapacity = i18n.requiredField;
-    if (!trainerId) clientErrors.trainerId = i18n.selectOption;
+    if (!trainerId) clientErrors.trainerId = i18n.selectTrainer;
     if (!branchId) clientErrors.branchId = i18n.selectBranch;
     if (!difficultyLevel) clientErrors.difficultyLevel = i18n.selectOption;
     if (!description) clientErrors.description = i18n.requiredField;
@@ -172,18 +168,10 @@ function saveClass() {
         description
     };
 
-    let url = "/classes";
-    let method = "POST";
-
-    const idClass = document.getElementById("idClass").value;
-
-    if (idClass !== "") {
-        url = "/classes/" + idClass;
-        method = "PUT";
-    }
+    const url = idClass !== "" ? "/classes/" + idClass : "/classes";
+    const method = idClass !== "" ? "PUT" : "POST";
 
     classSaving = true;
-
     showAdminLoading(i18n.saving || "Saving...");
 
     fetch(url, {
@@ -193,23 +181,25 @@ function saveClass() {
     })
         .then(response => response.json())
         .then(data => {
+            classSaving = false;
             if (!data.success) {
                 showClassErrors(data.fieldErrors || data.errors || {});
                 showClassError("form", data.message || i18n.reviewFields);
-                classSaving = false;
                 return;
             }
-
-            showAdminSuccess(
-                idClass !== "" ? i18n.updated : i18n.saved
-            ).then(() => {
-                window.location.href = getClassesListPath();
-            });
+                Swal.fire({
+                    icon: 'success',
+                    title: idClass !== "" ? i18n.updated : i18n.saved, 
+                    showConfirmButton: true, 
+                    confirmButtonText: i18n.confirmButton 
+                }).then(() => {
+                    window.location.href = getClassesListPath(); 
+                });
         })
         .catch(() => {
             classSaving = false;
-            showAdminError(i18n.saveError || "Could not save.", i18n.reviewFields);
-            showClassError("form", i18n.saveError || "Could not save.");
+            showAdminError(i18n.saveError, i18n.reviewFields);
+            showClassError("form", i18n.saveError);
         });
 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{title.class.form}">Class Form</title>
@@ -78,6 +78,19 @@
 <!-- JS -->
 <script th:inline="javascript">
     window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+    window.i18n = {
+        requiredField: /*[[#{message.validation.required}]]*/ "This field is required.",
+        selectOption: /*[[#{message.validation.select}]]*/ "Select an option.",
+        selectBranch: /*[[#{label.select.branch}]]*/ "Select a branch.",
+        selectTrainer: /*[[#{label.select.trainer}]]*/ "Select a trainer.",
+        reviewFields: /*[[#{message.form.review}]]*/ "Please review the highlighted fields.",
+        saved: /*[[#{message.class.saved}]]*/ "Class saved successfully.",
+        updated: /*[[#{message.class.updated}]]*/ "Class updated successfully.",
+        saving: /*[[#{confirm.loading.save}]]*/ "Saving...",
+        saveError: /*[[#{message.class.saveError}]]*/ "Could not save the class.",
+        formTitleAdd: /*[[#{title.class.add}]]*/ "Add Class",
+        formTitleEdit: /*[[#{title.class.edit}]]*/ "Edit Class"
+    };
 </script>
 <script th:src="@{/js/trainer/classes/form.js}"></script>
 

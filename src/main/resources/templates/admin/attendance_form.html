@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de asistencia - SAM GYM FITNESS</title>
+    <title th:text="#{title.attendance.form}">Attendance Form</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -18,47 +18,74 @@
 
     <form class="portal-form" novalidate>
         <div class="form-group">
-            <label for="clientId">Cliente</label>
+            <label for="clientId" th:text="#{label.attendance.client}">Client</label>
             <select id="clientId">
-                <option value="">Seleccione un cliente</option>
+                <option value="" th:text="#{label.select.client}">Select a client</option>
             </select>
+            <small id="clientIdError" class="field-error"></small>
         </div>
 
         <div class="form-group">
-            <label for="classId">Clase</label>
+            <label for="classId" th:text="#{label.attendance.class}">Class</label>
             <select id="classId" onchange="setAttendanceDate()">
-                <option value="">Seleccione una clase</option>
+                <option value="" th:text="#{label.select.class}">Select a class</option>
             </select>
+            <small id="classIdError" class="field-error"></small>
         </div>
 
         <div class="form-group">
-            <label for="attendanceDate">Fecha de asistencia</label>
+            <label for="attendanceDate" th:text="#{label.attendance.date}">Date</label>
             <input type="date" id="attendanceDate" readonly>
+            <small id="attendanceDateError" class="field-error"></small>
         </div>
 
         <div class="form-group">
-            <label for="attendanceStatus">Estado de asistencia</label>
+            <label for="attendanceStatus" th:text="#{label.attendance.status}">Status</label>
             <select id="attendanceStatus">
-                <option value="Presente">Presente</option>
-                <option value="Ausente">Ausente</option>
-                <option value="Tarde">Tarde</option>
+                <option value="Presente" th:text="#{status.present}">Present</option>
+                <option value="Ausente" th:text="#{status.absent}">Absent</option>
+                <option value="Tarde" th:text="#{status.late}">Late</option>
             </select>
+            <small id="attendanceStatusError" class="field-error"></small>
         </div>
 
         <div class="form-group">
-            <label for="observation">Observacion</label>
+            <label for="observation" th:text="#{label.attendance.observation}">Observation</label>
             <textarea id="observation"></textarea>
         </div>
 
         <div class="buttons">
-            <button type="button" class="btn-primary" onclick="saveAttendance()">Guardar</button>
-            <a class="btn-secondary" th:href="@{/admin/attendance}">Volver</a>
+            <button type="button" class="btn-primary" onclick="saveAttendance()" th:text="#{button.add.attendance}">Save</button>
+            <a class="btn-secondary" th:href="@{/admin/attendance}" th:text="#{button.back}">Back</a>
         </div>
     </form>
 </main>
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<script th:inline="javascript">
+    window.attendanceBasePath = "/admin/attendance";
+    window.i18n = {
+        selectClient: /*[[#{label.select.client}]]*/ "Select a client",
+        selectClass: /*[[#{label.select.class}]]*/ "Select a class",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch",
+        errorTitle: /*[[#{sweetalert.error.title}]]*/ "Error",
+        clientsLoadError: /*[[#{attendance.message.clientsLoadError}]]*/ "Could not load clients.",
+        classesLoadError: /*[[#{attendance.message.classesLoadError}]]*/ "Could not load classes.",
+        loadError: /*[[#{attendance.message.loadError}]]*/ "Could not load attendance.",
+        formTitleEdit: /*[[#{title.attendance.edit}]]*/ "Edit Attendance",
+        clientRequired: /*[[#{attendance.validation.clientRequired}]]*/ "Select a client.",
+        classRequired: /*[[#{attendance.validation.classRequired}]]*/ "Select a class.",
+        dateRequired: /*[[#{attendance.validation.dateRequired}]]*/ "The date is required.",
+        statusRequired: /*[[#{attendance.validation.statusRequired}]]*/ "Select a status.",
+        incompleteTitle: /*[[#{attendance.validation.incompleteTitle}]]*/ "Incomplete data",
+        incompleteText: /*[[#{attendance.validation.incompleteText}]]*/ "Complete the required fields.",
+        saving: /*[[#{attendance.loading.save}]]*/ "Saving attendance...",
+        saved: /*[[#{attendance.message.saved}]]*/ "Attendance saved successfully.",
+        updated: /*[[#{attendance.message.updated}]]*/ "Attendance updated successfully.",
+        saveError: /*[[#{attendance.message.saveError}]]*/ "Could not save attendance."
+    };
+</script>
 <script th:src="@{/js/trainer/attendances/form.js}"></script>
 
 </body>

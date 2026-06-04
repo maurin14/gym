@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistencia - SAM GYM FITNESS</title>
+    <title th:text="#{title.attendance.list}">Attendance List</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/admin-ui.js}"></script>
@@ -13,32 +13,23 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
 
-<main class="container portal-card admin-page-card wide-table-card">
+<main class="container portal-card admin-page-card">
     <div class="buttons admin-action-row">
-        <a class="btn-primary" th:href="@{/admin/attendance/form}">Nueva asistencia</a>
-    </div>
-
-    <div class="admin-title-row">
-        <div>
-            <h2 class="section-title">Registro de asistencias</h2>
-            <p class="admin-description">
-                Consulte, registre y actualice la asistencia asociada a clientes y clases.
-            </p>
-        </div>
+        <a class="btn-primary" th:href="@{/admin/attendance/form}" th:text="#{button.add.attendance}">New Attendance</a>
     </div>
 
     <div class="table-responsive">
         <table class="portal-table admin-table is-wide">
             <thead>
                 <tr>
-                    <th>Cliente</th>
-                    <th>Clase</th>
-                    <th>Sucursal</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Observacion</th>
-                    <th>Registro</th>
-                    <th>Acciones</th>
+                    <th th:text="#{label.attendance.client}">Client</th>
+                    <th th:text="#{label.attendance.class}">Class</th>
+                    <th th:text="#{label.attendance.branch}">Branch</th>
+                    <th th:text="#{label.attendance.date}">Date</th>
+                    <th th:text="#{label.attendance.status}">Status</th>
+                    <th th:text="#{label.attendance.observation}">Observation</th>
+                    <th th:text="#{label.attendance.register}">Register</th>
+                    <th th:text="#{label.attendance.actions}">Actions</th>
                 </tr>
             </thead>
             <tbody id="attendancesTableBody"></tbody>
@@ -53,6 +44,21 @@
 <script th:inline="javascript">
     window.attendanceBasePath = /*[[${attendanceBasePath}]]*/ "/admin/attendance";
     window.canDeleteAttendances = /*[[${session.user != null and session.user.role == 'administrator'}]]*/ false;
+    window.i18n = {
+        edit: /*[[#{button.edit}]]*/ "Edit",
+        delete: /*[[#{button.delete}]]*/ "Delete",
+        statusPresent: /*[[#{status.present}]]*/ "Present",
+        statusAbsent: /*[[#{status.absent}]]*/ "Absent",
+        statusLate: /*[[#{status.late}]]*/ "Late",
+        emptyAttendances: /*[[#{empty.attendances}]]*/ "No attendances available.",
+        previous: /*[[#{button.previous}]]*/ "Previous",
+        next: /*[[#{button.next}]]*/ "Next",
+        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "This action cannot be undone.",
+        deleting: /*[[#{message.deleting}]]*/ "Deleting...",
+        deleteError: /*[[#{message.delete.error}]]*/ "Could not delete.",
+        deleteSuccess: /*[[#{attendance.message.deleted}]]*/ "Attendance deleted successfully.",
+        noBranch: /*[[#{label.no.branch}]]*/ "No branch"
+    };
 </script>
 <script th:src="@{/js/trainer/attendances/list.js}"></script>
 
