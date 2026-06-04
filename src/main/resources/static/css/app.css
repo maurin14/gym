@@ -152,6 +152,24 @@ h1, h2, h3 {
     color: var(--orange);
 }
 
+.language-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 900;
+}
+
+.language-selector a {
+    color: var(--black);
+    padding: 4px 2px;
+}
+
+.language-selector a.active {
+    color: var(--orange);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
 .current-module {
     color: var(--orange);
     font-weight: 900;
@@ -290,6 +308,11 @@ h1, h2, h3 {
 .login-card h1 {
     text-align: center;
     margin-bottom: 18px;
+}
+
+.login-language-selector {
+    justify-content: center;
+    margin-bottom: 12px;
 }
 
 .login-card form {

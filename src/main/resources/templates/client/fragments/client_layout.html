@@ -11,20 +11,30 @@
         </span>
     </a>
 
-    <nav class="client-top-nav" aria-label="Navegaci&oacute;n principal">
+    <nav class="client-top-nav" th:aria-label="#{client.nav.main}">
         <a th:href="@{/client/home}" th:text="#{nav.client.home}">Inicio</a>
     </nav>
 
+    <div class="language-selector client-language-selector" th:with="currentLang=${#locale.language}">
+        <a th:href="@{''(lang='es')}"
+           th:classappend="${currentLang == 'es'} ? ' active'"
+           data-lang="es">ES</a>
+        <span>|</span>
+        <a th:href="@{''(lang='en')}"
+           th:classappend="${currentLang == 'en'} ? ' active'"
+           data-lang="en">EN</a>
+    </div>
+
     <button type="button"
             class="menu-toggle"
-            aria-label="Abrir men&uacute; de funcionalidades"
+            th:aria-label="#{client.nav.openMenu}"
             aria-controls="clientMenuDrawer"
             aria-expanded="false"
             data-menu-toggle>
         <span></span>
         <span></span>
         <span></span>
-        <strong>Men&uacute;</strong>
+        <strong th:text="#{label.gym.menu}">Menu</strong>
     </button>
 </header>
 <script th:inline="javascript">
@@ -42,31 +52,44 @@
         clientPlaceholderTitleSuffix: /*[[#{message.client.placeholderTitleSuffix}]]*/ "estara disponible pronto",
         clientPlaceholderText: /*[[#{message.client.placeholderText}]]*/ "Esta seccion se habilitara cuando el modulo correspondiente este integrado al portal cliente."
     });
+
+    function changeLanguage(lang) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.location.href = url.toString();
+    }
+
+    document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            changeLanguage(link.dataset.lang);
+        });
+    });
 </script>
 </th:block>
 
 <div th:fragment="clientMenuDrawer(active)" class="client-menu-shell">
-    <button type="button" class="menu-backdrop" aria-label="Cerrar men&uacute; cliente" data-menu-close></button>
+    <button type="button" class="menu-backdrop" th:aria-label="#{client.nav.closeMenu}" data-menu-close></button>
 
-    <aside id="clientMenuDrawer" class="client-menu-drawer" aria-label="Men&uacute; de funcionalidades">
+    <aside id="clientMenuDrawer" class="client-menu-drawer" th:aria-label="#{client.nav.drawer}">
         <div class="drawer-head">
             <div>
                 <span class="section-kicker">SAM GYM FITNESS</span>
-                <strong>Men&uacute; cliente</strong>
-                <p>Accede r&aacute;pido a entrenamiento, tienda, cuenta y sedes.</p>
+                <strong th:text="#{client.nav.clientMenu}">Menu cliente</strong>
+                <p th:text="#{client.nav.description}">Accede rapido a entrenamiento, tienda, cuenta y sedes.</p>
             </div>
-            <button type="button" class="drawer-close" aria-label="Cerrar men&uacute; cliente" data-menu-close>&times;</button>
+            <button type="button" class="drawer-close" th:aria-label="#{client.nav.closeMenu}" data-menu-close>&times;</button>
         </div>
 
         <nav class="drawer-nav">
             <div class="drawer-section">
-                <span class="drawer-section-title">Entrenamiento</span>
+                <span class="drawer-section-title" th:text="#{client.nav.training}">Entrenamiento</span>
 
                 <a th:href="@{/client/routines}" class="drawer-link" th:classappend="${active == 'routines'} ? ' active'">
                     <span class="drawer-icon">R</span>
                     <span>
-                        <strong>Rutinas</strong>
-                        <small>Planes para entrenar por objetivo.</small>
+                        <strong th:text="#{client.nav.routines}">Rutinas</strong>
+                        <small th:text="#{client.nav.routinesDescription}">Planes para entrenar por objetivo.</small>
                     </span>
                 </a>
 
@@ -75,8 +98,8 @@
                    th:classappend="${active == 'classes'} ? ' active'">
                     <span class="drawer-icon">C</span>
                     <span>
-                        <strong>Clases</strong>
-                        <small>Sesiones grupales del gimnasio.</small>
+                        <strong th:text="#{client.nav.classes}">Clases</strong>
+                        <small th:text="#{client.nav.classesDescription}">Sesiones grupales del gimnasio.</small>
                     </span>
                 </a>
 
@@ -85,8 +108,8 @@
                    th:classappend="${active == 'schedules'} ? ' active'">
                     <span class="drawer-icon">H</span>
                     <span>
-                        <strong>Horarios</strong>
-                        <small>Clases, atenci&oacute;n y disponibilidad.</small>
+                        <strong th:text="#{client.nav.schedules}">Horarios</strong>
+                        <small th:text="#{client.nav.schedulesDescription}">Clases, atencion y disponibilidad.</small>
                     </span>
                 </a>
 
@@ -95,20 +118,20 @@
                    th:classappend="${active == 'equipment'} ? ' active'">
                     <span class="drawer-icon">E</span>
                     <span>
-                        <strong>Equipamiento</strong>
-                        <small>Equipos y recursos del gimnasio.</small>
+                        <strong th:text="#{client.nav.equipment}">Equipamiento</strong>
+                        <small th:text="#{client.nav.equipmentDescription}">Equipos y recursos del gimnasio.</small>
                     </span>
                 </a>
             </div>
 
             <div class="drawer-section">
-                <span class="drawer-section-title">Tienda</span>
+                <span class="drawer-section-title" th:text="#{client.nav.shop}">Tienda</span>
 
                 <a th:href="@{/client/products}" class="drawer-link" th:classappend="${active == 'products'} ? ' active'">
                     <span class="drawer-icon">P</span>
                     <span>
-                        <strong>Productos</strong>
-                        <small>Cat&aacute;logo visual disponible.</small>
+                        <strong th:text="#{client.nav.products}">Productos</strong>
+                        <small th:text="#{client.nav.productsDescription}">Catalogo visual disponible.</small>
                     </span>
                 </a>
             </div>
@@ -131,8 +154,8 @@
                    th:classappend="${active == 'attendances'} ? ' active'">
                     <span class="drawer-icon">A</span>
                     <span>
-                        <strong>Asistencia</strong>
-                        <small>Seguimiento de visitas.</small>
+                        <strong th:text="#{client.nav.attendance}">Asistencia</strong>
+                        <small th:text="#{client.nav.attendanceDescription}">Seguimiento de visitas.</small>
                     </span>
                 </a>
 
@@ -141,16 +164,16 @@
                    th:classappend="${active == 'password'} ? ' active'">
                     <span class="drawer-icon">C</span>
                     <span>
-                        <strong>Cambiar contrase&ntilde;a</strong>
-                        <small>Actualiza la contrase&ntilde;a de tu cuenta.</small>
+                        <strong th:text="#{client.nav.changePassword}">Cambiar contrasena</strong>
+                        <small th:text="#{client.nav.changePasswordDescription}">Actualiza la contrasena de tu cuenta.</small>
                     </span>
                 </a>
 
                 <a th:href="@{/logout}" class="drawer-link drawer-link-logout">
                     <span class="drawer-icon">S</span>
                     <span>
-                        <strong>Cerrar sesi&oacute;n</strong>
-                        <small>Finaliza tu acceso al portal cliente.</small>
+                        <strong th:text="#{nav.logout}">Cerrar sesion</strong>
+                        <small th:text="#{client.nav.logoutDescription}">Finaliza tu acceso al portal cliente.</small>
                     </span>
                 </a>
             </div>
@@ -179,29 +202,29 @@
                 <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS">
                 <div>
                     <strong>SAM GYM FITNESS</strong>
-                    <p>Entrena mejor, vive mejor.</p>
+                    <p th:text="#{client.footer.slogan}">Entrena mejor, vive mejor.</p>
                 </div>
             </div>
-            <p>Portal digital para clientes, rutinas, productos y servicios del gimnasio.</p>
+            <p th:text="#{client.footer.description}">Portal digital para clientes, rutinas, productos y servicios del gimnasio.</p>
         </div>
 
         <div>
-            <h3>Contacto</h3>
+            <h3 th:text="#{client.footer.contact}">Contacto</h3>
             <p>info@samgymfitness.com</p>
             <p>+506 8888-8888</p>
             <p>San Jos&eacute;, Costa Rica</p>
         </div>
 
         <div class="footer-schedule">
-            <h3>Horarios</h3>
-            <p><span>Lunes a viernes</span><strong>5:00 a.m. - 10:00 p.m.</strong></p>
-            <p><span>S&aacute;bado</span><strong>6:00 a.m. - 6:00 p.m.</strong></p>
-            <p><span>Domingo</span><strong>7:00 a.m. - 2:00 p.m.</strong></p>
+            <h3 th:text="#{client.footer.hours}">Horarios</h3>
+            <p><span th:text="#{client.footer.weekdays}">Lunes a viernes</span><strong>5:00 a.m. - 10:00 p.m.</strong></p>
+            <p><span th:text="#{day.saturday}">Sabado</span><strong>6:00 a.m. - 6:00 p.m.</strong></p>
+            <p><span th:text="#{day.sunday}">Domingo</span><strong>7:00 a.m. - 2:00 p.m.</strong></p>
         </div>
     </div>
 
     <div class="footer-bottom">
-        <span>&copy; 2026 SAM GYM FITNESS. Todos los derechos reservados.</span>
+        <span th:text="#{client.footer.rights}">&copy; 2026 SAM GYM FITNESS. Todos los derechos reservados.</span>
     </div>
 </footer>
 

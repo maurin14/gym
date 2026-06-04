@@ -21,8 +21,8 @@
     </section>
 
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegacion">
-            <a th:href="@{/client/home}"  th:text='#{label.gym.start}'></a>
+        <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
+            <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
             <span>/</span>
             <strong   th:text='#{label.gym.equipment}'></strong>
         </nav>
@@ -80,7 +80,7 @@
             </article>
         </div>
 
-        <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginacion de equipamiento">
+        <nav class="client-pagination" th:if="${totalPages > 1}" th:aria-label="#{pagination.equipment}">
             <a class="pagination-link"
                th:classappend="${currentPage == 0} ? ' disabled'"  th:text='#{button.previous}'
                th:href="@{/client/equipment(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId})}">

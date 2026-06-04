@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio Admin - SAM GYM FITNESS</title>
+    <title th:text="#{admin.home.title}">Inicio Admin - SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
@@ -14,95 +14,95 @@
     <section class="hero-section">
         <div class="hero-overlay">
             <img th:src="@{/images/logo.jpeg}" alt="Logo SAM GYM FITNESS" class="hero-logo">
-            <h1>Panel de Administraci&oacute;n</h1>
-            <p class="hero-slogan">Control total del sistema</p>
+            <h1 th:text="#{admin.home.heading}">Panel de Administracion</h1>
+            <p class="hero-slogan" th:text="#{admin.home.slogan}">Control total del sistema</p>
             <p class="hero-text">
-                Desde este panel puedes administrar sucursales, pagos, rutinas, clases, equipamiento, asistencia, productos, usuarios y reportes.
+                <span th:text="#{admin.home.description}">Desde este panel puedes administrar sucursales, pagos, rutinas, clases, equipamiento, asistencia, productos, usuarios y reportes.</span>
             </p>
         </div>
     </section>
 
     <section class="container">
-        <h2 class="section-title">Gesti&oacute;n del sistema</h2>
+        <h2 class="section-title" th:text="#{admin.home.systemManagement}">Gestion del sistema</h2>
 
         <div class="modules-grid">
             <article class="module-card">
-                <h3>Sucursales</h3>
-                <p>Crear, editar, eliminar y administrar sucursales.</p>
+                <h3 th:text="#{nav.admin.branches}">Sucursales</h3>
+                <p th:text="#{admin.home.branchesDescription}">Crear, editar, eliminar y administrar sucursales.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/branches}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/branches}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Pagos</h3>
-                <p>Registrar, editar y eliminar pagos de usuarios.</p>
+                <h3 th:text="#{nav.admin.payments}">Pagos</h3>
+                <p th:text="#{admin.home.paymentsDescription}">Registrar, editar y eliminar pagos de usuarios.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/payments}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/payments}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Rutinas</h3>
-                <p>Gesti&oacute;n de rutinas de entrenamiento.</p>
+                <h3 th:text="#{nav.admin.routines}">Rutinas</h3>
+                <p th:text="#{admin.home.routinesDescription}">Gestion de rutinas de entrenamiento.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/routines}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/routines}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Clases</h3>
-                <p>Gesti&oacute;n de clases y horarios.</p>
+                <h3 th:text="#{nav.admin.classes}">Clases</h3>
+                <p th:text="#{admin.home.classesDescription}">Gestion de clases y horarios.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/classes}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/classes}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Horarios</h3>
-                <p>Administraci&oacute;n de horarios del gimnasio.</p>
+                <h3 th:text="#{nav.admin.schedules}">Horarios</h3>
+                <p th:text="#{admin.home.schedulesDescription}">Administracion de horarios del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/schedules}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/schedules}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Equipamiento</h3>
-                <p>Consulta el inventario de m&aacute;quinas, implementos y equipos del gimnasio.</p>
+                <h3 th:text="#{nav.admin.equipment}">Equipamiento</h3>
+                <p th:text="#{admin.home.equipmentDescription}">Consulta el inventario de maquinas, implementos y equipos del gimnasio.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/equipment}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/equipment}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Asistencia</h3>
-                <p>Control de asistencia de usuarios y clases programadas.</p>
+                <h3 th:text="#{nav.admin.attendance}">Asistencia</h3>
+                <p th:text="#{admin.home.attendanceDescription}">Control de asistencia de usuarios y clases programadas.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/attendance}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/attendance}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Productos</h3>
-                <p>Gesti&oacute;n de productos e inventario.</p>
+                <h3 th:text="#{nav.admin.products}">Productos</h3>
+                <p th:text="#{admin.home.productsDescription}">Gestion de productos e inventario.</p>
                 <div class="buttons">
-                    <a th:href="@{/admin/products}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/admin/products}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Usuarios</h3>
-                <p>Administraci&oacute;n de usuarios, roles y estados.</p>
+                <h3 th:text="#{nav.admin.users}">Usuarios</h3>
+                <p th:text="#{admin.home.usersDescription}">Administracion de usuarios, roles y estados.</p>
                 <div class="buttons">
-                    <a th:href="@{/users}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/users}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
 
             <article class="module-card">
-                <h3>Reportes</h3>
-                <p>Consulta, genera y descarga reportes administrativos.</p>
+                <h3 th:text="#{nav.admin.reports}">Reportes</h3>
+                <p th:text="#{admin.home.reportsDescription}">Consulta, genera y descarga reportes administrativos.</p>
                 <div class="buttons">
-                    <a th:href="@{/reports}" class="btn-primary">Ingresar</a>
+                    <a th:href="@{/reports}" class="btn-primary" th:text="#{button.enter}">Ingresar</a>
                 </div>
             </article>
         </div>

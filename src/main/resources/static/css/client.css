@@ -187,6 +187,30 @@ select {
     color: var(--gold);
 }
 
+.client-language-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.62);
+    font-weight: 900;
+}
+
+.client-language-selector a {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+.client-language-selector a:hover,
+.client-language-selector a.active {
+    color: var(--gold);
+}
+
+.client-language-selector a.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
 .client-menu-drawer {
     width: min(480px, 92vw);
     position: fixed;
