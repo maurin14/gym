@@ -24,10 +24,18 @@ public interface BranchRepository extends JpaRepository<Branch, Integer> {
 
     Page<Branch> findByActive(Boolean active, Pageable pageable);
 
+    Page<Branch> findByIdAndActive(int id, Boolean active, Pageable pageable);
+
+    Page<Branch> findById(int id, Pageable pageable);
+
     Page<Branch> findByNameContainingIgnoreCaseAndActive(String name, Boolean active, Pageable pageable);
 
     List<Branch> findByActiveTrue();
 
-    @Query(value = "SELECT COUNT(*) > 0 FROM tb_equipments WHERE branch_id = :branchId", nativeQuery = true)
+    @Query("""
+           SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END
+           FROM Equipment e
+           WHERE e.branch.id = :branchId
+           """)
     boolean existsEquipmentByBranchId(@Param("branchId") int branchId);
 }

@@ -80,6 +80,7 @@
         <label th:text="#{label.payment.description}">Descripción</label>
         <input type="text"
                th:field="*{description}"
+               required
                maxlength="255"
                th:placeholder="#{placeholder.payment.description}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['description'] != null}" th:text="#{${fieldErrors['description']}}"></small>

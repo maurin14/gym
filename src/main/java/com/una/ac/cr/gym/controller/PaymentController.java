@@ -151,25 +151,6 @@ public class PaymentController {
         return "redirect:/admin/payments?success=delete";
     }
 
-    @GetMapping("/admin/payments/status/{id}")
-    public String changePaymentStatus(@PathVariable int id) {
-        Payment payment = paymentService.getById(id);
-
-        if (payment != null) {
-            if ("Pagado".equals(payment.getStatus())) {
-                payment.setStatus("Pendiente");
-            } else if ("Pendiente".equals(payment.getStatus())) {
-                payment.setStatus("Anulado");
-            } else {
-                payment.setStatus("Pagado");
-            }
-
-            paymentService.save(payment);
-        }
-
-        return "redirect:/admin/payments?success=status";
-    }
-
     @GetMapping("/payments")
     public String userPayments(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(required = false) String status,

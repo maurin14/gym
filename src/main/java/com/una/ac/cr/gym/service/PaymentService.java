@@ -164,7 +164,9 @@ public class PaymentService implements CRUD<Payment> {
             errors.put("status", "message.validation.select");
         }
 
-        if (payment.getDescription() != null && payment.getDescription().length() > 255) {
+        if (isBlank(payment.getDescription())) {
+            errors.put("description", "message.payment.descriptionRequired");
+        } else if (payment.getDescription().length() > 255) {
             errors.put("description", "message.validation.max255");
         }
 

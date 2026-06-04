@@ -21,11 +21,14 @@
     </div>
 
     <form class="admin-filter-row portal-filters" th:action="@{/admin/branches}" method="get">
-        <input type="text"
-               id="filterName"
-               name="name"
-               th:placeholder="#{label.branch.searchPlaceholder}"
-               th:value="${name}">
+        <select id="filterBranch" name="branchId">
+            <option value="" th:text="#{label.gym.allBranches}">Todas las sucursales</option>
+            <option th:each="branchOption : ${branchOptions}"
+                    th:value="${branchOption.id}"
+                    th:text="${branchOption.name}"
+                    th:selected="${branchId != null and branchId == branchOption.id}">
+            </option>
+        </select>
 
         <select id="filterActive" name="active">
             <option value="" th:text="#{label.branch.allStatus}">Todos los estados</option>
@@ -50,9 +53,7 @@
         deleteText: /*[[#{confirm.delete.text}]]*/ "Esta acción no se puede deshacer.",
         deleteConfirm: /*[[#{button.delete}]]*/ "Eliminar",
         deleteLoading: /*[[#{confirm.loading.delete}]]*/ "Eliminando...",
-        statusTitle: /*[[#{confirm.status.change}]]*/ "Cambiar estado?",
-        yes: /*[[#{button.yes}]]*/ "Si",
-        processing: /*[[#{message.processing}]]*/ "Procesando..."
+        yes: /*[[#{button.yes}]]*/ "Si"
     };
 
     const success = [[${param.success}]];
@@ -63,7 +64,6 @@
         if (success[0] === "save") message = /*[[#{message.branch.saved}]]*/ "Sucursal registrada correctamente.";
         if (success[0] === "edit") message = /*[[#{message.branch.updated}]]*/ "Sucursal actualizada correctamente.";
         if (success[0] === "delete") message = /*[[#{message.branch.deleted}]]*/ "Sucursal eliminada correctamente.";
-        if (success[0] === "status") message = /*[[#{message.branch.statusUpdated}]]*/ "Estado de la sucursal actualizado correctamente.";
 
         showAdminSuccess(message);
     }

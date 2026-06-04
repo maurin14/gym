@@ -59,10 +59,7 @@
         deleteText: /*[[#{confirm.delete.text}]]*/ "Esta acción no se puede deshacer.",
         deleteConfirm: /*[[#{button.delete}]]*/ "Eliminar",
         deleteLoading: /*[[#{confirm.loading.delete}]]*/ "Eliminando...",
-        statusTitle: /*[[#{confirm.status.change}]]*/ "Cambiar estado?",
-        statusText: /*[[#{confirm.payment.statusText}]]*/ "El estado cambiara entre Pagado, Pendiente y Anulado.",
-        yes: /*[[#{button.yes}]]*/ "Si",
-        processing: /*[[#{message.processing}]]*/ "Procesando..."
+        yes: /*[[#{button.yes}]]*/ "Si"
     };
 
     const success = [[${param.success}]];
@@ -73,7 +70,6 @@
         if (success[0] === "save") message = /*[[#{message.payment.saved}]]*/ "Pago registrado correctamente.";
         if (success[0] === "edit") message = /*[[#{message.payment.updated}]]*/ "Pago actualizado correctamente.";
         if (success[0] === "delete") message = /*[[#{message.payment.deleted}]]*/ "Pago eliminado correctamente.";
-        if (success[0] === "status") message = /*[[#{message.payment.statusUpdated}]]*/ "Estado del pago actualizado correctamente.";
 
         showAdminSuccess(message);
     }

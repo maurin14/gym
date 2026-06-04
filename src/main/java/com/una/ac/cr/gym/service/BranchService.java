@@ -46,18 +46,6 @@ public class BranchService implements CRUD<Branch> {
         return branchRepository.existsEquipmentByBranchId(id);
     }
 
-    public boolean toggleStatus(int id) {
-        Branch branch = getById(id);
-
-        if (branch == null) {
-            return false;
-        }
-
-        branch.setActive(!branch.isActive());
-        save(branch);
-        return true;
-    }
-
     @Override
     public List<Branch> getAll() {
         return branchRepository.findAll();
@@ -83,6 +71,26 @@ public class BranchService implements CRUD<Branch> {
 
         if (hasName) {
             return branchRepository.findByNameContainingIgnoreCase(name.trim(), pageable);
+        }
+
+        if (hasActive) {
+            return branchRepository.findByActive(Boolean.parseBoolean(active), pageable);
+        }
+
+        return branchRepository.findAll(pageable);
+    }
+
+    public Page<Branch> getAdminPage(Integer branchId, String active, Pageable pageable) {
+        boolean hasBranch = branchId != null && branchId > 0;
+        boolean hasActive = active != null && !active.trim().isEmpty();
+
+        if (hasBranch && hasActive) {
+            return branchRepository.findByIdAndActive(
+                    branchId, Boolean.parseBoolean(active), pageable);
+        }
+
+        if (hasBranch) {
+            return branchRepository.findById(branchId, pageable);
         }
 
         if (hasActive) {

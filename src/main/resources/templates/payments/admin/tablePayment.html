@@ -48,14 +48,6 @@
                     <a th:href="@{/admin/payments/edit/{id}(id=${p.id})}" class="btn-secondary" th:text="#{button.edit}">Editar</a>
 
                     <a href="#"
-                       class="btn-primary"
-                       th:data-id="${p.id}"
-                       onclick="confirmChangePaymentStatus(this); return false;"
-                       th:text="#{button.changeStatus}">
-                        Cambiar estado
-                    </a>
-
-                    <a href="#"
                        class="btn-danger"
                        th:data-id="${p.id}"
                        onclick="confirmDeletePayment(this); return false;"

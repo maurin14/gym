@@ -45,40 +45,43 @@ public class BranchController {
 
     @GetMapping("/admin/branches")
     public String adminList(@RequestParam(defaultValue = "0") int page,
-                            @RequestParam(required = false) String name,
+                            @RequestParam(required = false) Integer branchId,
                             @RequestParam(required = false) String active,
                             Model model) {
 
         int currentPage = Math.max(page, 0);
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        Page<Branch> branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
 
         if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
             currentPage = branches.getTotalPages() - 1;
-            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+            branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
         }
 
         model.addAttribute("branches", branches);
-        model.addAttribute("name", name);
+        model.addAttribute("branchId", branchId);
         model.addAttribute("active", active);
+        model.addAttribute("branchOptions", branchService.getAll());
 
         return "branches/admin/listBranch";
     }
 
     @GetMapping("/admin/branches/ajax/list")
     public String adminAjaxList(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(required = false) String name,
+                                @RequestParam(required = false) Integer branchId,
                                 @RequestParam(required = false) String active,
                                 Model model) {
 
         int currentPage = Math.max(page, 0);
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        Page<Branch> branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
 
         if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
             currentPage = branches.getTotalPages() - 1;
-            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+            branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
         }
 
         model.addAttribute("branches", branches);
+        model.addAttribute("branchId", branchId);
+        model.addAttribute("active", active);
 
         return "branches/admin/tableBranch :: tableBranch";
     }
@@ -121,18 +124,6 @@ public class BranchController {
 
         model.addAttribute("branch", branch);
         return "branches/admin/formBranch";
-    }
-
-    @GetMapping("/admin/branches/status/{id}")
-    public String changeBranchStatus(@PathVariable int id,
-                                     RedirectAttributes redirectAttributes) {
-        if (!branchService.toggleStatus(id)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "message.branch.notFound");
-            return "redirect:/admin/branches";
-        }
-
-        redirectAttributes.addFlashAttribute("successMessage", "message.branch.statusUpdated");
-        return "redirect:/admin/branches";
     }
 
     @GetMapping("/admin/branches/delete/{id}")

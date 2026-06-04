@@ -21,21 +21,6 @@ function confirmSavePayment() {
     });
 }
 
-function confirmChangePaymentStatus(element) {
-    const id = element.dataset.id;
-
-    confirmAdminAction({
-        title: paymentMessage("statusTitle", "Cambiar estado?"),
-        text: paymentMessage("statusText", "El estado cambiara entre Pagado, Pendiente y Anulado."),
-        confirmText: paymentMessage("yes", "Si")
-    }).then((result) => {
-        if (result.isConfirmed) {
-            showAdminLoading(paymentMessage("processing", "Procesando..."));
-            window.location.href = "/admin/payments/status/" + id;
-        }
-    });
-}
-
 function confirmDeletePayment(element) {
     const id = element.dataset.id;
 

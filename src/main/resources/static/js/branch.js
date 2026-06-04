@@ -41,24 +41,6 @@ function confirmDeleteBranch(element) {
     });
 }
 
-function confirmChangeBranchStatus(element) {
-    confirmToggleBranch(element);
-}
-
-function confirmToggleBranch(element) {
-    let id = element.dataset.id;
-
-    confirmAdminAction({
-        title: branchMessage("statusTitle", "Cambiar estado?"),
-        confirmText: branchMessage("yes", "Si")
-    }).then((result) => {
-        if (result.isConfirmed) {
-            showAdminLoading(branchMessage("processing", "Procesando..."));
-            window.location.href = "/admin/branches/status/" + id;
-        }
-    });
-}
-
 function confirmCancelBranch() {
     confirmAdminAction({
         title: branchMessage("cancelTitle", "Cancelar cambios?"),
