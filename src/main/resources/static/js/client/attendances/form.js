@@ -59,14 +59,13 @@ function setAttendanceDate() {
 }
 
 function saveClientAttendance() {
-    if (clientAttendanceSaving) {
-        return;
-    }
+    if (clientAttendanceSaving) return;
+
+    clearClientAttendanceErrors();
 
     const classId = document.getElementById("classId").value;
     const attendanceDate = document.getElementById("attendanceDate").value;
     const observation = document.getElementById("observation").value.trim();
-    clearClientAttendanceErrors();
 
     if (classId === "") {
         showClientAttendanceError("classId", i18n.classRequired);
@@ -80,50 +79,60 @@ function saveClientAttendance() {
         return;
     }
 
-    const attendance = {
-        gymClass: {
-            idClass: classId
-        },
-        attendanceDate: attendanceDate,
-        attendanceStatus: "Presente",
-        observation: observation
-    };
-
-    confirmSystemAction({
-        title: systemMessage("confirmTitle", i18n.confirmTitle),
-        confirmText: systemMessage("saveButton", i18n.saveButton)
-    }).then(result => {
-        if (!result.isConfirmed || clientAttendanceSaving) {
-            return;
-        }
-
-        clientAttendanceSaving = true;
-        showSystemLoading(systemMessage("loadingTitle", i18n.loadingTitle));
-
-        fetch("/attendances", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(attendance)
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error(i18n.saveError);
+    fetch(`/attendances/check?classId=${classId}&userId=${window.userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.exists) {
+                Swal.fire({
+                    icon: 'error',
+                    title: i18n.attendanceDuplicate || "Already registered",
+                    text: i18n.attendanceDuplicateMsg || "You are already registered for this class.",
+                    showConfirmButton: true,
+                    confirmButtonText: i18n.confirmButton
+                });
+                return;
             }
 
-            Swal.fire({
-                icon: 'success', 
-                title: i18n.saved, 
-                showConfirmButton: true,
-                confirmButtonText: i18n.confirmButton 
-            }).then(() => {
-                window.location.href = "/client/attendances"; 
+            const attendance = {
+                gymClass: { idClass: parseInt(classId) },
+                attendanceDate: attendanceDate,
+                attendanceStatus: "Presente",
+                observation: observation
+            };
+
+            clientAttendanceSaving = true;
+            showSystemLoading(i18n.loadingTitle || "Saving...");
+
+            fetch("/attendances", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(attendance)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(i18n.saveError);
+                return response.json();
+            })
+            .then(() => {
+                clientAttendanceSaving = false;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: i18n.saved,                
+                    showConfirmButton: true,
+                    confirmButtonText: i18n.confirmButton
+                }).then(() => {
+                    window.location.href = "/client/attendances";
+                });
+            })
+            .catch(error => {
+                clientAttendanceSaving = false;
+                showSystemError(error.message || i18n.saveError);
             });
-        }).catch(error => {
-            clientAttendanceSaving = false;
-            showSystemError(error.message || i18n.saveError);
+
+        })
+        .catch(() => {
+            showSystemError(i18n.saveError);
         });
-    });
 }
 
 function clearClientAttendanceErrors() {
