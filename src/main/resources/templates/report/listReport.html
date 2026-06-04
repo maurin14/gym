@@ -14,7 +14,7 @@
 
 <main class="container portal-card admin-page-card">
     <div th:if="${messageSuccess}" class="status-active" th:text="${messageSuccess}"></div>
-    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
     <div class="buttons admin-action-row">
         <a th:href="@{/reports/add}" class="btn-primary" th:text="#{label.report.new}">Nuevo reporte</a>

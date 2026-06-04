@@ -76,7 +76,7 @@ public class ControllerEquipment {
         equipment.setBranch(new Branch());
         equipment.setAvailable("true");
 
-        prepareForm(model, equipment, "Nuevo equipamiento", null);
+        prepareForm(model, equipment, "title.equipment.new", null);
         return "admin/equipment_form";
     }
 
@@ -93,7 +93,7 @@ public class ControllerEquipment {
 
         if (equipment == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "El equipamiento solicitado no existe.");
+                    "message.equipment.notFound");
             return "redirect:/admin/equipment";
         }
 
@@ -101,7 +101,7 @@ public class ControllerEquipment {
             equipment.setBranch(new Branch());
         }
 
-        prepareForm(model, equipment, "Editar equipamiento", null);
+        prepareForm(model, equipment, "title.equipment.edit", null);
         return "admin/equipment_form";
     }
 
@@ -117,7 +117,7 @@ public class ControllerEquipment {
         Map<String, String> fieldErrors = equipmentService.validate(equipment);
 
         if (equipment.getId() > 0 && equipmentService.getById(equipment.getId()) == null) {
-            fieldErrors.put("form", "El equipamiento que intenta editar no existe.");
+            fieldErrors.put("form", "message.equipment.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
@@ -126,21 +126,21 @@ public class ControllerEquipment {
             }
 
             String title = equipment.getId() == 0
-                    ? "Nuevo equipamiento"
-                    : "Editar equipamiento";
+                    ? "title.equipment.new"
+                    : "title.equipment.edit";
             prepareForm(model, equipment, title, fieldErrors);
-            model.addAttribute("messageError", "Revise los campos marcados.");
+            model.addAttribute("messageError", "message.form.review");
             return "admin/equipment_form";
         }
 
         if (equipment.getId() == 0) {
             equipmentService.save(equipment);
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Equipamiento registrado correctamente.");
+                    "message.equipment.saved");
         } else {
             equipmentService.update(equipment.getId(), equipment);
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Equipamiento actualizado correctamente.");
+                    "message.equipment.updated");
         }
 
         return "redirect:/admin/equipment";
@@ -159,13 +159,13 @@ public class ControllerEquipment {
 
         if (equipment == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "El equipamiento solicitado no existe.");
+                    "message.equipment.notFound");
             return "redirect:/admin/equipment";
         }
 
         equipmentService.delete(id);
         redirectAttributes.addFlashAttribute("successMessage",
-                "Equipamiento eliminado correctamente.");
+                "message.equipment.deleted");
         return "redirect:/admin/equipment";
     }
 
@@ -180,7 +180,7 @@ public class ControllerEquipment {
 
         equipmentService.toggleAvailability(id);
         redirectAttributes.addFlashAttribute("successMessage",
-                "Estado del equipamiento actualizado correctamente.");
+                "message.equipment.statusUpdated");
         return "redirect:/admin/equipment";
     }
 

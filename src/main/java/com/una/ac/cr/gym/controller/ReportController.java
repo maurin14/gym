@@ -120,7 +120,7 @@ public class ReportController {
                 redirect.addFlashAttribute("messageSuccess", "Reporte actualizado correctamente");
             }
         } else {
-            redirect.addFlashAttribute("messageError", "No se pudo guardar el reporte");
+            redirect.addFlashAttribute("messageError", "message.report.saveError");
         }
 
         return "redirect:/reports";
@@ -138,7 +138,7 @@ public class ReportController {
         Report report = rService.getReportById(id);
 
         if (report == null) {
-            redirect.addFlashAttribute("messageError", "Reporte no encontrado");
+            redirect.addFlashAttribute("messageError", "message.report.notFound");
             return "redirect:/reports";
         }
 
@@ -159,7 +159,7 @@ public class ReportController {
         Report report = rService.getReportById(id);
 
         if (report == null) {
-            redirect.addFlashAttribute("messageError", "Reporte no encontrado");
+            redirect.addFlashAttribute("messageError", "message.report.notFound");
             return "redirect:/reports";
         }
 
@@ -183,7 +183,7 @@ public class ReportController {
         if (deleted) {
             redirect.addFlashAttribute("messageSuccess", "Reporte eliminado correctamente");
         } else {
-            redirect.addFlashAttribute("messageError", "No se pudo eliminar el reporte");
+            redirect.addFlashAttribute("messageError", "message.report.deleteError");
         }
 
         return "redirect:/reports";

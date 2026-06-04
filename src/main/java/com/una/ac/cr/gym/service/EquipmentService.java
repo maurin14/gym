@@ -90,38 +90,38 @@ private BranchRepository branchRepository;
         Map<String, String> fieldErrors = new HashMap<>();
 
         if (equipment == null) {
-            fieldErrors.put("name", "Complete la informacion del equipamiento.");
+            fieldErrors.put("name", "message.equipment.formIncomplete");
             return fieldErrors;
         }
 
         if (equipment.getName() == null || equipment.getName().trim().isEmpty()) {
-            fieldErrors.put("name", "El nombre es obligatorio.");
+            fieldErrors.put("name", "equipment.name.required");
         }
 
         if (equipment.getType() == null || equipment.getType().trim().isEmpty()) {
-            fieldErrors.put("type", "El tipo es obligatorio.");
+            fieldErrors.put("type", "equipment.type.required");
         }
 
         if (equipment.getState() == null || equipment.getState().trim().isEmpty()) {
-            fieldErrors.put("state", "El estado es obligatorio.");
+            fieldErrors.put("state", "equipment.physicalCondition.required");
         }
 
         if (equipment.getPurchaseDate() == null) {
-            fieldErrors.put("purchaseDate", "La fecha de compra es obligatoria.");
+            fieldErrors.put("purchaseDate", "equipment.purchaseDate.required");
         }
 
         if (equipment.getCost() <= 0) {
-            fieldErrors.put("cost", "El costo debe ser mayor a cero.");
+            fieldErrors.put("cost", "equipment.cost.positive");
         }
 
         if (equipment.getAvailable() == null || equipment.getAvailable().trim().isEmpty()) {
-            fieldErrors.put("available", "Seleccione la disponibilidad.");
+            fieldErrors.put("available", "equipment.availability.required");
         }
 
         if (equipment.getBranch() == null || equipment.getBranch().getId() <= 0) {
-            fieldErrors.put("branch.id", "Seleccione una sucursal.");
+            fieldErrors.put("branch.id", "equipment.branch.required");
         } else if (branchRepository.findById(equipment.getBranch().getId()).isEmpty()) {
-            fieldErrors.put("branch.id", "La sucursal seleccionada no existe.");
+            fieldErrors.put("branch.id", "equipment.branch.notFound");
         }
 
         return fieldErrors;

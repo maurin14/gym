@@ -15,23 +15,15 @@
 
 
 <main class="container portal-card admin-page-card">
-    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="status-active" th:text="#{${successMessage}}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="#{${errorMessage}}"></div>
 
     <div class="buttons admin-action-row">
         <a th:href="@{/admin/equipment/new}" class="btn-primary" th:text="#{button.equipment.new}"></a>
     </div>
 
-    <div class="admin-title-row">
-        <div>
-            <h2 class="section-title" th:text="#{menu.equipment.title}"></h2>
-            <p class="admin-description" th:text="#{subMenu.equipment.title}">
-            </p>
-        </div>
-    </div>
-
     <form class="admin-filter-row portal-filters" th:action="@{/admin/equipment}" method="get">
-        <select name="branchId" aria-label="Filtrar por sucursal">
+        <select name="branchId" th:aria-label="#{label.gym.branch}">
             <option value="" th:text="#{label.gym.allBranches}"></option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
@@ -94,10 +86,9 @@
                               th:text="${item.available == 'true'} ? #{status.active} : #{status.inactive}">
                         </span>
                     </td>
-                    <td th:text="${item.branch != null ? item.branch.name : #menssages.msg('label.gym.none')}"></td>
+                    <td th:text="${item.branch != null ? item.branch.name : #messages.msg('label.gym.none')}"></td>
                     <td class="actions">
                         <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}" class="btn-primary" th:text='#{button.edit}'></a>
-                        <a th:href="@{/admin/equipment/status/{id}(id=${item.id})}" class="btn-secondary" th:text='#{button.changeStatus}' data-status-link></a>
                         <a th:href="@{/admin/equipment/delete/{id}(id=${item.id})}"
                            class="btn-danger"
                            data-delete-link
@@ -135,17 +126,14 @@
 
 <script th:inline="javascript">
     
-    const successMessage = [[${successMessage != null ? successMessage : null}]];
-    const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+    const successMessage = /*[[${successMessage != null ? #messages.msg(successMessage) : null}]]*/ null;
+    const errorMessage = /*[[${errorMessage != null ? #messages.msg(errorMessage) : null}]]*/ null;
 
     const messages = {
         deleteTitle: /*[[#{message.delete.confirm}]]*/ '',
         deleteText: /*[[#{message.delete.text}]]*/ '',
         deleteButton: /*[[#{button.delete}]]*/ '',
-        statusTitle: /*[[#{message.status.change}]]*/ '',
-        yesButton: /*[[#{button.yes}]]*/ '',
-        deleting: /*[[#{message.deleting}]]*/ '',
-        processing: /*[[#{message.processing}]]*/ ''
+        deleting: /*[[#{message.deleting}]]*/ ''
     };
 
     if (successMessage != null) {
@@ -168,22 +156,6 @@
             }).then(function (result) {
                 if (result.isConfirmed) {
                     showAdminLoading(messages.deleting);
-                    window.location.href = link.href;
-                }
-            });
-        });
-    });
-
-    document.querySelectorAll('[data-status-link]').forEach(function (link) {
-        link.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            confirmAdminAction({
-                title: messages.statusTitle,
-                confirmText: messages.yesButton
-            }).then(function (result) {
-                if (result.isConfirmed) {
-                    showAdminLoading(messages.processing);
                     window.location.href = link.href;
                 }
             });

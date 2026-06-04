@@ -161,28 +161,28 @@ public class ReportService implements CRUD<Report>{
 
     public String validate(Report r){
         if(r == null){
-            return "Datos inválidos";
+            return "message.report.invalidData";
         }
         
         if(isEmpty(r.getReportType()) || r.getGeneratedBy() == null
                 || isEmpty(r.getDescription()) || isEmpty(r.getStartDate()) || isEmpty(r.getEndDate())
                 || isEmpty(r.getFormat()) || isEmpty(r.getReportStatus())){
-            return "Debe completar todos los campos obligatorios";
+            return "message.report.requiredFields";
         }
         if(r.getStartDate().compareTo(r.getEndDate()) > 0){
-            return "La fecha de inicio no puede ser mayor que la fecha final";
+            return "message.report.invalidRange";
         }
         if(!r.getReportType().equals("users") && !r.getReportType().equals("payments") 
                 && !r.getReportType().equals("attendances")){
-            return "El tipo de reporte debe ser usuarios, pagos o asistencias";
+            return "message.report.invalidType";
         }
         if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel") 
                 && !r.getFormat().equals("csv")){
-            return "El formato debe ser PDF, Excel o CSV";
+            return "message.report.invalidFormat";
         }
         if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending") 
                 && !r.getReportStatus().equals("error")){
-            return "El estado del reporte debe ser generado, pendiente o error";
+            return "message.report.invalidStatus";
         }
         return null;
     }
@@ -299,7 +299,7 @@ public class ReportService implements CRUD<Report>{
 
     public String validateAdministratorAccess(HttpSession session){
         if(!isAdministrator(session)){
-            return "Solo los administradores pueden gestionar reportes";
+            return "message.report.adminOnly";
         }
         return null;
     }
