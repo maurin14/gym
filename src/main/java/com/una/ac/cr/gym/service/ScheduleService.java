@@ -89,36 +89,36 @@ return scheduleData.findAll();
         Map<String, String> fieldErrors = new HashMap<>();
 
         if (schedule == null) {
-            fieldErrors.put("scheduleType", "Complete la informacion del horario.");
+            fieldErrors.put("scheduleType", "message.schedule.formIncomplete");
             return fieldErrors;
         }
 
         if (schedule.getBranch() == null || schedule.getBranch().getId() <= 0) {
-            fieldErrors.put("branch.id", "Seleccione una sucursal.");
+            fieldErrors.put("branch.id", "schedule.branch.required");
         } else if (branchRe.findById(schedule.getBranch().getId()).isEmpty()) {
-            fieldErrors.put("branch.id", "La sucursal seleccionada no existe.");
+            fieldErrors.put("branch.id", "schedule.branch.notFound");
         }
 
         if (schedule.getDayOfWeek() == null) {
-            fieldErrors.put("dayOfWeek", "Seleccione el dia del horario.");
+            fieldErrors.put("dayOfWeek", "schedule.day.required");
         }
 
         if (schedule.getStartTime() == null) {
-            fieldErrors.put("startTime", "La hora de inicio es obligatoria.");
+            fieldErrors.put("startTime", "schedule.startTime.required");
         }
 
         if (schedule.getEndTime() == null) {
-            fieldErrors.put("endTime", "La hora de fin es obligatoria.");
+            fieldErrors.put("endTime", "schedule.endTime.required");
         }
 
         if (schedule.getStartTime() != null
                 && schedule.getEndTime() != null
                 && !schedule.getEndTime().isAfter(schedule.getStartTime())) {
-            fieldErrors.put("endTime", "La hora de fin debe ser mayor que la hora de inicio.");
+            fieldErrors.put("endTime", "schedule.endTime.afterStart");
         }
 
         if (schedule.getScheduleType() == null || schedule.getScheduleType().trim().isEmpty()) {
-            fieldErrors.put("scheduleType", "El tipo de horario es obligatorio.");
+            fieldErrors.put("scheduleType", "schedule.type.required");
         }
 
         return fieldErrors;

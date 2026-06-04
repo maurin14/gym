@@ -71,7 +71,7 @@ public class ScheduleController {
         schedule.setBranch(new Branch());
         schedule.setActive(true);
 
-        prepareForm(model, schedule, "Nuevo horario", null);
+        prepareForm(model, schedule, "title.schedule.new", null);
         return "admin/schedule_form";
     }
 
@@ -88,7 +88,7 @@ public class ScheduleController {
 
         if (schedule == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "El horario solicitado no existe.");
+                    "message.schedule.notFound");
             return "redirect:/admin/schedules";
         }
 
@@ -96,7 +96,7 @@ public class ScheduleController {
             schedule.setBranch(new Branch());
         }
 
-        prepareForm(model, schedule, "Editar horario", null);
+        prepareForm(model, schedule, "title.schedule.edit", null);
         return "admin/schedule_form";
     }
 
@@ -112,7 +112,7 @@ public class ScheduleController {
         Map<String, String> fieldErrors = scheduleService.validate(schedule);
 
         if (schedule.getId() > 0 && scheduleService.getById(schedule.getId()) == null) {
-            fieldErrors.put("form", "El horario que intenta editar no existe.");
+            fieldErrors.put("form", "message.schedule.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
@@ -120,20 +120,20 @@ public class ScheduleController {
                 schedule.setBranch(new Branch());
             }
 
-            String title = schedule.getId() == 0 ? "Nuevo horario" : "Editar horario";
+            String title = schedule.getId() == 0 ? "title.schedule.new" : "title.schedule.edit";
             prepareForm(model, schedule, title, fieldErrors);
-            model.addAttribute("messageError", "Revise los campos marcados.");
+            model.addAttribute("messageError", "message.form.review");
             return "admin/schedule_form";
         }
 
         if (schedule.getId() == 0) {
             scheduleService.save(schedule);
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Horario registrado correctamente.");
+                    "message.schedule.saved");
         } else {
             scheduleService.update(schedule.getId(), schedule);
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Horario actualizado correctamente.");
+                    "message.schedule.updated");
         }
 
         return "redirect:/admin/schedules";
@@ -152,13 +152,13 @@ public class ScheduleController {
 
         if (schedule == null) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "El horario solicitado no existe.");
+                    "message.schedule.notFound");
             return "redirect:/admin/schedules";
         }
 
         scheduleService.delete(id);
         redirectAttributes.addFlashAttribute("successMessage",
-                "Horario eliminado correctamente.");
+                "message.schedule.deleted");
         return "redirect:/admin/schedules";
     }
 
@@ -173,7 +173,7 @@ public class ScheduleController {
 
         scheduleService.toggleStatus(id);
         redirectAttributes.addFlashAttribute("successMessage",
-                "Estado del horario actualizado correctamente.");
+                "message.schedule.statusUpdated");
         return "redirect:/admin/schedules";
     }
 

@@ -13,7 +13,7 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
     <form class="portal-form" th:action="@{/reports/save}" th:object="${reportNew}" method="post" novalidate
           th:attr="data-admin-confirm=${reportNew.reportId != null ? #messages.msg('confirm.report.update') : #messages.msg('confirm.report.create')},data-admin-loading=#{confirm.loading.save}">
@@ -71,7 +71,7 @@
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['reportStatus'] != null}" th:text="${fieldErrors['reportStatus']}"></small>
 
         <label th:text="#{label.report.filePath}">Ruta del archivo</label>
-        <input type="text" th:field="*{filePath}" placeholder="Se puede dejar vacío">
+        <input type="text" th:field="*{filePath}" th:placeholder="#{placeholder.report.filePath}">
         <small class="field-error" th:if="${fieldErrors != null and fieldErrors['filePath'] != null}" th:text="${fieldErrors['filePath']}"></small>
 
         <div class="buttons">

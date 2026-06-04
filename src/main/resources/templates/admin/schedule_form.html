@@ -15,7 +15,7 @@
 
 
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
     <form class="portal-form" th:action="@{/admin/schedules/save}" th:object="${schedule}" method="post" novalidate
         th:data-admin-confirm="${schedule.id > 0 ? #messages.msg('message.schedule.update') : #messages.msg('message.schedule.create')}"
@@ -27,7 +27,7 @@
             <option value="0" th:text="#{select.branch}"> </option>
             <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}">Sucursal</option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="${fieldErrors['branch.id']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}" th:text="#{${fieldErrors['branch.id']}}"></small>
 
         <label  th:text="#{label.gym.day}"></label>
         <select th:field="*{dayOfWeek}">
@@ -35,19 +35,19 @@
             
             <option th:each="day : ${days}" th:value="${day}" th:text="#{'day.' + ${day.name().toLowerCase()}}"></option>
         </select>
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['dayOfWeek'] != null}" th:text="${fieldErrors['dayOfWeek']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['dayOfWeek'] != null}" th:text="#{${fieldErrors['dayOfWeek']}}"></small>
 
         <label th:text="#{label.gym.hour}"></label>
         <input type="time" name="startTime" th:value="${#temporals.format(schedule.startTime,'HH:mm')}">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['startTime'] != null}" th:text="${fieldErrors['startTime']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['startTime'] != null}" th:text="#{${fieldErrors['startTime']}}"></small>
 
         <label th:text="#{label.gym.end}"></label>
         <input type="time" name="endTime" th:value="${#temporals.format(schedule.endTime,'HH:mm')}">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['endTime'] != null}" th:text="${fieldErrors['endTime']}"></small>
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['endTime'] != null}" th:text="#{${fieldErrors['endTime']}}"></small>
 
         <label th:text="#{label.gym.typeSchedule}"></label>
-        <input type="text" th:field="*{scheduleType}" maxlength="100" placeholder="Ejemplo: Atencion general, Yoga, CrossFit">
-        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['scheduleType'] != null}" th:text="${fieldErrors['scheduleType']}"></small>
+        <input type="text" th:field="*{scheduleType}" maxlength="100" th:placeholder="#{schedule.type.example}">
+        <small class="field-error" th:if="${fieldErrors != null and fieldErrors['scheduleType'] != null}" th:text="#{${fieldErrors['scheduleType']}}"></small>
 
         <label th:text="#{label.gym.stage}"></label>
         <select th:field="*{active}">

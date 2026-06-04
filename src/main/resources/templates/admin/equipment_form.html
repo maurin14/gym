@@ -15,7 +15,7 @@
 
 
 <main class="container form-container portal-card admin-page-card">
-    <div th:if="${messageError}" class="status-cancelled" th:text="${messageError}"></div>
+    <div th:if="${messageError}" class="status-cancelled" th:text="#{${messageError}}"></div>
 
     <form class="portal-form"
           th:action="@{/admin/equipment/save}"
@@ -35,7 +35,7 @@
               th:placeholder="#{text.equipment}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['name'] != null}"
-               th:text="${fieldErrors['name']}"></small>
+               th:text="#{${fieldErrors['name']}}"></small>
 
         <label th:text='#{label.gym.type}'></label>
         <input type="text"
@@ -44,7 +44,7 @@
                th:placeholder="#{equipment.type.ejem}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['type'] != null}"
-               th:text="${fieldErrors['type']}"></small>
+               th:text="#{${fieldErrors['type']}}"></small>
 
         <label th:text='#{label.gym.fisicalStage}'></label>
         <input type="text"
@@ -53,14 +53,14 @@
                th:placeholder="#{equipment.staje.ejem}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['state'] != null}"
-               th:text="${fieldErrors['state']}"></small>
+               th:text="#{${fieldErrors['state']}}"></small>
 
         <label th:text='#{label.gym.purchasedate}'></label>
         <input type="date" th:value="${equipmentItem.purchaseDate}"
        name="purchaseDate">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['purchaseDate'] != null}"
-               th:text="${fieldErrors['purchaseDate']}"></small>
+               th:text="#{${fieldErrors['purchaseDate']}}"></small>
         
 
         <label th:text='#{label.gym.cost}'></label>
@@ -68,10 +68,10 @@
                th:field="*{cost}"
                step="0.01"
                min="0"
-               placeholder="Ejemplo: 250000">
+               th:placeholder="#{equipment.cost.example}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['cost'] != null}"
-               th:text="${fieldErrors['cost']}"></small>
+               th:text="#{${fieldErrors['cost']}}"></small>
 
         <label th:text='#{label.gym.availability}'></label>
         <select th:field="*{available}">
@@ -81,7 +81,7 @@
         </select>
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['available'] != null}"
-               th:text="${fieldErrors['available']}"></small>
+               th:text="#{${fieldErrors['available']}}"></small>
 
         <label th:text='#{label.gym.branch}'></label>
         <select th:field="*{branch.id}">
@@ -94,7 +94,7 @@
         </select>
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['branch.id'] != null}"
-               th:text="${fieldErrors['branch.id']}"></small>
+               th:text="#{${fieldErrors['branch.id']}}"></small>
 
         <div class="buttons">
             <button type="submit" class="btn-primary" th:text='#{button.save}'></button>

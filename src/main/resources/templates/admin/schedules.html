@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text='menu.schedule'></title>
+    <title th:text="#{menu.schedule}"></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -15,22 +15,15 @@
 
 
 <main class="container portal-card admin-page-card">
-    <div th:if="${successMessage}" class="status-active" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="status-active" th:text="#{${successMessage}}"></div>
+    <div th:if="${errorMessage}" class="status-cancelled" th:text="#{${errorMessage}}"></div>
 
     <div class="buttons admin-action-row">
         <a th:href="@{/admin/schedules/new}" class="btn-primary" th:text="#{button.newSchedule}"></a>
     </div>
 
-    <div class="admin-title-row">
-        <div>
-            <h2 class="section-title" th:text="#{menu.schedule.title}"></h2>
-            <p class="admin-description" th:text="#{subMenu.schedule.title}"></p>
-        </div>
-    </div>
-
     <form class="admin-filter-row portal-filters" th:action="@{/admin/schedules}" method="get">
-        <select name="branchId" aria-label="Filtrar por sucursal">
+        <select name="branchId" th:aria-label="#{label.gym.branch}">
             <option value="" th:text="#{label.gym.allBranches}"></option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
@@ -77,7 +70,6 @@
                     </td>  
                     <td class="actions">
                         <a th:href="@{/admin/schedules/edit/{id}(id=${scheduleItem.id})}" class="btn-primary" th:text="#{button.edit}"></a>
-                        <a th:href="@{/admin/schedules/status/{id}(id=${scheduleItem.id})}" class="btn-secondary" data-status-link th:text="#{button.changeStatus}"></a>
                         <a th:href="@{/admin/schedules/delete/{id}(id=${scheduleItem.id})}"
                            class="btn-danger"
                            data-delete-link
@@ -115,10 +107,7 @@
         deleteTitle: '[[#{message.delete.confirm}]]',
         deleteText: '[[#{message.delete.text}]]',
         deleteButton: '[[#{button.delete}]]',
-        statusTitle: '[[#{message.status.change}]]',
-        yesButton: '[[#{button.yes}]]'  ,
-        deleting: '[[#{message.deleting}]]',
-        processing: '[[#{message.processing}]]'
+        deleting: '[[#{message.deleting}]]'
     
     };
 
@@ -134,22 +123,6 @@
             }).then(function (result) {
                 if (result.isConfirmed) {
                     showAdminLoading(messages.deleting);
-                    window.location.href = link.href;
-                }
-            });
-        });
-    });
-
-    document.querySelectorAll('[data-status-link]').forEach(function (link) {
-        link.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            confirmAdminAction({
-                title: messages.statusTitle,
-                confirmText: messages.yesButton
-            }).then(function (result) {
-                if (result.isConfirmed) {
-                    showAdminLoading(messages.processing);
                     window.location.href = link.href;
                 }
             });
