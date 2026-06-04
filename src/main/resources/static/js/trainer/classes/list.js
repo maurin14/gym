@@ -9,12 +9,18 @@ const classBasePath = window.classBasePath || (window.location.pathname.startsWi
 
 const canManageClasses = Boolean(window.canManageClasses);
 
-const i18n = {
-    edit: /*[[#{button.edit}]]*/ "Editar",
-    delete: /*[[#{button.delete}]]*/ "Eliminar",
-    branchAll: /*[[#{label.class.branch.all}]]*/ "Todas las sucursales",
-    statusActive: /*[[#{status.active}]]*/ "Activa",
-    statusInactive: /*[[#{status.inactive}]]*/ "Inactiva"
+// --- i18n para botones y textos (se alimenta desde Thymeleaf) ---
+const i18n = window.i18n || {
+    edit: "Editar",
+    delete: "Eliminar",
+    branchAll: "Todas las sucursales",
+    statusActive: "Activa",
+    statusInactive: "Inactiva",
+    previous: "Anterior",
+    next: "Siguiente",
+    deleteConfirmation: "Esta acción no se puede deshacer.",
+    deleting: "Eliminando...",
+    deleteError: "No se pudo eliminar."
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -66,7 +72,7 @@ function showClasses(classes) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="${canManageClasses ? 13 : 12}" class="empty-message">
-                    No hay clases registradas.
+                    ${i18n.emptyClasses || "No hay clases registradas."}
                 </td>
             </tr>
         `;
@@ -82,7 +88,7 @@ function showClasses(classes) {
             <tr>
                 <td>${gymClass.classType}</td>
                 <td>${gymClass.trainerName}</td>
-                <td>${gymClass.branchName || "Sin sucursal"}</td>
+                <td>${gymClass.branchName || i18n.noBranch || "Sin sucursal"}</td>
                 <td>${formatDate(gymClass.classDate)}</td>
                 <td>${gymClass.startTime}</td>
                 <td>${gymClass.endTime}</td>
@@ -104,8 +110,7 @@ function showClasses(classes) {
                             ${i18n.delete}
                         </button>
                     </div>
-                </td>
-                ` : ""}
+                </td>` : ""}
             </tr>
         `;
     });
@@ -131,7 +136,7 @@ function showPagination() {
 
     const visualTotalPages = Math.max(totalPages, 1);
 
-    pagination.appendChild(createPageButton("Anterior", Math.max(currentPage - 1, 1), currentPage === 1));
+    pagination.appendChild(createPageButton(i18n.previous, Math.max(currentPage - 1, 1), currentPage === 1));
 
     for (let page = 1; page <= visualTotalPages; page++) {
         const link = createPageButton(page, page, false);
@@ -139,7 +144,7 @@ function showPagination() {
         pagination.appendChild(link);
     }
 
-    pagination.appendChild(createPageButton("Siguiente", Math.min(currentPage + 1, visualTotalPages), currentPage >= visualTotalPages));
+    pagination.appendChild(createPageButton(i18n.next, Math.min(currentPage + 1, visualTotalPages), currentPage >= visualTotalPages));
 }
 
 function createPageButton(text, page, disabled) {
@@ -162,22 +167,22 @@ function deleteClass(idClass) {
     if (!canManageClasses) return;
 
     confirmAdminAction({
-        title: i18n.delete + "?", 
-        text: "Esta acción no se puede deshacer.",
+        title: i18n.delete + "?",
+        text: i18n.deleteConfirmation,
         confirmText: i18n.delete,
         icon: "warning"
     }).then(result => {
         if (!result.isConfirmed) return;
 
-        showAdminLoading("Eliminando...");
+        showAdminLoading(i18n.deleting);
 
         fetch("/classes/" + idClass, { method: "DELETE" })
             .then(response => {
-                if (!response.ok) throw new Error("No se pudo eliminar.");
+                if (!response.ok) throw new Error(i18n.deleteError);
                 showAdminSuccess(i18n.delete + "d.").then(loadClasses);
             })
             .catch(error => {
-                showAdminError(error.message || "No se pudo eliminar.");
+                showAdminError(error.message || i18n.deleteError);
             });
     });
 }
