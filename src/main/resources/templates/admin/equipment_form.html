@@ -56,11 +56,12 @@
                th:text="${fieldErrors['state']}"></small>
 
         <label th:text='#{label.gym.purchasedate}'></label>
-        <input type="date" th:value="${#temporals.format(purchaseDate, 'yyyy-MM-dd')}"
-               name="purchaseDate">
+        <input type="date" th:value="${equipmentItem.purchaseDate}"
+       name="purchaseDate">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['purchaseDate'] != null}"
                th:text="${fieldErrors['purchaseDate']}"></small>
+        
 
         <label th:text='#{label.gym.cost}'></label>
         <input type="number"
