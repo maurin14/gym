@@ -62,10 +62,17 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
+<!-- Objeto i18n para traducción de botones -->
 <script th:inline="javascript">
     window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
     window.canManageClasses = /*[[${canManageClasses}]]*/ false;
+
+    const i18n = {
+        edit: /*[[#{button.edit}]]*/ "Editar",
+        delete: /*[[#{button.delete}]]*/ "Eliminar"
+    };
 </script>
+
 <script th:src="@{/js/trainer/classes/list.js}"></script>
 
 </body>
