@@ -21,7 +21,8 @@ const i18n = window.i18n || {
     saving: "Saving attendance...",
     saved: "Attendance saved successfully.",
     updated: "Attendance updated successfully.",
-    saveError: "Could not save attendance."
+    saveError: "Could not save attendance.",
+    confirmButton: /*[[#{confirm.button}]]*/ "Aceptar"
 };
 
 let attendanceSaving = false;
@@ -289,15 +290,14 @@ function saveAttendance() {
             })
             .then(() => {
 
-                showAdminSuccess(
-                        idAttendance !== ""
-                        ? i18n.updated
-                        : i18n.saved
-                )
-                        .then(() => {
-                            window.location.href =
-                                    attendanceBasePath;
-                        });
+                Swal.fire({
+                    icon: 'success', // check verde
+                    title: idAttendance !== "" ? i18n.attendanceUpdated : i18n.attendanceSaved,
+                    showConfirmButton: true,
+                    confirmButtonText: i18n.confirmButton 
+                }).then(() => {
+                    window.location.href = attendanceBasePath; 
+                });
             })
             .catch(() => {
 
