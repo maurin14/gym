@@ -59,27 +59,24 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
-<!-- Configuración JS e i18n -->
 <script th:inline="javascript">
-    window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
-    window.canManageClasses = /*[[${canManageClasses}]]*/ false;
-
-    // Traducción de botones y textos desde Thymeleaf
     window.i18n = {
-        edit: /*[[#{button.edit}]]*/ "Editar",
-        delete: /*[[#{button.delete}]]*/ "Eliminar",
-        branchAll: /*[[#{label.class.branch.all}]]*/ "Todas las sucursales",
-        statusActive: /*[[#{status.active}]]*/ "Activa",
-        statusInactive: /*[[#{status.inactive}]]*/ "Inactiva",
-        previous: /*[[#{button.previous}]]*/ "Anterior",
-        next: /*[[#{button.next}]]*/ "Siguiente",
-        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "Esta acción no se puede deshacer.",
-        deleting: /*[[#{message.deleting}]]*/ "Eliminando...",
-        deleteError: /*[[#{message.delete.error}]]*/ "No se pudo eliminar."
+        edit: /*[[#{button.edit}]]*/,
+        delete: /*[[#{button.delete}]]*/,
+        statusPresent: /*[[#{status.present}]]*/,
+        statusAbsent: /*[[#{status.absent}]]*/,
+        statusLate: /*[[#{status.late}]]*/,
+        emptyAttendances: /*[[#{empty.attendances}]]*/,
+        previous: /*[[#{button.previous}]]*/,
+        next: /*[[#{button.next}]]*/,
+        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/,
+        deleting: /*[[#{message.deleting}]]*/,
+        deleteError: /*[[#{message.delete.error}]]*/,
+        noBranch: /*[[#{label.no.branch}]]*/
     };
 </script>
 
-<script th:src="@{/js/trainer/classes/list.js}"></script>
+<script th:src="@{/js/trainer/attendances/list.js}"></script>
 
 </body>
 </html>

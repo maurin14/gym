@@ -9,18 +9,22 @@ const classBasePath = window.classBasePath || (window.location.pathname.startsWi
 
 const canManageClasses = Boolean(window.canManageClasses);
 
-// --- i18n para botones y textos (se alimenta desde Thymeleaf) ---
 const i18n = window.i18n || {
-    edit: "Editar",
-    delete: "Eliminar",
-    branchAll: "Todas las sucursales",
-    statusActive: "Activa",
-    statusInactive: "Inactiva",
-    previous: "Anterior",
-    next: "Siguiente",
-    deleteConfirmation: "Esta acción no se puede deshacer.",
-    deleting: "Eliminando...",
-    deleteError: "No se pudo eliminar."
+    edit: "Edit",
+    delete: "Delete",
+    branchAll: "All Branches",
+    statusActive: "Active",
+    statusInactive: "Inactive",
+    previous: "Previous",
+    next: "Next",
+    deleteConfirmation: "This action cannot be undone.",
+    deleting: "Deleting...",
+    deleteError: "Could not delete.",
+    emptyClasses: "No classes available.",
+    noBranch: "No Branch",
+    difficultyLow: "Low",
+    difficultyMedium: "Medium",
+    difficultyHigh: "High"
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -72,7 +76,7 @@ function showClasses(classes) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="${canManageClasses ? 13 : 12}" class="empty-message">
-                    ${i18n.emptyClasses || "No hay clases registradas."}
+                    ${i18n.emptyClasses}
                 </td>
             </tr>
         `;
@@ -84,11 +88,20 @@ function showClasses(classes) {
         const statusText = gymClass.status ? i18n.statusActive : i18n.statusInactive;
         const difficultyClass = getDifficultyClass(gymClass.difficultyLevel);
 
+        // --- Traducción de dificultad ---
+        let difficultyLabel = gymClass.difficultyLevel;
+        if (gymClass.difficultyLevel) {
+            const diff = gymClass.difficultyLevel.toLowerCase();
+            if (diff === "alto") difficultyLabel = i18n.difficultyHigh;
+            else if (diff === "medio") difficultyLabel = i18n.difficultyMedium;
+            else if (diff === "bajo") difficultyLabel = i18n.difficultyLow;
+        }
+
         tbody.innerHTML += `
             <tr>
                 <td>${gymClass.classType}</td>
                 <td>${gymClass.trainerName}</td>
-                <td>${gymClass.branchName || i18n.noBranch || "Sin sucursal"}</td>
+                <td>${gymClass.branchName || i18n.noBranch}</td>
                 <td>${formatDate(gymClass.classDate)}</td>
                 <td>${gymClass.startTime}</td>
                 <td>${gymClass.endTime}</td>
@@ -97,7 +110,7 @@ function showClasses(classes) {
                 <td>${gymClass.enrolledCount}</td>
 
                 <td><span class="badge ${statusClass}">${statusText}</span></td>
-                <td><span class="badge ${difficultyClass}">${gymClass.difficultyLevel}</span></td>
+                <td><span class="badge ${difficultyClass}">${difficultyLabel}</span></td>
                 <td>${gymClass.description}</td>
 
                 ${canManageClasses ? `
