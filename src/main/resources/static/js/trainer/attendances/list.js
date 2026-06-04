@@ -7,7 +7,6 @@ const attendanceBasePath = window.attendanceBasePath ||
 
 const canDeleteAttendances = Boolean(window.canDeleteAttendances);
 
-// i18n dinámico inyectado desde Thymeleaf
 const i18n = window.i18n || {
     edit: "Edit",
     delete: "Delete",
@@ -20,15 +19,40 @@ const i18n = window.i18n || {
     deleteConfirmation: "This action cannot be undone.",
     deleting: "Deleting...",
     deleteError: "Could not delete.",
-    noBranch: "No Branch"
+    noBranch: "No Branch",
+    locale: "en"
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+    loadBranchesFilter();
     loadAttendances();
 });
 
+function loadBranchesFilter() {
+    const branchFilter = document.getElementById("branchFilter");
+    if (!branchFilter) return;
+
+    fetch("/attendances/branches")
+        .then(response => response.json())
+        .then(data => {
+            branchFilter.innerHTML = `<option value="">${i18n.branchAll}</option>`;
+            data.forEach(branch => {
+                branchFilter.innerHTML += `<option value="${branch.id}">${branch.name}</option>`;
+            });
+        });
+}
+
+function filterAttendancesByBranch() {
+    currentPage = 1;
+    loadAttendances();
+}
+
 function loadAttendances() {
-    const url = `/attendances/page?page=${currentPage - 1}&size=${rowsPerPage}`;
+    const branchFilter = document.getElementById("branchFilter");
+    const branchId = branchFilter ? branchFilter.value : "";
+    let url = `/attendances/page?page=${currentPage - 1}&size=${rowsPerPage}`;
+    if (branchId) url += `&branchId=${encodeURIComponent(branchId)}`;
+
     fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -52,13 +76,12 @@ function renderAttendances(attendances) {
 
     attendances.forEach(att => {
         const statusClass = getStatusClass(att.attendanceStatus);
-        let statusText = att.attendanceStatus;
 
-        // Traducción basada en i18n
-        const statusLower = statusText.toLowerCase();
-        if (statusLower === "presente" || statusLower === "present") statusText = i18n.statusPresent;
-        else if (statusLower === "ausente" || statusLower === "absent") statusText = i18n.statusAbsent;
-        else if (statusLower === "tarde" || statusLower === "late") statusText = i18n.statusLate;
+        // Traducción estricta basada en i18n
+        let statusText = att.attendanceStatus.toLowerCase();
+        if (statusText === "presente" || statusText === "present") statusText = i18n.statusPresent;
+        else if (statusText === "ausente" || statusText === "absent") statusText = i18n.statusAbsent;
+        else if (statusText === "tarde" || statusText === "late") statusText = i18n.statusLate;
 
         tbody.innerHTML += `
             <tr>
@@ -67,7 +90,7 @@ function renderAttendances(attendances) {
                 <td>${att.branchName || i18n.noBranch}</td>
                 <td>${formatDate(att.attendanceDate)}</td>
                 <td><span class="badge ${statusClass}">${statusText}</span></td>
-                <td>${att.observation}</td>
+                <td>${att.observation || ""}</td>
                 <td>${formatDate(att.registerDate)}</td>
                 <td>
                     <div class="actions">
@@ -139,7 +162,7 @@ function deleteAttendance(idAttendance) {
 
         showAdminLoading(i18n.deleting);
 
-        fetch(`/attendances/${idAttendance}`, { method: "DELETE" })
+        fetch(`${attendanceBasePath}/${idAttendance}`, { method: "DELETE" })
             .then(res => {
                 if (!res.ok) throw new Error(i18n.deleteError);
                 showAdminSuccess(i18n.delete + ".").then(loadAttendances);
