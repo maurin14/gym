@@ -10,73 +10,79 @@
 
 <body class="page-portal">
 
-<div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
+    <div th:replace="~{admin/fragments/admin_layout :: adminHeader('classes')}"></div>
 
-<main class="container portal-card admin-page-card wide-table-card">
+    <main class="container portal-card admin-page-card wide-table-card">
 
-    <div class="admin-title-row">
+        <div class="admin-title-row">
 
-        <!-- Filtro de sucursal -->
-        <div class="admin-filter-row branch-filter-container" style="margin-bottom: 0;">
-            <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">Sucursal:</label>
-            <select id="branchFilter" onchange="filterClassesByBranch()">
-                <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
-            </select>
+            <div class="admin-filter-row branch-filter-container" style="margin-bottom: 0;">
+                <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">
+                    Sucursal:
+                </label>
+                <select id="branchFilter" onchange="filterClassesByBranch()">
+                    <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
+                </select>
+            </div>
+
+            <div class="buttons admin-action-row" th:if="${canManageClasses}">
+                <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">
+                    Nueva clase
+                </a>
+            </div>
+
         </div>
 
-        <!-- Botón nueva clase -->
-        <div class="buttons admin-action-row" th:if="${canManageClasses}">
-            <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">Nueva clase</a>
-        </div>
+        <table class="portal-table admin-table is-wide">
+            <thead>
+                <tr>
+                    <th th:text="#{label.class.type}">Tipo</th>
+                    <th th:text="#{label.class.trainer}">Entrenador</th>
+                    <th th:text="#{label.class.branch}">Sucursal</th>
+                    <th th:text="#{label.class.date}">Fecha</th>
+                    <th th:text="#{label.class.startTime}">Inicio</th>
+                    <th th:text="#{label.class.endTime}">Final</th>
+                    <th th:text="#{label.class.duration}">Duración</th>
+                    <th th:text="#{label.class.capacity}">Capacidad</th>
+                    <th th:text="#{label.class.enrolled}">Inscritos</th>
+                    <th th:text="#{label.class.status}">Estado</th>
+                    <th th:text="#{label.class.difficulty}">Dificultad</th>
+                    <th th:text="#{label.class.description}">Descripción</th>
+                    <th th:if="${canManageClasses}" th:text="#{label.class.actions}">Acciones</th>
+                </tr>
+            </thead>
 
-    </div>
+            <tbody id="classesTableBody"></tbody>
+        </table>
 
-    <table class="portal-table admin-table is-wide">
-        <thead>
-            <tr>
-                <th th:text="#{label.class.type}">Tipo</th>
-                <th th:text="#{label.class.trainer}">Entrenador</th>
-                <th th:text="#{label.class.branch}">Sucursal</th>
-                <th th:text="#{label.class.date}">Fecha</th>
-                <th th:text="#{label.class.startTime}">Inicio</th>
-                <th th:text="#{label.class.endTime}">Final</th>
-                <th th:text="#{label.class.duration}">Duración</th>
-                <th th:text="#{label.class.capacity}">Capacidad</th>
-                <th th:text="#{label.class.enrolled}">Inscritos</th>
-                <th th:text="#{label.class.status}">Estado</th>
-                <th th:text="#{label.class.difficulty}">Dificultad</th>
-                <th th:text="#{label.class.description}">Descripción</th>
-                <th th:if="${canManageClasses}" th:text="#{label.class.actions}">Acciones</th>
-            </tr>
-        </thead>
+        <div id="classesPagination" class="pagination"></div>
 
-        <tbody id="classesTableBody"></tbody>
-    </table>
+    </main>
 
-    <div id="classesPagination" class="pagination"></div>
+    <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
-</main>
+    <script th:inline="javascript">
+        window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
+        window.canManageClasses = /*[[${canManageClasses}]]*/ false;
 
-<div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
+        window.i18n = {
+            edit: /*[[#{button.edit}]]*/ "Editar",
+            delete: /*[[#{button.delete}]]*/ "Eliminar",
+            branchAll: /*[[#{label.class.branch.all}]]*/ "Todas las sucursales",
+            statusActive: /*[[#{status.active}]]*/ "Activa",
+            statusInactive: /*[[#{status.inactive}]]*/ "Inactiva",
+            previous: /*[[#{button.previous}]]*/ "Anterior",
+            next: /*[[#{button.next}]]*/ "Siguiente",
+            deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "Esta acción no se puede deshacer.",
+            deleting: /*[[#{message.deleting}]]*/ "Eliminando...",
+            deleteError: /*[[#{message.delete.error}]]*/ "No se pudo eliminar.",
+            difficultyLow: /*[[#{difficulty.low}]]*/ "Bajo",
+            difficultyMedium: /*[[#{difficulty.medium}]]*/ "Medio",
+            difficultyHigh: /*[[#{difficulty.high}]]*/ "Alto"
+        };
+    </script>
 
-<script th:inline="javascript">
-    window.i18n = {
-        edit: /*[[#{button.edit}]]*/,
-        delete: /*[[#{button.delete}]]*/,
-        statusPresent: /*[[#{status.present}]]*/,
-        statusAbsent: /*[[#{status.absent}]]*/,
-        statusLate: /*[[#{status.late}]]*/,
-        emptyAttendances: /*[[#{empty.attendances}]]*/,
-        previous: /*[[#{button.previous}]]*/,
-        next: /*[[#{button.next}]]*/,
-        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/,
-        deleting: /*[[#{message.deleting}]]*/,
-        deleteError: /*[[#{message.delete.error}]]*/,
-        noBranch: /*[[#{label.no.branch}]]*/
-    };
-</script>
-
-<script th:src="@{/js/trainer/attendances/list.js}"></script>
+    <script th:src="@{/js/trainer/classes/list.js}"></script>
 
 </body>
 </html>
