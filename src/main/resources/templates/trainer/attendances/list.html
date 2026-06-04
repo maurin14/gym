@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{title.attendance.list}">Attendance List</title>
@@ -12,11 +12,12 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
-<main class="container portal-card admin-page-card wide-table-card">
+<main class="container portal-card admin-page-card">
     <div class="buttons admin-action-row">
         <a class="btn-primary" th:href="${attendanceBasePath + '/form'}" th:text="#{button.add.attendance}">New Attendance</a>
     </div>
 
+    <div class="table-responsive">
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
@@ -33,6 +34,7 @@
 
         <tbody id="attendancesTableBody"></tbody>
     </table>
+    </div>
 
     <div id="attendancesPagination" class="pagination"></div>
 </main>

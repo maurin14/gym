@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +13,9 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('attendance')}"></div>
 
 
-<main class="container portal-card admin-page-card wide-table-card">
+<main class="container portal-card admin-page-card">
     <div class="buttons admin-action-row">
         <a class="btn-primary" th:href="@{/admin/attendance/form}" th:text="#{button.add.attendance}">New Attendance</a>
-    </div>
-
-    <div class="admin-title-row">
-        <div>
-            <h2 class="section-title" th:text="#{attendance.records.title}">Attendance records</h2>
-            <p class="admin-description" th:text="#{attendance.records.description}">
-                Review, register and update attendance linked to clients and classes.
-            </p>
-        </div>
     </div>
 
     <div class="table-responsive">
