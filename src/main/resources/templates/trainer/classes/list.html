@@ -16,18 +16,15 @@
 
     <div class="admin-title-row">
 
+        <!-- Filtro de sucursal -->
         <div class="admin-filter-row branch-filter-container" style="margin-bottom: 0;">
-
-            <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">
-                Sucursal:
-            </label>
-
+            <label for="branchFilter" class="branch-filter-label" th:text="#{label.class.branch}">Sucursal:</label>
             <select id="branchFilter" onchange="filterClassesByBranch()">
                 <option value="" th:text="#{label.class.branch.all}">Todas las sucursales</option>
             </select>
-
         </div>
 
+        <!-- Botón nueva clase -->
         <div class="buttons admin-action-row" th:if="${canManageClasses}">
             <a class="btn-primary" th:href="${classBasePath + '/form'}" th:text="#{button.add.class}">Nueva clase</a>
         </div>
@@ -62,14 +59,23 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
-<!-- Objeto i18n para traducción de botones -->
+<!-- Configuración JS e i18n -->
 <script th:inline="javascript">
     window.classBasePath = /*[[${classBasePath}]]*/ "/trainer/classes";
     window.canManageClasses = /*[[${canManageClasses}]]*/ false;
 
-    const i18n = {
+    // Traducción de botones y textos desde Thymeleaf
+    window.i18n = {
         edit: /*[[#{button.edit}]]*/ "Editar",
-        delete: /*[[#{button.delete}]]*/ "Eliminar"
+        delete: /*[[#{button.delete}]]*/ "Eliminar",
+        branchAll: /*[[#{label.class.branch.all}]]*/ "Todas las sucursales",
+        statusActive: /*[[#{status.active}]]*/ "Activa",
+        statusInactive: /*[[#{status.inactive}]]*/ "Inactiva",
+        previous: /*[[#{button.previous}]]*/ "Anterior",
+        next: /*[[#{button.next}]]*/ "Siguiente",
+        deleteConfirmation: /*[[#{message.delete.confirmation}]]*/ "Esta acción no se puede deshacer.",
+        deleting: /*[[#{message.deleting}]]*/ "Eliminando...",
+        deleteError: /*[[#{message.delete.error}]]*/ "No se pudo eliminar."
     };
 </script>
 
