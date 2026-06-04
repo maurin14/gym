@@ -2,7 +2,6 @@ package com.una.ac.cr.gym.service;
 
 import com.una.ac.cr.gym.domain.Routine;
 import com.una.ac.cr.gym.repository.RoutineRepository;
-import com.una.ac.cr.gym.repository.RoutineUserRepository;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +19,6 @@ public class RoutineServices {
 
     @Autowired
     private RoutineRepository routineRepository;
-
-    @Autowired
-    private RoutineUserRepository routineUserRepository;
 
     public List<Routine> getRoutines() {
         return routineRepository.findAll();
@@ -50,20 +46,19 @@ public class RoutineServices {
     @Transactional
     public String deleteRoutine(int idRoutine) {
         if (idRoutine <= 0) {
-            return "ID de rutina inválido";
+            return "message.routine.invalidId";
         }
 
         if (!routineRepository.existsById(idRoutine)) {
-            return "Rutina no encontrada";
+            return "message.routine.notFound";
         }
 
         try {
-            routineUserRepository.deleteByIdRoutine(idRoutine);
             routineRepository.deleteById(idRoutine);
             routineRepository.flush();
         } catch (DataIntegrityViolationException ex) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "No se puede eliminar la rutina porque tiene registros relacionados.";
+            return "message.routine.relatedRecords";
         }
 
         return "";
@@ -73,44 +68,44 @@ public class RoutineServices {
         Map<String, String> errors = new LinkedHashMap<>();
 
         if (routine == null) {
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
+            errors.put("form", "message.form.review");
             return errors;
         }
 
         if (isBlank(routine.getNameRoutine())) {
-            errors.put("nameRoutine", "Este campo es obligatorio.");
+            errors.put("nameRoutine", "message.validation.required");
         }
 
         if (isBlank(routine.getDifficultyLevel())) {
-            errors.put("difficultyLevel", "Seleccione una opción.");
+            errors.put("difficultyLevel", "message.validation.select");
         }
 
         if (isBlank(routine.getRoutineType())) {
-            errors.put("routineType", "Seleccione una opción.");
+            errors.put("routineType", "message.validation.select");
         }
 
         if (routine.getEstimatedDuration() == null) {
-            errors.put("estimatedDuration", "Este campo es obligatorio.");
+            errors.put("estimatedDuration", "message.validation.required");
         } else if (routine.getEstimatedDuration() <= 0) {
-            errors.put("estimatedDuration", "Ingrese un valor válido.");
+            errors.put("estimatedDuration", "message.validation.value");
         }
 
         if (routine.getQuantityExercises() == null) {
-            errors.put("quantityExercises", "Este campo es obligatorio.");
+            errors.put("quantityExercises", "message.validation.required");
         } else if (routine.getQuantityExercises() <= 0) {
-            errors.put("quantityExercises", "Ingrese un valor válido.");
+            errors.put("quantityExercises", "message.validation.value");
         }
 
         if (isBlank(routine.getTrainingObjective())) {
-            errors.put("trainingObjective", "Seleccione una opción.");
+            errors.put("trainingObjective", "message.validation.select");
         }
 
         if (isBlank(routine.getDescription())) {
-            errors.put("description", "Este campo es obligatorio.");
+            errors.put("description", "message.validation.required");
         }
 
         if (isBlank(routine.getExercises())) {
-            errors.put("exercises", "Este campo es obligatorio.");
+            errors.put("exercises", "message.validation.required");
         }
 
         return errors;
@@ -158,34 +153,5 @@ public class RoutineServices {
                 routineType.trim(),
                 pageable
         );
-    }
-
-    public Page<Routine> getRoutinesAssignedToClients(List<Integer> clientIds,
-            String difficultyLevel, String routineType, Pageable pageable) {
-
-        if (clientIds == null || clientIds.isEmpty()) {
-            return Page.empty(pageable);
-        }
-
-        if (difficultyLevel == null) {
-            difficultyLevel = "";
-        }
-
-        if (routineType == null) {
-            routineType = "";
-        }
-
-        return routineRepository.findRoutinesAssignedToClients(
-                clientIds,
-                difficultyLevel.trim(),
-                routineType.trim(),
-                pageable
-        );
-    }
-
-    public boolean routineBelongsToClients(int routineId, List<Integer> clientIds) {
-        return clientIds != null
-                && !clientIds.isEmpty()
-                && routineRepository.existsAssignedToClients(routineId, clientIds);
     }
 }

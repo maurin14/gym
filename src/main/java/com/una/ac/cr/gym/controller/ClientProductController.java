@@ -29,7 +29,7 @@ public class ClientProductController {
             Model model) {
 
         addProductCatalogAttributes(model, page, size, search, category);
-        model.addAttribute("title", "Catálogo de productos");
+        model.addAttribute("title", "title.product.catalog");
         return "client/product_catalog";
     }
 
@@ -53,7 +53,7 @@ public class ClientProductController {
             return "redirect:/client/products";
         }
 
-        model.addAttribute("title", "Detalle del producto");
+        model.addAttribute("title", "title.product.detail");
         model.addAttribute("product", product);
         return "client/product_detail";
     }

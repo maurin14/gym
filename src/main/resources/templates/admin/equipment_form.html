@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Formulario de equipamiento</title>
+    <title th:text="#{equipment.subMenu}"></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
@@ -21,44 +22,48 @@
           th:object="${equipmentItem}"
           method="post"
           novalidate
-          th:attr="data-admin-confirm=${equipmentItem.id > 0 ? 'Guardar cambios?' : 'Registrar equipamiento?'},data-admin-loading='Guardando...'">
+  
+          th:data-admin-confirm="${equipmentItem.id > 0 ? #messages.msg('message.equipment.update') : #messages.msg('message.equipment.create')}"
+          th:data-admin-loading="#{message.saving}">
 
         <input type="hidden" th:field="*{id}">
 
-        <label>Nombre</label>
+        <label th:text='#{label.gym.name}'></label>
         <input type="text"
                th:field="*{name}"
                maxlength="100"
-               placeholder="Ejemplo: Caminadora profesional">
+              th:placeholder="#{text.equipment}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['name'] != null}"
                th:text="${fieldErrors['name']}"></small>
 
-        <label>Tipo</label>
+        <label th:text='#{label.gym.type}'></label>
         <input type="text"
                th:field="*{type}"
                maxlength="100"
-               placeholder="Ejemplo: Cardio, fuerza o accesorio">
+               th:placeholder="#{equipment.type.ejem}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['type'] != null}"
                th:text="${fieldErrors['type']}"></small>
 
-        <label>Estado fisico</label>
+        <label th:text='#{label.gym.fisicalStage}'></label>
         <input type="text"
                th:field="*{state}"
                maxlength="100"
-               placeholder="Ejemplo: Nuevo, bueno o en mantenimiento">
+               th:placeholder="#{equipment.staje.ejem}">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['state'] != null}"
                th:text="${fieldErrors['state']}"></small>
 
-        <label>Fecha de compra</label>
-        <input type="date" th:field="*{purchaseDate}">
+        <label th:text='#{label.gym.purchasedate}'></label>
+        <input type="date" th:value="${equipmentItem.purchaseDate}"
+       name="purchaseDate">
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['purchaseDate'] != null}"
                th:text="${fieldErrors['purchaseDate']}"></small>
+        
 
-        <label>Costo</label>
+        <label th:text='#{label.gym.cost}'></label>
         <input type="number"
                th:field="*{cost}"
                step="0.01"
@@ -68,19 +73,19 @@
                th:if="${fieldErrors != null and fieldErrors['cost'] != null}"
                th:text="${fieldErrors['cost']}"></small>
 
-        <label>Disponibilidad</label>
+        <label th:text='#{label.gym.availability}'></label>
         <select th:field="*{available}">
-            <option value="">Seleccione</option>
-            <option value="true">Disponible</option>
-            <option value="false">No disponible</option>
+            <option value="" th:text='#{select.select}'></option>
+            <option value="true" th:text='#{status.available}'></option>
+            <option value="false" th:text='#{status.unavailable}'></option>
         </select>
         <small class="field-error"
                th:if="${fieldErrors != null and fieldErrors['available'] != null}"
                th:text="${fieldErrors['available']}"></small>
 
-        <label>Sucursal</label>
+        <label th:text='#{label.gym.branch}'></label>
         <select th:field="*{branch.id}">
-            <option value="0">Seleccione una sucursal</option>
+            <option value="0" th:text='#{select.branch}'></option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
                     th:text="${branch.name}">
@@ -92,8 +97,8 @@
                th:text="${fieldErrors['branch.id']}"></small>
 
         <div class="buttons">
-            <button type="submit" class="btn-primary">Guardar</button>
-            <a th:href="@{/admin/equipment}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary" th:text='#{button.save}'></button>
+            <a th:href="@{/admin/equipment}" class="btn-secondary" th:text='#{button.cancel}'></a>
         </div>
     </form>
 </main>

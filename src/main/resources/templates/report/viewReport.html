@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Vista de Reporte - SAM GYM FITNESS</title>
+    <title th:text="#{title.report.view}">Vista de Reporte - SAM GYM FITNESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}">
@@ -10,28 +10,41 @@
 
 <div th:replace="~{admin/fragments/admin_layout :: adminHeader('reports')}"></div>
 
-
 <main class="container portal-card admin-page-card">
     <section class="detail-info">
         <div class="info-card">
-            <h3>Información del reporte</h3>
+            <h3 th:text="#{label.report.info}">Información del reporte</h3>
 
-            <p><strong>Tipo:</strong>
-                <span th:if="${reportView.reportType == 'users'}">Usuarios</span>
-                <span th:if="${reportView.reportType == 'payments'}">Pagos</span>
-                <span th:if="${reportView.reportType == 'attendances'}">Asistencias</span>
+            <p>
+                <strong th:text="#{label.report.type} + ':'">Tipo:</strong>
+                <span th:if="${reportView.reportType == 'users'}" th:text="#{label.report.type.users}">Usuarios</span>
+                <span th:if="${reportView.reportType == 'payments'}" th:text="#{label.report.type.payments}">Pagos</span>
+                <span th:if="${reportView.reportType == 'attendances'}" th:text="#{label.report.type.attendances}">Asistencias</span>
             </p>
 
-            <p><strong>Generado por:</strong> <span th:text="${reportView.userName}"></span></p>
-            <p><strong>Fecha de generación:</strong> <span th:text="${reportView.formattedGenerationDate}"></span></p>
-            <p><strong>Rango:</strong>
+            <p>
+                <strong th:text="#{label.report.generatedBy} + ':'">Generado por:</strong>
+                <span th:text="${reportView.userName}"></span>
+            </p>
+
+            <p>
+                <strong th:text="#{label.report.generation} + ':'">Fecha de generación:</strong>
+                <span th:text="${reportView.formattedGenerationDate}"></span>
+            </p>
+
+            <p>
+                <strong th:text="#{label.report.range} + ':'">Rango:</strong>
                 <span th:text="${reportView.formattedStartDate + ' - ' + reportView.formattedEndDate}"></span>
             </p>
-            <p><strong>Descripción:</strong> <span th:text="${reportView.description}"></span></p>
+
+            <p>
+                <strong th:text="#{label.report.description} + ':'">Descripción:</strong>
+                <span th:text="${reportView.description}"></span>
+            </p>
         </div>
     </section>
 
-    <table class="portal-table admin-table" th:if="${reportData != null and !#lists.isEmpty(reportData)}">
+    <table class="portal-table" th:if="${reportData != null and !#lists.isEmpty(reportData)}">
         <thead>
         <tr>
             <th th:each="entry : ${reportData[0]}" th:text="${entry.key}"></th>
@@ -45,14 +58,16 @@
         </tbody>
     </table>
 
-    <p th:if="${reportData == null or #lists.isEmpty(reportData)}" class="empty-message">
+    <p th:if="${reportData == null or #lists.isEmpty(reportData)}"
+       class="empty-message"
+       th:text="#{label.report.noData}">
         No hay datos disponibles para este reporte.
     </p>
 
     <div class="buttons">
-        <a th:href="@{/reports}" class="btn-secondary">Volver</a>
-        <a th:href="@{/reports/edit(id=${reportView.reportId})}" class="btn-primary">Editar</a>
-        <a th:href="@{/reports/download(id=${reportView.reportId})}" class="btn-secondary">Descargar</a>
+        <a th:href="@{/reports}" class="btn-secondary" th:text="#{button.back}">Volver</a>
+        <a th:href="@{/reports/edit(id=${reportView.reportId})}" class="btn-primary" th:text="#{button.edit}">Editar</a>
+        <a th:href="@{/reports/download(id=${reportView.reportId})}" class="btn-secondary" th:text="#{button.download}">Descargar</a>
     </div>
 </main>
 

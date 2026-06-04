@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Detalle del producto</title>
+    <title th:text="#{${title}}">Detalle del producto</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('products')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('products')}"></div>
 
 <main class="detail-page">
-    <nav class="client-breadcrumb" aria-label="Ruta de navegación">
-        <a th:href="@{/client/home}">Inicio</a>
+    <nav class="client-breadcrumb" th:aria-label="#{breadcrumb.navigation}">
+        <a th:href="@{/client/home}" th:text="#{label.common.home}">Inicio</a>
         <span>/</span>
-        <a th:href="@{/client/products}">Productos</a>
+        <a th:href="@{/client/products}" th:text="#{label.product.products}">Productos</a>
         <span>/</span>
-        <strong>Detalle</strong>
+        <strong th:text="#{label.common.detail}">Detalle</strong>
     </nav>
 
     <section class="detail-shell">
@@ -27,30 +27,31 @@
                  th:alt="${product.nameProduct}">
 
             <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
-                 class="image-placeholder large">
+                 class="image-placeholder large"
+                 th:text="#{label.product.noImage}">
                 Sin imagen
             </div>
         </div>
 
         <div class="detail-content">
-            <a th:href="@{/client/products}" class="back-link">Volver al catálogo</a>
+            <a th:href="@{/client/products}" class="back-link" th:text="#{button.backCatalog}">Volver al catálogo</a>
             <span class="tag" th:text="${product.category}">Categoría</span>
             <h1 th:text="${product.nameProduct}">Producto</h1>
             <p class="detail-description" th:text="${product.description}">Descripción del producto</p>
 
             <div class="detail-meta">
                 <div class="meta-item price-item">
-                    <span>Precio</span>
-                    <strong th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</strong>
+                    <span th:text="#{label.product.price}">Precio</span>
+                    <strong th:utext="'&#8353; ' + ${#numbers.formatDecimal(product.price, 1, 2)}">&#8353; 0.00</strong>
                 </div>
 
                 <div class="meta-item">
-                    <span>Disponibilidad</span>
-                    <strong th:text="${product.quantityStock > 0 ? 'Disponible' : 'Sin stock'}">Disponible</strong>
+                    <span th:text="#{label.product.availability}">Disponibilidad</span>
+                    <strong th:text="${product.quantityStock > 0 ? #messages.msg('label.product.availableStock') : #messages.msg('label.product.outOfStock')}">Disponible</strong>
                 </div>
 
                 <div class="meta-item">
-                    <span>Stock</span>
+                    <span th:text="#{label.product.stock}">Stock</span>
                     <strong th:text="${product.quantityStock}">0</strong>
                 </div>
             </div>

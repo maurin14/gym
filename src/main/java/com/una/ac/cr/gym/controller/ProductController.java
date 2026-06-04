@@ -76,7 +76,7 @@ public class ProductController {
             );
         }
 
-        model.addAttribute("title", "Lista de productos");
+        model.addAttribute("title", "title.product.list");
         model.addAttribute("products", productPage.getContent());
 
         model.addAttribute("currentPage", currentPage);
@@ -98,7 +98,7 @@ public class ProductController {
         Product product = new Product();
         product.setState(true);
 
-        model.addAttribute("title", "Agregar producto");
+        model.addAttribute("title", "title.product.create");
         model.addAttribute("product", product);
         model.addAttribute("action", "/admin/products/save");
         return "product/product_form";
@@ -115,11 +115,11 @@ public class ProductController {
 
         Map<String, String> fieldErrors = productService.validateFields(product, false);
         if (!fieldErrors.isEmpty()) {
-            model.addAttribute("title", "Agregar producto");
+            model.addAttribute("title", "title.product.create");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/save");
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("error", "message.form.review");
             return "product/product_form";
         }
 
@@ -148,10 +148,10 @@ public class ProductController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                model.addAttribute("title", "Agregar producto");
+                model.addAttribute("title", "title.product.create");
                 model.addAttribute("product", product);
                 model.addAttribute("action", "/admin/products/save");
-                model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
+                model.addAttribute("error", "message.product.imageSaveError");
                 return "product/product_form";
             }
         }
@@ -159,14 +159,14 @@ public class ProductController {
         String result = productService.saveProduct(product);
 
         if (!result.isEmpty()) {
-            model.addAttribute("title", "Agregar producto");
+            model.addAttribute("title", "title.product.create");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/save");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Producto guardado correctamente.");
+        redirectAttributes.addFlashAttribute("successMessage", "message.product.saved");
         return "redirect:/admin/products";
     }
 
@@ -175,13 +175,13 @@ public class ProductController {
         Product product = productService.getProduct(idProduct);
 
         if (product == null) {
-            model.addAttribute("title", "Lista de productos");
+            model.addAttribute("title", "title.product.list");
             model.addAttribute("products", productService.getProducts());
-            model.addAttribute("error", "No se encontró el producto solicitado.");
+            model.addAttribute("error", "message.product.notFound");
             return "product/product_list";
         }
 
-        model.addAttribute("title", "Editar producto");
+        model.addAttribute("title", "title.product.edit");
         model.addAttribute("product", product);
         model.addAttribute("action", "/admin/products/update");
         return "product/product_form";
@@ -196,9 +196,9 @@ public class ProductController {
         Product currentProduct = productService.getProduct(product.getIdProduct());
 
         if (currentProduct == null) {
-            model.addAttribute("title", "Lista de productos");
+            model.addAttribute("title", "title.product.list");
             model.addAttribute("products", productService.getProducts());
-            model.addAttribute("error", "No se encontró el producto solicitado.");
+            model.addAttribute("error", "message.product.notFound");
             return "product/product_list";
         }
 
@@ -206,11 +206,11 @@ public class ProductController {
 
         Map<String, String> fieldErrors = productService.validateFields(product, true);
         if (!fieldErrors.isEmpty()) {
-            model.addAttribute("title", "Editar producto");
+            model.addAttribute("title", "title.product.edit");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/update");
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("error", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("error", "message.form.review");
             return "product/product_form";
         }
 
@@ -239,10 +239,10 @@ public class ProductController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                model.addAttribute("title", "Editar producto");
+                model.addAttribute("title", "title.product.edit");
                 model.addAttribute("product", product);
                 model.addAttribute("action", "/admin/products/update");
-                model.addAttribute("error", "Error al guardar la imagen: " + e.getMessage());
+                model.addAttribute("error", "message.product.imageSaveError");
                 return "product/product_form";
             }
         }
@@ -250,14 +250,14 @@ public class ProductController {
         String result = productService.updateProduct(product);
 
         if (!result.isEmpty()) {
-            model.addAttribute("title", "Editar producto");
+            model.addAttribute("title", "title.product.edit");
             model.addAttribute("product", product);
             model.addAttribute("action", "/admin/products/update");
             model.addAttribute("error", result);
             return "product/product_form";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Producto editado correctamente.");
+        redirectAttributes.addFlashAttribute("successMessage", "message.product.updated");
         return "redirect:/admin/products";
     }
 
@@ -266,13 +266,13 @@ public class ProductController {
         String result = productService.deleteProduct(idProduct);
 
         if (!result.isEmpty()) {
-            model.addAttribute("title", "Lista de productos");
+            model.addAttribute("title", "title.product.list");
             model.addAttribute("products", productService.getProducts());
             model.addAttribute("error", result);
             return "product/product_list";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Producto eliminado correctamente.");
+        redirectAttributes.addFlashAttribute("successMessage", "message.product.deleted");
         return "redirect:/admin/products";
     }
 
@@ -281,13 +281,13 @@ public class ProductController {
         Product product = productService.getProduct(idProduct);
 
         if (product == null) {
-            model.addAttribute("title", "Lista de productos");
+            model.addAttribute("title", "title.product.list");
             model.addAttribute("products", productService.getProducts());
-            model.addAttribute("error", "No se encontró el producto solicitado.");
+            model.addAttribute("error", "message.product.notFound");
             return "product/product_list";
         }
 
-        model.addAttribute("title", "Detalle del producto");
+        model.addAttribute("title", "title.product.detail");
         model.addAttribute("product", product);
         return "product/product_details";
     }

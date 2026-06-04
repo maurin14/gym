@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipamiento - SAM GYM FITNESS</title>
+    <title th:text="#{equipment.menu}"></title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script th:src="@{/js/admin-ui.js}"></script>
 </head>
 <body class="page-portal">
@@ -18,26 +19,25 @@
     <div th:if="${errorMessage}" class="status-cancelled" th:text="${errorMessage}"></div>
 
     <div class="buttons admin-action-row">
-        <a th:href="@{/admin/equipment/new}" class="btn-primary">Nuevo equipamiento</a>
+        <a th:href="@{/admin/equipment/new}" class="btn-primary" th:text="#{button.equipment.new}"></a>
     </div>
 
     <div class="admin-title-row">
         <div>
-            <h2 class="section-title">Inventario de equipamiento</h2>
-            <p class="admin-description">
-                Administre maquinas, implementos, costos, disponibilidad y sucursal asignada.
+            <h2 class="section-title" th:text="#{menu.equipment.title}"></h2>
+            <p class="admin-description" th:text="#{subMenu.equipment.title}">
             </p>
         </div>
     </div>
 
     <form class="admin-filter-row portal-filters" th:action="@{/admin/equipment}" method="get">
         <select name="branchId" aria-label="Filtrar por sucursal">
-            <option value="">Todas las sucursales</option>
+            <option value="" th:text="#{label.gym.allBranches}"></option>
             <option th:each="branch : ${branches}"
                     th:value="${branch.id}"
                     th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
                     th:text="${branch.name}">
-                Sucursal
+               
             </option>
         </select>
 
@@ -46,64 +46,63 @@
                min="0"
                name="min"
                th:value="${minCost}"
-               placeholder="Costo minimo">
+               th:placeholder="#{label.gym.minCost}">
 
         <input type="number"
                step="0.01"
                min="0"
                name="max"
                th:value="${maxCost}"
-               placeholder="Costo maximo">
+               th:placeholder="#{label.gym.maxCOst}">
 
         <input type="hidden" name="size" th:value="${pageSize}">
 
-        <button type="submit" class="btn-primary">Filtrar</button>
-        <a th:href="@{/admin/equipment}" class="btn-secondary">Limpiar filtros</a>
+        <button type="submit" class="btn-primary" th:text="#{button.filter}"></button>
+        <a th:href="@{/admin/equipment}" class="btn-secondary" th:text="#{button.cleanFilter}"></a>
     </form>
 
     <div class="table-responsive">
         <table class="portal-table admin-table is-wide">
             <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th>Fecha de compra</th>
-                    <th>Costo</th>
-                    <th>Disponibilidad</th>
-                    <th>Sucursal</th>
-                    <th>Acciones</th>
+                    <th th:text="#{label.gym.name}"></th>
+                    <th th:text="#{label.gym.type}"></th>
+                    <th th:text="#{label.gym.stage}"></th>
+                    <th th:text="#{label.gym.purchasedate}"></th>
+                    <th th:text="#{label.gym.cost}"></th>
+                    <th th:text="#{label.gym.availability}"></th>
+                    <th th:text="#{label.gym.branch}"></th>
+                    <th th:text="#{label.gym.actions}"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${equipment == null or #lists.isEmpty(equipment)}">
-                    <td colspan="8" class="empty-message">
-                        No hay equipamiento registrado.
+                    <td colspan="8" class="empty-message" th:text=" #{equipment.registered}">
+                      
                     </td>
                 </tr>
                 <tr th:each="item : ${equipment}">
                     <td th:text="${item.name}">Nombre</td>
                     <td th:text="${item.type}">Tipo</td>
                     <td th:text="${item.state}">Estado</td>
-                    <td th:text="${item.purchaseDate != null ? #temporals.format(item.purchaseDate, 'dd/MM/yyyy') : 'Sin fecha'}">
+                    <td th:text="${item.purchaseDate != null ? #temporals.format(item.purchaseDate, 'dd/MM/yyyy') : #messages.msg('msn.equipment.nullDate')}">
                         Fecha
                     </td>
                     <td th:text="'₡ ' + ${#numbers.formatDecimal(item.cost, 1, 2)}">₡ 0.00</td>
                     <td>
                         <span th:class="${item.available == 'true'} ? 'status-active' : 'status-inactive'"
-                              th:text="${item.available == 'true'} ? 'Disponible' : 'No disponible'">
-                            Disponible
+                              th:text="${item.available == 'true'} ? #{status.active} : #{status.inactive}">
                         </span>
                     </td>
-                    <td th:text="${item.branch != null ? item.branch.name : 'Sin sucursal'}">Sucursal</td>
+                    <td th:text="${item.branch != null ? item.branch.name : #menssages.msg('label.gym.none')}"></td>
                     <td class="actions">
-                        <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}" class="btn-primary">Editar</a>
-                        <a th:href="@{/admin/equipment/status/{id}(id=${item.id})}" class="btn-secondary" data-status-link>Cambiar estado</a>
+                        <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}" class="btn-primary" th:text='#{button.edit}'></a>
+                        <a th:href="@{/admin/equipment/status/{id}(id=${item.id})}" class="btn-secondary" th:text='#{button.changeStatus}' data-status-link></a>
                         <a th:href="@{/admin/equipment/delete/{id}(id=${item.id})}"
                            class="btn-danger"
                            data-delete-link
-                           data-delete-title="Eliminar equipamiento?">
-                            Eliminar
+                           th:data-delete-title="#{msn.equipment.dellete}" th:text='#{button.delete}'>
+                    
                         </a>
                     </td>
                 </tr>
@@ -111,12 +110,12 @@
         </table>
     </div>
 
-    <nav class="pagination" aria-label="Paginacion de equipamiento"
+    <nav class="pagination" th:aria-label="#{pagination.equipment}"
          th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
-        <a class="btn-secondary"
+        <a class="btn-secondary" th:text="#{button.previous}"
            th:classappend="${currentPage == 0} ? ' disabled'"
            th:href="@{/admin/equipment(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
-            Anterior
+      
         </a>
 
         <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
@@ -124,10 +123,10 @@
            th:text="${i + 1}"
            th:class="${i == currentPage ? 'btn-primary page-active' : 'btn-secondary'}"></a>
 
-        <a class="btn-secondary"
+        <a class="btn-secondary" th:text="#{button.next}"
            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
            th:href="@{/admin/equipment(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId}, min=${minCost}, max=${maxCost})}">
-            Siguiente
+            
         </a>
     </nav>
 </main>
@@ -135,8 +134,19 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
+    
     const successMessage = [[${successMessage != null ? successMessage : null}]];
     const errorMessage = [[${errorMessage != null ? errorMessage : null}]];
+
+    const messages = {
+        deleteTitle: /*[[#{message.delete.confirm}]]*/ '',
+        deleteText: /*[[#{message.delete.text}]]*/ '',
+        deleteButton: /*[[#{button.delete}]]*/ '',
+        statusTitle: /*[[#{message.status.change}]]*/ '',
+        yesButton: /*[[#{button.yes}]]*/ '',
+        deleting: /*[[#{message.deleting}]]*/ '',
+        processing: /*[[#{message.processing}]]*/ ''
+    };
 
     if (successMessage != null) {
         showAdminSuccess(successMessage);
@@ -145,31 +155,35 @@
     if (errorMessage != null) {
         showAdminError(errorMessage);
     }
-</script>
 
-<script>
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
+
             confirmAdminAction({
-                title: link.dataset.deleteTitle || 'Eliminar registro?',
-                text: 'Esta accion no se puede deshacer.',
-                confirmText: 'Eliminar',
+                title: link.dataset.deleteTitle || messages.deleteTitle,
+                text: messages.deleteText,
+                confirmText: messages.deleteButton,
                 icon: 'warning'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Eliminando...');
+                    showAdminLoading(messages.deleting);
                     window.location.href = link.href;
                 }
             });
         });
     });
+
     document.querySelectorAll('[data-status-link]').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
-            confirmAdminAction({ title: 'Cambiar estado?', confirmText: 'Si' }).then(function (result) {
+
+            confirmAdminAction({
+                title: messages.statusTitle,
+                confirmText: messages.yesButton
+            }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Procesando...');
+                    showAdminLoading(messages.processing);
                     window.location.href = link.href;
                 }
             });

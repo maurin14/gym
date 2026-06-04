@@ -3,31 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Rutinas disponibles</title>
+    <title th:text="#{${title}}">Rutinas disponibles</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
     <script th:src="@{/js/client-catalog.js}" defer></script>
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('routines')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('routines')}"></div>
 
 <main>
-    <section class="client-hero routines-hero">
-        <div>
-            <span class="section-kicker">Entrenamiento</span>
-            <h1>Rutinas disponibles</h1>
-            <p>Consulta planes de entrenamiento preparados para distintos objetivos, niveles y tipos de actividad.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
-            <a th:href="@{/client/home}">Inicio</a>
-            <span>/</span>
-            <strong>Rutinas</strong>
-        </nav>
-
         <form class="catalog-toolbar"
               method="get"
               th:action="@{/client/routines}"
@@ -38,27 +24,27 @@
             <input type="hidden" name="size" th:value="${pageSize}">
 
             <div class="toolbar-field">
-                <label for="routineDifficulty">Dificultad</label>
+                <label for="routineDifficulty" th:text="#{label.routine.difficulty}">Dificultad</label>
                 <select id="routineDifficulty" name="difficulty">
-                    <option value="">Todas</option>
-                    <option value="Principiante" th:selected="${difficulty == 'Principiante'}">Principiante</option>
-                    <option value="Intermedio" th:selected="${difficulty == 'Intermedio'}">Intermedio</option>
-                    <option value="Avanzado" th:selected="${difficulty == 'Avanzado'}">Avanzado</option>
+                    <option value="" th:text="#{label.routine.all}">Todas</option>
+                    <option value="Principiante" th:selected="${difficulty == 'Principiante'}" th:text="#{label.routine.beginner}">Principiante</option>
+                    <option value="Intermedio" th:selected="${difficulty == 'Intermedio'}" th:text="#{label.routine.intermediate}">Intermedio</option>
+                    <option value="Avanzado" th:selected="${difficulty == 'Avanzado'}" th:text="#{label.routine.advanced}">Avanzado</option>
                 </select>
             </div>
 
             <div class="toolbar-field">
-                <label for="routineType">Tipo</label>
+                <label for="routineType" th:text="#{label.routine.type}">Tipo</label>
                 <select id="routineType" name="type">
-                    <option value="">Todos</option>
-                    <option value="Cardio" th:selected="${type == 'Cardio'}">Cardio</option>
-                    <option value="Fuerza" th:selected="${type == 'Fuerza'}">Fuerza</option>
-                    <option value="Funcional" th:selected="${type == 'Funcional'}">Funcional</option>
+                    <option value="" th:text="#{label.routine.allPlural}">Todos</option>
+                    <option value="Cardio" th:selected="${type == 'Cardio'}" th:text="#{label.routine.cardio}">Cardio</option>
+                    <option value="Fuerza" th:selected="${type == 'Fuerza'}" th:text="#{label.routine.strength}">Fuerza</option>
+                    <option value="Funcional" th:selected="${type == 'Funcional'}" th:text="#{label.routine.functional}">Funcional</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn-primary">Filtrar</button>
-            <a th:href="@{/client/routines}" class="btn-secondary">Limpiar</a>
+            <button type="submit" class="btn-primary" th:text="#{button.filter}">Filtrar</button>
+            <a th:href="@{/client/routines}" class="btn-secondary" th:text="#{button.clean}">Limpiar</a>
         </form>
 
         <div id="routine-results" class="catalog-results" aria-live="polite">

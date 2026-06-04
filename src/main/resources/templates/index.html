@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SAM GYM FITNESS</title>
+    <title th:text="#{landing.title}">SAM GYM FITNESS</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 
 <header class="landing-header">
     <div class="landing-brand">
-        <a th:href="@{/}">
+        <a th:href="@{/(lang=${#locale.language})}">
             <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="landing-logo">
         </a>
         <div class="brand-text">
             <span class="brand-title">SAM GYM FITNESS</span>
-            <span class="brand-subtitle">Entrena mejor, vive mejor</span>
+            <span class="brand-subtitle" th:text="#{landing.slogan}">Entrena mejor, vive mejor</span>
         </div>
     </div>
 
-    <nav class="landing-nav">
-        <a href="#inicio">Inicio</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/login}" class="btn-primary landing-login-button">Iniciar sesión</a>
+    <nav class="landing-nav" th:aria-label="#{client.nav.main}">
+        <a href="#inicio" th:text="#{landing.nav.home}">Inicio</a>
+        <a href="#servicios" th:text="#{landing.nav.services}">Servicios</a>
+        <a href="#beneficios" th:text="#{landing.nav.benefits}">Beneficios</a>
+        <div class="language-selector" th:with="currentLang=${#locale.language}">
+            <a th:href="@{/(lang='es')}"
+               th:classappend="${currentLang == 'es'} ? ' active'"
+               data-lang="es">ES</a>
+            |
+            <a th:href="@{/(lang='en')}"
+               th:classappend="${currentLang == 'en'} ? ' active'"
+               data-lang="en">EN</a>
+        </div>
+        <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary landing-login-button" th:text="#{login.title}">Iniciar sesión</a>
     </nav>
 </header>
 
@@ -29,29 +38,27 @@
 
     <section class="landing-hero" id="inicio">
         <div class="landing-hero-content">
-            <span class="hero-badge">Plataforma web para gimnasio</span>
-            <h1>Tu gimnasio más organizado, moderno y conectado</h1>
-            <p>
-                SAM GYM FITNESS es una plataforma diseñada para centralizar la gestión de
-                sucursales, usuarios, pagos, clases, rutinas, productos y más, ofreciendo
-                una experiencia clara tanto para la administración como para los clientes.
+            <span class="hero-badge" th:text="#{landing.hero.badge}">Plataforma web para gimnasio</span>
+            <h1 th:text="#{landing.hero.title}">Tu gimnasio más organizado, moderno y conectado</h1>
+            <p th:text="#{landing.hero.text}">
+                SAM GYM FITNESS es una plataforma diseñada para centralizar la gestión del gimnasio.
             </p>
 
             <div class="landing-buttons">
-                <a th:href="@{/login}" class="btn-primary">Ingresar al sistema</a>
+                <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary" th:text="#{landing.hero.enter}">Ingresar al sistema</a>
             </div>
         </div>
 
         <div class="landing-hero-card">
             <div class="preview-card">
-                <h3>Todo en un solo lugar</h3>
+                <h3 th:text="#{landing.preview.title}">Todo en un solo lugar</h3>
                 <ul class="preview-list">
-                    <li>Sucursales y ubicación</li>
-                    <li>Pagos e historial</li>
-                    <li>Clases y horarios</li>
-                    <li>Rutinas de entrenamiento</li>
-                    <li>Productos y servicios</li>
-                    <li>Gestión administrativa integral</li>
+                    <li th:text="#{landing.preview.branches}">Sucursales y ubicación</li>
+                    <li th:text="#{landing.preview.payments}">Pagos e historial</li>
+                    <li th:text="#{landing.preview.classes}">Clases y horarios</li>
+                    <li th:text="#{landing.preview.routines}">Rutinas de entrenamiento</li>
+                    <li th:text="#{landing.preview.products}">Productos y servicios</li>
+                    <li th:text="#{landing.preview.admin}">Gestión administrativa integral</li>
                 </ul>
             </div>
         </div>
@@ -59,120 +66,113 @@
 
     <section class="landing-section" id="servicios">
         <div class="section-head">
-            <span class="section-tag">Servicios</span>
-            <h2>Una plataforma integral para la gestión del gimnasio</h2>
-            <p>
-                Diseñada para mejorar la organización de la información, facilitar procesos
-                administrativos y brindar una experiencia más cómoda a clientes y entrenadores.
+            <span class="section-tag" th:text="#{landing.nav.services}">Servicios</span>
+            <h2 th:text="#{landing.services.title}">Una plataforma integral para la gestión del gimnasio</h2>
+            <p th:text="#{landing.services.text}">
+                Diseñada para mejorar la organización y facilitar procesos administrativos.
             </p>
         </div>
 
         <div class="feature-grid">
             <article class="feature-card">
-                <h3>Sucursales</h3>
-                <p>Consulta sedes, ubicación, capacidad, estado y datos generales del gimnasio.</p>
+                <h3 th:text="#{nav.admin.branches}">Sucursales</h3>
+                <p th:text="#{landing.services.branches}">Consulta sedes, ubicación, capacidad, estado y datos generales.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Usuarios</h3>
-                <p>Administra clientes y entrenadores con mejor orden y control de información.</p>
+                <h3 th:text="#{nav.admin.users}">Usuarios</h3>
+                <p th:text="#{landing.services.users}">Administra clientes y entrenadores con mejor orden.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Pagos</h3>
-                <p>Registra, consulta y da seguimiento a pagos realizados por los clientes.</p>
+                <h3 th:text="#{nav.admin.payments}">Pagos</h3>
+                <p th:text="#{landing.services.payments}">Registra, consulta y da seguimiento a pagos.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Clases</h3>
-                <p>Gestióna horarios, cupos, entrenadores, descripciónes e inscripciones.</p>
+                <h3 th:text="#{nav.admin.classes}">Clases</h3>
+                <p th:text="#{landing.services.classes}">Gestiona horarios, cupos, entrenadores e inscripciones.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Rutinas</h3>
-                <p>Asigna rutinas de entrenamiento adaptadas a los objetivos de cada usuario.</p>
+                <h3 th:text="#{nav.admin.routines}">Rutinas</h3>
+                <p th:text="#{landing.services.routines}">Consulta rutinas orientadas a distintos objetivos.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Inventario y equipamiento</h3>
-                <p>Controla productos, stock y equipos disponibles en las distintas sucursales.</p>
+                <h3 th:text="#{landing.services.inventoryTitle}">Inventario y equipamiento</h3>
+                <p th:text="#{landing.services.inventory}">Controla productos, stock y equipos disponibles.</p>
             </article>
         </div>
     </section>
 
     <section class="landing-section soft-section" id="beneficios">
         <div class="section-head">
-            <span class="section-tag">Beneficios</span>
-            <h2>Más control, mejor experiencia</h2>
-            <p>
-                Una solución pensada para reducir el desorden, centralizar procesos y mejorar
-                la administración del gimnasio.
+            <span class="section-tag" th:text="#{landing.nav.benefits}">Beneficios</span>
+            <h2 th:text="#{landing.benefits.title}">Más control, mejor experiencia</h2>
+            <p th:text="#{landing.benefits.text}">
+                Una solución pensada para centralizar procesos y mejorar la administración.
             </p>
         </div>
 
         <div class="benefits-grid">
             <div class="benefit-box">
-                <h3>Centralización</h3>
-                <p>Toda la información del gimnasio organizada dentro de una sola plataforma.</p>
+                <h3 th:text="#{landing.benefits.centralizationTitle}">Centralizacion</h3>
+                <p th:text="#{landing.benefits.centralization}">Toda la información del gimnasio organizada dentro de una sola plataforma.</p>
             </div>
 
             <div class="benefit-box">
-                <h3>Organización</h3>
-                <p>Control más claro de clientes, pagos, clases, rutinas y recursos.</p>
+                <h3 th:text="#{landing.benefits.organizationTitle}">Organizacion</h3>
+                <p th:text="#{landing.benefits.organization}">Control más claro de clientes, pagos, clases, rutinas y recursos.</p>
             </div>
 
             <div class="benefit-box">
-                <h3>Eficiencia</h3>
-                <p>Menos procesos manuales y mejor seguimiento administrativo.</p>
+                <h3 th:text="#{landing.benefits.efficiencyTitle}">Eficiencia</h3>
+                <p th:text="#{landing.benefits.efficiency}">Menos procesos manuales y mejor seguimiento administrativo.</p>
             </div>
 
             <div class="benefit-box">
-                <h3>Crecimiento</h3>
-                <p>Base preparada para futuras mejoras como reservas, reportes y notificaciones.</p>
+                <h3 th:text="#{landing.benefits.growthTitle}">Crecimiento</h3>
+                <p th:text="#{landing.benefits.growth}">Base preparada para futuras mejoras.</p>
             </div>
         </div>
     </section>
 
     <section class="landing-section">
         <div class="section-head">
-            <span class="section-tag">¿Por qué SAM GYM FITNESS?</span>
-            <h2>Entrena mejor, vive mejor</h2>
-            <p>
-                Más que un sistema, SAM GYM FITNESS busca apoyar la modernización del gimnasio,
-                mejorar la experiencia de los clientes y facilitar el control de las operaciones diarias.
+            <span class="section-tag" th:text="#{landing.why.tag}">Por que SAM GYM FITNESS?</span>
+            <h2 th:text="#{landing.slogan}">Entrena mejor, vive mejor</h2>
+            <p th:text="#{landing.why.text}">
+                SAM GYM FITNESS busca apoyar la modernizacion del gimnasio.
             </p>
         </div>
 
         <div class="feature-grid">
             <article class="feature-card">
-                <h3>Para clientes</h3>
-                <p>
-                    Permite consultar pagos, clases, rutinas, sucursales y otros servicios disponibles.
-                    El usuario y la contraseña son asignados directamente por la administración del gimnasio.
-                </p>
+                <h3 th:text="#{landing.audience.clientsTitle}">Para clientes</h3>
+                <p th:text="#{landing.audience.clients}">Permite consultar pagos, clases, rutinas, sucursales y otros servicios disponibles.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Para entrenadores</h3>
-                <p>Facilita el acceso a clases, rutinas y seguimiento de usuarios dentro del sistema.</p>
+                <h3 th:text="#{landing.audience.trainersTitle}">Para entrenadores</h3>
+                <p th:text="#{landing.audience.trainers}">Facilita el acceso a clases, rutinas y seguimiento de usuarios.</p>
             </article>
 
             <article class="feature-card">
-                <h3>Para administración</h3>
-                <p>Ayuda a tomar decisiones con mejor organización, control y claridad de la información.</p>
+                <h3 th:text="#{landing.audience.adminTitle}">Para administración</h3>
+                <p th:text="#{landing.audience.admin}">Ayuda a tomar decisiones con mejor organización y claridad.</p>
             </article>
         </div>
     </section>
 
     <section class="landing-section cta-section">
         <div class="cta-box">
-            <h2>Accede a SAM GYM FITNESS</h2>
-            <p>
-                Inicia sesión para acceder a la plataforma. Si aún no tienes usuario,
-                solicítalo directamente en la recepción del gimnasio.
+            <h2 th:text="#{landing.cta.title}">Accede a SAM GYM FITNESS</h2>
+            <p th:text="#{landing.cta.text}">
+                Inicia sesión para acceder a la plataforma.
             </p>
             <div class="landing-buttons centered">
-                <a th:href="@{/login}" class="btn-primary">Iniciar sesión</a>
+                <a th:href="@{/login(lang=${#locale.language})}" class="btn-primary" th:text="#{login.title}">Iniciar sesión</a>
             </div>
         </div>
     </section>
@@ -184,17 +184,47 @@
         <img th:src="@{/images/logo.jpeg}" alt="SAM GYM FITNESS" class="footer-logo">
         <div>
             <strong>SAM GYM FITNESS</strong>
-            <p>Entrena mejor, vive mejor</p>
+            <p th:text="#{landing.slogan}">Entrena mejor, vive mejor</p>
         </div>
     </div>
 
     <div class="footer-links">
-        <a href="#inicio">Inicio</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#beneficios">Beneficios</a>
-        <a th:href="@{/login}">Iniciar sesión</a>
+        <a href="#inicio" th:text="#{landing.nav.home}">Inicio</a>
+        <a href="#servicios" th:text="#{landing.nav.services}">Servicios</a>
+        <a href="#beneficios" th:text="#{landing.nav.benefits}">Beneficios</a>
+        <a th:href="@{/login(lang=${#locale.language})}" th:text="#{login.title}">Iniciar sesión</a>
     </div>
 </footer>
+
+<script>
+    function clearTransientVisualState() {
+        document.body.classList.remove('menu-open', 'modal-open', 'drawer-open', 'sidebar-open', 'swal2-shown', 'swal2-height-auto');
+
+        if (document.body.style.overflow === 'hidden') {
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.swal2-container, .modal-backdrop').forEach(function (element) {
+            element.remove();
+        });
+    }
+
+    clearTransientVisualState();
+    window.addEventListener('pageshow', clearTransientVisualState);
+
+    function changeLanguage(lang) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.location.href = url.toString();
+    }
+
+    document.querySelectorAll('.language-selector [data-lang]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            changeLanguage(link.dataset.lang);
+        });
+    });
+</script>
 
 </body>
 </html>

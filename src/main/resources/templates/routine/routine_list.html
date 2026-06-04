@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${title}">Lista de rutinas</title>
+    <title th:text="#{${title}}">Lista de rutinas</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script th:src="@{/js/admin-ui.js}"></script>
@@ -14,74 +14,74 @@
 
 <main class="container portal-card admin-page-card wide-table-card">
     <div class="buttons admin-action-row" th:if="${canManageRoutines}">
-        <a th:href="${routineBasePath + '/form'}" class="btn-primary">Nueva rutina</a>
+        <a th:href="${routineBasePath + '/form'}" class="btn-primary" th:text="#{button.newRoutine}">Nueva rutina</a>
     </div>
 
     <form class="admin-filter-row portal-filters" method="get" th:action="${routineBasePath}">
         <select name="difficultyLevel">
-            <option value="">Todas las dificultades</option>
-            <option value="Principiante" th:selected="${difficultyLevel == 'Principiante'}">Principiante</option>
-            <option value="Intermedio" th:selected="${difficultyLevel == 'Intermedio'}">Intermedio</option>
-            <option value="Avanzado" th:selected="${difficultyLevel == 'Avanzado'}">Avanzado</option>
+            <option value="" th:text="#{label.routine.allDifficulties}">Todas las dificultades</option>
+            <option value="Principiante" th:selected="${difficultyLevel == 'Principiante'}" th:text="#{label.routine.beginner}">Principiante</option>
+            <option value="Intermedio" th:selected="${difficultyLevel == 'Intermedio'}" th:text="#{label.routine.intermediate}">Intermedio</option>
+            <option value="Avanzado" th:selected="${difficultyLevel == 'Avanzado'}" th:text="#{label.routine.advanced}">Avanzado</option>
         </select>
 
         <select name="routineType">
-            <option value="">Todos los tipos</option>
-            <option value="Cardio" th:selected="${routineType == 'Cardio'}">Cardio</option>
-            <option value="Fuerza" th:selected="${routineType == 'Fuerza'}">Fuerza</option>
-            <option value="Funcional" th:selected="${routineType == 'Funcional'}">Funcional</option>
+            <option value="" th:text="#{label.routine.allTypes}">Todos los tipos</option>
+            <option value="Cardio" th:selected="${routineType == 'Cardio'}" th:text="#{label.routine.cardio}">Cardio</option>
+            <option value="Fuerza" th:selected="${routineType == 'Fuerza'}" th:text="#{label.routine.strength}">Fuerza</option>
+            <option value="Funcional" th:selected="${routineType == 'Funcional'}" th:text="#{label.routine.functional}">Funcional</option>
         </select>
 
-        <button type="submit" class="btn-primary">Buscar</button>
-        <a th:href="${routineBasePath}" class="btn-secondary">Limpiar filtros</a>
+        <button type="submit" class="btn-primary" th:text="#{button.search}">Buscar</button>
+        <a th:href="${routineBasePath}" class="btn-secondary" th:text="#{button.cleanFilters}">Limpiar filtros</a>
     </form>
 
     <table class="portal-table admin-table">
         <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Dificultad</th>
-            <th>Duraci&oacute;n</th>
-            <th>Tipo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th th:text="#{label.routine.name}">Nombre</th>
+            <th th:text="#{label.routine.difficulty}">Dificultad</th>
+            <th th:text="#{label.routine.duration}">Duracion</th>
+            <th th:text="#{label.routine.type}">Tipo</th>
+            <th th:text="#{label.routine.status}">Estado</th>
+            <th th:text="#{label.routine.actions}">Acciones</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:if="${#lists.isEmpty(routines)}">
-            <td colspan="6" class="empty-message">No hay rutinas registradas.</td>
+            <td colspan="6" class="empty-message" th:text="#{label.routine.noRoutines}">No hay rutinas registradas.</td>
         </tr>
 
         <tr th:each="routine : ${routines}">
             <td th:text="${routine.nameRoutine}"></td>
             <td th:text="${routine.difficultyLevel}"></td>
-            <td th:text="${routine.estimatedDuration + ' min'}"></td>
+            <td th:text="${routine.estimatedDuration + ' ' + #messages.msg('label.common.minutes')}"></td>
             <td th:text="${routine.routineType}"></td>
 
             <td>
                 <span th:class="${routine.state} ? 'badge badge-active' : 'badge badge-inactive'">
-                    <span th:text="${routine.state ? 'Activa' : 'Inactiva'}"></span>
+                    <span th:text="${routine.state} ? #{label.status.activeFemale} : #{label.status.inactiveFemale}"></span>
                 </span>
             </td>
 
             <td>
                 <div class="actions">
-                    <a class="btn-secondary" th:href="${routineBasePath + '/details/' + routine.idRoutine}">Ver</a>
-                    <a th:if="${canManageRoutines}" class="btn-primary" th:href="${routineBasePath + '/edit/' + routine.idRoutine}">Editar</a>
-                    <a th:if="${canManageRoutines}" class="btn-danger" th:href="${routineBasePath + '/delete/' + routine.idRoutine}" data-delete-link>Eliminar</a>
+                    <a class="btn-secondary" th:href="${routineBasePath + '/details/' + routine.idRoutine}" th:text="#{button.view}">Ver</a>
+                    <a th:if="${canManageRoutines}" class="btn-primary" th:href="${routineBasePath + '/edit/' + routine.idRoutine}" th:text="#{button.update}">Editar</a>
+                    <a th:if="${canManageRoutines}" class="btn-danger" th:href="${routineBasePath + '/delete/' + routine.idRoutine}" data-delete-link th:text="#{button.delete}">Eliminar</a>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <nav class="pagination" aria-label="Paginacion de rutinas"
+    <nav class="pagination" th:aria-label="#{pagination.routine}"
          th:with="visualTotalPages=${totalPages > 0 ? totalPages : 1}">
         <a class="btn-secondary"
            th:classappend="${currentPage == 0} ? ' disabled'"
            th:href="@{${routineBasePath}(page=${currentPage == 0 ? currentPage : currentPage - 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
-            Anterior
+            <span th:text="#{button.previous}">Anterior</span>
         </a>
 
         <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
@@ -92,7 +92,7 @@
         <a class="btn-secondary"
            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
            th:href="@{${routineBasePath}(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, difficultyLevel=${difficultyLevel}, routineType=${routineType})}">
-            Siguiente
+            <span th:text="#{button.next}">Siguiente</span>
         </a>
     </nav>
 </main>
@@ -100,15 +100,21 @@
 <div th:replace="~{admin/fragments/admin_layout :: adminFooter}"></div>
 
 <script th:inline="javascript">
-    const successMessage = /*[[${successMessage}]]*/ null;
-    const errorMessage = /*[[${errorMessage}]]*/ null;
+    const successMessage = /*[[${successMessage != null ? #messages.msg(successMessage) : null}]]*/ null;
+    const errorMessage = /*[[${errorMessage != null ? #messages.msg(errorMessage) : null}]]*/ null;
+    const deleteErrorTitle = /*[[#{confirm.routine.deleteErrorTitle}]]*/ 'No se pudo eliminar';
+    const deleteTitle = /*[[#{confirm.routine.delete.title}]]*/ 'Desea eliminar este elemento?';
+    const deleteText = /*[[#{confirm.delete.text}]]*/ 'Esta acción no se puede deshacer.';
+    const confirmText = /*[[#{button.confirm}]]*/ 'Confirmar';
+    const cancelText = /*[[#{button.cancel}]]*/ 'Cancelar';
+    const deleteLoadingText = /*[[#{confirm.loading.delete}]]*/ 'Eliminando...';
 
     if (successMessage) {
         showAdminSuccess(successMessage);
     }
 
     if (errorMessage) {
-        showAdminError('No se pudo eliminar', errorMessage);
+        showAdminError(deleteErrorTitle, errorMessage);
     }
 
     document.querySelectorAll('[data-delete-link]').forEach(function (link) {
@@ -117,15 +123,15 @@
 
             confirmAdminAction({
                 icon: 'warning',
-                title: 'Desea eliminar este elemento?',
-                text: 'Esta acción no se puede deshacer.',
+                title: deleteTitle,
+                text: deleteText,
                 showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText,
                 confirmButtonColor: '#dc2626'
             }).then(function (result) {
                 if (result.isConfirmed) {
-                    showAdminLoading('Eliminando...');
+                    showAdminLoading(deleteLoadingText);
                     window.location.href = link.href;
                 }
             });

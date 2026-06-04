@@ -7,26 +7,26 @@
     <table class="portal-table admin-table is-wide">
         <thead>
         <tr>
-            <th>Imagen</th>
-            <th>Fecha apertura</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Capacidad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th th:text="#{label.branch.image}">Imagen</th>
+            <th th:text="#{label.branch.openingDateShort}">Fecha apertura</th>
+            <th th:text="#{label.branch.name}">Nombre</th>
+            <th th:text="#{label.branch.address}">Dirección</th>
+            <th th:text="#{label.branch.phone}">Teléfono</th>
+            <th th:text="#{label.branch.capacity}">Capacidad</th>
+            <th th:text="#{label.branch.status}">Estado</th>
+            <th th:text="#{label.branch.actions}">Acciones</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:if="${branches.content.size() == 0}">
-            <td colspan="8" class="empty-message">No se encontraron sucursales registradas.</td>
+            <td colspan="8" class="empty-message" th:text="#{label.branch.noBranches}">No se encontraron sucursales registradas.</td>
         </tr>
 
         <tr th:each="b : ${branches.content}">
             <td>
                 <img th:src="@{'/images/branches/' + ${b.imageUrl}}"
-                     alt="Sucursal"
+                     th:alt="#{label.branch.branch}"
                      class="branch-image-preview">
             </td>
 
@@ -37,27 +37,21 @@
             <td th:text="${b.capacity}"></td>
 
             <td>
-                <span th:text="${b.active ? 'Activa' : 'Inactiva'}"
+                <span th:text="${b.active ? #messages.msg('label.status.activeFemale') : #messages.msg('label.status.inactiveFemale')}"
                       th:class="${b.active ? 'badge badge-active' : 'badge badge-inactive'}"></span>
             </td>
 
             <td>
                 <div class="actions">
-                    <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary">
+                    <a th:href="@{/admin/branches/edit/{id}(id=${b.id})}" class="btn-secondary" th:text="#{button.edit}">
                         Editar
                     </a>
 
                     <a href="#"
                        th:data-id="${b.id}"
-                       class="btn-primary"
-                       onclick="confirmChangeBranchStatus(this); return false;">
-                        Cambiar estado
-                    </a>
-
-                    <a href="#"
-                       th:data-id="${b.id}"
                        class="btn-danger"
-                       onclick="confirmDeleteBranch(this); return false;">
+                       onclick="confirmDeleteBranch(this); return false;"
+                       th:text="#{button.delete}">
                         Eliminar
                     </a>
                 </div>
@@ -66,25 +60,25 @@
         </tbody>
     </table>
 
-    <nav class="pagination" aria-label="Paginacion de sucursales"
+    <nav class="pagination" th:aria-label="#{pagination.branch}"
          th:with="visualTotalPages=${branches.totalPages > 0 ? branches.totalPages : 1}">
 
         <a class="btn-secondary"
            th:classappend="${!branches.hasPrevious()} ? ' disabled'"
-           th:href="@{/admin/branches(page=${branches.hasPrevious() ? branches.number - 1 : branches.number}, name=${name}, active=${active})}">
-            Anterior
+           th:href="@{/admin/branches(page=${branches.hasPrevious() ? branches.number - 1 : branches.number}, branchId=${branchId}, active=${active})}">
+            <span th:text="#{button.previous}">Anterior</span>
         </a>
 
         <a th:each="i : ${#numbers.sequence(0, visualTotalPages - 1)}"
            th:text="${i + 1}"
-           th:href="@{/admin/branches(page=${i}, name=${name}, active=${active})}"
+           th:href="@{/admin/branches(page=${i}, branchId=${branchId}, active=${active})}"
            th:class="${i == branches.number ? 'btn-primary page-active' : 'btn-secondary'}">
         </a>
 
         <a class="btn-secondary"
            th:classappend="${!branches.hasNext()} ? ' disabled'"
-           th:href="@{/admin/branches(page=${branches.hasNext() ? branches.number + 1 : branches.number}, name=${name}, active=${active})}">
-            Siguiente
+           th:href="@{/admin/branches(page=${branches.hasNext() ? branches.number + 1 : branches.number}, branchId=${branchId}, active=${active})}">
+            <span th:text="#{button.next}">Siguiente</span>
         </a>
 
     </nav>

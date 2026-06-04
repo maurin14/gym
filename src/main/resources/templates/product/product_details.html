@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${title}">Detalle del producto</title>
+    <title th:text="#{${title}}">Detalle del producto</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="page-portal">
@@ -12,52 +12,52 @@
 
 <main class="container portal-card admin-page-card">
     <div class="breadcrumb">
-        <a th:href="@{/admin/products}">Productos</a>
+        <a th:href="@{/admin/products}" th:text="#{label.product.products}">Productos</a>
         <span>/</span>
-        <span>Detalle</span>
+        <span th:text="#{label.common.detail}">Detalle</span>
     </div>
 
     <section class="detail-title">
-        <p>Producto</p>
-        <h1 th:text="${title}">Detalle del producto</h1>
+        <p th:text="#{label.product.product}">Producto</p>
+        <h1 th:text="#{${title}}">Detalle del producto</h1>
     </section>
 
     <section class="detail-layout">
         <div class="detail-image">
             <img th:if="${product.imagePath != null and !#strings.isEmpty(product.imagePath)}"
                  th:src="@{/{img}(img=${product.imagePath})}"
-                 alt="Imagen del producto">
+                 th:alt="#{label.product.imageFull}">
 
             <div th:if="${product.imagePath == null or #strings.isEmpty(product.imagePath)}"
                  class="info-card">
-                <h3>Imagen</h3>
-                <p>Sin imagen</p>
+                <h3 th:text="#{label.product.image}">Imagen</h3>
+                <p th:text="#{label.product.noImage}">Sin imagen</p>
             </div>
         </div>
 
         <div class="detail-info">
             <article class="info-card highlight">
                 <h3 th:text="${product.nameProduct}">Producto</h3>
-                <p th:text="${product.description}">Descripci&oacute;n del producto</p>
+                <p th:text="${product.description}">Descripción del producto</p>
             </article>
 
             <article class="info-card">
-                <h3>Informaci&oacute;n general</h3>
-                <p><strong>Categor&iacute;a:</strong> <span th:text="${product.category}">Categoria</span></p>
-                <p><strong>Precio:</strong> <span th:text="'₡ ' + ${#numbers.formatDecimal(product.price, 1, 2)}">₡ 0.00</span></p>
-                <p><strong>Cantidad en stock:</strong> <span th:text="${product.quantityStock}">0</span></p>
-                <p><strong>Fecha de registro:</strong> <span th:text="${product.registerDate}">2026-04-08</span></p>
+                <h3 th:text="#{label.product.generalInfo}">Información general</h3>
+                <p><strong th:text="|#{label.product.category}:|">Categoría:</strong> <span th:text="${product.category}">Categoría</span></p>
+                <p><strong th:text="|#{label.product.price}:|">Precio:</strong> <span th:utext="'&#8353; ' + ${#numbers.formatDecimal(product.price, 1, 2)}">&#8353; 0.00</span></p>
+                <p><strong th:text="|#{label.product.quantityStock}:|">Cantidad en stock:</strong> <span th:text="${product.quantityStock}">0</span></p>
+                <p><strong th:text="|#{label.product.registerDate}:|">Fecha de registro:</strong> <span th:text="${product.registerDate}">2026-04-08</span></p>
             </article>
 
             <article class="info-card">
-                <h3>Estado</h3>
-                <span th:if="${product.state}" class="badge badge-active">Activo</span>
-                <span th:unless="${product.state}" class="badge badge-inactive">Inactivo</span>
+                <h3 th:text="#{label.product.status}">Estado</h3>
+                <span th:if="${product.state}" class="badge badge-active" th:text="#{label.status.active}">Activo</span>
+                <span th:unless="${product.state}" class="badge badge-inactive" th:text="#{label.status.inactive}">Inactivo</span>
             </article>
 
             <div class="buttons">
-                <a th:href="@{/admin/products/edit/{id}(id=${product.idProduct})}" class="btn-primary">Editar</a>
-                <a th:href="@{/admin/products}" class="btn-secondary">Volver</a>
+                <a th:href="@{/admin/products/edit/{id}(id=${product.idProduct})}" class="btn-primary" th:text="#{button.update}">Editar</a>
+                <a th:href="@{/admin/products}" class="btn-secondary" th:text="#{button.back}">Volver</a>
             </div>
         </div>
     </section>

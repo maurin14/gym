@@ -108,11 +108,11 @@ public class PaymentController {
 
         User client = payment.getIdUser() != null ? userService.getUserById(payment.getIdUser()) : null;
         if (client == null || !"client".equals(client.getRole())) {
-            fieldErrors.put("idUser", "Seleccione un cliente.");
+            fieldErrors.put("idUser", "message.payment.selectClient");
         }
 
         if (payment.getId() > 0 && paymentService.getById(payment.getId()) == null) {
-            fieldErrors.put("form", "El pago que intenta editar no existe.");
+            fieldErrors.put("form", "message.payment.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
@@ -120,7 +120,7 @@ public class PaymentController {
             model.addAttribute("branches", branchService.getActiveBranches());
             model.addAttribute("clients", userService.getClients());
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("messageError", "message.form.review");
             return "payments/admin/formPayment";
         }
 
@@ -149,25 +149,6 @@ public class PaymentController {
     public String deletePayment(@PathVariable int id) {
         paymentService.delete(id);
         return "redirect:/admin/payments?success=delete";
-    }
-
-    @GetMapping("/admin/payments/status/{id}")
-    public String changePaymentStatus(@PathVariable int id) {
-        Payment payment = paymentService.getById(id);
-
-        if (payment != null) {
-            if ("Pagado".equals(payment.getStatus())) {
-                payment.setStatus("Pendiente");
-            } else if ("Pendiente".equals(payment.getStatus())) {
-                payment.setStatus("Anulado");
-            } else {
-                payment.setStatus("Pagado");
-            }
-
-            paymentService.save(payment);
-        }
-
-        return "redirect:/admin/payments?success=status";
     }
 
     @GetMapping("/payments")

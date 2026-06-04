@@ -3,88 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipamiento - SAM GYM FITNESS</title>
+    <title  th:text='#{equipment.menu}'></title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('equipment')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('equipment')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker">Equipamiento</span>
-            <h1>Equipamiento disponible</h1>
-            <p>Consulta los equipos e implementos disponibles en las sucursales del gimnasio.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegacion">
-            <a th:href="@{/client/home}">Inicio</a>
-            <span>/</span>
-            <strong>Equipamiento</strong>
-        </nav>
-
         <form class="catalog-toolbar" th:action="@{/client/equipment}" method="get">
             <input type="hidden" name="size" th:value="${pageSize}">
 
             <div class="toolbar-field">
-                <label for="branchId">Sucursal</label>
+                <label for="branchId"  th:text='#{label.gym.branch}' ></label>
                 <select id="branchId" name="branchId">
-                    <option value="">Todas</option>
+                    <option value=""  th:text='#{label.gym.all}'></option>
                     <option th:each="branch : ${branches}"
                             th:value="${branch.id}"
                             th:selected="${selectedBranchId != null and selectedBranchId == branch.id}"
                             th:text="${branch.name}">
-                        Sucursal
+                        
                     </option>
                 </select>
             </div>
 
-            <button type="submit" class="btn-primary">Filtrar</button>
-            <a th:href="@{/client/equipment}" class="btn-secondary">Limpiar</a>
+            <button type="submit" class="btn-primary"  th:text='#{button.filter}'></button>
+            <a th:href="@{/client/equipment}" class="btn-secondary"  th:text='#{button.cleanFilter}'></a>
         </form>
 
         <div class="section-heading">
-            <h2>Recursos del gimnasio</h2>
-            <p th:text="${equipment != null ? #lists.size(equipment) + ' equipos en esta pagina' : '0 equipos'}">
-                0 equipos
+            <h2  th:text='#{Gym.Resources}'></h2>
+            <p th:text="${equipment != null ? #lists.size(equipment) +' '+ #messages.msg('label.equipment.onPage') : '0 ' + #messages.msg('label.equipment')}">
+                
             </p>
         </div>
 
-        <div class="empty-state" th:if="${equipment == null or #lists.isEmpty(equipment)}">
-            No hay equipamiento disponible en este momento.
+        <div class="empty-state" th:if="${equipment == null or #lists.isEmpty(equipment)} "  th:text='#{equipment.noData}'>
+            
         </div>
 
         <div class="catalog-grid" th:if="${equipment != null and !#lists.isEmpty(equipment)}">
             <article class="product-card" th:each="item : ${equipment}">
-                <div class="image-placeholder">
-                    Equipamiento
+                <div class="image-placeholder"   th:text='#{label.gym.equipment}'>
+                  
                 </div>
 
-                <div class="card-content">
-                    <span class="tag" th:text="${item.type}">Tipo</span>
-                    <h3 th:text="${item.name}">Equipo</h3>
-                    <p class="muted-text" th:text="${item.state}">Estado fisico</p>
+                <div class="card-content" >
+                    <span class="tag" th:text="${item.type}"></span>
+                    <h3 th:text="${item.name}"></h3>
+                    <p class="muted-text" th:text="${item.state}"></p>
 
                     <div class="card-footer">
-                        <strong th:text="${item.branch != null ? item.branch.name : 'Sin sucursal'}">Sucursal</strong>
+                        <strong th:text="${item.branch != null ? item.branch.name : #messages.msg('label.gym.none')}"></strong>
                         <span th:class="${item.available == 'true'} ? 'status-active' : 'status-inactive'"
-                              th:text="${item.available == 'true'} ? 'Disponible' : 'No disponible'">
-                            Disponible
+                              th:text="${item.available == 'true'} ?  #{status.available} : #{status.unavailable}">
+                            
                         </span>
                     </div>
                 </div>
             </article>
         </div>
 
-        <nav class="client-pagination" th:if="${totalPages > 1}" aria-label="Paginacion de equipamiento">
+        <nav class="client-pagination" th:if="${totalPages > 1}" th:aria-label="#{pagination.equipment}">
             <a class="pagination-link"
-               th:classappend="${currentPage == 0} ? ' disabled'"
+               th:classappend="${currentPage == 0} ? ' disabled'"  th:text='#{button.previous}'
                th:href="@{/client/equipment(page=${currentPage == 0 ? currentPage : currentPage - 1}, size=${pageSize}, branchId=${selectedBranchId})}">
-                Anterior
+                
             </a>
 
             <a class="pagination-link page-number"
@@ -95,10 +81,10 @@
                 1
             </a>
 
-            <a class="pagination-link"
+            <a class="pagination-link"  th:text='#{button.next}'
                th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
                th:href="@{/client/equipment(page=${currentPage + 1 >= totalPages ? currentPage : currentPage + 1}, size=${pageSize}, branchId=${selectedBranchId})}">
-                Siguiente
+                
             </a>
         </nav>
     </section>

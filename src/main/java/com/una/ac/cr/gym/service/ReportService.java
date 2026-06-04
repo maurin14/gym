@@ -3,31 +3,29 @@ package com.una.ac.cr.gym.service;
 import com.una.ac.cr.gym.domain.Report;
 import com.una.ac.cr.gym.domain.User;
 import com.una.ac.cr.gym.domain.Attendance;
-import com.una.ac.cr.gym.domain.Payment;
+import com.una.ac.cr.gym.service.AttendanceService;
 import com.una.ac.cr.gym.repository.ReportRepository;
 import com.una.ac.cr.gym.repository.UserRepository;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.una.ac.cr.gym.domain.Payment;
 import jakarta.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +49,18 @@ public class ReportService implements CRUD<Report>{
     @Autowired
     private AttendanceService attendanceService;
     
+    @Autowired
+    private MessageSource messageSource;
+
+    private String msg(String key){
+        return messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
+    }
+    
     public void save(Report r){
+        String validation = validate(r);
+        if(validation != null){
+        }
+
         if(r.getReportId() == null){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             r.setGenerationDate(LocalDateTime.now().format(formatter));
@@ -87,7 +96,12 @@ public class ReportService implements CRUD<Report>{
     public List<Report> getReports(){
         List<Report> reports = rData.findAll();
 
-        populateReportUserNames(reports);
+        for(Report r : reports){
+            User u = uData.findById(r.getGeneratedBy()).orElse(null);
+            if(u != null){
+                r.setUserName(u.getFullName());
+            }
+        }
 
         return reports;
     }
@@ -108,69 +122,28 @@ public class ReportService implements CRUD<Report>{
             reports = rData.findAll();
         }
 
-        populateReportUserNames(reports);
+        for(Report r : reports){
+            User u = uData.findById(r.getGeneratedBy()).orElse(null);
+            if(u != null){
+                r.setUserName(u.getFullName());
+            }
+        }
 
         return reports;
     }
     
     public Page<Report> getReportsByPage(int page, int size){
+   
         Page<Report> reportPage = rData.findAll(PageRequest.of(page, size));
 
-        populateReportUserNames(reportPage);
-
-        return reportPage;
-    }
-
-    public Page<Report> filterReportsByPage(String reportType, String reportStatus, int page, int size){
-        boolean hasType = reportType != null && !reportType.trim().isEmpty();
-        boolean hasStatus = reportStatus != null && !reportStatus.trim().isEmpty();
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Report> reportPage;
-
-        if(hasType && hasStatus){
-            reportPage = rData.findByReportTypeAndReportStatus(reportType, reportStatus, pageable);
-        }else if(hasType){
-            reportPage = rData.findByReportType(reportType, pageable);
-        }else if(hasStatus){
-            reportPage = rData.findByReportStatus(reportStatus, pageable);
-        }else{
-            reportPage = rData.findAll(pageable);
-        }
-
-        populateReportUserNames(reportPage);
-
-        return reportPage;
-    }
-
-    private void populateReportUserNames(Page<Report> reportPage){
-        populateReportUserNames(reportPage.getContent());
-    }
-
-    private void populateReportUserNames(List<Report> reports){
-        if(reports == null || reports.isEmpty()){
-            return;
-        }
-
-        Set<Integer> userIds = new HashSet<>();
-
-        for(Report report : reports){
-            if(report != null && report.getGeneratedBy() != null){
-                userIds.add(report.getGeneratedBy());
+        for(Report r : reportPage.getContent()){
+            User u = uData.findById(r.getGeneratedBy()).orElse(null);
+            if(u != null){
+                r.setUserName(u.getFullName());
             }
         }
 
-        Map<Integer, User> usersById = new HashMap<>();
-        uData.findAllById(userIds).forEach(user -> usersById.put(user.getUserId(), user));
-
-        for(Report report : reports){
-            if(report == null || report.getGeneratedBy() == null){
-                continue;
-            }
-
-            User user = usersById.get(report.getGeneratedBy());
-            report.setUserName(user != null ? user.getFullName() : "Usuario no encontrado");
-        }
+        return reportPage;
     }
 
     public Report getReportById(int id){
@@ -187,81 +160,31 @@ public class ReportService implements CRUD<Report>{
     }
 
     public String validate(Report r){
-        Map<String, String> errors = validateFields(r);
-        return errors.isEmpty() ? null : errors.values().iterator().next();
-    }
-
-    public Map<String, String> validateFields(Report r){
-        Map<String, String> errors = new LinkedHashMap<>();
-
         if(r == null){
-            errors.put("form", "No se pudo guardar. Revise los campos marcados.");
-            return errors;
+            return "Datos inválidos";
         }
-
-        if(isEmpty(r.getReportType())){
-            errors.put("reportType", "Seleccione una opción.");
-        }else if(!r.getReportType().equals("users") && !r.getReportType().equals("payments")
+        
+        if(isEmpty(r.getReportType()) || r.getGeneratedBy() == null
+                || isEmpty(r.getDescription()) || isEmpty(r.getStartDate()) || isEmpty(r.getEndDate())
+                || isEmpty(r.getFormat()) || isEmpty(r.getReportStatus())){
+            return "Debe completar todos los campos obligatorios";
+        }
+        if(r.getStartDate().compareTo(r.getEndDate()) > 0){
+            return "La fecha de inicio no puede ser mayor que la fecha final";
+        }
+        if(!r.getReportType().equals("users") && !r.getReportType().equals("payments") 
                 && !r.getReportType().equals("attendances")){
-            errors.put("reportType", "Seleccione una opción.");
+            return "El tipo de reporte debe ser usuarios, pagos o asistencias";
         }
-
-        if(r.getGeneratedBy() == null){
-            errors.put("generatedBy", "Este campo es obligatorio.");
-        }
-
-        if(isEmpty(r.getDescription())){
-            errors.put("description", "Este campo es obligatorio.");
-        }else if(r.getDescription().length() > 255){
-            errors.put("description", "Ingrese 255 caracteres o menos.");
-        }
-
-        LocalDate startDate = parseDate(r.getStartDate());
-        LocalDate endDate = parseDate(r.getEndDate());
-
-        if(isEmpty(r.getStartDate())){
-            errors.put("startDate", "La fecha es obligatoria.");
-        }else if(startDate == null){
-            errors.put("startDate", "Ingrese una fecha válida.");
-        }
-
-        if(isEmpty(r.getEndDate())){
-            errors.put("endDate", "La fecha es obligatoria.");
-        }else if(endDate == null){
-            errors.put("endDate", "Ingrese una fecha válida.");
-        }
-
-        if(startDate != null && endDate != null && startDate.isAfter(endDate)){
-            errors.put("endDate", "La fecha final debe ser mayor o igual a la fecha de inicio.");
-        }
-
-        if(isEmpty(r.getFormat())){
-            errors.put("format", "Seleccione una opción.");
-        }else if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel")
+        if(!r.getFormat().equals("pdf") && !r.getFormat().equals("excel") 
                 && !r.getFormat().equals("csv")){
-            errors.put("format", "Seleccione una opción.");
+            return "El formato debe ser PDF, Excel o CSV";
         }
-
-        if(isEmpty(r.getReportStatus())){
-            errors.put("reportStatus", "Seleccione una opción.");
-        }else if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending")
+        if(!r.getReportStatus().equals("generated") && !r.getReportStatus().equals("pending") 
                 && !r.getReportStatus().equals("error")){
-            errors.put("reportStatus", "Seleccione una opción.");
+            return "El estado del reporte debe ser generado, pendiente o error";
         }
-
-        if(r.getFilePath() != null && r.getFilePath().length() > 255){
-            errors.put("filePath", "Ingrese 255 caracteres o menos.");
-        }
-
-        return errors;
-    }
-
-    private LocalDate parseDate(String value){
-        try {
-            return isEmpty(value) ? null : LocalDate.parse(value);
-        } catch (Exception ex) {
-            return null;
-        }
+        return null;
     }
 
     public List<Map<String, String>> getPreviewData(String reportType){
@@ -272,14 +195,14 @@ public class ReportService implements CRUD<Report>{
 
             for(User u : users){
                 Map<String, String> map = new LinkedHashMap<>();
-                map.put("Nombre", u.getFullName());
-                map.put("Cédula", u.getIdCard());
-                map.put("Correo", u.getEmail());
-                map.put("Teléfono", u.getPhone());
-                map.put("Usuario", u.getUsername());
-                map.put("Rol", u.getRole());
-                map.put("Estado", u.getStatus());
-                map.put("Fecha de registro", u.getFormattedRecordDate());
+                map.put(msg("label.user.fullName"), u.getFullName());
+                map.put(msg("label.user.idCard"), u.getIdCard());
+                map.put(msg("label.user.email"), u.getEmail());
+                map.put(msg("label.user.phone"), u.getPhone());
+                map.put(msg("label.user.username"), u.getUsername());
+                map.put(msg("label.user.role"), u.getRole());
+                map.put(msg("label.user.status"), u.getStatus());
+                map.put(msg("label.user.recordDate"), u.getFormattedRecordDate());
                 list.add(map);
             }
 
@@ -289,18 +212,18 @@ public class ReportService implements CRUD<Report>{
             for(Payment p : payments){
                 Map<String, String> map = new LinkedHashMap<>();
 
-                map.put("ID Pago", String.valueOf(p.getId()));
-                map.put("Cliente", p.getClientName() != null ? p.getClientName() : "Cliente no encontrado");
-                map.put("Monto", "₡" + p.getAmount());
-                map.put("Fecha de pago", String.valueOf(p.getPaymentDate()));
-                map.put("Método de pago", p.getPaymentMethod());
-                map.put("Estado", p.getStatus());
-                map.put("Descripción", p.getDescription());
+                map.put(msg("label.payment.id"), String.valueOf(p.getId()));
+                map.put(msg("label.payment.userId"), String.valueOf(p.getIdUser()));
+                map.put(msg("label.payment.amount"), "₡" + p.getAmount());
+                map.put(msg("label.payment.date"), String.valueOf(p.getPaymentDate()));
+                map.put(msg("label.payment.method"), p.getPaymentMethod());
+                map.put(msg("label.payment.status"), p.getStatus());
+                map.put(msg("label.payment.description"), p.getDescription());
 
                 if(p.getBranch() != null){
-                    map.put("Sucursal", p.getBranch().getName());
+                    map.put(msg("label.payment.branch"), String.valueOf(p.getBranch().getId()));
                 }else{
-                    map.put("Sucursal", "Sin sucursal");
+                    map.put(msg("label.payment.branch"), msg("label.gym.none"));
                 }
 
                 list.add(map);
@@ -315,24 +238,24 @@ public class ReportService implements CRUD<Report>{
                 Map<String, String> map = new LinkedHashMap<>();
 
                 if(a.getClient() != null){
-                    map.put("Cliente", a.getClient().getFullName());
+                    map.put(msg("label.attendance.client"), a.getClient().getFullName());
                 }else{
-                    map.put("Cliente", "Sin cliente");
+                    map.put(msg("label.attendance.client"), msg("label.attendance.noClient"));
                 }
 
                 if(a.getGymClass() != null){
-                    map.put("Clase", a.getGymClass().getClassType());
+                    map.put(msg("label.attendance.class"), a.getGymClass().getClassType());
                 }else{
-                    map.put("Clase", "Sin clase");
+                    map.put(msg("label.attendance.class"), msg("label.attendance.noClass"));
                 }
 
-                map.put("Fecha", String.valueOf(a.getAttendanceDate()));
-                map.put("Asistencia", a.getAttendanceStatus());
+                map.put(msg("label.attendance.date"), String.valueOf(a.getAttendanceDate()));
+                map.put(msg("label.attendance.status"), a.getAttendanceStatus());
 
                 if(a.getObservation() != null){
-                    map.put("Observación", a.getObservation());
+                    map.put(msg("label.attendance.observation"), a.getObservation());
                 }else{
-                    map.put("Observación", "Sin observación");
+                    map.put(msg("label.attendance.observation"), msg("label.attendance.noObservation"));
                 }
 
                 list.add(map);
@@ -376,7 +299,7 @@ public class ReportService implements CRUD<Report>{
 
     public String validateAdministratorAccess(HttpSession session){
         if(!isAdministrator(session)){
-            return "Solo los administradores pueden gestiónar reportes";
+            return "Solo los administradores pueden gestionar reportes";
         }
         return null;
     }

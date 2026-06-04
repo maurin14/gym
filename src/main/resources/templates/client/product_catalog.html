@@ -3,31 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Catálogo de productos</title>
+    <title th:text="#{${title}}">Catálogo de productos</title>
     <link rel="stylesheet" th:href="@{/css/client.css}">
     <script th:src="@{/js/client-catalog.js}" defer></script>
 </head>
 <body>
 
-<div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
+<div th:replace="~{client/fragments/client_layout :: clientHeaderActive('products')}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('products')}"></div>
 
 <main>
-    <section class="client-hero compact-hero">
-        <div>
-            <span class="section-kicker">Productos</span>
-            <h1>Catálogo visual</h1>
-            <p>Explora productos disponibles en el gimnasio. Esta sección es informativa y no incluye carrito ni compra en línea.</p>
-        </div>
-    </section>
-
     <section class="client-section">
-        <nav class="client-breadcrumb" aria-label="Ruta de navegación">
-            <a th:href="@{/client/home}">Inicio</a>
-            <span>/</span>
-            <strong>Productos</strong>
-        </nav>
-
         <form class="catalog-toolbar"
               method="get"
               th:action="@{/client/products}"
@@ -38,18 +24,18 @@
             <input type="hidden" name="size" th:value="${pageSize}">
 
             <div class="toolbar-field search-field">
-                <label for="productSearch">Buscar</label>
+                <label for="productSearch" th:text="#{label.product.search}">Buscar</label>
                 <input id="productSearch"
                        type="search"
                        name="search"
                        th:value="${search}"
-                       placeholder="Nombre o descripción">
+                       th:placeholder="#{label.product.searchPlaceholder}">
             </div>
 
             <div class="toolbar-field">
-                <label for="productCategory">Categoría</label>
+                <label for="productCategory" th:text="#{label.product.category}">Categoría</label>
                 <select id="productCategory" name="category">
-                    <option value="">Todas</option>
+                    <option value="" th:text="#{label.product.all}">Todas</option>
                     <option th:each="cat : ${categories}"
                             th:value="${cat}"
                             th:text="${cat}"
@@ -58,8 +44,8 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn-primary">Filtrar</button>
-            <a th:href="@{/client/products}" class="btn-secondary">Limpiar</a>
+            <button type="submit" class="btn-primary" th:text="#{button.filter}">Filtrar</button>
+            <a th:href="@{/client/products}" class="btn-secondary" th:text="#{button.clean}">Limpiar</a>
         </form>
 
         <div id="product-results" class="catalog-results" aria-live="polite">

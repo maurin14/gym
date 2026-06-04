@@ -45,40 +45,43 @@ public class BranchController {
 
     @GetMapping("/admin/branches")
     public String adminList(@RequestParam(defaultValue = "0") int page,
-                            @RequestParam(required = false) String name,
+                            @RequestParam(required = false) Integer branchId,
                             @RequestParam(required = false) String active,
                             Model model) {
 
         int currentPage = Math.max(page, 0);
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        Page<Branch> branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
 
         if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
             currentPage = branches.getTotalPages() - 1;
-            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+            branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
         }
 
         model.addAttribute("branches", branches);
-        model.addAttribute("name", name);
+        model.addAttribute("branchId", branchId);
         model.addAttribute("active", active);
+        model.addAttribute("branchOptions", branchService.getAll());
 
         return "branches/admin/listBranch";
     }
 
     @GetMapping("/admin/branches/ajax/list")
     public String adminAjaxList(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(required = false) String name,
+                                @RequestParam(required = false) Integer branchId,
                                 @RequestParam(required = false) String active,
                                 Model model) {
 
         int currentPage = Math.max(page, 0);
-        Page<Branch> branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+        Page<Branch> branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
 
         if (currentPage >= branches.getTotalPages() && branches.getTotalPages() > 0) {
             currentPage = branches.getTotalPages() - 1;
-            branches = branchService.getPage(name, active, PageRequest.of(currentPage, 5));
+            branches = branchService.getAdminPage(branchId, active, PageRequest.of(currentPage, 5));
         }
 
         model.addAttribute("branches", branches);
+        model.addAttribute("branchId", branchId);
+        model.addAttribute("active", active);
 
         return "branches/admin/tableBranch :: tableBranch";
     }
@@ -95,13 +98,13 @@ public class BranchController {
 
         Map<String, String> fieldErrors = branchService.validateFields(branch);
         if (branch.getId() > 0 && branchService.getById(branch.getId()) == null) {
-            fieldErrors.put("form", "La sucursal que intenta editar no existe.");
+            fieldErrors.put("form", "message.branch.editMissing");
         }
 
         if (!fieldErrors.isEmpty()) {
             model.addAttribute("branch", branch);
             model.addAttribute("fieldErrors", fieldErrors);
-            model.addAttribute("messageError", "No se pudo guardar. Revise los campos marcados.");
+            model.addAttribute("messageError", "message.form.review");
             return "branches/admin/formBranch";
         }
 
@@ -123,34 +126,22 @@ public class BranchController {
         return "branches/admin/formBranch";
     }
 
-    @GetMapping("/admin/branches/status/{id}")
-    public String changeBranchStatus(@PathVariable int id,
-                                     RedirectAttributes redirectAttributes) {
-        if (!branchService.toggleStatus(id)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
-            return "redirect:/admin/branches";
-        }
-
-        redirectAttributes.addFlashAttribute("successMessage", "Estado de la sucursal actualizado correctamente.");
-        return "redirect:/admin/branches";
-    }
-
     @GetMapping("/admin/branches/delete/{id}")
     public String deleteBranch(@PathVariable int id,
                                RedirectAttributes redirectAttributes) {
         Branch branch = branchService.getById(id);
 
         if (branch == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Sucursal no encontrada.");
+            redirectAttributes.addFlashAttribute("errorMessage", "message.branch.notFound");
             return "redirect:/admin/branches";
         }
 
         try {
             branchService.delete(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Sucursal eliminada correctamente.");
+            redirectAttributes.addFlashAttribute("successMessage", "message.branch.deleted");
         } catch (DataIntegrityViolationException ex) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "No se puede eliminar la sucursal porque tiene equipos asociados.");
+                    "message.branch.relatedEquipment");
         }
 
         return "redirect:/admin/branches";
@@ -197,24 +188,43 @@ public class BranchController {
         GymClass gymClass = gymClassService.getClassById(classId);
 
         if (gymClass == null) {
-            redirectAttributes.addFlashAttribute("messageError", "No se pudo completar la inscripcion.");
+            redirectAttributes.addFlashAttribute("messageError", "message.branch.enrollError");
             return "redirect:/client/branches/" + branchId;
         }
 
         if (!classBelongsToBranch(gymClass, branchId)) {
-            redirectAttributes.addFlashAttribute("messageError", "La clase no pertenece a esta sucursal.");
+            redirectAttributes.addFlashAttribute("messageError", "message.branch.classMismatch");
             return "redirect:/client/branches/" + branchId;
         }
 
         String result = attendanceService.enrollClientInClass(user, classId);
 
         if (result.isEmpty()) {
-            redirectAttributes.addFlashAttribute("messageSuccess", "Inscripcion realizada.");
+            redirectAttributes.addFlashAttribute("messageSuccess", "message.branch.enrolled");
         } else {
-            redirectAttributes.addFlashAttribute("messageError", result);
+            redirectAttributes.addFlashAttribute("messageError", enrollmentMessageKey(result));
         }
 
         return "redirect:/client/branches/" + branchId;
+    }
+
+    private String enrollmentMessageKey(String result) {
+        if ("Debe iniciar sesion.".equals(result)) {
+            return "message.branch.loginRequired";
+        }
+        if ("Clase no encontrada.".equals(result)) {
+            return "message.branch.classNotFound";
+        }
+        if ("La clase no esta disponible.".equals(result)) {
+            return "message.branch.classUnavailable";
+        }
+        if ("Ya estas inscrito en esta clase.".equals(result)) {
+            return "message.branch.alreadyEnrolled";
+        }
+        if ("No hay cupos disponibles.".equals(result)) {
+            return "message.branch.noCapacity";
+        }
+        return "message.branch.enrollError";
     }
 
     private boolean classBelongsToBranch(GymClass gymClass, int branchId) {
