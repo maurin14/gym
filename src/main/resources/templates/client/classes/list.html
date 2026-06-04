@@ -8,10 +8,12 @@
 </head>
 <body>
 
+<!-- Header y menú -->
 <div th:replace="~{client/fragments/client_layout :: clientHeader}"></div>
 <div th:replace="~{client/fragments/client_layout :: clientMenuDrawer('classes')}"></div>
 
 <main>
+    <!-- Hero / sección superior -->
     <section class="client-hero compact-hero classes-hero">
         <div>
             <span class="section-kicker" th:text="#{section.kicker.training}">Entrenamiento</span>
@@ -20,6 +22,7 @@
         </div>
     </section>
 
+    <!-- Sección de tabla -->
     <section class="client-section">
         <nav class="client-breadcrumb" aria-label="Ruta de navegación">
             <a th:href="@{/client/home}" th:text="#{label.home}">Inicio</a>
@@ -53,18 +56,19 @@
                         <th th:text="#{label.class.action}">Acción</th>
                     </tr>
                     </thead>
-
                     <tbody id="classesTableBody"></tbody>
                 </table>
             </div>
 
-            <nav id="classesPagination" class="client-pagination" aria-label="Paginacion de clases"></nav>
+            <nav id="classesPagination" class="client-pagination" aria-label="Paginación de clases"></nav>
         </div>
     </section>
 </main>
 
+<!-- Footer -->
 <div th:replace="~{client/fragments/client_layout :: clientFooter}"></div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script th:src="@{/js/admin-ui.js}" defer></script>
 <script th:src="@{/js/client-home.js}" defer></script>
